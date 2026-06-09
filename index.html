@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toronto Bin Collection Schedule</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      color: #1a365d;
+      margin-bottom: 0.3rem;
+      text-align: center;
+    }
+    .subtitle {
+      color: #4a5568;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+    .search-container {
+      width: 100%;
+      max-width: 560px;
+      position: relative;
+    }
+    #address {
+      width: 100%;
+      padding: 14px 48px 14px 16px;
+      font-size: 1rem;
+      border: 2px solid #cbd5e0;
+      border-radius: 12px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+    #address:focus {
+      border-color: #3182ce;
+      box-shadow: 0 0 0 3px rgba(49,130,206,0.15);
+    }
+    .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+      pointer-events: none;
+    }
+    .suggestions {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      z-index: 100;
+      display: none;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .suggestions.show { display: block; }
+    .suggestion-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: #2d3748;
+      border-bottom: 1px solid #f7fafc;
+      transition: background 0.15s;
+    }
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover, .suggestion-item.active {
+      background: #ebf8ff;
+      color: #2b6cb0;
+    }
+    .suggestion-item .area {
+      font-size: 0.8rem;
+      color: #a0aec0;
+      margin-left: 4px;
+    }
+
+    #loading {
+      display: none;
+      margin-top: 2rem;
+      text-align: center;
+      color: #4a5568;
+    }
+    .spinner {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 3px solid #e2e8f0;
+      border-top-color: #3182ce;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-bottom: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #error {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 14px 20px;
+      background: #fff5f5;
+      color: #c53030;
+      border: 1px solid #feb2b2;
+      border-radius: 10px;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+    }
+
+    #results {
+      display: none;
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 700px;
+    }
+    .address-label {
+      font-size: 1.1rem;
+      color: #2d3748;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .schedule-label {
+      font-size: 0.9rem;
+      color: #718096;
+      margin-bottom: 1.2rem;
+    }
+    .schedule-label strong {
+      color: #2b6cb0;
+    }
+
+    .next-pickup {
+      background: linear-gradient(135deg, #ebf8ff 0%, #e9f5ff 100%);
+      border: 1px solid #bee3f8;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 1.5rem;
+    }
+    .next-pickup h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #2b6cb0;
+      margin-bottom: 12px;
+    }
+    .next-date {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1a365d;
+      margin-bottom: 8px;
+    }
+    .bin-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .bin-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .bin-tag.green-bin { background: #38a169; }
+    .bin-tag.garbage { background: #4a5568; }
+    .bin-tag.recycling { background: #3182ce; }
+    .bin-tag.yard-waste { background: #d69e2e; }
+    .bin-tag.christmas-tree { background: #e53e3e; }
+
+    .calendar-section h3 {
+      font-size: 1rem;
+      color: #2d3748;
+      margin-bottom: 12px;
+    }
+    .week-row {
+      display: grid;
+      grid-template-columns: 1fr repeat(5, 48px);
+      gap: 4px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+    }
+    .week-row:nth-child(even) { background: #f7fafc; }
+    .week-row.header {
+      font-weight: 700;
+      color: #4a5568;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: none;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+      margin-bottom: 4px;
+    }
+    .week-row .date-col {
+      font-weight: 500;
+      color: #2d3748;
+    }
+    .week-row .icon-col {
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .week-row.today-row {
+      background: #ebf8ff;
+      border: 2px solid #3182ce;
+      font-weight: 600;
+    }
+    .week-row.past-row {
+      opacity: 0.45;
+    }
+    .check { color: #38a169; }
+    .no-check { color: #e2e8f0; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #f7fafc;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      color: #4a5568;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.4rem; }
+      .week-row { grid-template-columns: 1fr repeat(5, 36px); font-size: 0.78rem; }
+      .week-row .icon-col { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🗑️ Toronto Bin Collection</h1>
+  <p class="subtitle">Find your waste collection schedule by address</p>
+
+  <div class="search-container">
+    <input type="text" id="address" placeholder="Start typing your Toronto address..." autocomplete="off" />
+    <div class="search-icon">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+    </div>
+    <div class="suggestions" id="suggestions"></div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>Looking up your collection schedule...</p>
+  </div>
+
+  <div id="error"></div>
+
+  <div id="results">
+    <p class="address-label" id="result-address"></p>
+    <p class="schedule-label" id="result-schedule"></p>
+
+    <div class="next-pickup" id="next-pickup">
+      <h3>📅 Next Collection</h3>
+      <div class="next-date" id="next-date"></div>
+      <div class="bin-tags" id="next-bins"></div>
+    </div>
+
+    <div class="calendar-section">
+      <h3>Upcoming Schedule</h3>
+      <div class="week-row header">
+        <div>Week Starting</div>
+        <div class="icon-col" title="Green Bin">🟢</div>
+        <div class="icon-col" title="Garbage">⚫</div>
+        <div class="icon-col" title="Recycling">🔵</div>
+        <div class="icon-col" title="Yard Waste">🟡</div>
+        <div class="icon-col" title="Christmas Tree">🎄</div>
+      </div>
+      <div id="schedule-rows"></div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#38a169"></span> Green Bin (weekly)</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#4a5568"></span> Garbage</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#3182ce"></span> Recycling</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#d69e2e"></span> Yard Waste</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#e53e3e"></span> Christmas Tree</div>
+    </div>
+  </div>
+
+  <script>
+    const SUGGEST_URL = 'https://map.toronto.ca/cotgeocoder/rest/geocoder/suggest?matchAddress=1&matchIntersection=1&matchStreetName=1&matchPlacename=1&f=pjson&retRowLimit=8&searchString=';
+    const FIND_URL = 'https://map.toronto.ca/cotgeocoder/rest/geocoder/findAddressCandidates?f=json&unit=%25&areaTypeCode1=RESW&areaTypeCode2=CITW&keyString=';
+    const CSV_URL = 'https://www.toronto.ca/ext/swms/collection_calendar.csv';
+
+    let csvData = null;
+    let debounceTimer = null;
+    let selectedIndex = -1;
+
+    // Parse CSV into structured data grouped by calendar name
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      const data = {};
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',');
+        const cal = cols[1].trim();
+        if (!data[cal]) data[cal] = [];
+        data[cal].push({
+          weekStarting: cols[2].trim(),
+          greenBin: cols[3].trim() === 'T',
+          garbage: cols[4].trim() === 'T',
+          recycling: cols[5].trim() === 'T',
+          yardWaste: cols[6].trim() === 'T',
+          christmasTree: (cols[7] || '').trim() === 'T'
+        });
+      }
+      return data;
+    }
+
+    // Load CSV on page load
+    async function loadCSV() {
+      try {
+        const resp = await fetch(CSV_URL);
+        const text = await resp.text();
+        csvData = parseCSV(text);
+      } catch (e) {
+        console.error('Failed to load CSV:', e);
+      }
+    }
+    loadCSV();
+
+    const addressInput = document.getElementById('address');
+    const suggestionsDiv = document.getElementById('suggestions');
+    const loadingDiv = document.getElementById('loading');
+    const errorDiv = document.getElementById('error');
+    const resultsDiv = document.getElementById('results');
+
+    addressInput.addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      const val = this.value.trim();
+      if (val.length < 3) {
+        hideSuggestions();
+        return;
+      }
+      debounceTimer = setTimeout(() => fetchSuggestions(val), 300);
+    });
+
+    addressInput.addEventListener('keydown', function(e) {
+      const items = suggestionsDiv.querySelectorAll('.suggestion-item');
+      if (!items.length) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+        highlightItem(items);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = Math.max(selectedIndex - 1, 0);
+        highlightItem(items);
+      } else if (e.key === 'Enter' && selectedIndex >= 0) {
+        e.preventDefault();
+        items[selectedIndex].click();
+      } else if (e.key === 'Escape') {
+        hideSuggestions();
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.search-container')) hideSuggestions();
+    });
+
+    function highlightItem(items) {
+      items.forEach((item, i) => {
+        item.classList.toggle('active', i === selectedIndex);
+      });
+    }
+
+    function hideSuggestions() {
+      suggestionsDiv.classList.remove('show');
+      suggestionsDiv.innerHTML = '';
+      selectedIndex = -1;
+    }
+
+    async function fetchSuggestions(query) {
+      try {
+        const resp = await fetch(SUGGEST_URL + encodeURIComponent(query));
+        const json = await resp.json();
+        const rows = json.result?.rows || [];
+        if (!rows.length) {
+          hideSuggestions();
+          return;
+        }
+        suggestionsDiv.innerHTML = '';
+        selectedIndex = -1;
+        rows.forEach((row, i) => {
+          const div = document.createElement('div');
+          div.className = 'suggestion-item';
+          div.textContent = row.ADDRESS;
+          div.addEventListener('click', () => selectAddress(row.KEYSTRING, row.ADDRESS));
+          suggestionsDiv.appendChild(div);
+        });
+        suggestionsDiv.classList.add('show');
+      } catch (e) {
+        console.error('Suggest error:', e);
+      }
+    }
+
+    async function selectAddress(keyString, displayAddress) {
+      hideSuggestions();
+      addressInput.value = displayAddress;
+      errorDiv.style.display = 'none';
+      resultsDiv.style.display = 'none';
+      loadingDiv.style.display = 'block';
+
+      try {
+        const resp = await fetch(FIND_URL + encodeURIComponent(keyString));
+        const json = await resp.json();
+        const rows = json.result?.rows || [];
+        if (!rows.length) throw new Error('Address not found');
+
+        const row = rows[0];
+        const areas = row.AREACURSOR1?.array || [];
+        const resw = areas.find(a => a.AREA_TYPE === 'RESW');
+
+        if (!resw || resw.AREA_NAME === 'No Collection') {
+          showError('This address does not have curbside waste collection. It may be a condo/apartment with private collection.');
+          return;
+        }
+
+        const calendarName = resw.AREA_NAME.replace(/\s/g, '');
+        const fullAddress = row.ADDRESS_FULL || displayAddress;
+
+        if (!csvData || !csvData[calendarName]) {
+          showError(`Schedule "${calendarName}" not found. The data may not be loaded yet — try again in a moment.`);
+          return;
+        }
+
+        displayResults(fullAddress, calendarName, csvData[calendarName]);
+      } catch (e) {
+        showError('Could not look up this address. Please try another one.');
+        console.error(e);
+      } finally {
+        loadingDiv.style.display = 'none';
+      }
+    }
+
+    function showError(msg) {
+      loadingDiv.style.display = 'none';
+      errorDiv.textContent = msg;
+      errorDiv.style.display = 'block';
+      resultsDiv.style.display = 'none';
+    }
+
+    function displayResults(address, calendarName, schedule) {
+      document.getElementById('result-address').textContent = address;
+
+      // Parse day and week from calendar name (e.g. "Tuesday1" -> Tuesday, Week 1)
+      const match = calendarName.match(/^([A-Za-z]+?)(\d+)$/);
+      const dayName = match ? match[1] : calendarName;
+      const weekNum = match ? match[2] : '';
+      document.getElementById('result-schedule').innerHTML =
+        `Collection day: <strong>${dayName}</strong> · Schedule: <strong>Week ${weekNum}</strong>`;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayStr = formatDateISO(today);
+
+      // Find next collection
+      let nextIdx = schedule.findIndex(w => w.weekStarting >= todayStr);
+      if (nextIdx === -1) nextIdx = schedule.length - 1;
+
+      // If today is past that week but before the next, use current
+      const nextWeek = schedule[nextIdx];
+      document.getElementById('next-date').textContent = formatDateNice(nextWeek.weekStarting);
+
+      const nextBinsDiv = document.getElementById('next-bins');
+      nextBinsDiv.innerHTML = '';
+      if (nextWeek.greenBin) nextBinsDiv.innerHTML += '<span class="bin-tag green-bin">🟢 Green Bin</span>';
+      if (nextWeek.garbage) nextBinsDiv.innerHTML += '<span class="bin-tag garbage">⚫ Garbage</span>';
+      if (nextWeek.recycling) nextBinsDiv.innerHTML += '<span class="bin-tag recycling">🔵 Recycling</span>';
+      if (nextWeek.yardWaste) nextBinsDiv.innerHTML += '<span class="bin-tag yard-waste">🟡 Yard Waste</span>';
+      if (nextWeek.christmasTree) nextBinsDiv.innerHTML += '<span class="bin-tag christmas-tree">🎄 Christmas Tree</span>';
+
+      // Show upcoming weeks (from a couple weeks before now onward)
+      const rowsDiv = document.getElementById('schedule-rows');
+      rowsDiv.innerHTML = '';
+
+      // Show from 2 weeks before today to end
+      let startShow = Math.max(0, nextIdx - 2);
+      const showWeeks = schedule.slice(startShow, startShow + 20);
+
+      showWeeks.forEach(week => {
+        const isPast = week.weekStarting < todayStr;
+        const isThisWeek = week.weekStarting === nextWeek.weekStarting && !isPast;
+
+        const row = document.createElement('div');
+        row.className = 'week-row' + (isThisWeek ? ' today-row' : '') + (isPast ? ' past-row' : '');
+        row.innerHTML = `
+          <div class="date-col">${formatDateShort(week.weekStarting)}</div>
+          <div class="icon-col">${week.greenBin ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
+          <div class="icon-col">${week.garbage ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
+          <div class="icon-col">${week.recycling ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
+          <div class="icon-col">${week.yardWaste ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
+          <div class="icon-col">${week.christmasTree ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
+        `;
+        rowsDiv.appendChild(row);
+      });
+
+      resultsDiv.style.display = 'block';
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function formatDateISO(date) {
+      return date.getFullYear() + '-' +
+        String(date.getMonth() + 1).padStart(2, '0') + '-' +
+        String(date.getDate()).padStart(2, '0');
+    }
+
+    function formatDateNice(isoStr) {
+      const d = new Date(isoStr + 'T00:00:00');
+      return d.toLocaleDateString('en-CA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    function formatDateShort(isoStr) {
+      const d = new Date(isoStr + 'T00:00:00');
+      return d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
+    }
+  </script>
+</body>
+</html>
