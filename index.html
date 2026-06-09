@@ -82,11 +82,6 @@
       background: #ebf8ff;
       color: #2b6cb0;
     }
-    .suggestion-item .area {
-      font-size: 0.8rem;
-      color: #a0aec0;
-      margin-left: 4px;
-    }
 
     #loading {
       display: none;
@@ -249,6 +244,14 @@
       display: inline-block;
     }
 
+    .footer-note {
+      margin-top: 2rem;
+      font-size: 0.78rem;
+      color: #a0aec0;
+      text-align: center;
+    }
+    .footer-note a { color: #718096; }
+
     @media (max-width: 600px) {
       h1 { font-size: 1.4rem; }
       .week-row { grid-template-columns: 1fr repeat(5, 36px); font-size: 0.78rem; }
@@ -309,46 +312,45 @@
     </div>
   </div>
 
+  <p class="footer-note">Data from <a href="https://www.toronto.ca/services-payments/recycling-organics-garbage/houses/collection-schedule/" target="_blank">City of Toronto Open Data</a></p>
+
   <script>
+    // ===== EMBEDDED SCHEDULE DATA (from toronto.ca/ext/swms/collection_calendar.csv) =====
+    const CSV_DATA = {"Tuesday1":[{"w":"2026-01-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-13","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-27","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-02-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-10","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-24","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-31","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-05","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-06","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-15","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-29","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-16","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-23","g":true,"b":false,"r":false,"y":true,"c":false},{"w":"2025-12-30","g":true,"b":true,"r":false,"y":false,"c":false}],"Tuesday2":[{"w":"2026-01-06","g":true,"b":true,"r":true,"y":false,"c":true},{"w":"2026-01-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-20","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-03","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-17","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-03","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-31","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-22","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-16","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-23","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-30","g":true,"b":false,"r":true,"y":true,"c":false}],"Wednesday1":[{"w":"2026-01-07","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-14","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-21","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-28","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-01","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-01","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-07","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-14","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-21","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-28","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-24","g":false,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-31","g":false,"b":false,"r":false,"y":false,"c":false}],"Wednesday2":[{"w":"2026-01-07","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-14","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-21","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-28","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-01","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-01","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-07","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-14","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-21","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-28","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-31","g":false,"b":false,"r":false,"y":false,"c":false}],"Thursday1":[{"w":"2026-01-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-07","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-14","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-21","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-28","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-01","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-31","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-26","g":false,"b":false,"r":false,"y":false,"c":false}],"Thursday2":[{"w":"2026-01-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-07","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-14","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-21","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-28","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-01","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-31","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-26","g":false,"b":false,"r":false,"y":false,"c":false}],"Friday1":[{"w":"2026-01-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-01","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-31","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-07","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-14","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-21","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-28","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-27","g":false,"b":false,"r":false,"y":false,"c":false}],"Friday2":[{"w":"2026-01-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-02-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-03-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-04-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-01","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-08","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-15","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-22","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-05-29","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-05","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-12","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-06-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-03","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-10","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-17","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-24","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-07-31","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-07","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-14","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-21","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-08-28","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-09-25","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-02","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-09","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-16","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-23","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-10-30","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-06","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-13","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-20","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-11-27","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-04","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-11","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-18","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2026-12-26","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-19","g":false,"b":false,"r":false,"y":false,"c":false},{"w":"2025-12-27","g":false,"b":false,"r":false,"y":false,"c":false}]};
+
+    // ===== JSONP helper for Toronto geocoder (no CORS headers) =====
+    let jsonpCounter = 0;
+    function jsonp(url) {
+      return new Promise((resolve, reject) => {
+        const cbName = '_torontoCb_' + (jsonpCounter++);
+        const script = document.createElement('script');
+        const timeout = setTimeout(() => {
+          cleanup();
+          reject(new Error('JSONP timeout'));
+        }, 8000);
+
+        function cleanup() {
+          clearTimeout(timeout);
+          delete window[cbName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        window[cbName] = function(data) {
+          cleanup();
+          resolve(data);
+        };
+
+        script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
+        script.onerror = function() { cleanup(); reject(new Error('JSONP load error')); };
+        document.head.appendChild(script);
+      });
+    }
+
     const SUGGEST_URL = 'https://map.toronto.ca/cotgeocoder/rest/geocoder/suggest?matchAddress=1&matchIntersection=1&matchStreetName=1&matchPlacename=1&f=pjson&retRowLimit=8&searchString=';
     const FIND_URL = 'https://map.toronto.ca/cotgeocoder/rest/geocoder/findAddressCandidates?f=json&unit=%25&areaTypeCode1=RESW&areaTypeCode2=CITW&keyString=';
-    const CSV_URL = 'https://www.toronto.ca/ext/swms/collection_calendar.csv';
 
-    let csvData = null;
     let debounceTimer = null;
     let selectedIndex = -1;
-
-    // Parse CSV into structured data grouped by calendar name
-    function parseCSV(text) {
-      const lines = text.trim().split('\n');
-      const data = {};
-      for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(',');
-        const cal = cols[1].trim();
-        if (!data[cal]) data[cal] = [];
-        data[cal].push({
-          weekStarting: cols[2].trim(),
-          greenBin: cols[3].trim() === 'T',
-          garbage: cols[4].trim() === 'T',
-          recycling: cols[5].trim() === 'T',
-          yardWaste: cols[6].trim() === 'T',
-          christmasTree: (cols[7] || '').trim() === 'T'
-        });
-      }
-      return data;
-    }
-
-    // Load CSV on page load
-    async function loadCSV() {
-      try {
-        const resp = await fetch(CSV_URL);
-        const text = await resp.text();
-        csvData = parseCSV(text);
-      } catch (e) {
-        console.error('Failed to load CSV:', e);
-      }
-    }
-    loadCSV();
 
     const addressInput = document.getElementById('address');
     const suggestionsDiv = document.getElementById('suggestions');
@@ -403,8 +405,7 @@
 
     async function fetchSuggestions(query) {
       try {
-        const resp = await fetch(SUGGEST_URL + encodeURIComponent(query));
-        const json = await resp.json();
+        const json = await jsonp(SUGGEST_URL + encodeURIComponent(query));
         const rows = json.result?.rows || [];
         if (!rows.length) {
           hideSuggestions();
@@ -412,7 +413,7 @@
         }
         suggestionsDiv.innerHTML = '';
         selectedIndex = -1;
-        rows.forEach((row, i) => {
+        rows.forEach((row) => {
           const div = document.createElement('div');
           div.className = 'suggestion-item';
           div.textContent = row.ADDRESS;
@@ -433,8 +434,7 @@
       loadingDiv.style.display = 'block';
 
       try {
-        const resp = await fetch(FIND_URL + encodeURIComponent(keyString));
-        const json = await resp.json();
+        const json = await jsonp(FIND_URL + encodeURIComponent(keyString));
         const rows = json.result?.rows || [];
         if (!rows.length) throw new Error('Address not found');
 
@@ -443,19 +443,19 @@
         const resw = areas.find(a => a.AREA_TYPE === 'RESW');
 
         if (!resw || resw.AREA_NAME === 'No Collection') {
-          showError('This address does not have curbside waste collection. It may be a condo/apartment with private collection.');
+          showError('This address does not have curbside waste collection. It may be a condo or apartment with private collection.');
           return;
         }
 
         const calendarName = resw.AREA_NAME.replace(/\s/g, '');
         const fullAddress = row.ADDRESS_FULL || displayAddress;
 
-        if (!csvData || !csvData[calendarName]) {
-          showError(`Schedule "${calendarName}" not found. The data may not be loaded yet — try again in a moment.`);
+        if (!CSV_DATA[calendarName]) {
+          showError('Schedule "' + calendarName + '" not found in the current year\'s data.');
           return;
         }
 
-        displayResults(fullAddress, calendarName, csvData[calendarName]);
+        displayResults(fullAddress, calendarName, CSV_DATA[calendarName]);
       } catch (e) {
         showError('Could not look up this address. Please try another one.');
         console.error(e);
@@ -474,55 +474,51 @@
     function displayResults(address, calendarName, schedule) {
       document.getElementById('result-address').textContent = address;
 
-      // Parse day and week from calendar name (e.g. "Tuesday1" -> Tuesday, Week 1)
       const match = calendarName.match(/^([A-Za-z]+?)(\d+)$/);
       const dayName = match ? match[1] : calendarName;
       const weekNum = match ? match[2] : '';
       document.getElementById('result-schedule').innerHTML =
-        `Collection day: <strong>${dayName}</strong> · Schedule: <strong>Week ${weekNum}</strong>`;
+        'Collection day: <strong>' + dayName + '</strong> · Schedule: <strong>Week ' + weekNum + '</strong>';
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const todayStr = formatDateISO(today);
 
-      // Find next collection
-      let nextIdx = schedule.findIndex(w => w.weekStarting >= todayStr);
+      // Find next collection week
+      let nextIdx = schedule.findIndex(s => s.w >= todayStr);
       if (nextIdx === -1) nextIdx = schedule.length - 1;
 
-      // If today is past that week but before the next, use current
       const nextWeek = schedule[nextIdx];
-      document.getElementById('next-date').textContent = formatDateNice(nextWeek.weekStarting);
+      document.getElementById('next-date').textContent = formatDateNice(nextWeek.w);
 
       const nextBinsDiv = document.getElementById('next-bins');
       nextBinsDiv.innerHTML = '';
-      if (nextWeek.greenBin) nextBinsDiv.innerHTML += '<span class="bin-tag green-bin">🟢 Green Bin</span>';
-      if (nextWeek.garbage) nextBinsDiv.innerHTML += '<span class="bin-tag garbage">⚫ Garbage</span>';
-      if (nextWeek.recycling) nextBinsDiv.innerHTML += '<span class="bin-tag recycling">🔵 Recycling</span>';
-      if (nextWeek.yardWaste) nextBinsDiv.innerHTML += '<span class="bin-tag yard-waste">🟡 Yard Waste</span>';
-      if (nextWeek.christmasTree) nextBinsDiv.innerHTML += '<span class="bin-tag christmas-tree">🎄 Christmas Tree</span>';
+      if (nextWeek.g) nextBinsDiv.innerHTML += '<span class="bin-tag green-bin">🟢 Green Bin</span>';
+      if (nextWeek.b) nextBinsDiv.innerHTML += '<span class="bin-tag garbage">⚫ Garbage</span>';
+      if (nextWeek.r) nextBinsDiv.innerHTML += '<span class="bin-tag recycling">🔵 Recycling</span>';
+      if (nextWeek.y) nextBinsDiv.innerHTML += '<span class="bin-tag yard-waste">🟡 Yard Waste</span>';
+      if (nextWeek.c) nextBinsDiv.innerHTML += '<span class="bin-tag christmas-tree">🎄 Christmas Tree</span>';
 
-      // Show upcoming weeks (from a couple weeks before now onward)
+      // Show upcoming weeks
       const rowsDiv = document.getElementById('schedule-rows');
       rowsDiv.innerHTML = '';
 
-      // Show from 2 weeks before today to end
       let startShow = Math.max(0, nextIdx - 2);
       const showWeeks = schedule.slice(startShow, startShow + 20);
 
       showWeeks.forEach(week => {
-        const isPast = week.weekStarting < todayStr;
-        const isThisWeek = week.weekStarting === nextWeek.weekStarting && !isPast;
+        const isPast = week.w < todayStr;
+        const isThisWeek = week.w === nextWeek.w && !isPast;
 
         const row = document.createElement('div');
         row.className = 'week-row' + (isThisWeek ? ' today-row' : '') + (isPast ? ' past-row' : '');
-        row.innerHTML = `
-          <div class="date-col">${formatDateShort(week.weekStarting)}</div>
-          <div class="icon-col">${week.greenBin ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
-          <div class="icon-col">${week.garbage ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
-          <div class="icon-col">${week.recycling ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
-          <div class="icon-col">${week.yardWaste ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
-          <div class="icon-col">${week.christmasTree ? '<span class="check">✓</span>' : '<span class="no-check">–</span>'}</div>
-        `;
+        row.innerHTML =
+          '<div class="date-col">' + formatDateShort(week.w) + '</div>' +
+          '<div class="icon-col">' + (week.g ? '<span class="check">✓</span>' : '<span class="no-check">–</span>') + '</div>' +
+          '<div class="icon-col">' + (week.b ? '<span class="check">✓</span>' : '<span class="no-check">–</span>') + '</div>' +
+          '<div class="icon-col">' + (week.r ? '<span class="check">✓</span>' : '<span class="no-check">–</span>') + '</div>' +
+          '<div class="icon-col">' + (week.y ? '<span class="check">✓</span>' : '<span class="no-check">–</span>') + '</div>' +
+          '<div class="icon-col">' + (week.c ? '<span class="check">✓</span>' : '<span class="no-check">–</span>') + '</div>';
         rowsDiv.appendChild(row);
       });
 
