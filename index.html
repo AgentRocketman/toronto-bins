@@ -18,8 +18,8 @@
     /* NAV */
     nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0;padding:0 1.5rem}
     .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
-    .nav-logo{font-size:1.4rem;font-weight:900;color:var(--teal);letter-spacing:-.5px;text-decoration:none}
-    .nav-logo span{color:var(--slate)}
+    .nav-logo{text-decoration:none;display:flex;align-items:center}
+    .nav-logo img{height:32px;width:auto}
     .nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center}
     .nav-links a{color:var(--slate-light);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s}
     .nav-links a:hover{color:var(--teal)}
@@ -202,7 +202,8 @@
 
     /* FOOTER */
     footer{background:var(--slate-xlight);padding:3rem 1.5rem;text-align:center;border-top:1px solid #e2e8f0}
-    .footer-logo{font-size:1.3rem;font-weight:900;color:var(--teal);margin-bottom:.5rem}
+    .footer-logo{margin-bottom:.5rem;display:flex;justify-content:center}
+    .footer-logo img{height:28px;width:auto}
     .footer-note{font-size:.8rem;color:var(--slate-light)}
     .footer-note a{color:var(--slate-light)}
 
@@ -223,7 +224,7 @@
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="#">Curb<span>In</span></a>
+    <a class="nav-logo" href="#"><img src="logo.jpg" alt="CurbIn"></a>
     <ul class="nav-links">
       <li><a href="#how">How It Works</a></li>
       <li><a href="#pricing">Pricing</a></li>
@@ -421,7 +422,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">CurbIn</div>
+  <div class="footer-logo"><img src="logo.jpg" alt="CurbIn"></div>
   <p class="footer-note">Schedule data from <a href="https://www.toronto.ca/services-payments/recycling-organics-garbage/houses/collection-schedule/" target="_blank">City of Toronto Open Data</a> &middot; Toronto, ON</p>
 </footer>
 
