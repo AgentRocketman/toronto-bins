@@ -3,7 +3,21 @@
 
 const stripe = Stripe('pk_test_51SFgOXRoaqSc6FkpZuQmOv1ZMOqaAI2L6rkyusqya3XHNp7BQZgFlWuxoF0sARpqKZG5rGxRimiD3ANPMLrd1lsB00ww4XnrwL');
 const elements = stripe.elements();
-const cardElement = elements.create('card');
+const cardElement = elements.create('card', {
+  hidePostalCode: true,  // Hide postal/zip code field (Canada doesn't need it)
+  style: {
+    base: {
+      fontSize: '14px',
+      color: '#424770',
+      '::placeholder': {
+        color: '#aab7c4',
+      },
+    },
+    invalid: {
+      color: '#9e2146',
+    },
+  },
+});
 
 // Export globally for access in main script
 window.cardElement = cardElement;
