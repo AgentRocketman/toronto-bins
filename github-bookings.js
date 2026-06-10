@@ -150,17 +150,7 @@ async function processBookingPayment(bookingData) {
       return false;
     }
 
-    // For now, just confirm the payment method was created
-    // In production, you'd send this to a backend to create a Stripe charge
-    const result = await stripe.confirmCardPayment(
-      // NOTE: This requires a Stripe client secret from your backend
-      // For demo, we'll just create a charge-like confirmation
-      {
-        payment_method: paymentMethod.id,
-        confirm: true
-      }
-    );
-
+    // Payment method created successfully
     // Save booking data with Stripe payment ID
     bookingData.stripePaymentId = paymentMethod.id;
 
@@ -186,8 +176,4 @@ async function processBookingPayment(bookingData) {
   }
 }
 
-// Export for manual sync to GitHub if local backup exists
-function exportLocalBookings() {
-  const bookings = JSON.parse(localStorage.getItem('curbin_bookings') || '[]');
-  return JSON.stringify(bookings, null, 2);
-}
+
