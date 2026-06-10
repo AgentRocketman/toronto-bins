@@ -98,18 +98,25 @@ async function processBookingPayment(bookingData) {
     bookingData.stripePaymentId = paymentMethod.id;
 
     let bookingResult;
+    let savedLocation = 'unknown';
     try {
       // Try to save to GitHub
+      console.log('Attempting to save booking to GitHub...');
       bookingResult = await saveBookingToGitHub(bookingData);
+      savedLocation = 'GitHub (bookings.csv)';
+      console.log('✅ Booking saved to GitHub:', bookingResult);
     } catch (githubErr) {
-      console.warn('GitHub save failed, saving locally:', githubErr);
+      console.warn('GitHub save failed, saving to localStorage instead:', githubErr);
       // Fall back to local storage
       bookingResult = saveBookingLocally(bookingData);
+      savedLocation = 'Browser Storage (localStorage)';
+      console.log('✅ Booking saved to localStorage:', bookingResult);
     }
 
     return {
       success: true,
       bookingId: bookingResult.bookingId,
+      savedLocation: savedLocation,
       warning: bookingResult.warning
     };
   } catch (err) {
