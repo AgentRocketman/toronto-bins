@@ -1,7 +1,7 @@
 // Stripe Integration
 // Initialize Stripe with your publishable key
 
-const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY');
+const stripe = Stripe('pk_test_51SFgOXRoaqSc6FkpZuQmOv1ZMOqaAI2L6rkyusqya3XHNp7BQZgFlWuxoF0sARpqKZG5rGxRimiD3ANPMLrd1lsB00ww4XnrwL');
 const elements = stripe.elements();
 const cardElement = elements.create('card');
 
@@ -90,4 +90,8 @@ function clearCardElement() {
 }
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', initStripeForm);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initStripeForm);
+} else {
+  initStripeForm();
+}
