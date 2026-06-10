@@ -28,9 +28,10 @@ async function saveBookingToAirtable(bookingData) {
   }
   
   const bookingId = generateBookingId();
+  const todayISO = new Date().toISOString().split('T')[0];
   
-  // Prepare record for Airtable
-  const record = {
+  // 1. Save Booking record
+  const bookingRecord = {
     fields: {
       'Booking ID': bookingId,
       'Customer Name': bookingData.customerName || '',
@@ -40,32 +41,75 @@ async function saveBookingToAirtable(bookingData) {
       'Service Type': bookingData.serviceType || '',
       'Amount': bookingData.amount ? bookingData.amount / 100 : 0, // Convert cents to dollars
       'Stripe Payment ID': bookingData.stripePaymentId || '',
-      'Created At': new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+      'Created At': todayISO
     }
   };
 
   try {
-    const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`, {
+    const bookingResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(record)
+      body: JSON.stringify(bookingRecord)
     });
 
-    if (!response.ok) {
-      const error = await response.json();
+    if (!bookingResponse.ok) {
+      const error = await bookingResponse.json();
       console.error('Airtable API error:', error);
       throw new Error(`Airtable error: ${error.error?.message || 'Unknown error'}`);
     }
 
-    const result = await response.json();
-    console.log('✅ Booking saved to Airtable:', result);
+    const bookingResult = await bookingResponse.json();
+    console.log('✅ Booking saved to Airtable:', bookingResult);
+    
+    // 2. Save Order records for each service date
+    const ORDERS_TABLE_ID = 'tblGhNRi3ENwVpNty';
+    let orderCount = 0;
+    
+    if (bookingData.selectedDates && bookingData.selectedDates.length > 0) {
+      const ordersToSave = bookingData.selectedDates.map(dateStr => ({
+        fields: {
+          'Order ID': bookingId + '-' + dateStr,
+          'Booking ID': bookingId,
+          'Service Date': dateStr,
+          'Service Type': bookingData.serviceType || '',
+          'Status': 'Pending',
+          'Created At': todayISO
+        }
+      }));
+      
+      console.log(`Saving ${ordersToSave.length} order records...`);
+      
+      for (const orderRecord of ordersToSave) {
+        try {
+          const orderResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${ORDERS_TABLE_ID}`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderRecord)
+          });
+          
+          if (orderResponse.ok) {
+            orderCount++;
+            console.log('✅ Order saved:', orderRecord.fields['Order ID']);
+          } else {
+            const error = await orderResponse.json();
+            console.warn('Failed to save order:', error);
+          }
+        } catch (err) {
+          console.warn('Error saving order:', err);
+        }
+      }
+    }
     
     return {
       bookingId: bookingId,
-      recordId: result.id,
+      recordId: bookingResult.id,
+      ordersCount: orderCount,
       success: true
     };
   } catch (err) {

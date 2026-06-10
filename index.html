@@ -765,7 +765,8 @@ function openCheckout() {
     address: currentAddress,
     serviceType: serviceType,
     frequency: planType,
-    amount: Math.round(totalVal * 100)
+    amount: Math.round(totalVal * 100),
+    selectedDates: planType === 'adhoc' ? [...selectedDates].sort() : []
   };
 
   body.innerHTML = '<div class="modal-row"><span class="mr-label">Address</span><span class="mr-value">' + (currentAddress || '') + '</span></div>' +
@@ -853,7 +854,7 @@ async function processPayment() {
   try {
     const result = await processBookingPayment(booking);
     if (result && result.success) {
-      showPaymentSuccess(result.bookingId, booking, result.savedLocation);
+      showPaymentSuccess(result.bookingId, booking, result.savedLocation, result.ordersCount || 0);
     } else {
       throw new Error(result?.error || 'Payment failed');
     }
@@ -868,10 +869,11 @@ async function processPayment() {
   }
 }
 
-function showPaymentSuccess(bookingId, bookingData, savedLocation) {
+function showPaymentSuccess(bookingId, bookingData, savedLocation, ordersCount) {
   const body = document.getElementById('modal-body');
   const locationText = savedLocation ? `<p style="font-size:0.8rem;color:var(--slate-light);margin-top:0.75rem;padding:0.75rem;background:var(--teal-xlight);border-radius:8px"><strong>Saved to:</strong> ${savedLocation}</p>` : '';
-  body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">✅</div><h3>Payment Successful!</h3><p>Your booking is confirmed. We\'ll contact you at ' + bookingData.customerEmail + ' within 24 hours.</p><p style="font-size:0.85rem;color:var(--slate-light);margin-top:0.5rem"><strong>Booking ID:</strong> ' + bookingId + '</p>' + locationText + '</div><div class="modal-actions"><button class="btn-confirm" onclick="closeModal()" style="flex:1">Done</button></div>';
+  const ordersText = ordersCount > 0 ? `<p style="font-size:0.8rem;color:var(--slate-light);margin-top:0.75rem;padding:0.75rem;background:var(--teal-xlight);border-radius:8px"><strong>${ordersCount} service date(s)</strong> scheduled</p>` : '';
+  body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">✅</div><h3>Payment Successful!</h3><p>Your booking is confirmed. We\'ll contact you at ' + bookingData.customerEmail + ' within 24 hours.</p><p style="font-size:0.85rem;color:var(--slate-light);margin-top:0.5rem"><strong>Booking ID:</strong> ' + bookingId + '</p>' + locationText + ordersText + '</div><div class="modal-actions"><button class="btn-confirm" onclick="closeModal()" style="flex:1">Done</button></div>';
 }
 
 document.getElementById('modal-overlay').addEventListener('click', function(e) {
