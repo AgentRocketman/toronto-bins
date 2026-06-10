@@ -786,12 +786,15 @@ function closeModal() {
 
 function confirmOrder() {
   const body = document.getElementById('modal-body');
+  const nameInput = document.getElementById('customer-name');
+  const emailInput = document.getElementById('customer-email');
+  const phoneInput = document.getElementById('customer-phone');
   
   // Gather booking data
   const bookingData = {
-    customerName: document.getElementById('customer-name').value || 'Guest',
-    customerEmail: document.getElementById('customer-email').value || 'noemail@example.com',
-    customerPhone: document.getElementById('customer-phone').value || '',
+    customerName: (nameInput && nameInput.value) || 'Guest',
+    customerEmail: (emailInput && emailInput.value) || 'noemail@example.com',
+    customerPhone: (phoneInput && phoneInput.value) || '',
     address: currentAddress,
     serviceType: serviceType,
     frequency: planType,
@@ -806,10 +809,16 @@ function confirmOrder() {
       '<button class="btn-confirm" id="pay-btn" onclick="processPayment(' + JSON.stringify(bookingData).replace(/'/g, "&#39;") + ')">Pay $' + totalVal.toFixed(2) + ' &#10003;</button>' +
     '</div>';
 
-  // Mount Stripe card element if not already mounted
-  if (typeof cardElement !== 'undefined' && cardElement) {
-    initStripeForm();
-  }
+  // Mount Stripe card element after DOM update
+  setTimeout(() => {
+    if (window.cardElement) {
+      try {
+        window.cardElement.mount('#card-element');
+      } catch (e) {
+        console.log('Card already mounted or not ready:', e);
+      }
+    }
+  }, 100);
 }
 
 function cancelPayment() {
@@ -818,18 +827,28 @@ function cancelPayment() {
 
 async function processPayment(bookingData) {
   const btn = document.getElementById('pay-btn');
+  if (!btn) return;
   btn.disabled = true;
   btn.textContent = 'Processing...';
 
   try {
-    const result = await window.processBookingPayment(bookingData);
+    if (typeof processBookingPayment === 'undefined') {
+      throw new Error('Payment function not loaded');
+    }
+    const result = await processBookingPayment(bookingData);
     if (result && result.success) {
       showPaymentSuccess(result.bookingId, bookingData);
+    } else {
+      throw new Error('Payment failed');
     }
   } catch (err) {
-    document.getElementById('card-errors').textContent = 'Payment processing failed. Please try again.';
+    const errorDiv = document.getElementById('card-errors');
+    if (errorDiv) {
+      errorDiv.textContent = 'Error: ' + (err.message || 'Payment processing failed');
+    }
     btn.disabled = false;
-    btn.textContent = 'Pay $' + bookingData.amount / 100 + ' ✓';
+    btn.textContent = 'Pay $' + (bookingData.amount / 100).toFixed(2) + ' &#10003;';
+    console.error('Payment error:', err);
   }
 }
 

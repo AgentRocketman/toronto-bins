@@ -5,22 +5,31 @@ const stripe = Stripe('pk_test_51SFgOXRoaqSc6FkpZuQmOv1ZMOqaAI2L6rkyusqya3XHNp7B
 const elements = stripe.elements();
 const cardElement = elements.create('card');
 
+// Export globally for access in main script
+window.cardElement = cardElement;
+
 let isPaymentProcessing = false;
 
 function initStripeForm() {
   const cardContainer = document.getElementById('card-element');
-  if (cardContainer) {
-    cardElement.mount('#card-element');
-    
-    // Handle card errors
-    cardElement.addEventListener('change', (event) => {
-      const displayError = document.getElementById('card-errors');
-      if (event.error) {
-        displayError.textContent = event.error.message;
-      } else {
-        displayError.textContent = '';
-      }
-    });
+  if (cardContainer && cardElement) {
+    try {
+      cardElement.mount('#card-element');
+      
+      // Handle card errors
+      cardElement.addEventListener('change', (event) => {
+        const displayError = document.getElementById('card-errors');
+        if (displayError) {
+          if (event.error) {
+            displayError.textContent = event.error.message;
+          } else {
+            displayError.textContent = '';
+          }
+        }
+      });
+    } catch (e) {
+      console.error('Error mounting card element:', e);
+    }
   }
 }
 
