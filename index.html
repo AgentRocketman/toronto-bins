@@ -874,6 +874,13 @@ function showPaymentSuccess(bookingId, bookingData, savedLocation, ordersCount) 
   const locationText = savedLocation ? `<p style="font-size:0.8rem;color:var(--slate-light);margin-top:0.75rem;padding:0.75rem;background:var(--teal-xlight);border-radius:8px"><strong>Saved to:</strong> ${savedLocation}</p>` : '';
   const ordersText = ordersCount > 0 ? `<p style="font-size:0.8rem;color:var(--slate-light);margin-top:0.75rem;padding:0.75rem;background:var(--teal-xlight);border-radius:8px"><strong>${ordersCount} service date(s)</strong> scheduled</p>` : '';
   body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">✅</div><h3>Payment Successful!</h3><p>Your booking is confirmed. We\'ll contact you at ' + bookingData.customerEmail + ' within 24 hours.</p><p style="font-size:0.85rem;color:var(--slate-light);margin-top:0.5rem"><strong>Booking ID:</strong> ' + bookingId + '</p>' + locationText + ordersText + '</div><div class="modal-actions"><button class="btn-confirm" onclick="closeModal()" style="flex:1">Done</button></div>';
+  
+  // Send confirmation emails (async, don't block)
+  if (typeof sendConfirmationEmail === 'function') {
+    sendConfirmationEmail(bookingData, bookingId).catch(err => {
+      console.warn('Email send failed (non-blocking):', err);
+    });
+  }
 }
 
 document.getElementById('modal-overlay').addEventListener('click', function(e) {
@@ -900,5 +907,6 @@ function formatDateShort(isoStr) {
 <!-- Custom scripts -->
 <script src="stripe-integration.js"></script>
 <script src="airtable-bookings.js"></script>
+<script src="email-service.js"></script>
 </body>
 </html>
