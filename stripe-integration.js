@@ -100,13 +100,13 @@ async function processBookingPayment(bookingData) {
     let bookingResult;
     let savedLocation = 'unknown';
     try {
-      // Try to save to GitHub
-      console.log('Attempting to save booking to GitHub...');
-      bookingResult = await saveBookingToGitHub(bookingData);
-      savedLocation = 'GitHub (bookings.csv)';
-      console.log('✅ Booking saved to GitHub:', bookingResult);
-    } catch (githubErr) {
-      console.warn('GitHub save failed, saving to localStorage instead:', githubErr);
+      // Try to save to Airtable
+      console.log('Attempting to save booking to Airtable...');
+      bookingResult = await saveBookingToAirtable(bookingData);
+      savedLocation = 'Airtable';
+      console.log('✅ Booking saved to Airtable:', bookingResult);
+    } catch (airtableErr) {
+      console.warn('Airtable save failed, saving to localStorage instead:', airtableErr);
       // Fall back to local storage
       bookingResult = saveBookingLocally(bookingData);
       savedLocation = 'Browser Storage (localStorage)';
