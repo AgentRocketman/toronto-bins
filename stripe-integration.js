@@ -99,8 +99,18 @@ function clearCardElement() {
 }
 
 // Initialize on page load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initStripeForm);
-} else {
+function initializeStripe() {
+  console.log('Initializing Stripe...');
+  if (typeof Stripe === 'undefined') {
+    console.error('Stripe SDK not loaded');
+    return;
+  }
+  console.log('Stripe SDK loaded successfully');
   initStripeForm();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeStripe);
+} else {
+  initializeStripe();
 }

@@ -777,7 +777,13 @@ function openCheckout() {
 }
 
 function proceedToPayment() {
-  confirmOrder();
+  console.log('Proceed to Payment clicked');
+  try {
+    confirmOrder();
+  } catch (e) {
+    console.error('Error in proceedToPayment:', e);
+    alert('Error: ' + e.message);
+  }
 }
 
 function closeModal() {
