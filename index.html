@@ -763,12 +763,21 @@ function openCheckout() {
     '<div class="modal-row"><span class="mr-label">Date(s)</span><span class="mr-value">' + datesHTML + '</span></div>' +
     itemsHTML +
     '<div class="modal-total"><span class="mt-label">' + (planType === 'recurring' ? 'Per event' : 'Total') + '</span><span class="mt-value">$' + totalVal.toFixed(2) + (planType === 'recurring' ? '/event' : '') + '</span></div>' +
+    '<div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #e2e8f0"><p style="font-size:0.85rem;font-weight:600;color:var(--slate-light);margin-bottom:0.8rem">Your Details</p>' +
+    '<input id="customer-name" type="text" placeholder="Full Name" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
+    '<input id="customer-email" type="email" placeholder="Email" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
+    '<input id="customer-phone" type="tel" placeholder="Phone (optional)" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
+    '</div>' +
     '<div class="modal-actions">' +
       '<button class="btn-back" onclick="closeModal()">&#8592; Back</button>' +
-      '<button class="btn-confirm" onclick="confirmOrder()">Confirm Order &#10003;</button>' +
+      '<button class="btn-confirm" onclick="proceedToPayment()">Proceed to Payment &#10003;</button>' +
     '</div>';
 
   overlay.classList.add('open');
+}
+
+function proceedToPayment() {
+  confirmOrder();
 }
 
 function closeModal() {
@@ -777,7 +786,56 @@ function closeModal() {
 
 function confirmOrder() {
   const body = document.getElementById('modal-body');
-  body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">&#127881;</div><h3>You\'re all set!</h3><p>Thanks! We\'ve received your request and will be in touch within 24 hours to confirm your service details.</p></div><div class="modal-actions"><button class="btn-confirm" onclick="closeModal()" style="flex:1">Close</button></div>';
+  
+  // Gather booking data
+  const bookingData = {
+    customerName: document.getElementById('customer-name').value || 'Guest',
+    customerEmail: document.getElementById('customer-email').value || 'noemail@example.com',
+    customerPhone: document.getElementById('customer-phone').value || '',
+    address: currentAddress,
+    serviceType: serviceType,
+    frequency: planType,
+    amount: Math.round(totalVal * 100) // Convert to cents
+  };
+
+  // Show Stripe card input
+  body.innerHTML = '<div style="margin-bottom:1.2rem"><label style="display:block;font-weight:600;margin-bottom:0.5rem;color:var(--slate)">Card Details</label><div id="card-element" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc"></div><div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem"></div></div>' +
+    '<div style="padding:12px;background:var(--teal-xlight);border-radius:8px;margin:1rem 0;font-size:0.85rem;color:var(--slate)"><strong>Test card:</strong> 4242 4242 4242 4242, any future date, any CVC</div>' +
+    '<div class="modal-actions">' +
+      '<button class="btn-back" onclick="cancelPayment()">&#8592; Cancel</button>' +
+      '<button class="btn-confirm" id="pay-btn" onclick="processPayment(' + JSON.stringify(bookingData).replace(/'/g, "&#39;") + ')">Pay $' + totalVal.toFixed(2) + ' &#10003;</button>' +
+    '</div>';
+
+  // Mount Stripe card element if not already mounted
+  if (typeof cardElement !== 'undefined' && cardElement) {
+    initStripeForm();
+  }
+}
+
+function cancelPayment() {
+  closeModal();
+}
+
+async function processPayment(bookingData) {
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  try {
+    const result = await window.processBookingPayment(bookingData);
+    if (result && result.success) {
+      showPaymentSuccess(result.bookingId, bookingData);
+    }
+  } catch (err) {
+    document.getElementById('card-errors').textContent = 'Payment processing failed. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Pay $' + bookingData.amount / 100 + ' ✓';
+  }
+}
+
+function showPaymentSuccess(bookingId, bookingData) {
+  const body = document.getElementById('modal-body');
+  body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">&#127881;</div><h3>Payment Received!</h3><p>Your booking has been confirmed. Confirmation details have been sent to ' + bookingData.customerEmail + '.</p><p style="font-size:0.85rem;color:var(--slate-light);margin-top:0.5rem">Booking ID: ' + bookingId + '</p></div><div class="modal-actions"><button class="btn-confirm" onclick="closeModal()" style="flex:1">Done</button></div>';
 }
 
 document.getElementById('modal-overlay').addEventListener('click', function(e) {
@@ -797,5 +855,17 @@ function formatDateShort(isoStr) {
   return d.toLocaleDateString('en-CA', { month:'short', day:'numeric' });
 }
 </script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-functions.js"></script>
+
+<!-- Stripe SDK -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<!-- Custom scripts -->
+<script src="firebase-config.js"></script>
+<script src="stripe-integration.js"></script>
 </body>
 </html>
