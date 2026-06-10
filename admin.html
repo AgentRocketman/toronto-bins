@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CurbIn Admin Dashboard</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --teal:#0d9488;--teal-dark:#0f766e;--teal-light:#ccfbf1;
+      --slate:#334155;--slate-light:#64748b;--slate-xlight:#f1f5f9;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.1);--shadow-md:0 4px 12px rgba(0,0,0,.08);
+      --radius:14px
+    }
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8fafc;color:var(--slate);line-height:1.6}
+    .container{max-width:1200px;margin:0 auto;padding:1.5rem}
+    nav{background:#fff;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center}
+    nav h1{font-size:1.4rem;color:var(--slate);margin:0}
+    .nav-right{display:flex;gap:1rem;align-items:center}
+    .btn{padding:10px 18px;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all .2s}
+    .btn-primary{background:var(--teal);color:#fff}
+    .btn-primary:hover{background:var(--teal-dark)}
+    .btn-secondary{background:#e2e8f0;color:var(--slate)}
+    .btn-secondary:hover{background:#cbd5e0}
+    .filters{background:#fff;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm);margin-bottom:2rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+    .filter-group{display:flex;flex-direction:column;gap:0.5rem}
+    .filter-group label{font-size:0.85rem;font-weight:600;color:var(--slate-light)}
+    .filter-group select, .filter-group input{padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+    .stat-card{background:#fff;padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow-sm)}
+    .stat-label{font-size:0.85rem;color:var(--slate-light);font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+    .stat-value{font-size:2.2rem;font-weight:900;color:var(--teal);margin-top:0.5rem}
+    .orders-table{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    thead{background:var(--slate-xlight);border-bottom:2px solid #e2e8f0}
+    th{padding:1rem;text-align:left;font-weight:700;color:var(--slate);font-size:0.9rem}
+    td{padding:1rem;border-bottom:1px solid #f1f5f9;font-size:0.9rem}
+    tbody tr:hover{background:#f8fafc}
+    .status-badge{display:inline-block;padding:4px 12px;border-radius:99px;font-size:0.8rem;font-weight:700}
+    .status-pending{background:#fef08a;color:#854d0e}
+    .status-completed{background:#bbf7d0;color:#065f46}
+    .status-cancelled{background:#fecaca;color:#7f1d1d}
+    .status-active{background:#c7d2fe;color:#312e81}
+    .date-badge{background:var(--teal-light);color:var(--teal-dark);padding:4px 12px;border-radius:6px;font-size:0.85rem;font-weight:600}
+    .actions{display:flex;gap:0.5rem}
+    .action-btn{padding:6px 12px;font-size:0.8rem;border:none;border-radius:6px;cursor:pointer;background:#e2e8f0;color:var(--slate);transition:all .2s}
+    .action-btn:hover{background:var(--teal);color:#fff}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center}
+    .modal.open{display:flex}
+    .modal-content{background:#fff;border-radius:var(--radius);padding:2rem;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+    .modal h2{margin-bottom:1rem;color:var(--slate)}
+    .modal p{color:var(--slate-light);margin-bottom:0.5rem}
+    .modal-actions{display:flex;gap:1rem;margin-top:1.5rem;justify-content:flex-end}
+    .loading{text-align:center;padding:2rem;color:var(--slate-light)}
+    .spinner{display:inline-block;width:24px;height:24px;border:3px solid #e2e8f0;border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .empty{text-align:center;padding:3rem 1.5rem;color:var(--slate-light)}
+  </style>
+</head>
+<body>
+
+<nav>
+  <h1>🏢 CurbIn Admin</h1>
+  <div class="nav-right">
+    <button class="btn btn-secondary" onclick="refreshData()">🔄 Refresh</button>
+    <button class="btn btn-primary" onclick="exportData()">📥 Export</button>
+  </div>
+</nav>
+
+<div class="container">
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filter-group">
+      <label for="status-filter">Status</label>
+      <select id="status-filter" onchange="applyFilters()">
+        <option value="">All</option>
+        <option value="Pending">Pending</option>
+        <option value="Completed">Completed</option>
+        <option value="Active">Active (Recurring)</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="type-filter">Type</label>
+      <select id="type-filter" onchange="applyFilters()">
+        <option value="">All</option>
+        <option value="Ad Hoc">Ad Hoc</option>
+        <option value="Recurring">Recurring</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="date-filter">From Date</label>
+      <input type="date" id="date-filter" onchange="applyFilters()">
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-value" id="total-revenue">$0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending Orders</div>
+      <div class="stat-value" id="pending-count">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active Subscriptions</div>
+      <div class="stat-value" id="active-count">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Completed This Month</div>
+      <div class="stat-value" id="completed-count">0</div>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div class="orders-table">
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading orders...</p>
+    </div>
+    <table id="orders-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Address</th>
+          <th>Service Date</th>
+          <th>Type</th>
+          <th>Service</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="orders-body"></tbody>
+    </table>
+    <div id="empty" class="empty" style="display:none">
+      No orders found
+    </div>
+  </div>
+</div>
+
+<!-- Status Modal -->
+<div id="status-modal" class="modal">
+  <div class="modal-content">
+    <h2>Update Order Status</h2>
+    <p id="modal-order-id" style="font-weight:600"></p>
+    <div class="filter-group" style="margin-top:1.5rem">
+      <label for="modal-status">New Status</label>
+      <select id="modal-status">
+        <option value="Pending">Pending</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="updateOrderStatus()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="admin-dashboard.js"></script>
+</body>
+</html>
