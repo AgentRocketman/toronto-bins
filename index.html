@@ -757,6 +757,17 @@ function openCheckout() {
     itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">$' + totalVal.toFixed(2) + '/event</span></div>';
   }
 
+  // Store booking data in global scope for payment processing
+  window.currentBooking = {
+    customerName: '',
+    customerEmail: '',
+    customerPhone: '',
+    address: currentAddress,
+    serviceType: serviceType,
+    frequency: planType,
+    amount: Math.round(totalVal * 100)
+  };
+
   body.innerHTML = '<div class="modal-row"><span class="mr-label">Address</span><span class="mr-value">' + (currentAddress || '') + '</span></div>' +
     '<div class="modal-row"><span class="mr-label">Service</span><span class="mr-value">' + serviceLabel + '</span></div>' +
     '<div class="modal-row"><span class="mr-label">Plan</span><span class="mr-value">' + (planType === 'adhoc' ? 'Ad Hoc' : 'Recurring') + '</span></div>' +
@@ -770,109 +781,97 @@ function openCheckout() {
     '</div>' +
     '<div class="modal-actions">' +
       '<button class="btn-back" onclick="closeModal()">&#8592; Back</button>' +
-      '<button class="btn-confirm" id="proceed-btn">Proceed to Payment &#10003;</button>' +
+      '<button class="btn-confirm" onclick="goToPayment()">Proceed to Payment &#10003;</button>' +
     '</div>';
-
-  // Wire up button after DOM update
-  setTimeout(() => {
-    const btn = document.getElementById('proceed-btn');
-    if (btn) {
-      btn.onclick = proceedToPayment;
-      console.log('Proceed button wired');
-    } else {
-      console.error('Proceed button not found in DOM');
-    }
-  }, 50);
 
   overlay.classList.add('open');
 }
 
-function proceedToPayment() {
-  console.log('Proceed to Payment clicked');
-  alert('Button clicked - testing...');
-  try {
-    confirmOrder();
-  } catch (e) {
-    console.error('Error in proceedToPayment:', e);
-    alert('Error: ' + e.message);
+function goToPayment() {
+  const name = document.getElementById('customer-name')?.value || '';
+  const email = document.getElementById('customer-email')?.value || '';
+  const phone = document.getElementById('customer-phone')?.value || '';
+
+  if (!name || !email) {
+    alert('Please enter your name and email');
+    return;
   }
+
+  // Update booking data
+  if (window.currentBooking) {
+    window.currentBooking.customerName = name;
+    window.currentBooking.customerEmail = email;
+    window.currentBooking.customerPhone = phone;
+  }
+
+  // Show payment form
+  showStripeForm();
 }
 
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
 }
 
-function confirmOrder() {
+function showStripeForm() {
   const body = document.getElementById('modal-body');
-  const nameInput = document.getElementById('customer-name');
-  const emailInput = document.getElementById('customer-email');
-  const phoneInput = document.getElementById('customer-phone');
-  
-  // Gather booking data
-  const bookingData = {
-    customerName: (nameInput && nameInput.value) || 'Guest',
-    customerEmail: (emailInput && emailInput.value) || 'noemail@example.com',
-    customerPhone: (phoneInput && phoneInput.value) || '',
-    address: currentAddress,
-    serviceType: serviceType,
-    frequency: planType,
-    amount: Math.round(totalVal * 100) // Convert to cents
-  };
+  const booking = window.currentBooking || {};
 
-  // Show Stripe card input
-  body.innerHTML = '<div style="margin-bottom:1.2rem"><label style="display:block;font-weight:600;margin-bottom:0.5rem;color:var(--slate)">Card Details</label><div id="card-element" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc"></div><div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem"></div></div>' +
-    '<div style="padding:12px;background:var(--teal-xlight);border-radius:8px;margin:1rem 0;font-size:0.85rem;color:var(--slate)"><strong>Test card:</strong> 4242 4242 4242 4242, any future date, any CVC</div>' +
+  body.innerHTML = '<div style="margin-bottom:1.2rem"><label style="display:block;font-weight:600;margin-bottom:0.5rem;color:var(--slate)">Card Details</label><div id="card-element" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:50px"></div><div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem"></div></div>' +
+    '<div style="padding:12px;background:var(--teal-xlight);border-radius:8px;margin:1rem 0;font-size:0.85rem;color:var(--slate)"><strong>Test card:</strong> 4242 4242 4242 4242 · Exp: any future · CVC: any 3 digits</div>' +
     '<div class="modal-actions">' +
-      '<button class="btn-back" onclick="cancelPayment()">&#8592; Cancel</button>' +
-      '<button class="btn-confirm" id="pay-btn" onclick="processPayment(' + JSON.stringify(bookingData).replace(/'/g, "&#39;") + ')">Pay $' + totalVal.toFixed(2) + ' &#10003;</button>' +
+      '<button class="btn-back" onclick="closeModal()">&#8592; Cancel</button>' +
+      '<button class="btn-confirm" id="pay-btn" onclick="processPayment()">Pay $' + (booking.amount / 100).toFixed(2) + ' &#10003;</button>' +
     '</div>';
 
-  // Mount Stripe card element after DOM update
+  // Mount Stripe card element
   setTimeout(() => {
     if (window.cardElement) {
       try {
+        // Try to unmount first if already mounted
+        try { window.cardElement.unmount(); } catch (e) {}
         window.cardElement.mount('#card-element');
+        console.log('Card mounted');
       } catch (e) {
-        console.log('Card already mounted or not ready:', e);
+        console.log('Card mount error:', e);
       }
     }
   }, 100);
 }
 
-function cancelPayment() {
-  closeModal();
-}
-
-async function processPayment(bookingData) {
+async function processPayment() {
   const btn = document.getElementById('pay-btn');
   if (!btn) return;
+
+  const booking = window.currentBooking;
+  if (!booking) {
+    alert('Booking data missing');
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Processing...';
 
   try {
-    if (typeof processBookingPayment === 'undefined') {
-      throw new Error('Payment function not loaded');
-    }
-    const result = await processBookingPayment(bookingData);
+    const result = await processBookingPayment(booking);
     if (result && result.success) {
-      showPaymentSuccess(result.bookingId, bookingData);
+      showPaymentSuccess(result.bookingId, booking);
     } else {
-      throw new Error('Payment failed');
+      throw new Error(result?.error || 'Payment failed');
     }
   } catch (err) {
     const errorDiv = document.getElementById('card-errors');
     if (errorDiv) {
-      errorDiv.textContent = 'Error: ' + (err.message || 'Payment processing failed');
+      errorDiv.textContent = 'Error: ' + (err.message || 'Payment failed');
     }
     btn.disabled = false;
-    btn.textContent = 'Pay $' + (bookingData.amount / 100).toFixed(2) + ' &#10003;';
+    btn.textContent = 'Try Again';
     console.error('Payment error:', err);
   }
 }
 
 function showPaymentSuccess(bookingId, bookingData) {
   const body = document.getElementById('modal-body');
-  body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">&#127881;</div><h3>Payment Received!</h3><p>Your booking has been confirmed. Confirmation details have been sent to ' + bookingData.customerEmail + '.</p><p style="font-size:0.85rem;color:var(--slate-light);margin-top:0.5rem">Booking ID: ' + bookingId + '</p></div><div class="modal-actions"><button class="btn-confirm" onclick="closeModal()" style="flex:1">Done</button></div>';
+  body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">✅</div><h3>Payment Successful!</h3><p>Your booking is confirmed. We\'ll contact you at ' + bookingData.customerEmail + ' within 24 hours.</p><p style="font-size:0.85rem;color:var(--slate-light);margin-top:0.5rem"><strong>Booking ID:</strong> ' + bookingId + '</p></div><div class="modal-actions"><button class="btn-confirm" onclick="closeModal()" style="flex:1">Done</button></div>';
 }
 
 document.getElementById('modal-overlay').addEventListener('click', function(e) {
