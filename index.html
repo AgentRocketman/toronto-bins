@@ -770,14 +770,26 @@ function openCheckout() {
     '</div>' +
     '<div class="modal-actions">' +
       '<button class="btn-back" onclick="closeModal()">&#8592; Back</button>' +
-      '<button class="btn-confirm" onclick="proceedToPayment()">Proceed to Payment &#10003;</button>' +
+      '<button class="btn-confirm" id="proceed-btn">Proceed to Payment &#10003;</button>' +
     '</div>';
+
+  // Wire up button after DOM update
+  setTimeout(() => {
+    const btn = document.getElementById('proceed-btn');
+    if (btn) {
+      btn.onclick = proceedToPayment;
+      console.log('Proceed button wired');
+    } else {
+      console.error('Proceed button not found in DOM');
+    }
+  }, 50);
 
   overlay.classList.add('open');
 }
 
 function proceedToPayment() {
   console.log('Proceed to Payment clicked');
+  alert('Button clicked - testing...');
   try {
     confirmOrder();
   } catch (e) {
