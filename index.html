@@ -28,15 +28,24 @@
     @media(max-width:640px){.nav-links li:not(:last-child){display:none}}
 
     /* HERO */
-    .hero{background:linear-gradient(135deg,#0f766e 0%,#0d9488 50%,#14b8a6 100%);padding:5rem 1.5rem 6rem;text-align:center;position:relative;overflow:hidden}
-    .hero-inner{position:relative;max-width:680px;margin:0 auto}
+    .hero{background:linear-gradient(135deg,#0a5c56 0%,#0d9488 45%,#14b8a6 100%);padding:5.5rem 1.5rem 7rem;text-align:center;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.04;background-image:radial-gradient(circle,#fff 1px,transparent 1px);background-size:32px 32px}
+    .hero-inner{position:relative;max-width:740px;margin:0 auto}
     .hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.75rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:1.4rem}
-    .hero h1{font-size:clamp(2.4rem,6vw,3.8rem);font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:1rem}
+    .hero h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:.9rem}
     .hero h1 em{color:#a7f3d0;font-style:normal}
-    .hero-sub{font-size:clamp(1rem,2.5vw,1.15rem);color:rgba(255,255,255,.88);max-width:480px;margin:0 auto 2.5rem}
-    .btn-hero{display:inline-block;background:#fff;color:var(--teal-dark);font-weight:800;font-size:1.05rem;padding:14px 38px;border-radius:99px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:transform .2s,box-shadow .2s}
-    .btn-hero:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
-    .hero-note{margin-top:1.2rem;color:rgba(255,255,255,.6);font-size:.82rem}
+    .hero-sub{font-size:clamp(.95rem,2.5vw,1.1rem);color:rgba(255,255,255,.82);max-width:520px;margin:0 auto 2.8rem}
+    .hero-note{margin-top:1.1rem;color:rgba(255,255,255,.55);font-size:.8rem}
+    /* HERO SEARCH */
+    .hero-search-wrap{max-width:600px;margin:0 auto;position:relative}
+    .hero-search-box{background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.28);position:relative}
+    .hero-search-inner{display:flex;align-items:center;padding:8px 8px 8px 18px;gap:10px}
+    .hero-search-icon{color:#94a3b8;flex-shrink:0;display:flex;align-items:center}
+    .hero-search-btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-weight:800;font-size:.92rem;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s,transform .15s}
+    .hero-search-btn:hover{background:var(--teal-dark);transform:translateY(-1px)}
+    #hero-loading{display:none;margin-top:1.2rem;color:rgba(255,255,255,.9);font-size:.92rem;font-weight:500}
+    .spinner-sm{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+    #hero-error{display:none;margin-top:1rem;padding:12px 18px;background:rgba(239,68,68,.15);color:#fde8e8;border:1px solid rgba(239,68,68,.3);border-radius:12px;font-size:.9rem;text-align:center}
 
     /* SECTIONS */
     section{padding:5rem 1.5rem}
@@ -71,35 +80,29 @@
     .pricing-note{margin-top:1.8rem;text-align:center;font-size:.82rem;color:var(--slate-light)}
     .pricing-note strong{color:var(--slate)}
 
-    /* TOOL */
-    #tool{background:linear-gradient(180deg,#f8fafc 0%,#fff 100%)}
-    .tool-box{background:#fff;border-radius:20px;box-shadow:var(--shadow-lg);border:1px solid #e2e8f0;overflow:hidden;margin-top:2.5rem}
-    .tool-header{background:linear-gradient(135deg,var(--teal-dark),var(--teal));padding:1.4rem 2rem;color:#fff}
-    .tool-header h3{font-size:1.05rem;font-weight:800}
-    .tool-header p{font-size:.85rem;opacity:.8;margin-top:2px}
-    .tool-body{padding:2rem}
+    /* BOOKING SECTION */
+    #booking-section{overflow:hidden;max-height:0;opacity:0;transition:max-height 1.5s cubic-bezier(.4,0,.2,1),opacity .7s ease .15s;background:linear-gradient(180deg,#ecfdf5 0%,#fff 120px)}
+    #booking-section.revealed{max-height:6000px;opacity:1}
+    .booking-inner{max-width:860px;margin:0 auto;padding:5rem 1.5rem}
+    .address-confirmed{background:linear-gradient(135deg,var(--teal-dark),var(--teal));border-radius:18px;padding:1.5rem 1.8rem;color:#fff;margin-bottom:2.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 6px 24px rgba(13,148,136,.3)}
+    .ac-icon{font-size:2rem;flex-shrink:0}
+    .ac-text{flex:1;min-width:0}
+    .ac-address{font-size:1.05rem;font-weight:800;margin-bottom:2px}
+    .ac-day{font-size:.88rem;opacity:.85}
+    .ac-change{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.78rem;font-weight:700;padding:7px 15px;border-radius:99px;cursor:pointer;transition:background .15s;white-space:nowrap;flex-shrink:0}
+    .ac-change:hover{background:rgba(255,255,255,.3)}
 
-    /* Search */
-    .search-container{position:relative}
-    #address{width:100%;padding:14px 48px 14px 18px;font-size:1rem;border:2px solid #cbd5e0;border-radius:12px;outline:none;transition:border-color .2s,box-shadow .2s;background:#fff;color:var(--slate)}
-    #address:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.15)}
-    .search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#a0aec0;pointer-events:none}
-    .suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:var(--shadow-lg);z-index:100;display:none;max-height:280px;overflow-y:auto}
+    /* Search autocomplete in hero */
+    #address{flex:1;border:none;outline:none;font-size:1rem;color:var(--slate);background:transparent;padding:11px 0;min-width:0}
+    #address::placeholder{color:#94a3b8}
+    .suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:300;display:none;max-height:280px;overflow-y:auto}
     .suggestions.show{display:block}
-    .suggestion-item{padding:11px 16px;cursor:pointer;font-size:.93rem;color:#2d3748;border-bottom:1px solid #f7fafc;transition:background .12s}
+    .suggestion-item{padding:12px 18px;cursor:pointer;font-size:.93rem;color:#2d3748;border-bottom:1px solid #f7fafc;transition:background .12s}
     .suggestion-item:last-child{border-bottom:none}
     .suggestion-item:hover,.suggestion-item.active{background:var(--teal-xlight);color:var(--teal-dark)}
-
-    #loading{display:none;text-align:center;padding:2rem;color:var(--slate-light)}
-    .spinner{display:inline-block;width:28px;height:28px;border:3px solid #e2e8f0;border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:8px}
     @keyframes spin{to{transform:rotate(360deg)}}
-    #error{display:none;margin-top:1rem;padding:14px 18px;background:#fff5f5;color:#c53030;border:1px solid #feb2b2;border-radius:10px;font-size:.9rem}
 
-    /* Results */
-    #results{display:none;margin-top:1.5rem}
-    .result-address{font-size:1.05rem;font-weight:700;color:#0f172a}
-    .result-sched{font-size:.85rem;color:var(--slate-light);margin-top:2px;margin-bottom:1.4rem}
-    .result-sched strong{color:var(--teal-dark)}
+    /* Results placeholder (unused, kept for compat) */
 
     .next-pickup{background:linear-gradient(135deg,#f0fdf9,#e6fffa);border:1px solid #b2f5ea;border-radius:var(--radius);padding:1.2rem 1.5rem;margin-bottom:1.4rem}
     .next-pickup-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--teal-dark);margin-bottom:5px}
@@ -126,8 +129,8 @@
     .legend-item{display:flex;align-items:center;gap:5px}
     .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
-    /* SERVICE SECTION */
-    #service-section{display:none;margin-top:2rem}
+    /* SERVICE SECTION (in booking panel) */
+    #service-section{margin-top:2rem}
     .divider{border:none;border-top:2px solid #e2e8f0;margin:2rem 0 1.5rem}
     .subsection-title{font-size:1.08rem;font-weight:800;color:#0f172a;margin-bottom:1.1rem}
     .toggle-group{display:flex;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;width:fit-content}
@@ -146,10 +149,11 @@
     .date-card{border:2px solid #e2e8f0;border-radius:12px;padding:10px 14px;cursor:pointer;text-align:center;transition:all .15s;min-width:90px;background:#fff}
     .date-card:hover{border-color:var(--teal);background:var(--teal-xlight)}
     .date-card.selected{border-color:var(--teal);background:var(--teal);color:#fff}
-    .dc-month{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.65}
-    .dc-day{font-size:1.05rem;font-weight:900;line-height:1.2}
-    .dc-bins{font-size:.6rem;margin-top:3px;opacity:.7;line-height:1.3}
-    .date-card.selected .dc-bins{opacity:.9}
+    .dc-month{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
+    .dc-day{font-size:1.05rem;font-weight:900;line-height:1.2;margin:2px 0}
+    .dc-weekday{font-size:.68rem;opacity:.6;margin-bottom:6px}
+    .dc-dots{display:flex;justify-content:center;gap:3px;flex-wrap:wrap;min-height:10px}
+    .dc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
     /* Recurring */
     #recurring-info{display:none;margin-top:1.5rem}
@@ -166,12 +170,12 @@
     .total-item{display:flex;justify-content:space-between;font-size:.88rem;color:var(--slate)}
     .total-hr{border:none;border-top:1px solid #e2e8f0;margin:10px 0}
     .total-final{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:900;color:#0f172a}
-    .btn-checkout{display:block;width:100%;margin-top:1rem;background:var(--teal);color:#fff;font-size:1rem;font-weight:800;padding:14px;border-radius:12px;border:none;cursor:pointer;transition:background .2s,transform .15s}
-    .btn-checkout:hover{background:var(--teal-dark);transform:translateY(-1px)}
-    .btn-checkout:disabled{background:#cbd5e0;cursor:not-allowed;transform:none}
+    .btn-checkout{display:block;width:100%;margin-top:1rem;background:linear-gradient(135deg,var(--teal-dark),var(--teal));color:#fff;font-size:1.02rem;font-weight:800;padding:16px;border-radius:14px;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 20px rgba(13,148,136,.3)}
+    .btn-checkout:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(13,148,136,.4)}
+    .btn-checkout:disabled{background:#cbd5e0;cursor:not-allowed;transform:none;box-shadow:none}
 
     /* MODAL */
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:500;align-items:center;justify-content:center;padding:1rem}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
     .modal-overlay.open{display:flex}
     .modal{background:#fff;border-radius:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.25);animation:slideUp .22s ease}
     @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -203,10 +207,14 @@
     .footer-note a{color:var(--slate-light)}
 
     @media(max-width:600px){
+      .hero{padding:4rem 1.2rem 5.5rem}
       .hero h1{letter-spacing:-1px}
-      .tool-body{padding:1.2rem}
+      .hero-search-inner{flex-wrap:wrap;padding:10px}
+      .hero-search-btn{width:100%;text-align:center;border-radius:10px}
+      .booking-inner{padding:3rem 1.2rem}
       .week-row{grid-template-columns:1fr repeat(5,34px);font-size:.76rem}
       .modal-body{padding:1.2rem}
+      .options-row{gap:1rem}
     }
   </style>
 </head>
@@ -219,19 +227,32 @@
     <ul class="nav-links">
       <li><a href="#how">How It Works</a></li>
       <li><a href="#pricing">Pricing</a></li>
-      <li><a href="#tool" class="nav-cta">Get Started</a></li>
+      <li><a href="#hero-anchor" class="nav-cta">Get Started</a></li>
     </ul>
   </div>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
+<!-- HERO — address input IS the CTA -->
+<div class="hero" id="hero-anchor">
   <div class="hero-inner">
     <div class="hero-badge">&#128465; Toronto&rsquo;s Bin Service</div>
     <h1>Never miss<br><em>collection day</em><br>again</h1>
-    <p class="hero-sub">We roll your bins to the curb and back &mdash; so you don&rsquo;t have to. Set it once, forget it forever.</p>
-    <a href="#tool" class="btn-hero">Get Started &rarr;</a>
-    <p class="hero-note">No commitment &middot; Cancel anytime &middot; Toronto homes only</p>
+    <p class="hero-sub">We roll your bins to the curb and back &mdash; so you don&rsquo;t have to.</p>
+    <div class="hero-search-wrap">
+      <div class="hero-search-box">
+        <div class="hero-search-inner">
+          <span class="hero-search-icon">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </span>
+          <input type="text" id="address" placeholder="Start typing your Toronto address&hellip;" autocomplete="off" />
+          <button class="hero-search-btn" id="hero-search-btn">Check Schedule &rarr;</button>
+        </div>
+        <div class="suggestions" id="suggestions"></div>
+      </div>
+      <p class="hero-note">&#128205; Serving Toronto residential addresses &middot; No commitment required</p>
+      <div id="hero-loading"><span class="spinner-sm"></span>Looking up your schedule&hellip;</div>
+      <div id="hero-error"></div>
+    </div>
   </div>
 </div>
 
@@ -301,115 +322,91 @@
   </div>
 </section>
 
-<!-- TOOL -->
-<section id="tool">
-  <div class="section-inner">
-    <div class="section-eyebrow">Find Your Schedule</div>
-    <h2 class="section-title">Book your service</h2>
-    <p class="section-desc">Enter your Toronto address to look up your collection schedule, then pick your service and dates.</p>
-    <div class="tool-box">
-      <div class="tool-header">
-        <h3>&#128205; Address Lookup</h3>
-        <p>Powered by City of Toronto Geocoder</p>
+<!-- BOOKING SECTION — hidden until address confirmed -->
+<div id="booking-section">
+  <div class="booking-inner">
+    <div class="address-confirmed" id="address-confirmed">
+      <div class="ac-icon">&#128205;</div>
+      <div class="ac-text">
+        <div class="ac-address" id="ac-address-text"></div>
+        <div class="ac-day" id="ac-day-text"></div>
       </div>
-      <div class="tool-body">
-        <div class="search-container">
-          <input type="text" id="address" placeholder="Start typing your Toronto address&hellip;" autocomplete="off" />
-          <div class="search-icon">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          </div>
-          <div class="suggestions" id="suggestions"></div>
+      <button class="ac-change" onclick="resetSearch()">&#9998; Change Address</button>
+    </div>
+
+    <div class="next-pickup">
+      <div class="next-pickup-label">&#128197; Next Collection</div>
+      <div class="next-date" id="next-date"></div>
+      <div class="bin-tags" id="next-bins"></div>
+    </div>
+
+    <div class="calendar-section">
+      <h4>Upcoming Schedule</h4>
+      <div class="week-row header">
+        <div>Week of</div>
+        <div class="icon-col" title="Green Bin">&#x1F7E2;</div>
+        <div class="icon-col" title="Garbage">&#x26AB;</div>
+        <div class="icon-col" title="Recycling">&#x1F535;</div>
+        <div class="icon-col" title="Yard Waste">&#x1F7E1;</div>
+        <div class="icon-col" title="Christmas Tree">&#x1F384;</div>
+      </div>
+      <div id="schedule-rows"></div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#38a169"></span> Green Bin</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#4a5568"></span> Garbage</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#3182ce"></span> Recycling</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#d69e2e"></span> Yard Waste</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#e53e3e"></span> Christmas Tree</div>
+    </div>
+
+    <hr class="divider">
+    <div class="service-title">&#9881;&#65039; Choose Your Service</div>
+
+    <div class="options-row">
+      <div class="options-col">
+        <div class="options-label">Service Type</div>
+        <div class="toggle-group" id="service-toggle">
+          <button class="toggle-btn active" data-val="rollout">Roll Out</button>
+          <button class="toggle-btn" data-val="rollin">Roll In</button>
+          <button class="toggle-btn" data-val="both">Both</button>
         </div>
-
-        <div id="loading"><div class="spinner"></div><p>Looking up your schedule&hellip;</p></div>
-        <div id="error"></div>
-
-        <div id="results">
-          <div class="result-address" id="result-address"></div>
-          <div class="result-sched" id="result-sched"></div>
-
-          <div class="next-pickup">
-            <div class="next-pickup-label">&#128197; Next Collection</div>
-            <div class="next-date" id="next-date"></div>
-            <div class="bin-tags" id="next-bins"></div>
-          </div>
-
-          <div class="calendar-section">
-            <h4>Upcoming Schedule</h4>
-            <div class="week-row header">
-              <div>Week of</div>
-              <div class="icon-col" title="Green Bin">&#x1F7E2;</div>
-              <div class="icon-col" title="Garbage">&#x26AB;</div>
-              <div class="icon-col" title="Recycling">&#x1F535;</div>
-              <div class="icon-col" title="Yard Waste">&#x1F7E1;</div>
-              <div class="icon-col" title="Christmas Tree">&#x1F384;</div>
-            </div>
-            <div id="schedule-rows"></div>
-          </div>
-
-          <div class="legend">
-            <div class="legend-item">              <span class="legend-dot" style="background:#38a169"></span> Green Bin</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#4a5568"></span> Garbage</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#3182ce"></span> Recycling</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#d69e2e"></span> Yard Waste</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#e53e3e"></span> Christmas Tree</div>
-          </div>
-
-          <!-- SERVICE SELECTION -->
-          <div id="service-section">
-            <hr class="divider">
-            <div class="subsection-title">&#9881;&#65039; Choose Your Service</div>
-
-            <div class="options-row">
-              <div class="options-col">
-                <div class="options-label">Service Type</div>
-                <div class="toggle-group" id="service-toggle">
-                  <button class="toggle-btn active" data-val="rollout">Roll Out</button>
-                  <button class="toggle-btn" data-val="rollin">Roll In</button>
-                  <button class="toggle-btn" data-val="both">Both</button>
-                </div>
-              </div>
-              <div class="options-col">
-                <div class="options-label">Plan</div>
-                <div class="toggle-group" id="plan-toggle">
-                  <button class="toggle-btn active" data-val="adhoc">Ad Hoc</button>
-                  <button class="toggle-btn" data-val="recurring">Recurring</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- AD HOC DATE PICKER -->
-            <div id="adhoc-dates">
-              <h4>Select collection dates (tap to toggle):</h4>
-              <div class="date-cards" id="date-cards"></div>
-            </div>
-
-            <!-- RECURRING INFO -->
-            <div id="recurring-info">
-              <div class="recurring-box">
-                <h4 id="recurring-title"></h4>
-                <p id="recurring-desc"></p>
-                <div class="recurring-monthly" id="recurring-monthly"></div>
-              </div>
-            </div>
-
-            <!-- RUNNING TOTAL -->
-            <div id="total-wrap">
-              <hr class="divider">
-              <div class="total-box">
-                <h4>Your Order</h4>
-                <div class="total-items" id="total-items"></div>
-                <hr class="total-hr">
-                <div class="total-final"><span>Total</span><span id="total-amount">$0.00</span></div>
-              </div>
-              <button class="btn-checkout" id="btn-checkout">Go to Checkout &rarr;</button>
-            </div>
-          </div>
+      </div>
+      <div class="options-col">
+        <div class="options-label">Plan</div>
+        <div class="toggle-group" id="plan-toggle">
+          <button class="toggle-btn active" data-val="adhoc">Ad Hoc</button>
+          <button class="toggle-btn" data-val="recurring">Recurring</button>
         </div>
       </div>
     </div>
+
+    <div id="adhoc-dates">
+      <h4>Select collection dates (tap to toggle):</h4>
+      <div class="date-cards" id="date-cards"></div>
+    </div>
+
+    <div id="recurring-info">
+      <div class="recurring-box">
+        <h4 id="recurring-title"></h4>
+        <p id="recurring-desc"></p>
+        <div class="recurring-monthly" id="recurring-monthly"></div>
+      </div>
+    </div>
+
+    <div id="total-wrap">
+      <hr class="divider">
+      <div class="total-box">
+        <div class="total-box-title">Your Order</div>
+        <div class="total-items" id="total-items"></div>
+        <hr class="total-hr">
+        <div class="total-final"><span>Total</span><span id="total-amount">$0.00</span></div>
+      </div>
+      <button class="btn-checkout" id="btn-checkout">Go to Checkout &rarr;</button>
+    </div>
   </div>
-</section>
+</div>
 
 <!-- CHECKOUT MODAL -->
 <div class="modal-overlay" id="modal-overlay">
@@ -464,9 +461,6 @@ const PRICE_RECURRING = 5.95;
 // ===== DOM refs =====
 const addressInput = document.getElementById('address');
 const suggestionsDiv = document.getElementById('suggestions');
-const loadingDiv = document.getElementById('loading');
-const errorDiv = document.getElementById('error');
-const resultsDiv = document.getElementById('results');
 let selectedIndex = -1;
 let debounceTimer = null;
 
@@ -487,7 +481,12 @@ addressInput.addEventListener('keydown', function(e) {
   else if (e.key === 'Escape') { hideSuggestions(); }
 });
 
-document.addEventListener('click', function(e) { if (!e.target.closest('.search-container')) hideSuggestions(); });
+document.getElementById('hero-search-btn').addEventListener('click', function() {
+  const val = addressInput.value.trim();
+  if (val.length >= 3) fetchSuggestions(val);
+});
+
+document.addEventListener('click', function(e) { if (!e.target.closest('.hero-search-wrap')) hideSuggestions(); });
 
 function highlightItem(items) { items.forEach((item, i) => item.classList.toggle('active', i === selectedIndex)); }
 function hideSuggestions() { suggestionsDiv.classList.remove('show'); suggestionsDiv.innerHTML = ''; selectedIndex = -1; }
@@ -512,10 +511,8 @@ async function fetchSuggestions(query) {
 async function selectAddress(keyString, displayAddress) {
   hideSuggestions();
   addressInput.value = displayAddress;
-  errorDiv.style.display = 'none';
-  resultsDiv.style.display = 'none';
-  document.getElementById('service-section').style.display = 'none';
-  loadingDiv.style.display = 'block';
+  showHeroError('');
+  showHeroLoading(true);
   selectedDates.clear();
 
   try {
@@ -526,41 +523,47 @@ async function selectAddress(keyString, displayAddress) {
     const areas = row.AREACURSOR1?.array || [];
     const resw = areas.find(a => a.AREA_TYPE === 'RESW');
     if (!resw || resw.AREA_NAME === 'No Collection') {
-      showError('This address does not have curbside waste collection. It may be a condo or apartment with private collection.');
+      showHeroError('This address does not have curbside waste collection. It may be a condo or apartment with private collection.');
       return;
     }
     const calendarName = resw.AREA_NAME.replace(/\s/g, '');
     const fullAddress = row.ADDRESS_FULL || displayAddress;
     if (!CSV_DATA[calendarName]) {
-      showError('Schedule "' + calendarName + '" not found in data.');
+      showHeroError('Schedule "' + calendarName + '" not found in data.');
       return;
     }
     currentCalendarName = calendarName;
     currentAddress = fullAddress;
     currentSchedule = CSV_DATA[calendarName];
-    displayResults(fullAddress, calendarName, currentSchedule);
+    revealBooking(fullAddress, calendarName, currentSchedule);
   } catch(e) {
-    showError('Could not look up this address. Please try another one.');
+    showHeroError('Could not look up this address. Please try another one.');
     console.error(e);
   } finally {
-    loadingDiv.style.display = 'none';
+    showHeroLoading(false);
   }
 }
 
-function showError(msg) {
-  loadingDiv.style.display = 'none';
-  errorDiv.textContent = msg;
-  errorDiv.style.display = 'block';
-  resultsDiv.style.display = 'none';
+function showHeroLoading(show) { document.getElementById('hero-loading').style.display = show ? 'block' : 'none'; }
+function showHeroError(msg) {
+  const el = document.getElementById('hero-error');
+  if (msg) { el.textContent = msg; el.style.display = 'block'; } else { el.style.display = 'none'; }
 }
 
-// ===== Display schedule =====
-function displayResults(address, calendarName, schedule) {
-  document.getElementById('result-address').textContent = address;
+function resetSearch() {
+  document.getElementById('booking-section').classList.remove('revealed');
+  addressInput.value = '';
+  currentSchedule = null; currentCalendarName = null; currentAddress = null; selectedDates.clear();
+  document.getElementById('hero-anchor').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===== Reveal booking section =====
+function revealBooking(address, calendarName, schedule) {
+  document.getElementById('ac-address-text').textContent = address;
   const match = calendarName.match(/^([A-Za-z]+?)(\d+)$/);
   const dayName = match ? match[1] : calendarName;
   const weekNum = match ? match[2] : '';
-  document.getElementById('result-sched').innerHTML = 'Collection day: <strong>' + dayName + '</strong> &middot; Schedule: <strong>Week ' + weekNum + '</strong>';
+  document.getElementById('ac-day-text').textContent = 'Collection day: ' + dayName + '  \u00B7  Schedule: Week ' + weekNum;
 
   const today = new Date(); today.setHours(0,0,0,0);
   const todayStr = formatDateISO(today);
@@ -583,7 +586,7 @@ function displayResults(address, calendarName, schedule) {
   const showWeeks = schedule.slice(startShow, startShow + 20);
   showWeeks.forEach(week => {
     const isPast = week.w < todayStr;
-    const isThisWeek = week.w === nextWeek.w && !isPast;
+    const isThisWeek = week.w === nextWeek.w;
     const row = document.createElement('div');
     row.className = 'week-row' + (isThisWeek ? ' today-row' : '') + (isPast ? ' past-row' : '');
     row.innerHTML = '<div class="date-col">' + formatDateShort(week.w) + '</div>' +
@@ -595,12 +598,22 @@ function displayResults(address, calendarName, schedule) {
     rowsDiv.appendChild(row);
   });
 
-  resultsDiv.style.display = 'block';
-  // Show service section
-  document.getElementById('service-section').style.display = 'block';
+  // Reset service UI state
+  serviceType = 'rollout'; planType = 'adhoc';
+  document.querySelectorAll('#service-toggle .toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'rollout'));
+  document.querySelectorAll('#plan-toggle .toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'adhoc'));
+
+  // Reveal the booking section with smooth animation
+  document.getElementById('booking-section').classList.add('revealed');
   buildDateCards();
-  updateTotal();
-  resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('adhoc-dates').style.display = 'block';
+  document.getElementById('recurring-info').style.display = 'none';
+  document.getElementById('total-wrap').style.display = 'none';
+
+  // Scroll to booking section after transition starts
+  setTimeout(() => {
+    document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 200);
 }
 
 // ===== Service toggles =====
@@ -624,14 +637,12 @@ document.getElementById('plan-toggle').addEventListener('click', function(e) {
 });
 
 function showPlanUI() {
-  const adhoc = document.getElementById('adhoc-dates');
-  const recur = document.getElementById('recurring-info');
   if (planType === 'adhoc') {
-    adhoc.style.display = 'block';
-    recur.style.display = 'none';
+    document.getElementById('adhoc-dates').style.display = 'block';
+    document.getElementById('recurring-info').style.display = 'none';
   } else {
-    adhoc.style.display = 'none';
-    recur.style.display = 'block';
+    document.getElementById('adhoc-dates').style.display = 'none';
+    document.getElementById('recurring-info').style.display = 'block';
     buildRecurringInfo();
   }
 }
@@ -647,17 +658,18 @@ function buildDateCards() {
   future.forEach(week => {
     const d = new Date(week.w + 'T00:00:00');
     const month = d.toLocaleDateString('en-CA', { month: 'short' });
-    const day = d.toLocaleDateString('en-CA', { weekday: 'short', day: 'numeric' });
-    const bins = [];
-    if (week.g) bins.push('Green');
-    if (week.b) bins.push('Garbage');
-    if (week.r) bins.push('Recycling');
-    if (week.y) bins.push('Yard');
-    if (week.c) bins.push('Xmas Tree');
+    const dayNum = d.getDate();
+    const weekday = d.toLocaleDateString('en-CA', { weekday: 'short' });
+    const dots = [];
+    if (week.g) dots.push('<span class="dc-dot" style="background:#38a169" title="Green Bin"></span>');
+    if (week.b) dots.push('<span class="dc-dot" style="background:#4a5568" title="Garbage"></span>');
+    if (week.r) dots.push('<span class="dc-dot" style="background:#3182ce" title="Recycling"></span>');
+    if (week.y) dots.push('<span class="dc-dot" style="background:#d69e2e" title="Yard Waste"></span>');
+    if (week.c) dots.push('<span class="dc-dot" style="background:#e53e3e" title="Christmas Tree"></span>');
     const card = document.createElement('div');
     card.className = 'date-card' + (selectedDates.has(week.w) ? ' selected' : '');
     card.dataset.date = week.w;
-    card.innerHTML = '<div class="dc-month">' + month + '</div><div class="dc-day">' + day + '</div><div class="dc-bins">' + bins.join(', ') + '</div>';
+    card.innerHTML = '<div class="dc-month">' + month + '</div><div class="dc-day">' + dayNum + '</div><div class="dc-weekday">' + weekday + '</div><div class="dc-dots">' + dots.join('') + '</div>';
     card.addEventListener('click', function() {
       if (selectedDates.has(week.w)) selectedDates.delete(week.w);
       else selectedDates.add(week.w);
@@ -666,7 +678,6 @@ function buildDateCards() {
     });
     container.appendChild(card);
   });
-  document.getElementById('adhoc-dates').style.display = 'block';
 }
 
 // ===== Recurring info =====
