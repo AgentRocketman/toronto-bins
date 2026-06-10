@@ -816,26 +816,25 @@ function showStripeForm() {
   const body = document.getElementById('modal-body');
   const booking = window.currentBooking || {};
 
-  body.innerHTML = '<div style="margin-bottom:1.2rem"><label style="display:block;font-weight:600;margin-bottom:0.5rem;color:var(--slate)">Card Details</label><div id="card-element" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:50px"></div><div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem"></div></div>' +
+  body.innerHTML = '<div style="margin-bottom:1.2rem"><label style="display:block;font-weight:600;margin-bottom:0.5rem;color:var(--slate)">Card Details</label>' +
+    '<div id="card-number" style="border:1px solid #e2e8f0;padding:12px;margin-bottom:0.8rem;border-radius:8px;background:#f8fafc;min-height:44px"></div>' +
+    '<div style="display:flex;gap:0.8rem">' +
+      '<div id="card-expiry" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:44px;flex:1"></div>' +
+      '<div id="card-cvc" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:44px;flex:1"></div>' +
+    '</div>' +
+    '<div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem"></div></div>' +
     '<div style="padding:12px;background:var(--teal-xlight);border-radius:8px;margin:1rem 0;font-size:0.85rem;color:var(--slate)"><strong>Test card:</strong> 4242 4242 4242 4242 · Exp: any future · CVC: any 3 digits</div>' +
     '<div class="modal-actions">' +
       '<button class="btn-back" onclick="closeModal()">&#8592; Cancel</button>' +
       '<button class="btn-confirm" id="pay-btn" onclick="processPayment()">Pay $' + (booking.amount / 100).toFixed(2) + ' &#10003;</button>' +
     '</div>';
 
-  // Mount Stripe card element
-  setTimeout(() => {
-    if (window.cardElement) {
-      try {
-        // Try to unmount first if already mounted
-        try { window.cardElement.unmount(); } catch (e) {}
-        window.cardElement.mount('#card-element');
-        console.log('Card mounted');
-      } catch (e) {
-        console.log('Card mount error:', e);
-      }
-    }
-  }, 100);
+  // Mount Stripe card elements
+  if (typeof initStripeForm === 'function') {
+    setTimeout(() => {
+      initStripeForm();
+    }, 100);
+  }
 }
 
 async function processPayment() {

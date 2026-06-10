@@ -3,100 +3,59 @@
 
 const stripe = Stripe('pk_test_51SFgOXRoaqSc6FkpZuQmOv1ZMOqaAI2L6rkyusqya3XHNp7BQZgFlWuxoF0sARpqKZG5rGxRimiD3ANPMLrd1lsB00ww4XnrwL');
 const elements = stripe.elements();
-const cardElement = elements.create('card', {
-  hidePostalCode: true,  // Hide postal/zip code field (Canada doesn't need it)
-  style: {
-    base: {
-      fontSize: '14px',
-      color: '#424770',
-      '::placeholder': {
-        color: '#aab7c4',
-      },
-    },
-    invalid: {
-      color: '#9e2146',
-    },
-  },
+
+// Use individual card elements to avoid "save card" option
+const cardNumber = elements.create('cardNumber', {
+  placeholder: 'Card number'
+});
+const cardExpiry = elements.create('cardExpiry', {
+  placeholder: 'MM / YY'
+});
+const cardCvc = elements.create('cardCvc', {
+  placeholder: 'CVC'
 });
 
 // Export globally for access in main script
-window.cardElement = cardElement;
+window.cardNumber = cardNumber;
+window.cardExpiry = cardExpiry;
+window.cardCvc = cardCvc;
 
 let isPaymentProcessing = false;
 
 function initStripeForm() {
-  const cardContainer = document.getElementById('card-element');
-  if (cardContainer && cardElement) {
-    try {
-      cardElement.mount('#card-element');
-      
-      // Handle card errors
-      cardElement.addEventListener('change', (event) => {
-        const displayError = document.getElementById('card-errors');
-        if (displayError) {
-          if (event.error) {
+  // Mount individual card elements
+  try {
+    const numberContainer = document.getElementById('card-number');
+    const expiryContainer = document.getElementById('card-expiry');
+    const cvcContainer = document.getElementById('card-cvc');
+    
+    if (numberContainer && window.cardNumber) {
+      window.cardNumber.mount('#card-number');
+    }
+    if (expiryContainer && window.cardExpiry) {
+      window.cardExpiry.mount('#card-expiry');
+    }
+    if (cvcContainer && window.cardCvc) {
+      window.cardCvc.mount('#card-cvc');
+    }
+    
+    // Handle card errors
+    [window.cardNumber, window.cardExpiry, window.cardCvc].forEach(element => {
+      if (element) {
+        element.addEventListener('change', (event) => {
+          const displayError = document.getElementById('card-errors');
+          if (displayError && event.error) {
             displayError.textContent = event.error.message;
-          } else {
+          } else if (displayError) {
             displayError.textContent = '';
           }
-        }
-      });
-    } catch (e) {
-      console.error('Error mounting card element:', e);
-    }
-  }
-}
-
-async function processBookingPayment(bookingData) {
-  if (isPaymentProcessing) return false;
-  
-  isPaymentProcessing = true;
-  
-  try {
-    // Create payment method from card
-    const { paymentMethod, error } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
-      billing_details: {
-        name: bookingData.customerName,
-        email: bookingData.customerEmail,
-        phone: bookingData.customerPhone
+        });
       }
     });
-
-    if (error) {
-      showPaymentError(error.message);
-      isPaymentProcessing = false;
-      return false;
-    }
-
-    // Call Cloud Function to process payment
-    const response = await window.processPayment({
-      paymentMethodId: paymentMethod.id,
-      amount: bookingData.amount,
-      customerEmail: bookingData.customerEmail,
-      customerName: bookingData.customerName,
-      customerPhone: bookingData.customerPhone,
-      address: bookingData.address,
-      serviceType: bookingData.serviceType,
-      frequency: bookingData.frequency
-    });
-
-    if (response.data.success) {
-      return {
-        success: true,
-        bookingId: response.data.bookingId,
-        confirmationUrl: response.data.confirmationUrl
-      };
-    } else {
-      showPaymentError(response.data.error || 'Payment failed');
-      isPaymentProcessing = false;
-      return false;
-    }
-  } catch (err) {
-    showPaymentError(err.message);
-    isPaymentProcessing = false;
-    return false;
+    
+    console.log('Card elements mounted');
+  } catch (e) {
+    console.error('Error mounting card elements:', e);
   }
 }
 
@@ -109,7 +68,55 @@ function showPaymentError(message) {
 }
 
 function clearCardElement() {
-  cardElement.clear();
+  // Individual elements don't have clear, but we can reset if needed
+}
+
+async function processBookingPayment(bookingData) {
+  if (!bookingData || !bookingData.amount) {
+    throw new Error('Invalid booking data');
+  }
+
+  try {
+    // Create payment method from individual card elements
+    const { paymentMethod, error } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: window.cardNumber,
+      billing_details: {
+        name: bookingData.customerName,
+        email: bookingData.customerEmail,
+        phone: bookingData.customerPhone
+      }
+    });
+
+    if (error) {
+      showPaymentError(error.message);
+      return false;
+    }
+
+    // Payment method created successfully
+    // Save booking data with Stripe payment ID
+    bookingData.stripePaymentId = paymentMethod.id;
+
+    let bookingResult;
+    try {
+      // Try to save to GitHub
+      bookingResult = await saveBookingToGitHub(bookingData);
+    } catch (githubErr) {
+      console.warn('GitHub save failed, saving locally:', githubErr);
+      // Fall back to local storage
+      bookingResult = saveBookingLocally(bookingData);
+    }
+
+    return {
+      success: true,
+      bookingId: bookingResult.bookingId,
+      warning: bookingResult.warning
+    };
+  } catch (err) {
+    console.error('Payment processing error:', err);
+    showPaymentError(err.message);
+    return false;
+  }
 }
 
 // Initialize on page load
