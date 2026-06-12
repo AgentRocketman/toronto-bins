@@ -643,9 +643,23 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
-  // Scroll to booking section using requestAnimationFrame (waits for DOM paint, not animation timing)
+  // Scroll to booking section.
+  // The section uses a 1.5s max-height transition from 0, which means its
+  // rendered height is still ~0 immediately after adding .revealed. Using
+  // scrollIntoView at that moment scrolls to a collapsed element, which is
+  // why the first click "didn't work" and the second click did (by then the
+  // section was fully expanded).
+  //
+  // Fix: compute the scroll target from getBoundingClientRect() + scrollY,
+  // which gives the element's absolute document position regardless of its
+  // current rendered height. Wrap in double rAF so the browser commits the
+  // .revealed class first.
   requestAnimationFrame(() => {
-    document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    requestAnimationFrame(() => {
+      const bookingEl = document.getElementById('booking-section');
+      const targetY = bookingEl.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+    });
   });
 }
 
@@ -656,6 +670,11 @@ document.getElementById('service-toggle').addEventListener('click', function(e) 
   this.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   serviceType = btn.dataset.val;
+  // Keep recurring info text in sync when user toggles service type while in
+  // recurring mode (Roll Out / Roll In / Both should re-render the summary).
+  if (planType === 'recurring') {
+    buildRecurringInfo();
+  }
   updateTotal();
 });
 
