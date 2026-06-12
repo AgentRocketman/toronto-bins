@@ -148,7 +148,7 @@
     .toggle-btn:last-child{border-right:none}
     .toggle-btn.active{background:var(--teal);color:#fff}
     .toggle-btn:hover:not(.active){background:var(--teal-xlight);color:var(--teal-dark)}
-    .save-badge{position:absolute;top:-14px;right:-45px;background:#d4af37;color:#0f172a;font-size:.7rem;font-weight:900;padding:5px 12px;border-radius:16px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;z-index:10;box-shadow:0 3px 12px rgba(212,175,55,.5);display:flex;align-items:center;gap:4px}
+    .save-badge{position:absolute;top:-24px;right:-65px;background:#d4af37;color:#0f172a;font-size:.7rem;font-weight:900;padding:5px 12px;border-radius:16px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;z-index:10;box-shadow:0 3px 12px rgba(212,175,55,.5);display:flex;align-items:center;gap:4px}
     .options-row{display:flex;gap:2rem;flex-wrap:wrap;margin-top:1.2rem}
     .options-col{min-width:180px}
     .options-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-light);margin-bottom:8px}
@@ -643,14 +643,13 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
-  // Scroll to address confirmation bar (green bar inside booking section)
-  // Use a small delay to ensure DOM has painted the .revealed class,
-  // then scroll directly to the address bar element
+  // Scroll to pricing note (end of pricing section)
+  // Find the pricing note and scroll to it
   setTimeout(() => {
-    const addressBar = document.getElementById('address-confirmed');
-    if (addressBar) {
-      const offsetTop = addressBar.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({ top: offsetTop - 20, behavior: 'smooth' });
+    const pricingNote = document.querySelector('.pricing-note');
+    if (pricingNote) {
+      const offsetTop = pricingNote.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({ top: offsetTop + 80, behavior: 'smooth' });
     }
   }, 50);
 }
