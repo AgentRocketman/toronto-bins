@@ -639,10 +639,13 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
-  // Scroll to booking section after transition starts
+  // Scroll to address confirmation (green bar) after animation completes
   setTimeout(() => {
-    document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 200);
+    const addressBar = document.querySelector('.address-confirmed');
+    if (addressBar) {
+      addressBar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 400);
 }
 
 // ===== Service toggles =====
