@@ -143,12 +143,12 @@
     #service-section{margin-top:2rem}
     .divider{border:none;border-top:2px solid #e2e8f0;margin:2rem 0 1.5rem}
     .subsection-title{font-size:1.08rem;font-weight:800;color:#0f172a;margin-bottom:1.1rem}
-    .toggle-group{display:flex;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;width:fit-content}
-    .toggle-btn{padding:10px 22px;background:#fff;border:none;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--slate-light);transition:background .15s,color .15s;border-right:2px solid #e2e8f0;position:relative}
+    .toggle-group{display:flex;border:2px solid #e2e8f0;border-radius:12px;overflow:visible;width:fit-content;position:relative}
+    .toggle-btn{padding:10px 22px;background:#fff;border:none;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--slate-light);transition:background .15s,color .15s;border-right:2px solid #e2e8f0;position:relative;overflow:visible}
     .toggle-btn:last-child{border-right:none}
     .toggle-btn.active{background:var(--teal);color:#fff}
     .toggle-btn:hover:not(.active){background:var(--teal-xlight);color:var(--teal-dark)}
-    .save-badge{position:absolute;top:-10px;right:6px;background:#d4af37;color:#0f172a;font-size:.65rem;font-weight:900;padding:3px 8px;border-radius:12px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+    .save-badge{position:absolute;top:-12px;right:-4px;background:#d4af37;color:#0f172a;font-size:.65rem;font-weight:900;padding:4px 10px;border-radius:14px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;z-index:10;box-shadow:0 2px 8px rgba(212,175,55,.4)}
     .options-row{display:flex;gap:2rem;flex-wrap:wrap;margin-top:1.2rem}
     .options-col{min-width:180px}
     .options-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-light);margin-bottom:8px}
@@ -640,8 +640,10 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
-  // Scroll to booking section (always in DOM, no timing dependency)
-  document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Scroll to booking section using requestAnimationFrame (waits for DOM paint, not animation timing)
+  requestAnimationFrame(() => {
+    document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
 
 // ===== Service toggles =====
