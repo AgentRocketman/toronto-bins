@@ -643,13 +643,16 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
-  // Scroll to pricing note (end of pricing section)
-  // Find the pricing note and scroll to it
+  // Scroll to bottom of pricing section (white div)
+  // The pricing section always exists in the DOM, so we can reliably target it
   setTimeout(() => {
-    const pricingNote = document.querySelector('.pricing-note');
-    if (pricingNote) {
-      const offsetTop = pricingNote.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({ top: offsetTop + 80, behavior: 'smooth' });
+    const pricingSection = document.querySelector('#pricing');
+    if (pricingSection) {
+      // Get the bottom of the pricing section
+      const rect = pricingSection.getBoundingClientRect();
+      const sectionBottom = rect.bottom + window.pageYOffset;
+      // Scroll to bottom of section with 40px padding
+      window.scrollTo({ top: sectionBottom - 60, behavior: 'smooth' });
     }
   }, 50);
 }
