@@ -645,15 +645,16 @@ function revealBooking(address, calendarName, schedule) {
 
   // Scroll to position green address bar at top of viewport
   // The .address-confirmed element exists in DOM (just CSS-hidden until revealed)
+  // Wait for booking-section animation (1.5s) to complete before scrolling
   setTimeout(() => {
     const addressBar = document.querySelector('.address-confirmed');
     if (addressBar) {
       const rect = addressBar.getBoundingClientRect();
       const offsetTop = rect.top + window.pageYOffset;
-      // Scroll so green bar is at top of page (accounting for sticky nav if any)
+      // Scroll so green bar is at top of page
       window.scrollTo({ top: offsetTop - 80, behavior: 'smooth' });
     }
-  }, 50);
+  }, 1600);
 }
 
 // ===== Service toggles =====
