@@ -718,9 +718,10 @@ function buildRecurringInfo() {
   const serviceMultiplier = serviceType === 'both' ? 2 : 1;
   const monthlyTotal = (PRICE_RECURRING * eventsPerMonth * serviceMultiplier).toFixed(2);
   const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
+  const eventPrice = (PRICE_RECURRING * serviceMultiplier).toFixed(2);
   document.getElementById('recurring-title').textContent = 'Every ' + dayName + ' \u2014 ' + serviceLabel;
-  document.getElementById('recurring-desc').textContent = 'We\'ll handle your bins on every ' + dayName + ' collection day, automatically. $' + PRICE_RECURRING.toFixed(2) + '/service/event.';
-  document.getElementById('recurring-monthly').textContent = 'Estimated monthly: ~$' + monthlyTotal + '/month (' + (serviceMultiplier * eventsPerMonth) + ' service events \xd7 $' + PRICE_RECURRING.toFixed(2) + ')';
+  document.getElementById('recurring-desc').textContent = 'We\'ll handle your bins on every ' + dayName + ' collection day, automatically. $' + eventPrice + '/service/event.';
+  document.getElementById('recurring-monthly').textContent = 'Estimated monthly: ~$' + monthlyTotal + '/month (' + (serviceMultiplier * eventsPerMonth) + ' service events \xd7 $' + eventPrice + ')'
 }
 
 // ===== Running total =====
@@ -734,8 +735,9 @@ function updateTotal() {
     wrap.style.display = 'block';
     const serviceMultiplier = serviceType === 'both' ? 2 : 1;
     const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
-    itemsDiv.innerHTML = '<div class="total-item"><span>' + serviceLabel + ' &times; Recurring</span><span>$' + PRICE_RECURRING.toFixed(2) + '/event</span></div>';
-    totalAmt.textContent = '$' + PRICE_RECURRING.toFixed(2) + '/event';
+    const eventPrice = (PRICE_RECURRING * serviceMultiplier).toFixed(2);
+    itemsDiv.innerHTML = '<div class="total-item"><span>' + serviceLabel + ' &times; Recurring</span><span>$' + eventPrice + '/event</span></div>';
+    totalAmt.textContent = '$' + eventPrice + '/event';
     btn.disabled = false;
     return;
   }
