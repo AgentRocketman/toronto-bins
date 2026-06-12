@@ -651,9 +651,8 @@ function revealBooking(address, calendarName, schedule) {
   const scrollMsg = document.querySelector('.scroll-ready-msg');
   if (scrollMsg) scrollMsg.style.display = 'block';
 
-  // Scroll when transition animation completes
-  const bookingSection = document.getElementById('booking-section');
-  const handleTransitionEnd = () => {
+  // Function to perform the scroll
+  const performScroll = () => {
     const addressBar = document.querySelector('.address-confirmed');
     if (addressBar) {
       const rect = addressBar.getBoundingClientRect();
@@ -662,13 +661,30 @@ function revealBooking(address, calendarName, schedule) {
     }
     // Hide message after scrolling starts
     if (scrollMsg) {
-      setTimeout(() => { scrollMsg.style.display = 'none'; }, 100);
+      scrollMsg.style.display = 'none';
     }
-    // Remove listener to avoid duplicate scrolls
-    bookingSection.removeEventListener('transitionend', handleTransitionEnd);
   };
   
+  // Scroll when transition animation completes
+  const bookingSection = document.getElementById('booking-section');
+  const handleTransitionEnd = (e) => {
+    if (e.propertyName === 'max-height') {
+      performScroll();
+      // Remove listener to avoid duplicate scrolls
+      bookingSection.removeEventListener('transitionend', handleTransitionEnd);
+    }
+  };
+  
+  // Remove any previous listeners first
+  bookingSection.removeEventListener('transitionend', handleTransitionEnd);
   bookingSection.addEventListener('transitionend', handleTransitionEnd);
+  
+  // Fallback: scroll after 1.6s if transitionend doesn't fire
+  setTimeout(() => {
+    if (scrollMsg && scrollMsg.style.display === 'block') {
+      performScroll();
+    }
+  }, 1600);
 }
 
 // ===== Service toggles =====
