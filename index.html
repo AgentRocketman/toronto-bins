@@ -594,6 +594,21 @@ function toggleScheduleAccordion() {
   header.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
 }
 
+// ===== Booking section scroll handler (persistent reference) =====
+let scrollHandlerAttached = false;
+const handleBookingTransitionEnd = (e) => {
+  if (e.propertyName === 'max-height') {
+    const scrollMsg = document.querySelector('.scroll-ready-msg');
+    const addressBar = document.querySelector('.address-confirmed');
+    if (addressBar) {
+      const rect = addressBar.getBoundingClientRect();
+      const offsetTop = rect.top + window.pageYOffset;
+      window.scrollTo({ top: offsetTop - 80, behavior: 'smooth' });
+    }
+    if (scrollMsg) scrollMsg.style.display = 'none';
+  }
+};
+
 // ===== Reveal booking section =====
 function revealBooking(address, calendarName, schedule) {
   document.getElementById('ac-address-text').textContent = address;
@@ -651,38 +666,23 @@ function revealBooking(address, calendarName, schedule) {
   const scrollMsg = document.querySelector('.scroll-ready-msg');
   if (scrollMsg) scrollMsg.style.display = 'block';
 
-  // Function to perform the scroll
-  const performScroll = () => {
-    const addressBar = document.querySelector('.address-confirmed');
-    if (addressBar) {
-      const rect = addressBar.getBoundingClientRect();
-      const offsetTop = rect.top + window.pageYOffset;
-      window.scrollTo({ top: offsetTop - 80, behavior: 'smooth' });
-    }
-    // Hide message after scrolling starts
-    if (scrollMsg) {
-      scrollMsg.style.display = 'none';
-    }
-  };
-  
-  // Scroll when transition animation completes
+  // Attach persistent handler if not already attached
   const bookingSection = document.getElementById('booking-section');
-  const handleTransitionEnd = (e) => {
-    if (e.propertyName === 'max-height') {
-      performScroll();
-      // Remove listener to avoid duplicate scrolls
-      bookingSection.removeEventListener('transitionend', handleTransitionEnd);
-    }
-  };
-  
-  // Remove any previous listeners first
-  bookingSection.removeEventListener('transitionend', handleTransitionEnd);
-  bookingSection.addEventListener('transitionend', handleTransitionEnd);
+  if (!scrollHandlerAttached) {
+    bookingSection.addEventListener('transitionend', handleBookingTransitionEnd);
+    scrollHandlerAttached = true;
+  }
   
   // Fallback: scroll after 1.6s if transitionend doesn't fire
   setTimeout(() => {
     if (scrollMsg && scrollMsg.style.display === 'block') {
-      performScroll();
+      const addressBar = document.querySelector('.address-confirmed');
+      if (addressBar) {
+        const rect = addressBar.getBoundingClientRect();
+        const offsetTop = rect.top + window.pageYOffset;
+        window.scrollTo({ top: offsetTop - 80, behavior: 'smooth' });
+      }
+      scrollMsg.style.display = 'none';
     }
   }, 1600);
 }
