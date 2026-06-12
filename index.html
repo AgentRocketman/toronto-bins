@@ -643,16 +643,15 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
-  // Scroll to bottom of pricing section (white div)
-  // The pricing section always exists in the DOM, so we can reliably target it
+  // Scroll to position green address bar at top of viewport
+  // The .address-confirmed element exists in DOM (just CSS-hidden until revealed)
   setTimeout(() => {
-    const pricingSection = document.querySelector('#pricing');
-    if (pricingSection) {
-      // Get the bottom of the pricing section
-      const rect = pricingSection.getBoundingClientRect();
-      const sectionBottom = rect.bottom + window.pageYOffset;
-      // Scroll to bottom of section with 40px padding
-      window.scrollTo({ top: sectionBottom - 60, behavior: 'smooth' });
+    const addressBar = document.querySelector('.address-confirmed');
+    if (addressBar) {
+      const rect = addressBar.getBoundingClientRect();
+      const offsetTop = rect.top + window.pageYOffset;
+      // Scroll so green bar is at top of page (accounting for sticky nav if any)
+      window.scrollTo({ top: offsetTop - 80, behavior: 'smooth' });
     }
   }, 50);
 }
