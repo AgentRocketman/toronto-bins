@@ -129,6 +129,16 @@
     .legend-item{display:flex;align-items:center;gap:5px}
     .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
+    /* ACCORDION */
+    .schedule-accordion{margin-bottom:1.5rem}
+    .accordion-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 16px;background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;font-weight:700;color:var(--slate);transition:all .15s;user-select:none}
+    .accordion-header:hover{background:#ecf2f6;border-color:var(--teal-light)}
+    .accordion-chevron{display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;transition:transform .3s cubic-bezier(.4,0,.2,1);flex-shrink:0;margin-left:10px}
+    .schedule-accordion.open .accordion-chevron{transform:rotate(180deg)}
+    .accordion-content{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}
+    .schedule-accordion.open .accordion-content{max-height:2000px}
+    .accordion-inner{padding:16px 0;border-top:2px solid #e2e8f0;margin-top:0}
+
     /* SERVICE SECTION (in booking panel) */
     #service-section{margin-top:2rem}
     .divider{border:none;border-top:2px solid #e2e8f0;margin:2rem 0 1.5rem}
@@ -341,25 +351,34 @@
       <div class="bin-tags" id="next-bins"></div>
     </div>
 
-    <div class="calendar-section">
-      <h4>Upcoming Schedule</h4>
-      <div class="week-row header">
-        <div>Week of</div>
-        <div class="icon-col" title="Green Bin">&#x1F7E2;</div>
-        <div class="icon-col" title="Garbage">&#x26AB;</div>
-        <div class="icon-col" title="Recycling">&#x1F535;</div>
-        <div class="icon-col" title="Yard Waste">&#x1F7E1;</div>
-        <div class="icon-col" title="Christmas Tree">&#x1F384;</div>
-      </div>
-      <div id="schedule-rows"></div>
-    </div>
+    <div class="schedule-accordion" id="schedule-accordion">
+      <button class="accordion-header" onclick="toggleScheduleAccordion()" aria-expanded="false">
+        <span>📅 Upcoming Schedule</span>
+        <span class="accordion-chevron">▼</span>
+      </button>
+      <div class="accordion-content">
+        <div class="accordion-inner">
+          <div class="calendar-section">
+            <div class="week-row header">
+              <div>Week of</div>
+              <div class="icon-col" title="Green Bin">&#x1F7E2;</div>
+              <div class="icon-col" title="Garbage">&#x26AB;</div>
+              <div class="icon-col" title="Recycling">&#x1F535;</div>
+              <div class="icon-col" title="Yard Waste">&#x1F7E1;</div>
+              <div class="icon-col" title="Christmas Tree">&#x1F384;</div>
+            </div>
+            <div id="schedule-rows"></div>
+          </div>
 
-    <div class="legend">
-      <div class="legend-item"><span class="legend-dot" style="background:#38a169"></span> Green Bin</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#4a5568"></span> Garbage</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#3182ce"></span> Recycling</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#d69e2e"></span> Yard Waste</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#e53e3e"></span> Christmas Tree</div>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-dot" style="background:#38a169"></span> Green Bin</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#4a5568"></span> Garbage</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#3182ce"></span> Recycling</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#d69e2e"></span> Yard Waste</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#e53e3e"></span> Christmas Tree</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <hr class="divider">
@@ -556,6 +575,15 @@ function resetSearch() {
   addressInput.value = '';
   currentSchedule = null; currentCalendarName = null; currentAddress = null; selectedDates.clear();
   document.getElementById('hero-anchor').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===== Toggle schedule accordion =====
+function toggleScheduleAccordion() {
+  const accordion = document.getElementById('schedule-accordion');
+  const header = accordion.querySelector('.accordion-header');
+  const isOpen = accordion.classList.contains('open');
+  accordion.classList.toggle('open');
+  header.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
 }
 
 // ===== Reveal booking section =====
