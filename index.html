@@ -336,6 +336,8 @@
 <!-- BOOKING SECTION — hidden until address confirmed -->
 <div id="booking-section">
   <div class="booking-inner">
+    <!-- Scroll anchor — placed before address bar to avoid timing issues -->
+    <div id="scroll-to-address" style="position:absolute;top:0;visibility:hidden;"></div>
     <div class="address-confirmed" id="address-confirmed">
       <div class="ac-icon">&#128205;</div>
       <div class="ac-text">
@@ -639,13 +641,11 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
-  // Scroll to address confirmation (green bar) after animation completes
-  setTimeout(() => {
-    const addressBar = document.querySelector('.address-confirmed');
-    if (addressBar) {
-      addressBar.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, 400);
+  // Scroll to anchor (no timing dependency)
+  const scrollTarget = document.getElementById('scroll-to-address');
+  if (scrollTarget) {
+    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 // ===== Service toggles =====
