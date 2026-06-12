@@ -43,9 +43,11 @@
     .hero-search-icon{color:#94a3b8;flex-shrink:0;display:flex;align-items:center}
     .hero-search-btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-weight:800;font-size:.92rem;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s,transform .15s}
     .hero-search-btn:hover{background:var(--teal-dark);transform:translateY(-1px)}
-    #hero-loading{display:none;margin-top:1.2rem;color:rgba(255,255,255,.9);font-size:.92rem;font-weight:500}
+    #hero-loading{display:none;margin-top:1.2rem;color:rgba(255,255,255,.9);font-size:.92rem;font-weight:500;animation:fadeIn .3s ease}
     .spinner-sm{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
     #hero-error{display:none;margin-top:1rem;padding:12px 18px;background:rgba(239,68,68,.15);color:#fde8e8;border:1px solid rgba(239,68,68,.3);border-radius:12px;font-size:.9rem;text-align:center}
+    .loading-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(13,148,136,.2);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin-right:6px;vertical-align:middle}
+    .scroll-ready-msg{display:none;margin-top:1.2rem;padding:12px 16px;background:var(--teal-xlight);color:var(--teal-dark);border:1px solid var(--teal-light);border-radius:10px;font-size:.85rem;font-weight:600;text-align:center}
 
     /* SECTIONS */
     section{padding:5rem 1.5rem}
@@ -101,6 +103,7 @@
     .suggestion-item:last-child{border-bottom:none}
     .suggestion-item:hover,.suggestion-item.active{background:var(--teal-xlight);color:var(--teal-dark)}
     @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
     /* Results placeholder (unused, kept for compat) */
 
@@ -264,6 +267,7 @@
       <p class="hero-note">&#128205; Serving Toronto residential addresses &middot; No commitment required</p>
       <div id="hero-loading"><span class="spinner-sm"></span>Looking up your schedule&hellip;</div>
       <div id="hero-error"></div>
+      <div class="scroll-ready-msg"><span class="loading-spinner"></span>Scrolling to your schedule&hellip;</div>
     </div>
   </div>
 </div>
@@ -643,18 +647,28 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
-  // Scroll to position green address bar at top of viewport
-  // The .address-confirmed element exists in DOM (just CSS-hidden until revealed)
-  // Wait for booking-section animation (1.5s) to complete before scrolling
-  setTimeout(() => {
+  // Show scroll-in-progress message
+  const scrollMsg = document.querySelector('.scroll-ready-msg');
+  if (scrollMsg) scrollMsg.style.display = 'block';
+
+  // Scroll when transition animation completes
+  const bookingSection = document.getElementById('booking-section');
+  const handleTransitionEnd = () => {
     const addressBar = document.querySelector('.address-confirmed');
     if (addressBar) {
       const rect = addressBar.getBoundingClientRect();
       const offsetTop = rect.top + window.pageYOffset;
-      // Scroll so green bar is at top of page
       window.scrollTo({ top: offsetTop - 80, behavior: 'smooth' });
     }
-  }, 1600);
+    // Hide message after scrolling starts
+    if (scrollMsg) {
+      setTimeout(() => { scrollMsg.style.display = 'none'; }, 100);
+    }
+    // Remove listener to avoid duplicate scrolls
+    bookingSection.removeEventListener('transitionend', handleTransitionEnd);
+  };
+  
+  bookingSection.addEventListener('transitionend', handleTransitionEnd);
 }
 
 // ===== Service toggles =====
