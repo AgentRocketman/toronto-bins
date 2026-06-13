@@ -191,3 +191,7 @@ function saveBookingLocally(bookingData) {
     throw err;
   }
 }
+-e 
+// Expose to global scope
+window.saveBookingToAirtable = saveBookingToAirtable;
+window.saveBookingLocally = saveBookingLocally;

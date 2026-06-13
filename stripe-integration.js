@@ -84,7 +84,13 @@ async function processBookingPayment(bookingData) {
   }
 
   try {
+    showPaymentError('Creating payment method...'); // Show progress
+    
     const stripe = getStripe();
+    if (!stripe) {
+      throw new Error('Stripe not loaded. Please refresh and try again.');
+    }
+    
     const { paymentMethod, error } = await stripe.createPaymentMethod({
       type: 'card',
       card: window.cardNumber,
@@ -96,10 +102,11 @@ async function processBookingPayment(bookingData) {
     });
 
     if (error) {
-      showPaymentError(error.message);
+      showPaymentError('Stripe error: ' + error.message);
       return false;
     }
 
+    showPaymentError('Saving booking...'); // Show progress
     bookingData.stripePaymentId = paymentMethod.id;
 
     let bookingResult;
@@ -108,7 +115,8 @@ async function processBookingPayment(bookingData) {
       bookingResult = await saveBookingToAirtable(bookingData);
       savedLocation = 'Airtable';
     } catch (airtableErr) {
-      console.warn('Airtable save failed, saving to localStorage:', airtableErr);
+      console.warn('Airtable save failed:', airtableErr.message);
+      showPaymentError('Airtable failed, using local storage: ' + airtableErr.message);
       bookingResult = saveBookingLocally(bookingData);
       savedLocation = 'Browser Storage (localStorage)';
     }
@@ -121,7 +129,8 @@ async function processBookingPayment(bookingData) {
     };
   } catch (err) {
     console.error('Payment processing error:', err);
-    showPaymentError(err.message);
+    const errorMsg = 'ERROR: ' + (err.message || 'Unknown payment error');
+    showPaymentError(errorMsg);
     return false;
   }
 }

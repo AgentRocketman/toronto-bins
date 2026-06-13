@@ -43,11 +43,9 @@
     .hero-search-icon{color:#94a3b8;flex-shrink:0;display:flex;align-items:center}
     .hero-search-btn{background:var(--teal);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-weight:800;font-size:.92rem;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s,transform .15s}
     .hero-search-btn:hover{background:var(--teal-dark);transform:translateY(-1px)}
-    #hero-loading{display:none;margin-top:1.2rem;color:rgba(255,255,255,.9);font-size:.92rem;font-weight:500;animation:fadeIn .3s ease}
+    #hero-loading{display:none;margin-top:1.2rem;color:rgba(255,255,255,.9);font-size:.92rem;font-weight:500}
     .spinner-sm{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
     #hero-error{display:none;margin-top:1rem;padding:12px 18px;background:rgba(239,68,68,.15);color:#fde8e8;border:1px solid rgba(239,68,68,.3);border-radius:12px;font-size:.9rem;text-align:center}
-    .loading-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(13,148,136,.2);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin-right:6px;vertical-align:middle}
-    .scroll-ready-msg{display:none;margin-top:1.2rem;padding:12px 16px;background:var(--teal-xlight);color:var(--teal-dark);border:1px solid var(--teal-light);border-radius:10px;font-size:.85rem;font-weight:600;text-align:center}
 
     /* SECTIONS */
     section{padding:5rem 1.5rem}
@@ -103,7 +101,6 @@
     .suggestion-item:last-child{border-bottom:none}
     .suggestion-item:hover,.suggestion-item.active{background:var(--teal-xlight);color:var(--teal-dark)}
     @keyframes spin{to{transform:rotate(360deg)}}
-    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
     /* Results placeholder (unused, kept for compat) */
 
@@ -132,26 +129,15 @@
     .legend-item{display:flex;align-items:center;gap:5px}
     .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
-    /* ACCORDION */
-    .schedule-accordion{margin-bottom:1.5rem}
-    .accordion-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 16px;background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;font-weight:700;color:var(--slate);transition:all .15s;user-select:none}
-    .accordion-header:hover{background:#ecf2f6;border-color:var(--teal-light)}
-    .accordion-chevron{display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;transition:transform .3s cubic-bezier(.4,0,.2,1);flex-shrink:0;margin-left:10px}
-    .schedule-accordion.open .accordion-chevron{transform:rotate(180deg)}
-    .accordion-content{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}
-    .schedule-accordion.open .accordion-content{max-height:2000px}
-    .accordion-inner{padding:16px 0;border-top:2px solid #e2e8f0;margin-top:0}
-
     /* SERVICE SECTION (in booking panel) */
     #service-section{margin-top:2rem}
     .divider{border:none;border-top:2px solid #e2e8f0;margin:2rem 0 1.5rem}
     .subsection-title{font-size:1.08rem;font-weight:800;color:#0f172a;margin-bottom:1.1rem}
-    .toggle-group{display:flex;border:2px solid #e2e8f0;border-radius:12px;overflow:visible;width:fit-content;position:relative}
-    .toggle-btn{padding:10px 22px;background:#fff;border:none;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--slate-light);transition:background .15s,color .15s;border-right:2px solid #e2e8f0;position:relative;overflow:visible}
+    .toggle-group{display:flex;border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;width:fit-content}
+    .toggle-btn{padding:10px 22px;background:#fff;border:none;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--slate-light);transition:background .15s,color .15s;border-right:2px solid #e2e8f0}
     .toggle-btn:last-child{border-right:none}
     .toggle-btn.active{background:var(--teal);color:#fff}
     .toggle-btn:hover:not(.active){background:var(--teal-xlight);color:var(--teal-dark)}
-    .save-badge{position:absolute;top:-24px;right:-65px;background:#d4af37;color:#0f172a;font-size:.7rem;font-weight:900;padding:5px 12px;border-radius:16px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;z-index:10;box-shadow:0 3px 12px rgba(212,175,55,.5);display:flex;align-items:center;gap:4px}
     .options-row{display:flex;gap:2rem;flex-wrap:wrap;margin-top:1.2rem}
     .options-col{min-width:180px}
     .options-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-light);margin-bottom:8px}
@@ -189,9 +175,9 @@
     .btn-checkout:disabled{background:#cbd5e0;cursor:not-allowed;transform:none;box-shadow:none}
 
     /* MODAL */
-    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,.6);z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:2rem 1rem}
-    .modal-overlay.open{display:block}
-    .modal{background:#fff;border-radius:20px;max-width:520px;width:100%;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.25);animation:slideUp .22s ease;position:relative}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.25);animation:slideUp .22s ease}
     @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
     .modal-header{background:linear-gradient(135deg,var(--teal-dark),var(--teal));padding:1.5rem 2rem;color:#fff;border-radius:20px 20px 0 0}
     .modal-header h3{font-size:1.15rem;font-weight:900}
@@ -267,7 +253,6 @@
       <p class="hero-note">&#128205; Serving Toronto residential addresses &middot; No commitment required</p>
       <div id="hero-loading"><span class="spinner-sm"></span>Looking up your schedule&hellip;</div>
       <div id="hero-error"></div>
-      <div class="scroll-ready-msg"><span class="loading-spinner"></span>Loading your bin collection schedule&hellip;</div>
     </div>
   </div>
 </div>
@@ -356,34 +341,25 @@
       <div class="bin-tags" id="next-bins"></div>
     </div>
 
-    <div class="schedule-accordion" id="schedule-accordion">
-      <button class="accordion-header" onclick="toggleScheduleAccordion()" aria-expanded="false">
-        <span>📅 Upcoming Schedule</span>
-        <span class="accordion-chevron">▼</span>
-      </button>
-      <div class="accordion-content">
-        <div class="accordion-inner">
-          <div class="calendar-section">
-            <div class="week-row header">
-              <div>Week of</div>
-              <div class="icon-col" title="Green Bin">&#x1F7E2;</div>
-              <div class="icon-col" title="Garbage">&#x26AB;</div>
-              <div class="icon-col" title="Recycling">&#x1F535;</div>
-              <div class="icon-col" title="Yard Waste">&#x1F7E1;</div>
-              <div class="icon-col" title="Christmas Tree">&#x1F384;</div>
-            </div>
-            <div id="schedule-rows"></div>
-          </div>
-
-          <div class="legend">
-            <div class="legend-item"><span class="legend-dot" style="background:#38a169"></span> Green Bin</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#4a5568"></span> Garbage</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#3182ce"></span> Recycling</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#d69e2e"></span> Yard Waste</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#e53e3e"></span> Christmas Tree</div>
-          </div>
-        </div>
+    <div class="calendar-section">
+      <h4>Upcoming Schedule</h4>
+      <div class="week-row header">
+        <div>Week of</div>
+        <div class="icon-col" title="Green Bin">&#x1F7E2;</div>
+        <div class="icon-col" title="Garbage">&#x26AB;</div>
+        <div class="icon-col" title="Recycling">&#x1F535;</div>
+        <div class="icon-col" title="Yard Waste">&#x1F7E1;</div>
+        <div class="icon-col" title="Christmas Tree">&#x1F384;</div>
       </div>
+      <div id="schedule-rows"></div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#38a169"></span> Green Bin</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#4a5568"></span> Garbage</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#3182ce"></span> Recycling</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#d69e2e"></span> Yard Waste</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#e53e3e"></span> Christmas Tree</div>
     </div>
 
     <hr class="divider">
@@ -400,12 +376,9 @@
       </div>
       <div class="options-col">
         <div class="options-label">Plan</div>
-        <div style="position:relative;display:fit-content">
-          <div class="toggle-group" id="plan-toggle">
-            <button class="toggle-btn active" data-val="adhoc">Ad Hoc</button>
-            <button class="toggle-btn" data-val="recurring">Recurring</button>
-          </div>
-          <span class="save-badge">Save 34%</span>
+        <div class="toggle-group" id="plan-toggle">
+          <button class="toggle-btn active" data-val="adhoc">Ad Hoc</button>
+          <button class="toggle-btn" data-val="recurring">Recurring</button>
         </div>
       </div>
     </div>
@@ -585,31 +558,6 @@ function resetSearch() {
   document.getElementById('hero-anchor').scrollIntoView({ behavior: 'smooth' });
 }
 
-// ===== Toggle schedule accordion =====
-function toggleScheduleAccordion() {
-  const accordion = document.getElementById('schedule-accordion');
-  const header = accordion.querySelector('.accordion-header');
-  const isOpen = accordion.classList.contains('open');
-  accordion.classList.toggle('open');
-  header.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
-}
-
-// ===== Booking section scroll handler (persistent reference) =====
-let scrollHandlerAttached = false;
-const handleBookingTransitionEnd = (e) => {
-  if (e.propertyName === 'max-height') {
-    const scrollMsg = document.querySelector('.scroll-ready-msg');
-    const addressBar = document.querySelector('.address-confirmed');
-    if (addressBar) {
-      const rect = addressBar.getBoundingClientRect();
-      const offsetTop = rect.top + window.pageYOffset;
-      const navHeight = document.querySelector('nav') ? document.querySelector('nav').offsetHeight : 0;
-      window.scrollTo({ top: offsetTop - navHeight - 100, behavior: 'smooth' });
-    }
-    if (scrollMsg) scrollMsg.style.display = 'none';
-  }
-};
-
 // ===== Reveal booking section =====
 function revealBooking(address, calendarName, schedule) {
   document.getElementById('ac-address-text').textContent = address;
@@ -663,30 +611,10 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
-  // Show scroll-in-progress message
-  const scrollMsg = document.querySelector('.scroll-ready-msg');
-  if (scrollMsg) scrollMsg.style.display = 'block';
-
-  // Attach persistent handler if not already attached
-  const bookingSection = document.getElementById('booking-section');
-  if (!scrollHandlerAttached) {
-    bookingSection.addEventListener('transitionend', handleBookingTransitionEnd);
-    scrollHandlerAttached = true;
-  }
-  
-  // Fallback: scroll after 1.6s if transitionend doesn't fire
+  // Scroll to booking section after transition starts
   setTimeout(() => {
-    if (scrollMsg && scrollMsg.style.display === 'block') {
-      const addressBar = document.querySelector('.address-confirmed');
-      if (addressBar) {
-        const rect = addressBar.getBoundingClientRect();
-        const offsetTop = rect.top + window.pageYOffset;
-        const navH = document.querySelector('nav') ? document.querySelector('nav').offsetHeight : 0;
-      window.scrollTo({ top: offsetTop - navH - 100, behavior: 'smooth' });
-      }
-      scrollMsg.style.display = 'none';
-    }
-  }, 1600);
+    document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 200);
 }
 
 // ===== Service toggles =====
@@ -696,11 +624,6 @@ document.getElementById('service-toggle').addEventListener('click', function(e) 
   this.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   serviceType = btn.dataset.val;
-  // Keep recurring info text in sync when user toggles service type while in
-  // recurring mode (Roll Out / Roll In / Both should re-render the summary).
-  if (planType === 'recurring') {
-    buildRecurringInfo();
-  }
   updateTotal();
 });
 
@@ -767,10 +690,9 @@ function buildRecurringInfo() {
   const serviceMultiplier = serviceType === 'both' ? 2 : 1;
   const monthlyTotal = (PRICE_RECURRING * eventsPerMonth * serviceMultiplier).toFixed(2);
   const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
-  const eventPrice = (PRICE_RECURRING * serviceMultiplier).toFixed(2);
   document.getElementById('recurring-title').textContent = 'Every ' + dayName + ' \u2014 ' + serviceLabel;
-  document.getElementById('recurring-desc').textContent = 'We\'ll handle your bins on every ' + dayName + ' collection day, automatically. $' + eventPrice + '/service/week.';
-  document.getElementById('recurring-monthly').textContent = 'Estimated monthly: ~$' + monthlyTotal + '/month (' + (serviceMultiplier * eventsPerMonth) + ' service events \xd7 $' + eventPrice + ')'
+  document.getElementById('recurring-desc').textContent = 'We\'ll handle your bins on every ' + dayName + ' collection day, automatically. $' + PRICE_RECURRING.toFixed(2) + '/service/event.';
+  document.getElementById('recurring-monthly').textContent = 'Estimated monthly: ~$' + monthlyTotal + '/month (' + (serviceMultiplier * eventsPerMonth) + ' service events \xd7 $' + PRICE_RECURRING.toFixed(2) + ')';
 }
 
 // ===== Running total =====
@@ -784,9 +706,8 @@ function updateTotal() {
     wrap.style.display = 'block';
     const serviceMultiplier = serviceType === 'both' ? 2 : 1;
     const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
-    const eventPrice = (PRICE_RECURRING * serviceMultiplier).toFixed(2);
-    itemsDiv.innerHTML = '<div class="total-item"><span>' + serviceLabel + ' &times; Recurring</span><span>$' + eventPrice + '/week</span></div>';
-    totalAmt.textContent = '$' + eventPrice + '/week';
+    itemsDiv.innerHTML = '<div class="total-item"><span>' + serviceLabel + ' &times; Recurring</span><span>$' + PRICE_RECURRING.toFixed(2) + '/event</span></div>';
+    totalAmt.textContent = '$' + PRICE_RECURRING.toFixed(2) + '/event';
     btn.disabled = false;
     return;
   }
@@ -812,27 +733,7 @@ function updateTotal() {
 // ===== Checkout =====
 document.getElementById('btn-checkout').addEventListener('click', openCheckout);
 
-function lockBodyScroll() {
-  const scrollY = window.scrollY;
-  document.body.style.position = 'fixed';
-  document.body.style.top = '-' + scrollY + 'px';
-  document.body.style.left = '0';
-  document.body.style.right = '0';
-  document.body.style.overflow = 'hidden';
-  document.body.dataset.scrollY = scrollY;
-}
-function unlockBodyScroll() {
-  const scrollY = parseInt(document.body.dataset.scrollY || '0');
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.left = '';
-  document.body.style.right = '';
-  document.body.style.overflow = '';
-  window.scrollTo(0, scrollY);
-}
-
 function openCheckout() {
-  lockBodyScroll();
   const overlay = document.getElementById('modal-overlay');
   const body = document.getElementById('modal-body');
   const serviceMultiplier = serviceType === 'both' ? 2 : 1;
@@ -853,7 +754,7 @@ function openCheckout() {
   } else {
     datesHTML = 'Every ' + dayName + ' (recurring)';
     totalVal = PRICE_RECURRING * serviceMultiplier;
-    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">$' + totalVal.toFixed(2) + '/week</span></div>';
+    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">$' + totalVal.toFixed(2) + '/event</span></div>';
   }
 
   // Store booking data in global scope for payment processing
@@ -873,7 +774,7 @@ function openCheckout() {
     '<div class="modal-row"><span class="mr-label">Plan</span><span class="mr-value">' + (planType === 'adhoc' ? 'Ad Hoc' : 'Recurring') + '</span></div>' +
     '<div class="modal-row"><span class="mr-label">Date(s)</span><span class="mr-value">' + datesHTML + '</span></div>' +
     itemsHTML +
-    '<div class="modal-total"><span class="mt-label">' + (planType === 'recurring' ? 'Per week' : 'Total') + '</span><span class="mt-value">$' + totalVal.toFixed(2) + (planType === 'recurring' ? '/week' : '') + '</span></div>' +
+    '<div class="modal-total"><span class="mt-label">' + (planType === 'recurring' ? 'Per event' : 'Total') + '</span><span class="mt-value">$' + totalVal.toFixed(2) + (planType === 'recurring' ? '/event' : '') + '</span></div>' +
     '<div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #e2e8f0"><p style="font-size:0.85rem;font-weight:600;color:var(--slate-light);margin-bottom:0.8rem">Your Details</p>' +
     '<input id="customer-name" type="text" placeholder="Full Name" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
     '<input id="customer-email" type="email" placeholder="Email" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
@@ -909,52 +810,32 @@ function goToPayment() {
 }
 
 function closeModal() {
-  unlockBodyScroll();
   document.getElementById('modal-overlay').classList.remove('open');
-}
-
-function formatCardNumber(val) {
-  return val.replace(/\D/g,'').replace(/(\d{4})/g,'$1 ').trim().slice(0,19);
-}
-function formatExpiry(val) {
-  let v = val.replace(/\D/g,'').slice(0,4);
-  if (v.length >= 3) return v.slice(0,2) + ' / ' + v.slice(2);
-  return v;
 }
 
 function showStripeForm() {
   const body = document.getElementById('modal-body');
   const booking = window.currentBooking || {};
-  const inputStyle = 'width:100%;padding:13px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1rem;background:#fff;outline:none;-webkit-appearance:none;box-sizing:border-box;color:#334155;';
 
-  body.innerHTML =
-    '<div style="margin-bottom:1.2rem">' +
-      '<label style="display:block;font-weight:600;margin-bottom:6px;color:var(--slate);font-size:.9rem">Card Number</label>' +
-      '<input id="inp-card-number" type="tel" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" style="' + inputStyle + 'margin-bottom:12px" />' +
-      '<div style="display:flex;gap:10px">' +
-        '<div style="flex:1"><label style="display:block;font-weight:600;margin-bottom:6px;color:var(--slate);font-size:.9rem">Expiry</label>' +
-        '<input id="inp-expiry" type="tel" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" style="' + inputStyle + '" /></div>' +
-        '<div style="flex:1"><label style="display:block;font-weight:600;margin-bottom:6px;color:var(--slate);font-size:.9rem">CVC</label>' +
-        '<input id="inp-cvc" type="tel" inputmode="numeric" autocomplete="cc-csc" placeholder="123" style="' + inputStyle + '" /></div>' +
-      '</div>' +
-      '<div id="card-errors" style="margin-top:8px;color:#dc2626;font-size:.85rem"></div>' +
+  body.innerHTML = '<div style="margin-bottom:1.2rem"><label style="display:block;font-weight:600;margin-bottom:0.5rem;color:var(--slate)">Card Details</label>' +
+    '<div id="card-number" style="border:1px solid #e2e8f0;padding:12px;margin-bottom:0.8rem;border-radius:8px;background:#f8fafc;min-height:44px"></div>' +
+    '<div style="display:flex;gap:0.8rem">' +
+      '<div id="card-expiry" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:44px;flex:1"></div>' +
+      '<div id="card-cvc" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:44px;flex:1"></div>' +
     '</div>' +
-    '<div style="padding:12px;background:var(--teal-xlight);border-radius:8px;margin:1rem 0;font-size:.85rem;color:var(--slate)"><strong>Test:</strong> 4242 4242 4242 4242 · 12/29 · 123</div>' +
+    '<div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem"></div></div>' +
+    '<div style="padding:12px;background:var(--teal-xlight);border-radius:8px;margin:1rem 0;font-size:0.85rem;color:var(--slate)"><strong>Test card:</strong> 4242 4242 4242 4242 · Exp: any future · CVC: any 3 digits</div>' +
     '<div class="modal-actions">' +
       '<button class="btn-back" onclick="closeModal()">&#8592; Cancel</button>' +
       '<button class="btn-confirm" id="pay-btn" onclick="processPayment()">Pay $' + (booking.amount / 100).toFixed(2) + ' &#10003;</button>' +
     '</div>';
 
-  // Auto-format inputs
-  document.getElementById('inp-card-number').addEventListener('input', function() {
-    this.value = formatCardNumber(this.value);
-  });
-  document.getElementById('inp-expiry').addEventListener('input', function() {
-    this.value = formatExpiry(this.value);
-  });
-  document.getElementById('inp-cvc').addEventListener('input', function() {
-    this.value = this.value.replace(/\D/g,'').slice(0,4);
-  });
+  // Mount Stripe card elements
+  if (typeof initStripeForm === 'function') {
+    setTimeout(() => {
+      initStripeForm();
+    }, 100);
+  }
 }
 
 async function processPayment() {
@@ -962,39 +843,15 @@ async function processPayment() {
   if (!btn) return;
 
   const booking = window.currentBooking;
-  if (!booking) { alert('Booking data missing'); return; }
-
-  // Collect from native inputs
-  const cardNum = (document.getElementById('inp-card-number')?.value || '').replace(/\s/g,'');
-  const expiry  = (document.getElementById('inp-expiry')?.value  || '').replace(/\s/g,'');
-  const cvc     = (document.getElementById('inp-cvc')?.value     || '').trim();
-  const errorDiv = document.getElementById('card-errors');
-
-  if (cardNum.length < 13) { if(errorDiv) errorDiv.textContent = 'Please enter a valid card number.'; return; }
-  if (expiry.length < 3)   { if(errorDiv) errorDiv.textContent = 'Please enter expiry date.'; return; }
-  if (cvc.length < 3)      { if(errorDiv) errorDiv.textContent = 'Please enter CVC.'; return; }
-  if (errorDiv) errorDiv.textContent = '';
+  if (!booking) {
+    alert('Booking data missing');
+    return;
+  }
 
   btn.disabled = true;
   btn.textContent = 'Processing...';
 
   try {
-    // Tokenise via Stripe.js using raw card data
-    const stripe = typeof getStripe === 'function' ? getStripe() : null;
-    if (stripe) {
-      const expParts = expiry.replace('/','').trim();
-      const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: { token: 'tok_visa' }, // test token fallback
-        billing_details: { name: booking.customerName, email: booking.customerEmail }
-      }).catch(() => ({}));
-      if (error) { if(errorDiv) errorDiv.textContent = error.message; btn.disabled=false; btn.textContent='Try Again'; return; }
-      booking.stripePaymentId = paymentMethod?.id || 'test_' + Date.now();
-    } else {
-      booking.stripePaymentId = 'test_' + Date.now();
-    }
-
-    booking.cardLast4 = cardNum.slice(-4);
     const result = await processBookingPayment(booking);
     if (result && result.success) {
       showPaymentSuccess(result.bookingId, booking, result.savedLocation, result.ordersCount || 0);
@@ -1002,7 +859,10 @@ async function processPayment() {
       throw new Error(result?.error || 'Payment failed');
     }
   } catch (err) {
-    if (errorDiv) errorDiv.textContent = 'Error: ' + (err.message || 'Payment failed');
+    const errorDiv = document.getElementById('card-errors');
+    if (errorDiv) {
+      errorDiv.textContent = 'Error: ' + (err.message || 'Payment failed');
+    }
     btn.disabled = false;
     btn.textContent = 'Try Again';
     console.error('Payment error:', err);
@@ -1045,8 +905,8 @@ function formatDateShort(isoStr) {
 <script src="https://js.stripe.com/v3/"></script>
 
 <!-- Custom scripts -->
-<script src="stripe-integration.js?v=3"></script>
-<script src="airtable-bookings.js?v=2"></script>
-<script src="email-service.js?v=1"></script>
+<script src="stripe-integration.js"></script>
+<script src="airtable-bookings.js"></script>
+<script src="email-service.js"></script>
 </body>
 </html>
