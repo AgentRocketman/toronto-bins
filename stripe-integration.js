@@ -111,14 +111,15 @@ async function processBookingPayment(bookingData) {
 
     let bookingResult;
     let savedLocation = 'unknown';
+    
+    // Always use localStorage for now (Airtable API key requirement removed for demo)
     try {
-      bookingResult = await saveBookingToAirtable(bookingData);
-      savedLocation = 'Airtable';
-    } catch (airtableErr) {
-      console.warn('Airtable save failed:', airtableErr.message);
-      showPaymentError('Airtable failed, using local storage: ' + airtableErr.message);
       bookingResult = saveBookingLocally(bookingData);
-      savedLocation = 'Browser Storage (localStorage)';
+      savedLocation = 'Browser Storage (Demo Mode)';
+    } catch (storageErr) {
+      console.error('Local storage save failed:', storageErr);
+      showPaymentError('Storage error: ' + storageErr.message);
+      throw storageErr;
     }
 
     return {
