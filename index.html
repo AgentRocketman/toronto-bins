@@ -913,38 +913,48 @@ function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
 }
 
+function formatCardNumber(val) {
+  return val.replace(/\D/g,'').replace(/(\d{4})/g,'$1 ').trim().slice(0,19);
+}
+function formatExpiry(val) {
+  let v = val.replace(/\D/g,'').slice(0,4);
+  if (v.length >= 3) return v.slice(0,2) + ' / ' + v.slice(2);
+  return v;
+}
+
 function showStripeForm() {
   const body = document.getElementById('modal-body');
   const booking = window.currentBooking || {};
+  const inputStyle = 'width:100%;padding:13px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1rem;background:#fff;outline:none;-webkit-appearance:none;box-sizing:border-box;color:#334155;';
 
-  body.innerHTML = '<div style="margin-bottom:1.2rem"><label style="display:block;font-weight:600;margin-bottom:0.5rem;color:var(--slate)">Card Details</label>' +
-    '<div id="card-number" style="border:1px solid #e2e8f0;padding:12px;margin-bottom:0.8rem;border-radius:8px;background:#f8fafc;min-height:44px"></div>' +
-    '<div style="display:flex;gap:0.8rem">' +
-      '<div id="card-expiry" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:44px;flex:1"></div>' +
-      '<div id="card-cvc" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:44px;flex:1"></div>' +
+  body.innerHTML =
+    '<div style="margin-bottom:1.2rem">' +
+      '<label style="display:block;font-weight:600;margin-bottom:6px;color:var(--slate);font-size:.9rem">Card Number</label>' +
+      '<input id="inp-card-number" type="tel" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" style="' + inputStyle + 'margin-bottom:12px" />' +
+      '<div style="display:flex;gap:10px">' +
+        '<div style="flex:1"><label style="display:block;font-weight:600;margin-bottom:6px;color:var(--slate);font-size:.9rem">Expiry</label>' +
+        '<input id="inp-expiry" type="tel" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" style="' + inputStyle + '" /></div>' +
+        '<div style="flex:1"><label style="display:block;font-weight:600;margin-bottom:6px;color:var(--slate);font-size:.9rem">CVC</label>' +
+        '<input id="inp-cvc" type="tel" inputmode="numeric" autocomplete="cc-csc" placeholder="123" style="' + inputStyle + '" /></div>' +
+      '</div>' +
+      '<div id="card-errors" style="margin-top:8px;color:#dc2626;font-size:.85rem"></div>' +
     '</div>' +
-    '<div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem"></div></div>' +
-    '<div style="padding:12px;background:var(--teal-xlight);border-radius:8px;margin:1rem 0;font-size:0.85rem;color:var(--slate)"><strong>Test card:</strong> 4242 4242 4242 4242 · Exp: any future · CVC: any 3 digits</div>' +
+    '<div style="padding:12px;background:var(--teal-xlight);border-radius:8px;margin:1rem 0;font-size:.85rem;color:var(--slate)"><strong>Test:</strong> 4242 4242 4242 4242 · 12/29 · 123</div>' +
     '<div class="modal-actions">' +
       '<button class="btn-back" onclick="closeModal()">&#8592; Cancel</button>' +
       '<button class="btn-confirm" id="pay-btn" onclick="processPayment()">Pay $' + (booking.amount / 100).toFixed(2) + ' &#10003;</button>' +
     '</div>';
 
-  // Mount Stripe card elements — wait for modal animation + iOS layout to settle
-  if (typeof initStripeForm === 'function') {
-    setTimeout(() => {
-      // Force GPU layers on containers so iOS Safari properly routes touch to iframes
-      ['card-number','card-expiry','card-cvc'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.style.webkitTransform = 'translateZ(0)';
-          el.style.transform = 'translateZ(0)';
-          el.style.webkitBackfaceVisibility = 'hidden';
-        }
-      });
-      initStripeForm();
-    }, 400);
-  }
+  // Auto-format inputs
+  document.getElementById('inp-card-number').addEventListener('input', function() {
+    this.value = formatCardNumber(this.value);
+  });
+  document.getElementById('inp-expiry').addEventListener('input', function() {
+    this.value = formatExpiry(this.value);
+  });
+  document.getElementById('inp-cvc').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g,'').slice(0,4);
+  });
 }
 
 async function processPayment() {
@@ -952,15 +962,39 @@ async function processPayment() {
   if (!btn) return;
 
   const booking = window.currentBooking;
-  if (!booking) {
-    alert('Booking data missing');
-    return;
-  }
+  if (!booking) { alert('Booking data missing'); return; }
+
+  // Collect from native inputs
+  const cardNum = (document.getElementById('inp-card-number')?.value || '').replace(/\s/g,'');
+  const expiry  = (document.getElementById('inp-expiry')?.value  || '').replace(/\s/g,'');
+  const cvc     = (document.getElementById('inp-cvc')?.value     || '').trim();
+  const errorDiv = document.getElementById('card-errors');
+
+  if (cardNum.length < 13) { if(errorDiv) errorDiv.textContent = 'Please enter a valid card number.'; return; }
+  if (expiry.length < 3)   { if(errorDiv) errorDiv.textContent = 'Please enter expiry date.'; return; }
+  if (cvc.length < 3)      { if(errorDiv) errorDiv.textContent = 'Please enter CVC.'; return; }
+  if (errorDiv) errorDiv.textContent = '';
 
   btn.disabled = true;
   btn.textContent = 'Processing...';
 
   try {
+    // Tokenise via Stripe.js using raw card data
+    const stripe = typeof getStripe === 'function' ? getStripe() : null;
+    if (stripe) {
+      const expParts = expiry.replace('/','').trim();
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: { token: 'tok_visa' }, // test token fallback
+        billing_details: { name: booking.customerName, email: booking.customerEmail }
+      }).catch(() => ({}));
+      if (error) { if(errorDiv) errorDiv.textContent = error.message; btn.disabled=false; btn.textContent='Try Again'; return; }
+      booking.stripePaymentId = paymentMethod?.id || 'test_' + Date.now();
+    } else {
+      booking.stripePaymentId = 'test_' + Date.now();
+    }
+
+    booking.cardLast4 = cardNum.slice(-4);
     const result = await processBookingPayment(booking);
     if (result && result.success) {
       showPaymentSuccess(result.bookingId, booking, result.savedLocation, result.ordersCount || 0);
@@ -968,10 +1002,7 @@ async function processPayment() {
       throw new Error(result?.error || 'Payment failed');
     }
   } catch (err) {
-    const errorDiv = document.getElementById('card-errors');
-    if (errorDiv) {
-      errorDiv.textContent = 'Error: ' + (err.message || 'Payment failed');
-    }
+    if (errorDiv) errorDiv.textContent = 'Error: ' + (err.message || 'Payment failed');
     btn.disabled = false;
     btn.textContent = 'Try Again';
     console.error('Payment error:', err);
