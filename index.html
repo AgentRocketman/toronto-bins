@@ -189,7 +189,7 @@
     .btn-checkout:disabled{background:#cbd5e0;cursor:not-allowed;transform:none;box-shadow:none}
 
     /* MODAL */
-    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,.6);z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:2rem 1rem}
+    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,.6);z-index:500;overflow-y:scroll;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:2rem 1rem}
     .modal-overlay.open{display:block}
     .modal{background:#fff;border-radius:20px;max-width:520px;width:100%;margin:0 auto;box-shadow:0 25px 60px rgba(0,0,0,.25);animation:slideUp .22s ease;position:relative}
     @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -812,7 +812,27 @@ function updateTotal() {
 // ===== Checkout =====
 document.getElementById('btn-checkout').addEventListener('click', openCheckout);
 
+function lockBodyScroll() {
+  const scrollY = window.scrollY;
+  document.body.style.position = 'fixed';
+  document.body.style.top = '-' + scrollY + 'px';
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.overflow = 'hidden';
+  document.body.dataset.scrollY = scrollY;
+}
+function unlockBodyScroll() {
+  const scrollY = parseInt(document.body.dataset.scrollY || '0');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.overflow = '';
+  window.scrollTo(0, scrollY);
+}
+
 function openCheckout() {
+  lockBodyScroll();
   const overlay = document.getElementById('modal-overlay');
   const body = document.getElementById('modal-body');
   const serviceMultiplier = serviceType === 'both' ? 2 : 1;
@@ -889,6 +909,7 @@ function goToPayment() {
 }
 
 function closeModal() {
+  unlockBodyScroll();
   document.getElementById('modal-overlay').classList.remove('open');
 }
 
