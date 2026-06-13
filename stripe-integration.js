@@ -80,34 +80,14 @@ function showPaymentError(message) {
 
 async function processBookingPayment(bookingData) {
   if (!bookingData || !bookingData.amount) {
-    throw new Error('Invalid booking data');
+    throw new Error('Invalid booking data: ' + JSON.stringify(bookingData));
   }
 
   try {
-    showPaymentError('Creating payment method...'); // Show progress
+    showPaymentError('Processing booking...'); // Show progress
     
-    const stripe = getStripe();
-    if (!stripe) {
-      throw new Error('Stripe not loaded. Please refresh and try again.');
-    }
-    
-    const { paymentMethod, error } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: window.cardNumber,
-      billing_details: {
-        name: bookingData.customerName,
-        email: bookingData.customerEmail,
-        phone: bookingData.customerPhone
-      }
-    });
-
-    if (error) {
-      showPaymentError('Stripe error: ' + error.message);
-      return false;
-    }
-
-    showPaymentError('Saving booking...'); // Show progress
-    bookingData.stripePaymentId = paymentMethod.id;
+    // Demo mode: skip Stripe tokenization, stripePaymentId already set in index.html
+    // bookingData.stripePaymentId should already be set to 'demo_<timestamp>'
 
     let bookingResult;
     let savedLocation = 'unknown';
