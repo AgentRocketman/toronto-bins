@@ -267,7 +267,7 @@
       <p class="hero-note">&#128205; Serving Toronto residential addresses &middot; No commitment required</p>
       <div id="hero-loading"><span class="spinner-sm"></span>Looking up your schedule&hellip;</div>
       <div id="hero-error"></div>
-      <div class="scroll-ready-msg"><span class="loading-spinner"></span>Scrolling to your schedule&hellip;</div>
+      <div class="scroll-ready-msg"><span class="loading-spinner"></span>Loading your bin collection schedule&hellip;</div>
     </div>
   </div>
 </div>
@@ -603,7 +603,7 @@ const handleBookingTransitionEnd = (e) => {
     if (addressBar) {
       const rect = addressBar.getBoundingClientRect();
       const offsetTop = rect.top + window.pageYOffset;
-      window.scrollTo({ top: offsetTop - 80, behavior: 'smooth' });
+      window.scrollTo({ top: offsetTop - 20, behavior: 'smooth' });
     }
     if (scrollMsg) scrollMsg.style.display = 'none';
   }
@@ -680,7 +680,7 @@ function revealBooking(address, calendarName, schedule) {
       if (addressBar) {
         const rect = addressBar.getBoundingClientRect();
         const offsetTop = rect.top + window.pageYOffset;
-        window.scrollTo({ top: offsetTop - 80, behavior: 'smooth' });
+        window.scrollTo({ top: offsetTop - 20, behavior: 'smooth' });
       }
       scrollMsg.style.display = 'none';
     }
@@ -767,7 +767,7 @@ function buildRecurringInfo() {
   const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
   const eventPrice = (PRICE_RECURRING * serviceMultiplier).toFixed(2);
   document.getElementById('recurring-title').textContent = 'Every ' + dayName + ' \u2014 ' + serviceLabel;
-  document.getElementById('recurring-desc').textContent = 'We\'ll handle your bins on every ' + dayName + ' collection day, automatically. $' + eventPrice + '/service/event.';
+  document.getElementById('recurring-desc').textContent = 'We\'ll handle your bins on every ' + dayName + ' collection day, automatically. $' + eventPrice + '/service/week.';
   document.getElementById('recurring-monthly').textContent = 'Estimated monthly: ~$' + monthlyTotal + '/month (' + (serviceMultiplier * eventsPerMonth) + ' service events \xd7 $' + eventPrice + ')'
 }
 
@@ -783,8 +783,8 @@ function updateTotal() {
     const serviceMultiplier = serviceType === 'both' ? 2 : 1;
     const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
     const eventPrice = (PRICE_RECURRING * serviceMultiplier).toFixed(2);
-    itemsDiv.innerHTML = '<div class="total-item"><span>' + serviceLabel + ' &times; Recurring</span><span>$' + eventPrice + '/event</span></div>';
-    totalAmt.textContent = '$' + eventPrice + '/event';
+    itemsDiv.innerHTML = '<div class="total-item"><span>' + serviceLabel + ' &times; Recurring</span><span>$' + eventPrice + '/week</span></div>';
+    totalAmt.textContent = '$' + eventPrice + '/week';
     btn.disabled = false;
     return;
   }
@@ -831,7 +831,7 @@ function openCheckout() {
   } else {
     datesHTML = 'Every ' + dayName + ' (recurring)';
     totalVal = PRICE_RECURRING * serviceMultiplier;
-    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">$' + totalVal.toFixed(2) + '/event</span></div>';
+    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">$' + totalVal.toFixed(2) + '/week</span></div>';
   }
 
   // Store booking data in global scope for payment processing
@@ -851,7 +851,7 @@ function openCheckout() {
     '<div class="modal-row"><span class="mr-label">Plan</span><span class="mr-value">' + (planType === 'adhoc' ? 'Ad Hoc' : 'Recurring') + '</span></div>' +
     '<div class="modal-row"><span class="mr-label">Date(s)</span><span class="mr-value">' + datesHTML + '</span></div>' +
     itemsHTML +
-    '<div class="modal-total"><span class="mt-label">' + (planType === 'recurring' ? 'Per event' : 'Total') + '</span><span class="mt-value">$' + totalVal.toFixed(2) + (planType === 'recurring' ? '/event' : '') + '</span></div>' +
+    '<div class="modal-total"><span class="mt-label">' + (planType === 'recurring' ? 'Per week' : 'Total') + '</span><span class="mt-value">$' + totalVal.toFixed(2) + (planType === 'recurring' ? '/week' : '') + '</span></div>' +
     '<div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #e2e8f0"><p style="font-size:0.85rem;font-weight:600;color:var(--slate-light);margin-bottom:0.8rem">Your Details</p>' +
     '<input id="customer-name" type="text" placeholder="Full Name" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
     '<input id="customer-email" type="email" placeholder="Email" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
