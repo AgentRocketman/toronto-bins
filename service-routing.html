@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CurbIn Service Routing</title>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDC8nGqPjHD6U0-uSRI"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #334155;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      gap: 0;
+    }
+
+    .sidebar {
+      width: 350px;
+      background: #fff;
+      border-right: 1px solid #e2e8f0;
+      overflow-y: auto;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-header {
+      margin-bottom: 20px;
+    }
+
+    .sidebar-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f766e;
+      margin-bottom: 12px;
+    }
+
+    .date-picker {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .service-group {
+      margin-bottom: 24px;
+    }
+
+    .group-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .stop-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .stop-item.completed {
+      background: #d1fae5;
+      border-color: #6ee7b7;
+    }
+
+    .stop-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .stop-header {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .stop-checkbox {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: #10b981;
+    }
+
+    .stop-info {
+      flex: 1;
+    }
+
+    .stop-address {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+
+    .stop-status {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #fef3c7;
+      color: #92400e;
+      display: inline-block;
+    }
+
+    .stop-status.completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .stop-image-upload {
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .upload-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .upload-input {
+      display: none;
+    }
+
+    .upload-button {
+      width: 100%;
+      padding: 6px 8px;
+      background: #0f766e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .upload-button:hover {
+      background: #115e59;
+    }
+
+    .upload-button.loading {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .map-container {
+      flex: 1;
+      position: relative;
+      background: #fff;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .info-window-content {
+      font-size: 0.9rem;
+      color: #334155;
+    }
+
+    .info-window-content h3 {
+      margin-bottom: 8px;
+      color: #0f766e;
+      font-size: 1rem;
+    }
+
+    .info-window-content p {
+      margin: 4px 0;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .map-container {
+        height: 60vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">📍 Service Schedule</div>
+        <input type="date" class="date-picker" id="datePicker">
+      </div>
+
+      <!-- ROLLOUTS -->
+      <div class="service-group">
+        <div class="group-title">Roll Outs</div>
+        <div id="rollouts-container"></div>
+      </div>
+
+      <!-- ROLL-INS -->
+      <div class="service-group">
+        <div class="group-title">Roll Ins</div>
+        <div id="rollin-container"></div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <script>
+    // Config
+    const GOOGLE_MAPS_API_KEY = 'AIzaSyDC8nGqPjHD6U0-uSRI';
+    const AIRTABLE_BASE_ID = 'appXXXXXXXXXXXXXX'; // Update with your base
+    const AIRTABLE_TABLE = 'Service Stops';
+    const AIRTABLE_TOKEN = 'patXXXXXXXXXXXXXX'; // Update with your token
+
+    // Service stops data
+    const serviceStops = [
+      // Rollouts
+      { id: 'ro-1', address: '30 Woodbury Rd, Toronto', type: 'rollout', completed: false, imageUrl: null },
+      { id: 'ro-2', address: '41 Foch Ave, Toronto', type: 'rollout', completed: false, imageUrl: null },
+      { id: 'ro-3', address: '70 Ruby Lane, Toronto', type: 'rollout', completed: false, imageUrl: null },
+      { id: 'ro-4', address: '11 Terryellen Cres, Toronto', type: 'rollout', completed: false, imageUrl: null },
+      // Roll-Ins
+      { id: 'ri-1', address: '2020 Roncesvalles Ave, Toronto', type: 'rollin', completed: false, imageUrl: null },
+      { id: 'ri-2', address: '1 Bloor St E, Toronto', type: 'rollin', completed: false, imageUrl: null },
+      { id: 'ri-3', address: '1 Dundas St W, Toronto', type: 'rollin', completed: false, imageUrl: null },
+      { id: 'ri-4', address: '120 Roncesvalles Ave, Toronto', type: 'rollin', completed: false, imageUrl: null }
+    ];
+
+    let map;
+    let markers = [];
+    let directionsRenderer;
+    let currentStops = [...serviceStops];
+    let optimizedRoute = [];
+
+    // Initialize
+    function init() {
+      initMap();
+      setTodayDate();
+      renderServiceList();
+      calculateOptimalRoute();
+    }
+
+    // Map initialization
+    function initMap() {
+      const torontoCenter = { lat: 43.6629, lng: -79.3957 };
+      
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: torontoCenter,
+        styles: [
+          { featureType: 'water', stylers: [{ color: '#c9d7e9' }] },
+          { featureType: 'landscape', stylers: [{ color: '#f5f7fa' }] }
+        ]
+      });
+
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        map: map,
+        suppressMarkers: true,
+        polylineOptions: {
+          strokeColor: '#0f766e',
+          strokeWeight: 3,
+          strokeOpacity: 0.8
+        }
+      });
+    }
+
+    // Calculate optimal route using Directions API
+    function calculateOptimalRoute() {
+      if (currentStops.length === 0) return;
+
+      const directionsService = new google.maps.DirectionsService();
+      
+      // Toronto as origin/destination
+      const origin = { lat: 43.6629, lng: -79.3957 };
+      const destination = origin;
+
+      if (currentStops.length === 1) {
+        const stop = currentStops[0];
+        optimizedRoute = [stop];
+        drawRoute([stop]);
+        renderMarkers([stop]);
+        return;
+      }
+
+      // For 2+ stops, use waypoints
+      const waypoints = currentStops.slice(1).map(stop => ({
+        location: stop.address,
+        stopover: true
+      }));
+
+      directionsService.route({
+        origin: currentStops[0].address,
+        destination: currentStops[currentStops.length - 1].address,
+        waypoints: waypoints.length > 0 ? waypoints : undefined,
+        optimizeWaypoints: true,
+        travelMode: google.maps.TravelMode.DRIVING
+      }, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(result);
+          
+          // Extract route order
+          const route = result.routes[0];
+          const waypointOrder = result.routes[0].waypoint_order || [];
+          
+          optimizedRoute = [currentStops[0]];
+          waypointOrder.forEach(idx => {
+            optimizedRoute.push(currentStops[idx + 1]);
+          });
+          optimizedRoute.push(currentStops[currentStops.length - 1]);
+
+          renderMarkers(optimizedRoute);
+        } else {
+          console.error('Directions request failed:', status);
+          drawRoute(currentStops);
+          renderMarkers(currentStops);
+        }
+      });
+    }
+
+    // Draw simple route (fallback)
+    function drawRoute(stops) {
+      if (stops.length === 0) return;
+      
+      const geocoder = new google.maps.Geocoder();
+      const coords = [];
+
+      stops.forEach((stop, idx) => {
+        geocoder.geocode({ address: stop.address }, (results, status) => {
+          if (status === google.maps.GeocoderStatus.OK && results[0]) {
+            coords[idx] = results[0].geometry.location;
+            if (coords.filter(c => c).length === stops.length) {
+              const polyline = new google.maps.Polyline({
+                path: coords,
+                geodesic: true,
+                strokeColor: '#0f766e',
+                strokeOpacity: 0.8,
+                strokeWeight: 3,
+                map: map
+              });
+            }
+          }
+        });
+      });
+    }
+
+    // Render markers on map
+    function renderMarkers(stops) {
+      markers.forEach(m => m.setMap(null));
+      markers = [];
+
+      stops.forEach((stop, idx) => {
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ address: stop.address }, (results, status) => {
+          if (status === google.maps.GeocoderStatus.OK && results[0]) {
+            const position = results[0].geometry.location;
+
+            const marker = new google.maps.Marker({
+              position: position,
+              map: map,
+              title: stop.address,
+              label: String(idx + 1),
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 12,
+                fillColor: stop.type === 'rollout' ? '#3b82f6' : '#8b5cf6',
+                fillOpacity: 1,
+                strokeColor: '#fff',
+                strokeWeight: 2
+              }
+            });
+
+            const infoWindow = new google.maps.InfoWindow({
+              content: `<div class="info-window-content">
+                <h3>${stop.address}</h3>
+                <p><strong>Type:</strong> ${stop.type === 'rollout' ? '📤 Roll Out' : '📥 Roll In'}</p>
+                <p><strong>Status:</strong> ${stop.completed ? '✅ Completed' : '⏳ Pending'}</p>
+              </div>`
+            });
+
+            marker.addListener('click', () => {
+              infoWindow.open(map, marker);
+            });
+
+            markers.push(marker);
+          }
+        });
+      });
+    }
+
+    // Render service list
+    function renderServiceList() {
+      const rolloutContainer = document.getElementById('rollouts-container');
+      const rollinContainer = document.getElementById('rollin-container');
+
+      rolloutContainer.innerHTML = '';
+      rollinContainer.innerHTML = '';
+
+      const rollouts = currentStops.filter(s => s.type === 'rollout');
+      const rollins = currentStops.filter(s => s.type === 'rollin');
+
+      rollouts.forEach(stop => renderStopItem(stop, rolloutContainer));
+      rollins.forEach(stop => renderStopItem(stop, rollinContainer));
+    }
+
+    // Render individual stop item
+    function renderStopItem(stop, container) {
+      const item = document.createElement('div');
+      item.className = `stop-item ${stop.completed ? 'completed' : ''}`;
+      item.dataset.stopId = stop.id;
+
+      item.innerHTML = `
+        <div class="stop-header">
+          <input type="checkbox" class="stop-checkbox" ${stop.completed ? 'checked' : ''}>
+          <div class="stop-info">
+            <div class="stop-address">${stop.address}</div>
+            <span class="stop-status ${stop.completed ? 'completed' : ''}">
+              ${stop.completed ? '✓ Done' : '⏳ Pending'}
+            </span>
+          </div>
+        </div>
+        <div class="stop-image-upload">
+          <label class="upload-label">📷 Bin Photo</label>
+          <input type="file" class="upload-input" accept="image/*">
+          <button class="upload-button" onclick="document.querySelector('[data-stop-id=\\"${stop.id}\\"] .upload-input').click()">
+            ${stop.imageUrl ? '✓ Photo' : 'Upload'}
+          </button>
+        </div>
+      `;
+
+      const checkbox = item.querySelector('.stop-checkbox');
+      const fileInput = item.querySelector('.upload-input');
+
+      checkbox.addEventListener('change', () => {
+        markComplete(stop.id, checkbox.checked);
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        uploadImage(stop.id, e.target.files[0]);
+      });
+
+      container.appendChild(item);
+    }
+
+    // Mark stop as complete
+    function markComplete(stopId, completed) {
+      const stop = currentStops.find(s => s.id === stopId);
+      if (stop) {
+        stop.completed = completed;
+        renderServiceList();
+        calculateOptimalRoute();
+        syncToAirtable(stop);
+      }
+    }
+
+    // Upload image
+    function uploadImage(stopId, file) {
+      if (!file) return;
+
+      const stop = currentStops.find(s => s.id === stopId);
+      if (!stop) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('stopId', stopId);
+      formData.append('date', document.getElementById('datePicker').value);
+
+      fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          stop.imageUrl = data.imageUrl;
+          renderServiceList();
+          syncToAirtable(stop);
+        }
+      })
+      .catch(err => console.error('Upload failed:', err));
+    }
+
+    // Sync to Airtable
+    function syncToAirtable(stop) {
+      // TODO: Implement Airtable API sync
+      console.log('Syncing to Airtable:', stop);
+    }
+
+    // Set today's date
+    function setTodayDate() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('datePicker').value = today;
+      document.getElementById('datePicker').addEventListener('change', (e) => {
+        // Filter stops by date - implement if needed
+      });
+    }
+
+    // Start
+    init();
+  </script>
+</body>
+</html>
