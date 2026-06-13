@@ -979,21 +979,14 @@ async function processPayment() {
   btn.textContent = 'Processing...';
 
   try {
-    // Tokenise via Stripe.js using raw card data
-    const stripe = typeof getStripe === 'function' ? getStripe() : null;
-    if (stripe) {
-      const expParts = expiry.replace('/','').trim();
-      const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: { token: 'tok_visa' }, // test token fallback
-        billing_details: { name: booking.customerName, email: booking.customerEmail }
-      }).catch(() => ({}));
-      if (error) { if(errorDiv) errorDiv.textContent = error.message; btn.disabled=false; btn.textContent='Try Again'; return; }
-      booking.stripePaymentId = paymentMethod?.id || 'test_' + Date.now();
-    } else {
-      booking.stripePaymentId = 'test_' + Date.now();
-    }
-
+    // Demo mode: skip Stripe tokenization, just validate and save
+    if (cardNum.length < 13) { if(errorDiv) errorDiv.textContent = 'Invalid card number'; btn.disabled=false; btn.textContent='Try Again'; return; }
+    if (cardNum.slice(-4).length !== 4) { if(errorDiv) errorDiv.textContent = 'Card number too short'; btn.disabled=false; btn.textContent='Try Again'; return; }
+    if (expiry.length < 4) { if(errorDiv) errorDiv.textContent = 'Invalid expiry format'; btn.disabled=false; btn.textContent='Try Again'; return; }
+    if (cvc.length < 3) { if(errorDiv) errorDiv.textContent = 'Invalid CVC'; btn.disabled=false; btn.textContent='Try Again'; return; }
+    
+    // In demo mode, just create a fake payment ID
+    booking.stripePaymentId = 'demo_' + Date.now();
     booking.cardLast4 = cardNum.slice(-4);
     const result = await processBookingPayment(booking);
     if (result && result.success) {
@@ -1045,7 +1038,7 @@ function formatDateShort(isoStr) {
 <script src="https://js.stripe.com/v3/"></script>
 
 <!-- Custom scripts -->
-<script src="stripe-integration.js?v=4"></script>
+<script src="stripe-integration.js?v=5"></script>
 <script src="airtable-bookings.js?v=2"></script>
 <script src="email-service.js?v=1"></script>
 </body>
