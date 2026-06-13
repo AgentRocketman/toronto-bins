@@ -603,7 +603,8 @@ const handleBookingTransitionEnd = (e) => {
     if (addressBar) {
       const rect = addressBar.getBoundingClientRect();
       const offsetTop = rect.top + window.pageYOffset;
-      window.scrollTo({ top: offsetTop - 20, behavior: 'smooth' });
+      const navHeight = document.querySelector('nav') ? document.querySelector('nav').offsetHeight : 0;
+      window.scrollTo({ top: offsetTop - navHeight - 16, behavior: 'smooth' });
     }
     if (scrollMsg) scrollMsg.style.display = 'none';
   }
@@ -680,7 +681,8 @@ function revealBooking(address, calendarName, schedule) {
       if (addressBar) {
         const rect = addressBar.getBoundingClientRect();
         const offsetTop = rect.top + window.pageYOffset;
-        window.scrollTo({ top: offsetTop - 20, behavior: 'smooth' });
+        const navH = document.querySelector('nav') ? document.querySelector('nav').offsetHeight : 0;
+      window.scrollTo({ top: offsetTop - navH - 16, behavior: 'smooth' });
       }
       scrollMsg.style.display = 'none';
     }
