@@ -15,6 +15,9 @@ function getStripe() {
   return stripeInstance;
 }
 
+// Expose to global scope
+window.getStripe = getStripe;
+
 function initStripeForm() {
   try {
     const numberContainer = document.getElementById('card-number');
@@ -122,3 +125,8 @@ async function processBookingPayment(bookingData) {
     return false;
   }
 }
+
+// Expose to global scope for payment processing
+window.processBookingPayment = processBookingPayment;
+window.initStripeForm = initStripeForm;
+window.showPaymentError = showPaymentError;
