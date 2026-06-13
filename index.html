@@ -909,11 +909,20 @@ function showStripeForm() {
       '<button class="btn-confirm" id="pay-btn" onclick="processPayment()">Pay $' + (booking.amount / 100).toFixed(2) + ' &#10003;</button>' +
     '</div>';
 
-  // Mount Stripe card elements
+  // Mount Stripe card elements — wait for modal animation + iOS layout to settle
   if (typeof initStripeForm === 'function') {
     setTimeout(() => {
+      // Force GPU layers on containers so iOS Safari properly routes touch to iframes
+      ['card-number','card-expiry','card-cvc'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.webkitTransform = 'translateZ(0)';
+          el.style.transform = 'translateZ(0)';
+          el.style.webkitBackfaceVisibility = 'hidden';
+        }
+      });
       initStripeForm();
-    }, 100);
+    }, 400);
   }
 }
 
