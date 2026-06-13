@@ -962,7 +962,9 @@ async function processPayment() {
   if (!btn) return;
 
   const booking = window.currentBooking;
+  console.log('processPayment - booking object:', booking);
   if (!booking) { alert('Booking data missing'); return; }
+  if (!booking.amount) { alert('Booking amount missing: ' + JSON.stringify(booking)); return; }
 
   // Collect from native inputs
   const cardNum = (document.getElementById('inp-card-number')?.value || '').replace(/\s/g,'');
@@ -979,15 +981,15 @@ async function processPayment() {
   btn.textContent = 'Processing...';
 
   try {
-    // Demo mode: skip Stripe tokenization, just validate and save
-    if (cardNum.length < 13) { if(errorDiv) errorDiv.textContent = 'Invalid card number'; btn.disabled=false; btn.textContent='Try Again'; return; }
-    if (cardNum.slice(-4).length !== 4) { if(errorDiv) errorDiv.textContent = 'Card number too short'; btn.disabled=false; btn.textContent='Try Again'; return; }
-    if (expiry.length < 4) { if(errorDiv) errorDiv.textContent = 'Invalid expiry format'; btn.disabled=false; btn.textContent='Try Again'; return; }
-    if (cvc.length < 3) { if(errorDiv) errorDiv.textContent = 'Invalid CVC'; btn.disabled=false; btn.textContent='Try Again'; return; }
+    // Minimal validation
+    if (cardNum.length < 13) { if(errorDiv) errorDiv.textContent = 'Card number required'; return; }
+    if (expiry.length < 4) { if(errorDiv) errorDiv.textContent = 'Expiry required'; return; }
+    if (cvc.length < 3) { if(errorDiv) errorDiv.textContent = 'CVC required'; return; }
     
-    // In demo mode, just create a fake payment ID
+    // Demo mode: create fake payment ID
     booking.stripePaymentId = 'demo_' + Date.now();
     booking.cardLast4 = cardNum.slice(-4);
+    console.log('About to call processBookingPayment with:', booking);
     const result = await processBookingPayment(booking);
     if (result && result.success) {
       showPaymentSuccess(result.bookingId, booking, result.savedLocation, result.ordersCount || 0);
@@ -1038,7 +1040,7 @@ function formatDateShort(isoStr) {
 <script src="https://js.stripe.com/v3/"></script>
 
 <!-- Custom scripts -->
-<script src="stripe-integration.js?v=5"></script>
+<script src="stripe-integration.js?v=6"></script>
 <script src="airtable-bookings.js?v=2"></script>
 <script src="email-service.js?v=1"></script>
 </body>
