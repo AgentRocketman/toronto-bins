@@ -239,18 +239,18 @@
     const AIRTABLE_TABLE = 'Service Stops';
     const AIRTABLE_TOKEN = 'patXXXXXXXXXXXXXX'; // Update with your token
 
-    // Service stops data
+    // Service stops data with fallback coordinates
     const serviceStops = [
       // Rollouts
-      { id: 'ro-1', address: '30 Woodbury Rd, Toronto', type: 'rollout', completed: false, imageUrl: null },
-      { id: 'ro-2', address: '41 Foch Ave, Toronto', type: 'rollout', completed: false, imageUrl: null },
-      { id: 'ro-3', address: '70 Ruby Lane, Toronto', type: 'rollout', completed: false, imageUrl: null },
-      { id: 'ro-4', address: '11 Terryellen Cres, Toronto', type: 'rollout', completed: false, imageUrl: null },
+      { id: 'ro-1', address: '30 Woodbury Rd, Toronto', type: 'rollout', completed: false, imageUrl: null, lat: 43.6829, lng: -79.4129 },
+      { id: 'ro-2', address: '41 Foch Ave, Toronto', type: 'rollout', completed: false, imageUrl: null, lat: 43.6639, lng: -79.4089 },
+      { id: 'ro-3', address: '70 Ruby Lane, Toronto', type: 'rollout', completed: false, imageUrl: null, lat: 43.7129, lng: -79.2759 },
+      { id: 'ro-4', address: '11 Terryellen Cres, Toronto', type: 'rollout', completed: false, imageUrl: null, lat: 43.5689, lng: -79.5389 },
       // Roll-Ins
-      { id: 'ri-1', address: '2020 Roncesvalles Ave, Toronto', type: 'rollin', completed: false, imageUrl: null },
-      { id: 'ri-2', address: '1 Bloor St E, Toronto', type: 'rollin', completed: false, imageUrl: null },
-      { id: 'ri-3', address: '1 Dundas St W, Toronto', type: 'rollin', completed: false, imageUrl: null },
-      { id: 'ri-4', address: '120 Roncesvalles Ave, Toronto', type: 'rollin', completed: false, imageUrl: null }
+      { id: 'ri-1', address: '2020 Roncesvalles Ave, Toronto', type: 'rollin', completed: false, imageUrl: null, lat: 43.6529, lng: -79.4719 },
+      { id: 'ri-2', address: '1 Bloor St E, Toronto', type: 'rollin', completed: false, imageUrl: null, lat: 43.6629, lng: -79.3857 },
+      { id: 'ri-3', address: '1 Dundas St W, Toronto', type: 'rollin', completed: false, imageUrl: null, lat: 43.6559, lng: -79.3857 },
+      { id: 'ri-4', address: '120 Roncesvalles Ave, Toronto', type: 'rollin', completed: false, imageUrl: null, lat: 43.6389, lng: -79.4719 }
     ];
 
     let map;
@@ -329,44 +329,38 @@
       markers.forEach(m => m.setMap(null));
       markers = [];
 
-      const geocoder = new google.maps.Geocoder();
-      let completed = 0;
-
+      // Use fallback coordinates instead of geocoding
       stops.forEach((stop, idx) => {
-        geocoder.geocode({ address: stop.address }, (results, status) => {
-          completed++;
-          if (status === google.maps.GeocoderStatus.OK && results[0]) {
-            const position = results[0].geometry.location;
-            const marker = new google.maps.Marker({
-              position: position,
-              map: map,
-              title: stop.address,
-              label: String(idx + 1),
-              icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 12,
-                fillColor: stop.type === 'rollout' ? '#3b82f6' : '#8b5cf6',
-                fillOpacity: 1,
-                strokeColor: '#fff',
-                strokeWeight: 2
-              }
-            });
-
-            const infoWindow = new google.maps.InfoWindow({
-              content: `<div class="info-window-content">
-                <h3>${stop.address}</h3>
-                <p><strong>Type:</strong> ${stop.type === 'rollout' ? '📤 Roll Out' : '📥 Roll In'}</p>
-                <p><strong>Status:</strong> ${stop.completed ? '✅ Completed' : '⏳ Pending'}</p>
-              </div>`
-            });
-
-            marker.addListener('click', () => {
-              infoWindow.open(map, marker);
-            });
-
-            markers.push(marker);
+        const position = { lat: stop.lat, lng: stop.lng };
+        
+        const marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          title: stop.address,
+          label: String(idx + 1),
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 12,
+            fillColor: stop.type === 'rollout' ? '#3b82f6' : '#8b5cf6',
+            fillOpacity: 1,
+            strokeColor: '#fff',
+            strokeWeight: 2
           }
         });
+
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<div class="info-window-content">
+            <h3>${stop.address}</h3>
+            <p><strong>Type:</strong> ${stop.type === 'rollout' ? '📤 Roll Out' : '📥 Roll In'}</p>
+            <p><strong>Status:</strong> ${stop.completed ? '✅ Completed' : '⏳ Pending'}</p>
+          </div>`
+        });
+
+        marker.addListener('click', () => {
+          infoWindow.open(map, marker);
+        });
+
+        markers.push(marker);
       });
     }
 
