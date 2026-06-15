@@ -38,6 +38,9 @@ async function saveBookingToAirtable(bookingData) {
       'Service Type': bookingData.serviceType || '',
       'Amount': bookingData.amount ? bookingData.amount / 100 : 0, // Convert cents to dollars
       'Stripe Payment ID': bookingData.stripePaymentId || '',
+      'Stripe Subscription ID': bookingData.stripeSubscriptionId || '',
+      'Stripe Customer ID': bookingData.stripeCustomerId || '',
+      'Billing Type': bookingData.frequency === 'recurring' ? 'Recurring Subscription' : 'One-Time Charge',
       'Created At': todayISO
     }
   };

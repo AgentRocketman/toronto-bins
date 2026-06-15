@@ -77,7 +77,7 @@ async function processBookingPayment(bookingData) {
   }
 
   try {
-    // Create payment method from individual card elements
+    // Step 1: Tokenize card
     const { paymentMethod, error } = await stripe.createPaymentMethod({
       type: 'card',
       card: window.cardNumber,
@@ -93,24 +93,92 @@ async function processBookingPayment(bookingData) {
       return false;
     }
 
-    // Payment method created successfully
-    // Save booking data with Stripe payment ID
-    bookingData.stripePaymentId = paymentMethod.id;
+    const pmId = paymentMethod.id;
 
+    // Step 2: Charge or subscribe based on frequency
+    if (bookingData.frequency === 'recurring') {
+      // --- Recurring: create Stripe Subscription ---
+      const subRes = await fetch('/api/create-subscription.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paymentMethodId: pmId,
+          weeklyAmount: bookingData.amount,
+          customerName: bookingData.customerName,
+          customerEmail: bookingData.customerEmail,
+          serviceType: bookingData.serviceType,
+          bookingId: 'PENDING'
+        })
+      });
+      const subData = await subRes.json();
+      if (!subData.success) {
+        showPaymentError(subData.error || 'Subscription failed');
+        return false;
+      }
+
+      // Confirm first invoice payment (always required for new subscriptions)
+      const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(subData.clientSecret);
+      if (confirmError) {
+        showPaymentError(confirmError.message);
+        return false;
+      }
+      if (paymentIntent.status !== 'succeeded') {
+        showPaymentError('Payment not completed. Status: ' + paymentIntent.status);
+        return false;
+      }
+
+      bookingData.stripeSubscriptionId = subData.subscriptionId;
+      bookingData.stripeCustomerId     = subData.customerId;
+      bookingData.stripePaymentId      = paymentIntent.id;
+      console.log('✅ Stripe subscription created:', subData.subscriptionId);
+
+    } else {
+      // --- Ad hoc: create one-time PaymentIntent ---
+      const chargeRes = await fetch('/api/charge-payment.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paymentMethodId: pmId,
+          amount: bookingData.amount,
+          customerName: bookingData.customerName,
+          customerEmail: bookingData.customerEmail,
+          bookingId: 'PENDING'
+        })
+      });
+      const chargeData = await chargeRes.json();
+
+      if (chargeData.requiresAction) {
+        // 3D Secure required
+        const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(chargeData.clientSecret);
+        if (confirmError) {
+          showPaymentError(confirmError.message);
+          return false;
+        }
+        if (paymentIntent.status !== 'succeeded') {
+          showPaymentError('Payment not completed. Status: ' + paymentIntent.status);
+          return false;
+        }
+        bookingData.stripePaymentId = paymentIntent.id;
+      } else if (chargeData.success) {
+        bookingData.stripePaymentId = chargeData.paymentIntentId;
+      } else {
+        showPaymentError(chargeData.error || 'Payment failed');
+        return false;
+      }
+      console.log('✅ Ad hoc charge succeeded:', bookingData.stripePaymentId);
+    }
+
+    // Step 3: Save to Airtable
     let bookingResult;
     let savedLocation = 'unknown';
     try {
-      // Try to save to Airtable
-      console.log('Attempting to save booking to Airtable...');
       bookingResult = await saveBookingToAirtable(bookingData);
       savedLocation = 'Airtable';
       console.log('✅ Booking saved to Airtable:', bookingResult);
     } catch (airtableErr) {
-      console.warn('Airtable save failed, saving to localStorage instead:', airtableErr);
-      // Fall back to local storage
+      console.warn('Airtable save failed, falling back to localStorage:', airtableErr);
       bookingResult = saveBookingLocally(bookingData);
       savedLocation = 'Browser Storage (localStorage)';
-      console.log('✅ Booking saved to localStorage:', bookingResult);
     }
 
     return {
@@ -119,6 +187,7 @@ async function processBookingPayment(bookingData) {
       savedLocation: savedLocation,
       warning: bookingResult.warning
     };
+
   } catch (err) {
     console.error('Payment processing error:', err);
     showPaymentError(err.message);
