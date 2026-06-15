@@ -867,25 +867,31 @@ function showPlanUI() {
 }
 
 // ===== Date cards =====
-// Returns true if the 4pm Toronto cutoff has passed for a given collection date
+// Returns true if the cutoff has passed for a given collection date
 function isPastCutoff(collectionDateStr) {
-  // Cutoff = 4pm Toronto time on the day BEFORE collection (day zone)
-  //        = 4pm Toronto time ON collection day (night zone)
+  // Cutoff day: day before collection (day zone) or same day (night zone)
   const cutoffDay = currentIsNightZone ? collectionDateStr : (function(){
     const d = new Date(collectionDateStr + 'T12:00:00');
     d.setDate(d.getDate() - 1);
     return d.toISOString().split('T')[0];
   })();
-  // Build cutoff moment: 4pm Toronto (America/Toronto)
-  // Get current Toronto hour by formatting now in Toronto timezone
+
+  // Reliably get Toronto date + time using Intl.DateTimeFormat.formatToParts
   const now = new Date();
-  const torontoNow = new Date(now.toLocaleString('en-CA', { timeZone: 'America/Toronto' }));
-  const todayToronto = formatDateISO(new Date(torontoNow.getFullYear(), torontoNow.getMonth(), torontoNow.getDate()));
-  const torontoHour = torontoNow.getHours();
-  const torontoMin = torontoNow.getMinutes();
-  if (cutoffDay < todayToronto) return true;  // cutoff day already past
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Toronto',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  }).formatToParts(now);
+  const todayToronto = parts.find(p=>p.type==='year').value + '-' +
+                       parts.find(p=>p.type==='month').value + '-' +
+                       parts.find(p=>p.type==='day').value;
+  const torontoHour = parseInt(parts.find(p=>p.type==='hour').value);
+  const torontoMin  = parseInt(parts.find(p=>p.type==='minute').value);
+
+  if (cutoffDay < todayToronto) return true;  // cutoff day already in the past
   if (cutoffDay > todayToronto) return false; // cutoff day still in the future
-  // cutoff day is today Toronto — check if past 4:00pm
+  // Cutoff day is today — check if past 4pm Toronto time
   return torontoHour > 16 || (torontoHour === 16 && torontoMin >= 0);
 }
 
@@ -911,7 +917,7 @@ function buildDateCards() {
     const card = document.createElement('div');
     card.className = 'date-card' + (pastCutoff ? ' cutoff' : (selectedDates.has(week.w) ? ' selected' : ''));
     card.dataset.date = week.w;
-    const cutoffNote = pastCutoff ? '<div class="dc-cutoff">Closed<br>4pm cutoff</div>' : '';
+    const cutoffNote = pastCutoff ? '<div class="dc-cutoff">Booking closed<br>4pm cutoff</div>' : '';
     card.innerHTML = '<div class="dc-month">' + month + '</div><div class="dc-day">' + dayNum + '</div><div class="dc-weekday">' + weekday + '</div><div class="dc-dots">' + dots.join('') + '</div>' + cutoffNote;
     if (!pastCutoff) {
       card.addEventListener('click', function() {
