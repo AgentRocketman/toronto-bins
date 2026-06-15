@@ -62,92 +62,89 @@ async function saveBookingToAirtable(bookingData) {
     console.log('✅ Booking saved to Airtable:', bookingResult);
     
     // 2. Save Order record(s)
+    // BUSINESS LOGIC:
+    //   - "Service date" in booking = city pickup day (bins emptied ~7am)
+    //   - Roll Out must happen EVENING BEFORE pickup → order date = pickup date - 1
+    //   - Roll In must happen AFTERNOON OF pickup → order date = pickup date
+    //   - "Both" creates TWO orders per pickup date (Roll Out day before + Roll In same day)
     const ORDERS_TABLE_ID = 'tblGhNRi3ENwVpNty';
     let orderCount = 0;
-    
-    if (bookingData.frequency === 'recurring') {
-      // Single recurring order record
-      const dayOfWeekMap = {
-        'Monday': 'Monday',
-        'Tuesday': 'Tuesday',
-        'Wednesday': 'Wednesday',
-        'Thursday': 'Thursday',
-        'Friday': 'Friday',
-        'Saturday': 'Saturday',
-        'Sunday': 'Sunday'
-      };
-      
-      // Get day of week from address schedule (if available)
-      const dayOfWeek = bookingData.dayOfWeek || 'Tuesday'; // Default to Tuesday
-      
-      const recurringOrder = {
-        fields: {
-          'Order ID': bookingId + '-R',
-          'Booking ID': bookingId,
-          'Service Type': bookingData.serviceType || '',
-          'Frequency': 'Recurring',
-          'Day of Week': dayOfWeek,
-          'Status': 'Active',
-          'Created At': todayISO
-        }
-      };
-      
+
+    // Helper: shift a YYYY-MM-DD string back by 1 day
+    function dayBefore(dateStr) {
+      const d = new Date(dateStr + 'T12:00:00'); // noon to avoid DST edge
+      d.setDate(d.getDate() - 1);
+      return d.toISOString().split('T')[0];
+    }
+
+    // Helper: get previous day name (e.g. Tuesday → Monday)
+    const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    function dayOfWeekBefore(dayName) {
+      const idx = DAYS.indexOf(dayName);
+      return DAYS[(idx + 6) % 7]; // wrap Saturday → Friday, Sunday → Saturday
+    }
+
+    // Determine which service types to create orders for
+    const svcType = bookingData.serviceType || 'rollout';
+    const serviceJobs = [];
+    if (svcType === 'both' || svcType === 'rollout') serviceJobs.push('Roll Out');
+    if (svcType === 'both' || svcType === 'rollin')  serviceJobs.push('Roll In');
+
+    // Helper: save a single order record to Airtable
+    async function saveOrder(fields) {
       try {
-        const orderResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${ORDERS_TABLE_ID}`, {
+        const res = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${ORDERS_TABLE_ID}`, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(recurringOrder)
+          headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields })
         });
-        
-        if (orderResponse.ok) {
-          orderCount = 1;
-          console.log('✅ Recurring order created:', recurringOrder.fields['Order ID']);
+        if (res.ok) {
+          orderCount++;
+          console.log('✅ Order saved:', fields['Order ID'], fields['Service Type'], fields['Service Date'] || fields['Day of Week']);
         } else {
-          const error = await orderResponse.json();
-          console.warn('Failed to save recurring order:', error);
+          const err = await res.json();
+          console.warn('Failed to save order:', fields['Order ID'], err);
         }
       } catch (err) {
-        console.warn('Error saving recurring order:', err);
+        console.warn('Error saving order:', fields['Order ID'], err);
       }
-    } else if (bookingData.selectedDates && bookingData.selectedDates.length > 0) {
-      // Multiple ad hoc order records (one per date)
-      const ordersToSave = bookingData.selectedDates.map(dateStr => ({
-        fields: {
-          'Order ID': bookingId + '-' + dateStr.replace(/-/g, '').slice(4),
+    }
+
+    if (bookingData.frequency === 'recurring') {
+      const pickupDay = bookingData.dayOfWeek || 'Tuesday';
+
+      for (const job of serviceJobs) {
+        const suffix = job === 'Roll Out' ? 'RO' : 'RI';
+        const workDay = job === 'Roll Out' ? dayOfWeekBefore(pickupDay) : pickupDay;
+
+        await saveOrder({
+          'Order ID': bookingId + '-' + suffix,
           'Booking ID': bookingId,
-          'Service Date': dateStr,
-          'Service Type': bookingData.serviceType || '',
-          'Frequency': 'Ad Hoc',
-          'Status': 'Pending',
+          'Service Type': job,
+          'Frequency': 'Recurring',
+          'Day of Week': workDay,
+          'Status': 'Active',
           'Created At': todayISO
-        }
-      }));
-      
-      console.log(`Saving ${ordersToSave.length} ad hoc order records...`);
-      
-      for (const orderRecord of ordersToSave) {
-        try {
-          const orderResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${ORDERS_TABLE_ID}`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(orderRecord)
+        });
+      }
+
+    } else if (bookingData.selectedDates && bookingData.selectedDates.length > 0) {
+
+      for (const pickupDate of bookingData.selectedDates) {
+        for (const job of serviceJobs) {
+          const suffix = job === 'Roll Out' ? 'RO' : 'RI';
+          const workDate = job === 'Roll Out' ? dayBefore(pickupDate) : pickupDate;
+          const dateTag = workDate.replace(/-/g, '').slice(4); // MMDD
+
+          await saveOrder({
+            'Order ID': bookingId + '-' + dateTag + suffix,
+            'Booking ID': bookingId,
+            'Service Date': workDate,
+            'Service Type': job,
+            'Frequency': 'Ad Hoc',
+            'Status': 'Pending',
+            'Created At': todayISO
           });
-          
-          if (orderResponse.ok) {
-            orderCount++;
-            console.log('✅ Ad hoc order saved:', orderRecord.fields['Order ID']);
-          } else {
-            const error = await orderResponse.json();
-            console.warn('Failed to save ad hoc order:', error);
-          }
-        } catch (err) {
-          console.warn('Error saving ad hoc order:', err);
         }
       }
     }
