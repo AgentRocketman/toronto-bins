@@ -236,7 +236,7 @@
     .sticky-cta{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:#fff;border-top:1px solid #e2e8f0;padding:12px 16px;box-shadow:0 -4px 20px rgba(0,0,0,.1)}
     .sticky-cta-btn{display:block;background:var(--teal);color:#fff;text-align:center;padding:13px;border-radius:12px;font-weight:800;font-size:.95rem;text-decoration:none;transition:background .2s}
     .sticky-cta-btn:hover{background:var(--teal-dark)}
-    @media(max-width:640px){.sticky-cta{display:block}}
+    @media(max-width:640px){.sticky-cta{display:none}}
 
     /* Reviews carousel */
     #reviews{background:#f0fdfa;padding:4rem 1.5rem}
@@ -563,8 +563,7 @@
     <div class="guarantee-icon">🛡️</div>
     <div class="guarantee-title">Our service guarantee</div>
     <p class="guarantee-text">
-      If we miss your scheduled collection, <strong>ad hoc customers get a full refund</strong> for that date.
-      <strong>Recurring customers get their next collection free.</strong>
+      If we miss your scheduled collection, <strong>you don&rsquo;t pay.</strong>
       No questions asked, no chasing required &mdash; it just happens.
     </p>
   </div>
@@ -1324,17 +1323,34 @@ function formatDateShort(isoStr) {
 </div>
 
 <script>
-// Hide sticky CTA once booking section is revealed
+// Sticky CTA: show when user reaches #how, hide when booking revealed
 document.addEventListener('DOMContentLoaded', function(){
-  var bookingSection = document.getElementById('booking-section');
-  var stickyCta = document.getElementById('sticky-cta');
-  if (!bookingSection || !stickyCta) return;
-  var observer = new MutationObserver(function(){
-    if (bookingSection.classList.contains('revealed')) {
-      stickyCta.style.display = 'none';
-    }
-  });
-  observer.observe(bookingSection, { attributes: true, attributeFilter: ['class'] });
+  var stickyCta     = document.getElementById('sticky-cta');
+  var howSection    = document.getElementById('how');
+  var bookingSection= document.getElementById('booking-section');
+  if (!stickyCta || !howSection) return;
+
+  var howVisible = false;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) {
+        howVisible = true;
+        if (!bookingSection || !bookingSection.classList.contains('revealed')) {
+          stickyCta.style.display = 'block';
+        }
+      }
+    });
+  }, { threshold: 0.1 });
+  io.observe(howSection);
+
+  // Hide once booking section is revealed
+  if (bookingSection) {
+    new MutationObserver(function(){
+      if (bookingSection.classList.contains('revealed')) {
+        stickyCta.style.display = 'none';
+      }
+    }).observe(bookingSection, { attributes: true, attributeFilter: ['class'] });
+  }
 });
 
 // FAQ accordion
