@@ -1,0 +1,33 @@
+{
+  "name": "curbin-backend",
+  "version": "1.0.0",
+  "description": "CurbIn service routing backend with Airtable integration and image uploads",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "bash test-api.sh",
+    "test:health": "curl http://localhost:3000/api/health",
+    "test:airtable": "curl http://localhost:3000/api/test-airtable",
+    "test:services": "curl http://localhost:3000/api/services"
+  },
+  "keywords": [
+    "curbin",
+    "service",
+    "routing",
+    "airtable"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "airtable": "^2.1.0",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

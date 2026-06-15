@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CurbIn Service Routing</title>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #334155;
+      font-size: 1.05rem;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      gap: 0;
+    }
+
+    .sidebar {
+      width: 350px;
+      background: #fff;
+      border-right: 1px solid #e2e8f0;
+      overflow-y: auto;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-header {
+      margin-bottom: 20px;
+    }
+
+    .sidebar-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f766e;
+      margin-bottom: 12px;
+    }
+
+    .date-picker {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .service-group {
+      margin-bottom: 24px;
+    }
+
+    .group-title {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .stop-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .stop-item.completed {
+      background: #d1fae5;
+      border-color: #6ee7b7;
+    }
+
+    .stop-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .stop-header {
+      display: flex;
+      gap: 0;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .sequence-number {
+      min-width: 32px;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-right: 12px;
+      flex-shrink: 0;
+      font-family: 'Courier New', monospace;
+      line-height: 1;
+    }
+
+    .stop-checkbox {
+      width: 36px;
+      height: 36px;
+      margin-right: 12px;
+      cursor: pointer;
+      accent-color: #10b981;
+      transition: opacity 0.2s ease;
+      flex-shrink: 0;
+      padding: 4px;
+      border-radius: 4px;
+      border: 2px solid #e2e8f0;
+      display: block;
+    }
+
+    .stop-checkbox:disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+      background-color: #f0f0f0;
+      border-color: #d0d0d0;
+    }
+
+    .stop-checkbox:not(:disabled):hover {
+      border-color: #10b981;
+      background-color: #f0fdf4;
+    }
+
+    .stop-thumbnail {
+      width: 75px;
+      height: 75px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 2px solid #10b981;
+      margin-left: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stop-thumbnail:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Modal for full-size image */
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .image-modal.open {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      z-index: 10;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+
+
+    .stop-info {
+      flex: 1;
+    }
+
+    .stop-address {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #0f766e;
+      margin-bottom: 4px;
+      text-decoration: none;
+      cursor: pointer;
+      display: block;
+    }
+
+    .stop-address:hover {
+      color: #059669;
+      text-decoration: underline;
+    }
+
+    .stop-address:active {
+      color: #047857;
+    }
+
+    .stop-status {
+      font-size: 0.9rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #fef3c7;
+      color: #92400e;
+      display: inline-block;
+    }
+
+    .stop-status.completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .stop-image-upload {
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .upload-label {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 4px;
+      display: none;
+    }
+
+    .upload-input {
+      display: none;
+    }
+
+    .upload-button {
+      width: 100%;
+      padding: 8px 12px;
+      background: #0f766e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 600;
+    }
+
+    .upload-button:hover {
+      background: #115e59;
+    }
+
+    .upload-button.loading {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .compression-status {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 4px;
+      padding: 4px 8px;
+      background: #f1f5f9;
+      border-radius: 3px;
+      display: none;
+    }
+
+    .compression-status.show {
+      display: block;
+    }
+
+    .map-container {
+      flex: 1;
+      position: relative;
+      background: #fff;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .info-window-content {
+      font-size: 1.1rem;
+      color: #334155;
+    }
+
+    .info-window-content h3 {
+      margin-bottom: 8px;
+      color: #0f766e;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-decoration: none !important;
+    }
+
+    .info-window-content h3 a {
+      text-decoration: none !important;
+      color: #0f766e !important;
+      border: none !important;
+    }
+
+    .info-window-content h3 a:visited {
+      color: #0f766e !important;
+    }
+
+    .info-window-content h3 a:hover {
+      text-decoration: none !important;
+      color: #059669 !important;
+    }
+
+    .info-window-content p {
+      margin: 6px 0;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .map-container {
+        height: 60vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">📍 Service Schedule</div>
+        <input type="date" class="date-picker" id="datePicker">
+        <div style="margin-top: 12px;">
+          <label style="font-size: 0.95rem; color: #64748b; display: block; margin-bottom: 4px; font-weight: 600;">👤 Worker Name</label>
+          <input type="text" id="workerNameInput" placeholder="Your name" class="date-picker" style="font-size: 1.1rem;">
+        </div>
+      </div>
+
+      <!-- ROLL-INS -->
+      <div class="service-group">
+        <div class="group-title">Roll Ins</div>
+        <div id="rollin-container"></div>
+      </div>
+
+      <!-- ROLLOUTS -->
+      <div class="service-group">
+        <div class="group-title">Roll Outs</div>
+        <div id="rollouts-container"></div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <!-- IMAGE MODAL -->
+  <div id="imageModal" class="image-modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeImageModal()">&times;</button>
+      <img id="modalImage" src="" alt="Full size image">
+    </div>
+  </div>
+
+
+
+  <script>
+    // Config
+    const GOOGLE_MAPS_API_KEY = 'AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI';
+    const API_BASE_URL = window.location.origin + '/api'; // PHP API on same domain
+    let BACKEND_READY = false; // Will be set to true when backend responds
+
+    // Service stops data with fallback coordinates
+    const serviceStops = [
+      // Rollouts
+      { id: 'ro-1', address: '500 Bloor St W, Toronto', type: 'rollout', completed: false, imageUrl: null, lat: 43.6679, lng: -79.4065 },
+      { id: 'ro-2', address: '100 Front St W, Toronto', type: 'rollout', completed: false, imageUrl: null, lat: 43.6426, lng: -79.3871 },
+      { id: 'ro-3', address: '350 King St W, Toronto', type: 'rollout', completed: false, imageUrl: null, lat: 43.6452, lng: -79.3917 },
+      { id: 'ro-4', address: '1200 Bay St, Toronto', type: 'rollout', completed: false, imageUrl: null, lat: 43.6705, lng: -79.3876 },
+      // Roll-Ins
+      { id: 'ri-1', address: '2020 Roncesvalles Ave, Toronto', type: 'rollin', completed: false, imageUrl: null, lat: 43.6529, lng: -79.4719 },
+      { id: 'ri-2', address: '1 Bloor St E, Toronto', type: 'rollin', completed: false, imageUrl: null, lat: 43.6629, lng: -79.3857 },
+      { id: 'ri-3', address: '1 Dundas St W, Toronto', type: 'rollin', completed: false, imageUrl: null, lat: 43.6559, lng: -79.3857 },
+      { id: 'ri-4', address: '120 Roncesvalles Ave, Toronto', type: 'rollin', completed: false, imageUrl: null, lat: 43.6389, lng: -79.4719 }
+    ];
+
+    let map;
+    let markers = [];
+    let directionsRenderer;
+    let currentStops = [...serviceStops];
+    let optimizedRoute = [];
+    let currentInfoWindow = null;
+    let driverLocation = null;
+    let sequenceNumbers = {};
+    let driverMarker = null;
+    let locationRefreshInterval = null;
+
+    // Initialize
+    function init() {
+      initMap();
+      setTodayDate();
+      loadWorkerName();
+      getDriverLocation();
+      console.log('Service routing initialized with', currentStops.length, 'stops');
+    }
+
+    // Get driver's current location
+    function getDriverLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            driverLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            console.log('🚗 Driver location detected:', driverLocation);
+            sortAndRender();
+            startLocationRefresh();
+          },
+          (error) => {
+            console.warn('⚠️ Geolocation unavailable:', error.message);
+            driverLocation = { lat: 43.6629, lng: -79.3957 };
+            sortAndRender();
+            startLocationRefresh();
+          }
+        );
+      } else {
+        console.warn('⚠️ Geolocation not supported');
+        driverLocation = { lat: 43.6629, lng: -79.3957 };
+        sortAndRender();
+        startLocationRefresh();
+      }
+    }
+
+    // Refresh driver location every 5 seconds
+    function startLocationRefresh() {
+      if (locationRefreshInterval) clearInterval(locationRefreshInterval);
+      
+      locationRefreshInterval = setInterval(() => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const newLat = position.coords.latitude;
+              const newLng = position.coords.longitude;
+              if (driverLocation && (driverLocation.lat !== newLat || driverLocation.lng !== newLng)) {
+                driverLocation.lat = newLat;
+                driverLocation.lng = newLng;
+                console.log('🚗 Location updated:', driverLocation);
+                updateDriverMarker(); // Only update marker position, don't recenter map or re-sort
+              }
+            },
+            (error) => {
+              console.warn('⚠️ Location refresh failed:', error.message);
+            }
+          );
+        }
+      }, 5000); // 5 seconds
+    }
+
+    // Sort stops by proximity (Roll-Ins first, then Roll-Outs, closest first)
+    function sortAndRender() {
+      if (!driverLocation) return;
+
+      function haversine(lat1, lng1, lat2, lng2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLng/2) * Math.sin(dLng/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+      }
+
+      currentStops.forEach(stop => {
+        stop.distance = haversine(driverLocation.lat, driverLocation.lng, stop.lat, stop.lng);
+      });
+
+      currentStops.sort((a, b) => {
+        if (a.type !== b.type) {
+          return a.type === 'rollin' ? -1 : 1;
+        }
+        return a.distance - b.distance;
+      });
+
+      sequenceNumbers = {};
+      currentStops.forEach((stop, idx) => {
+        sequenceNumbers[stop.id] = idx + 1;
+      });
+
+      console.log('✓ Sorted by proximity (Roll-Ins first)');
+      renderServiceList();
+      renderMarkers(currentStops);
+      updateMapCenter();
+    }
+
+    // Center map on driver location
+    function updateMapCenter() {
+      if (driverLocation && map) {
+        map.setCenter(driverLocation);
+        createDriverMarker();
+      }
+    }
+
+    // Create car emoji icon for driver
+    function createDriverMarker() {
+      if (driverMarker) {
+        driverMarker.setMap(null);
+      }
+      
+      // Use car emoji - create as SVG-based marker with emoji
+      const emojiSvg = `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='70' font-size='80' text-anchor='middle'%3E%F0%9F%9A%97%3C/text%3E%3C/svg%3E`;
+      
+      driverMarker = new google.maps.Marker({
+        position: driverLocation,
+        map: map,
+        title: '🚗 Your Location',
+        icon: {
+          url: emojiSvg,
+          scaledSize: new google.maps.Size(50, 50),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(25, 25)
+        }
+      });
+    }
+
+    // Update driver marker position (without recentering map)
+    function updateDriverMarker() {
+      if (!driverMarker || !map) {
+        createDriverMarker();
+      } else if (driverLocation) {
+        driverMarker.setPosition(driverLocation);
+        // Don't recenter map - let user focus where they want
+      }
+    }
+
+    // Load/save worker name
+    function loadWorkerName() {
+      const saved = localStorage.getItem('workerName') || 'Driver';
+      const input = document.getElementById('workerNameInput');
+      if (input) {
+        input.value = saved;
+        input.addEventListener('change', (e) => {
+          localStorage.setItem('workerName', e.target.value);
+        });
+      }
+    }
+
+    // Map initialization
+    function initMap() {
+      const torontoCenter = { lat: 43.6629, lng: -79.3957 };
+      
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: torontoCenter,
+        styles: [
+          { featureType: 'water', stylers: [{ color: '#c9d7e9' }] },
+          { featureType: 'landscape', stylers: [{ color: '#f5f7fa' }] }
+        ]
+      });
+
+      directionsRenderer = new google.maps.DirectionsRenderer({
+        map: map,
+        suppressMarkers: true,
+        polylineOptions: {
+          strokeColor: '#0f766e',
+          strokeWeight: 3,
+          strokeOpacity: 0.8
+        }
+      });
+    }
+
+    // Calculate optimal route via backend
+    function calculateOptimalRoute() {
+      if (currentStops.length === 0) return;
+
+      // Prepare stops with coordinates
+      const stopsData = currentStops.map(stop => ({
+        id: stop.id,
+        address: stop.address,
+        lat: stop.lat,
+        lng: stop.lng,
+        type: stop.type
+      }));
+
+      fetch(API_BASE_URL + '/optimize-route.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stops: stopsData })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.optimizedIds) {
+          // Reorder stops based on optimized IDs
+          const ordered = data.optimizedIds
+            .map(id => currentStops.find(s => s.id === id))
+            .filter(s => s);
+          optimizedRoute = ordered.length > 0 ? ordered : currentStops;
+          console.log('Route optimized. Distance:', data.distance, 'Duration:', data.duration);
+        } else {
+          optimizedRoute = [...currentStops];
+        }
+        renderServiceList();
+        renderMarkers(optimizedRoute);
+      })
+      .catch(err => {
+        console.warn('Route optimization failed, using original order:', err);
+        optimizedRoute = [...currentStops];
+        renderMarkers(currentStops);
+      });
+    }
+
+    // Draw simple route (fallback)
+    function drawRoute(stops) {
+      if (stops.length === 0) return;
+      
+      const geocoder = new google.maps.Geocoder();
+      const coords = [];
+
+      stops.forEach((stop, idx) => {
+        geocoder.geocode({ address: stop.address }, (results, status) => {
+          if (status === google.maps.GeocoderStatus.OK && results[0]) {
+            coords[idx] = results[0].geometry.location;
+            if (coords.filter(c => c).length === stops.length) {
+              const polyline = new google.maps.Polyline({
+                path: coords,
+                geodesic: true,
+                strokeColor: '#0f766e',
+                strokeOpacity: 0.8,
+                strokeWeight: 3,
+                map: map
+              });
+            }
+          }
+        });
+      });
+    }
+
+    // Render markers on map
+    function renderMarkers(stops) {
+      markers.forEach(m => m.setMap(null));
+      markers = [];
+
+      // Use fallback coordinates instead of geocoding
+      stops.forEach((stop) => {
+        const position = { lat: stop.lat, lng: stop.lng };
+        const seqNum = sequenceNumbers[stop.id] || '?';
+        
+        // Determine marker color: green if completed, otherwise blue (rollout) or purple (rollin)
+        let markerColor = '#10b981'; // Green for completed
+        if (!stop.completed) {
+          markerColor = stop.type === 'rollout' ? '#3b82f6' : '#8b5cf6';
+        }
+        
+        const marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          title: stop.address,
+          label: {
+            text: String(seqNum),
+            fontSize: '16px',
+            fontWeight: 'bold'
+          },
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 18,
+            fillColor: markerColor,
+            fillOpacity: 1,
+            strokeColor: '#fff',
+            strokeWeight: 3
+          }
+        });
+
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<div class="info-window-content">
+            <h3><a href="https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" title="Get directions with voice guidance" style="color: #0f766e !important; text-decoration: none !important; font-weight: 700; font-size: 1.1rem; border: none !important;">${stop.address}</a></h3>
+            <p><strong>Type:</strong> ${stop.type === 'rollout' ? '📤 Roll Out' : '📥 Roll In'}</p>
+            <p><strong>Status:</strong> ${stop.completed ? '✅ Completed' : '⏳ Pending'}</p>
+          </div>`
+        });
+
+        marker.addListener('click', () => {
+          if (currentInfoWindow) {
+            currentInfoWindow.close();
+          }
+          infoWindow.open(map, marker);
+          currentInfoWindow = infoWindow;
+        });
+
+        markers.push(marker);
+      });
+    }
+
+    // Render service list
+    function renderServiceList() {
+      const rolloutContainer = document.getElementById('rollouts-container');
+      const rollinContainer = document.getElementById('rollin-container');
+
+      rolloutContainer.innerHTML = '';
+      rollinContainer.innerHTML = '';
+
+      const rollouts = currentStops.filter(s => s.type === 'rollout');
+      const rollins = currentStops.filter(s => s.type === 'rollin');
+
+      rollouts.forEach(stop => renderStopItem(stop, rolloutContainer));
+      rollins.forEach(stop => renderStopItem(stop, rollinContainer));
+    }
+
+    // Render individual stop item
+    function renderStopItem(stop, container) {
+      const item = document.createElement('div');
+      item.className = `stop-item ${stop.completed ? 'completed' : ''}`;
+      item.dataset.stopId = stop.id;
+
+      const seqNum = sequenceNumbers[stop.id] || '?';
+      item.innerHTML = `
+        <div class="stop-header">
+          <div class="sequence-number">${seqNum}</div>
+          <input type="checkbox" class="stop-checkbox" ${stop.completed ? 'checked' : ''} ${!stop.imageUrl ? 'disabled' : ''}>
+          <div class="stop-info">
+            <a class="stop-address" href="https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" title="Get directions with voice guidance to ${stop.address}">${stop.address}</a>
+            <span class="stop-status ${stop.completed ? 'completed' : ''}">
+              ${stop.completed ? '✓ Done' : '⏳ Pending'}
+            </span>
+          </div>
+          ${stop.imageUrl ? `<img src="${stop.imageUrl}" class="stop-thumbnail" alt="Bin photo" />` : ''}
+        </div>
+        <div class="stop-image-upload">
+          <label class="upload-label">📷 Bin Photo</label>
+          <input type="file" class="upload-input" accept="image/*" style="display:none;">
+          <button class="upload-button" data-stop-id="${stop.id}">
+            ${stop.imageUrl ? '✓ Photo' : 'Upload Photo'}
+          </button>
+          <div class="compression-status"></div>
+        </div>
+      `;
+
+      const checkbox = item.querySelector('.stop-checkbox');
+      const fileInput = item.querySelector('.upload-input');
+      const uploadBtn = item.querySelector('.upload-button');
+      const thumbnail = item.querySelector('.stop-thumbnail');
+      const statusDiv = item.querySelector('.compression-status');
+
+      checkbox.addEventListener('change', () => {
+        markComplete(stop.id, checkbox.checked);
+      });
+
+      uploadBtn.addEventListener('click', () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        uploadImage(stop.id, e.target.files[0], statusDiv);
+      });
+
+      if (thumbnail) {
+        thumbnail.addEventListener('click', () => {
+          openImageModal(stop.imageUrl);
+        });
+      }
+
+      container.appendChild(item);
+    }
+
+    // Compress image before upload
+    function compressImage(file, statusDiv) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+          const img = new Image();
+          
+          img.onload = () => {
+            // Update status
+            if (statusDiv) {
+              statusDiv.textContent = '🖼️ Compressing image...';
+              statusDiv.classList.add('show');
+            }
+
+            // Calculate new dimensions (max 1200x900, maintain aspect ratio)
+            let newWidth = img.width;
+            let newHeight = img.height;
+            const maxWidth = 1200;
+            const maxHeight = 900;
+
+            if (newWidth > maxWidth || newHeight > maxHeight) {
+              const aspectRatio = newWidth / newHeight;
+              
+              if (newWidth > maxWidth) {
+                newWidth = maxWidth;
+                newHeight = newWidth / aspectRatio;
+              }
+              
+              if (newHeight > maxHeight) {
+                newHeight = maxHeight;
+                newWidth = newHeight * aspectRatio;
+              }
+            }
+
+            // Create canvas and draw resized image
+            const canvas = document.createElement('canvas');
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+            // Compress to JPEG blob with 70% quality
+            canvas.toBlob(
+              (blob) => {
+                const originalSize = (file.size / 1024).toFixed(2);
+                const compressedSize = (blob.size / 1024).toFixed(2);
+                console.log(`📦 Image compressed: ${originalSize}KB → ${compressedSize}KB`);
+                
+                // Update status with compression results
+                if (statusDiv) {
+                  statusDiv.textContent = `✓ Compressed: ${originalSize}KB → ${compressedSize}KB`;
+                }
+
+                resolve(blob);
+              },
+              'image/jpeg',
+              0.7 // 70% quality
+            );
+          };
+
+          img.onerror = () => {
+            reject(new Error('Failed to load image'));
+          };
+
+          img.src = e.target.result;
+        };
+
+        reader.onerror = () => {
+          reject(new Error('Failed to read file'));
+        };
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Open image modal
+    function openImageModal(imageUrl) {
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      modalImage.src = imageUrl;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close image modal
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.classList.remove('open');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal on background click
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('imageModal');
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            closeImageModal();
+          }
+        });
+      }
+      // Also close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeImageModal();
+        }
+      });
+    });
+
+    // Mark stop as complete
+    function markComplete(stopId, completed) {
+      const stop = currentStops.find(s => s.id === stopId);
+      if (stop) {
+        stop.completed = completed;
+        
+        // Capture completion date/time when marking as complete
+        if (completed) {
+          const now = new Date();
+          const dateStr = now.toISOString().split('T')[0];
+          const timeStr = now.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'America/Toronto'
+          });
+          stop.completedDateTime = `${dateStr} ${timeStr}`;
+          console.log(`✅ Marked complete at: ${stop.completedDateTime}`);
+        }
+        
+        renderServiceList();
+        renderMarkers(optimizedRoute.length > 0 ? optimizedRoute : currentStops); // Update marker colors
+        calculateOptimalRoute();
+        syncToAirtable(stop);
+      }
+    }
+
+    // Upload image with compression
+    function uploadImage(stopId, file, statusDiv) {
+      if (!file) return;
+
+      const stop = currentStops.find(s => s.id === stopId);
+      if (!stop) return;
+
+      // Show loading state
+      const item = document.querySelector(`[data-stop-id="${stopId}"]`);
+      const btn = item ? item.querySelector('.upload-button') : null;
+      if (btn) {
+        btn.classList.add('loading');
+        btn.textContent = 'Processing...';
+      }
+
+      // Compress image first
+      compressImage(file, statusDiv)
+        .then((compressedBlob) => {
+          // Now upload the compressed blob
+          const formData = new FormData();
+          formData.append('file', compressedBlob, file.name.replace(/\.[^.]+$/, '.jpg'));
+          formData.append('stopId', stopId);
+          formData.append('date', document.getElementById('datePicker').value);
+
+          // Update status to show upload is starting
+          if (statusDiv) {
+            statusDiv.textContent = '📤 Uploading compressed image...';
+          }
+
+          fetch(API_BASE_URL + '/upload.php', {
+            method: 'POST',
+            body: formData
+          })
+          .then(r => r.json())
+          .then(data => {
+            if (data.success) {
+              stop.imageUrl = data.imageUrl;
+              console.log('Image uploaded:', data.imageUrl);
+              renderServiceList();
+              // Enable checkbox now that image is uploaded
+              const newCheckbox = document.querySelector(`[data-stop-id="${stopId}"] .stop-checkbox`);
+              if (newCheckbox) {
+                newCheckbox.disabled = false;
+              }
+              syncToAirtable(stop);
+              if (btn) {
+                btn.classList.remove('loading');
+                btn.textContent = '✓ Photo';
+              }
+              // Clear status after success
+              if (statusDiv) {
+                setTimeout(() => {
+                  statusDiv.classList.remove('show');
+                }, 2000);
+              }
+            } else {
+              throw new Error(data.error || 'Upload failed');
+            }
+          })
+          .catch(err => {
+            console.error('Upload failed:', err);
+            if (btn) {
+              btn.classList.remove('loading');
+              btn.textContent = '❌ Error';
+              setTimeout(() => { btn.textContent = 'Upload'; }, 3000);
+            }
+            if (statusDiv) {
+              statusDiv.textContent = '❌ Upload failed';
+            }
+          });
+        })
+        .catch(err => {
+          console.error('Compression failed:', err);
+          if (btn) {
+            btn.classList.remove('loading');
+            btn.textContent = '❌ Compression Error';
+            setTimeout(() => { btn.textContent = 'Upload'; }, 3000);
+          }
+          if (statusDiv) {
+            statusDiv.textContent = '❌ Compression failed';
+          }
+        });
+    }
+
+    // Sync to Airtable via backend
+    function syncToAirtable(stop) {
+      const payload = {
+        id: stop.id,
+        address: stop.address,
+        type: stop.type,
+        date: document.getElementById('datePicker').value,
+        completed: stop.completed,
+        imageUrl: stop.imageUrl || '',
+        workerName: localStorage.getItem('workerName') || 'Driver'
+      };
+      
+      // Add completion date/time if marked as complete
+      if (stop.completed && stop.completedDateTime) {
+        payload.completedDateTime = stop.completedDateTime;
+      }
+
+      fetch(API_BASE_URL + '/save-service.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          console.log('Synced to Airtable - Record ID:', data.recordId);
+          stop.airtableId = data.recordId;
+        } else {
+          console.warn('Airtable sync warning:', data.error);
+        }
+      })
+      .catch(err => console.warn('Airtable sync error (non-blocking):', err));
+    }
+
+    // Airtable API config
+    const AIRTABLE_BASE_ID = 'apptYNRJTXwItvied';
+    const AIRTABLE_API_KEY = 'patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd';
+    const ORDERS_TABLE_ID = 'tblGhNRi3ENwVpNty';
+    const BOOKINGS_TABLE_ID = 'tblKMhGnYjsH0z7Lj';
+    const AIRTABLE_URL = 'https://api.airtable.com/v0';
+
+    // Fetch orders from Airtable and link to booking addresses
+    async function loadOrdersForDate(dateStr) {
+      try {
+        console.log(`📥 Fetching orders for ${dateStr}...`);
+        
+        // Fetch orders filtered by Service Date
+        const ordersUrl = `${AIRTABLE_URL}/${AIRTABLE_BASE_ID}/${ORDERS_TABLE_ID}`;
+        const ordersResponse = await fetch(ordersUrl, {
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!ordersResponse.ok) {
+          throw new Error(`Airtable orders fetch failed: ${ordersResponse.status}`);
+        }
+        
+        const ordersData = await ordersResponse.json();
+        const allOrders = ordersData.records || [];
+        
+        // Filter orders by date
+        const ordersForDate = allOrders.filter(record => {
+          const serviceDate = record.fields['Service Date'];
+          return serviceDate === dateStr;
+        });
+        
+        console.log(`✓ Found ${ordersForDate.length} orders for ${dateStr}`);
+        
+        // For each order, fetch its booking to get address & coordinates
+        const stops = [];
+        
+        for (const orderRecord of ordersForDate) {
+          const fields = orderRecord.fields;
+          const bookingId = fields['Booking ID'];
+          const serviceType = fields['Service Type'] || 'Roll Out';
+          const status = fields['Status'] || 'Pending';
+          const orderId = fields['Order ID'] || 'Unknown';
+          
+          if (!bookingId) {
+            console.warn(`⚠️ Order ${orderId} missing Booking ID, skipping`);
+            continue;
+          }
+          
+          // Fetch the corresponding booking
+          try {
+            const bookingUrl = `${AIRTABLE_URL}/${AIRTABLE_BASE_ID}/${BOOKINGS_TABLE_ID}/${bookingId}`;
+            const bookingResponse = await fetch(bookingUrl, {
+              headers: {
+                'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            if (!bookingResponse.ok) {
+              console.warn(`⚠️ Could not fetch booking ${bookingId} for order ${orderId}`);
+              continue;
+            }
+            
+            const bookingData = await bookingResponse.json();
+            const bookingFields = bookingData.fields || {};
+            
+            // Extract address and coordinates from booking
+            const address = bookingFields['address'] || 'Unknown Address';
+            const lat = parseFloat(bookingFields['lat']) || 43.6629;
+            const lng = parseFloat(bookingFields['lng']) || -79.3957;
+            
+            // Convert service type to our internal type (rollin/rollout)
+            const type = serviceType.toLowerCase().includes('roll in') ? 'rollin' : 'rollout';
+            const completed = status.toLowerCase().includes('completed');
+            
+            // Create stop object
+            const stop = {
+              id: orderRecord.id,
+              orderId: orderId,
+              bookingId: bookingId,
+              address: address,
+              type: type,
+              completed: completed,
+              imageUrl: null,
+              lat: lat,
+              lng: lng,
+              airtableOrderRecordId: orderRecord.id
+            };
+            
+            stops.push(stop);
+            console.log(`✓ Loaded: ${address} (${type}) - ${orderId}`);
+            
+          } catch (bookingError) {
+            console.error(`❌ Error fetching booking ${bookingId}:`, bookingError);
+          }
+        }
+        
+        // Update currentStops and re-render
+        if (stops.length > 0) {
+          currentStops = stops;
+          console.log(`🎯 Loaded ${stops.length} stops total`);
+          if (driverLocation) {
+            sortAndRender();
+          }
+        } else {
+          console.warn('⚠️ No stops loaded for this date');
+          currentStops = [];
+          renderServiceList();
+          renderMarkers([]);
+        }
+        
+      } catch (error) {
+        console.error('❌ Error loading orders from Airtable:', error);
+        alert(`Error loading orders: ${error.message}`);
+      }
+    }
+
+    // Set today's date and load orders
+    function setTodayDate() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('datePicker').value = today;
+      
+      // Load orders for today on init
+      loadOrdersForDate(today);
+      
+      // Load orders when date picker changes
+      document.getElementById('datePicker').addEventListener('change', (e) => {
+        loadOrdersForDate(e.target.value);
+      });
+    }
+
+    // Open directions modal
+
+
+    // Check backend availability
+    function checkBackendHealth() {
+      fetch(API_BASE_URL + '/health.php')
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            console.log('✅ Backend API connected');
+            window.BACKEND_READY = true;
+          }
+        })
+        .catch(() => {
+          console.warn('⚠️ Backend API not available - running in offline mode');
+          window.BACKEND_READY = false;
+        });
+    }
+
+    // Start
+    checkBackendHealth();
+    init();
+  </script>
+</body>
+</html>

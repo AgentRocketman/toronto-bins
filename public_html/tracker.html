@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CurbIn Order Tracker</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f1f5f9;min-height:100vh;padding:20px}
+    .container{max-width:1400px;margin:0 auto;background:#fff;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,.1);overflow:hidden}
+    header{background:linear-gradient(135deg,#0a5c56,#0d9488 45%,#14b8a6);color:#fff;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+    header h1{font-size:1.4rem}
+    .header-stats{display:flex;gap:20px;font-size:.85rem;opacity:.9}
+    .header-stats span{font-weight:700}
+    .controls{padding:14px 28px;background:#f8fafc;border-bottom:1px solid #e2e8f0;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .controls button{background:#0d9488;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-size:.8rem;transition:background .15s}
+    .controls button:hover{background:#0a5c56}
+    .controls button.danger{background:#ef4444}
+    .controls button.danger:hover{background:#dc2626}
+    .log-toggle{margin-left:auto;font-size:.8rem;color:#64748b;cursor:pointer;user-select:none}
+    .log-panel{background:#1e293b;color:#10b981;padding:12px 28px;font-family:'Courier New',monospace;font-size:.78rem;max-height:180px;overflow-y:auto;display:none}
+    .log-panel.open{display:block}
+    .log-entry{padding:4px 0;border-bottom:1px solid #2d3a4a}
+    .log-time{color:#64748b;margin-right:8px}
+    .log-success{color:#10b981}.log-error{color:#ef4444}.log-warn{color:#f59e0b}.log-info{color:#3b82f6}
+
+    /* Spreadsheet table */
+    .table-wrap{overflow-x:auto;padding:0}
+    table{width:100%;border-collapse:collapse;font-size:.85rem}
+    thead{position:sticky;top:0;z-index:10}
+    th{background:#f1f5f9;color:#334155;font-weight:700;padding:10px 14px;text-align:left;border-bottom:2px solid #e2e8f0;white-space:nowrap;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+    td{padding:8px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    tr:hover td{background:#f8fafc}
+    tr.completed td{color:#334155}
+    tr.pending td{color:#334155}
+
+    /* Status pill */
+    .pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+    .pill-completed{background:#d1fae5;color:#065f46}
+    .pill-pending{background:#fef3c7;color:#92400e}
+
+    /* Thumbnail */
+    .thumb{width:48px;height:48px;border-radius:6px;object-fit:cover;cursor:pointer;border:1px solid #e2e8f0;transition:transform .15s}
+    .thumb:hover{transform:scale(1.5);z-index:20;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+    .no-thumb{width:48px;height:48px;border-radius:6px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:1.1rem}
+
+    /* Lightbox */
+    .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;cursor:pointer}
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:92vw;max-height:92vh;border-radius:8px}
+
+    .no-data{text-align:center;color:#9ca3af;padding:50px;font-size:.95rem}
+
+    @media(max-width:768px){
+      body{padding:10px}
+      header{padding:16px}
+      header h1{font-size:1.1rem}
+      .controls{padding:10px 14px}
+      th,td{padding:6px 8px;font-size:.78rem}
+      .thumb,.no-thumb{width:36px;height:36px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 CurbIn Order Tracker</h1>
+      <div class="header-stats">
+        <div>Total: <span id="totalOrders">0</span></div>
+        <div>Completed: <span id="completedOrders">0</span></div>
+        <div>Pending: <span id="pendingOrders">0</span></div>
+        <div>Updated: <span id="lastUpdate">--</span></div>
+      </div>
+    </header>
+
+    <div class="controls">
+      <button onclick="refreshData()">🔄 Refresh</button>
+      <button onclick="toggleAutoRefresh()" id="autoRefreshBtn">⚡ Auto-Refresh ON</button>
+      <button onclick="clearLogs()" class="danger">Clear Logs</button>
+      <span class="log-toggle" onclick="toggleLogPanel()">📝 Toggle Log</span>
+    </div>
+
+    <div class="log-panel" id="logPanel">
+      <div id="logEntries"></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Photo</th>
+            <th>Order ID</th>
+            <th>Address</th>
+            <th>Service Date</th>
+            <th>Service Type</th>
+            <th>Status</th>
+            <th>Completed</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody">
+          <tr><td colspan="8" class="no-data">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="this.classList.remove('open')">
+    <img id="lightboxImg" src="" alt="Service photo" />
+  </div>
+
+  <script>
+    const BASE = 'apptYNRJTXwItvied';
+    const KEY  = 'patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd';
+    const ORDERS_T   = 'tblGhNRi3ENwVpNty';
+    const BOOKINGS_T = 'tblKMhGnYjsH0z7Lj';
+    let autoInterval = null;
+
+    function addLog(type, msg) {
+      const t = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      const el = document.getElementById('logEntries');
+      el.innerHTML += '<div class="log-entry"><span class="log-time">['+t+']</span> <span class="log-'+type+'">'+msg+'</span></div>';
+      el.scrollTop = el.scrollHeight;
+    }
+    function clearLogs(){ document.getElementById('logEntries').innerHTML=''; addLog('info','Logs cleared'); }
+    function toggleLogPanel(){ document.getElementById('logPanel').classList.toggle('open'); }
+
+    async function atFetch(table) {
+      const r = await fetch('https://api.airtable.com/v0/'+BASE+'/'+table, {headers:{'Authorization':'Bearer '+KEY}});
+      if(!r.ok) throw new Error('Airtable '+r.status);
+      return (await r.json()).records||[];
+    }
+
+    function openLightbox(src){ document.getElementById('lightboxImg').src=src; document.getElementById('lightbox').classList.add('open'); }
+
+    async function refreshData() {
+      try {
+        addLog('info','⏳ Refreshing...');
+        const [orders, bookings, svcLogs] = await Promise.all([
+          atFetch(ORDERS_T),
+          atFetch(BOOKINGS_T),
+          fetch('/api/services.php').then(r=>r.json()).catch(()=>[])
+        ]);
+        addLog('success','✅ '+orders.length+' orders, '+bookings.length+' bookings');
+
+        // Bookings map by Booking ID
+        const bMap = {};
+        bookings.forEach(b => { if(b.fields['Booking ID']) bMap[b.fields['Booking ID']] = b.fields; });
+
+        // Services map by address (lowercase) and stop ID
+        const sArr = svcLogs.services || svcLogs || [];
+        const sMap = {};
+        sArr.forEach(s => {
+          const entry = { img: s.image_url||s.imageUrl||s.Image||'', date: s.completed_at||s.date||s.Date||'' };
+          if(s.stop_id||s.stopId) sMap[s.stop_id||s.stopId] = entry;
+          if(s.address||s.Address) sMap[(s.address||s.Address).toLowerCase()] = entry;
+        });
+
+        // Stats
+        const comp = orders.filter(o=>o.fields['Status']==='Completed').length;
+        document.getElementById('totalOrders').textContent = orders.length;
+        document.getElementById('completedOrders').textContent = comp;
+        document.getElementById('pendingOrders').textContent = orders.length - comp;
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+        // Sort: pending first, then by date desc
+        orders.sort((a,b) => {
+          const sa = a.fields['Status']==='Completed'?1:0, sb = b.fields['Status']==='Completed'?1:0;
+          if(sa!==sb) return sa-sb;
+          return (b.fields['Service Date']||'').localeCompare(a.fields['Service Date']||'');
+        });
+
+        const tbody = document.getElementById('ordersBody');
+        if(!orders.length){ tbody.innerHTML='<tr><td colspan="8" class="no-data">No orders yet.</td></tr>'; return; }
+
+        tbody.innerHTML = orders.map(o => {
+          const f = o.fields;
+          const status = f['Status']||'Pending';
+          const isComp = status==='Completed';
+          const bid = f['Booking ID']||'';
+          const bk = bMap[bid]||{};
+          const addr = bk['Address']||'-';
+          const oid = f['Order ID']||'-';
+
+          // Service log lookup
+          const svc = sMap[oid] || (addr!=='-' ? sMap[addr.toLowerCase()] : null) || null;
+          const img = svc?svc.img:'';
+          const compDate = svc?svc.date:'';
+
+          const thumbHtml = img
+            ? '<img class="thumb" src="'+img+'" onclick="openLightbox(\''+img.replace(/'/g,"\\'")+'\')" />'
+            : '<div class="no-thumb">'+(isComp?'✅':'🗑️')+'</div>';
+
+          const pillClass = isComp ? 'pill-completed' : 'pill-pending';
+
+          return '<tr class="'+(isComp?'completed':'pending')+'">' +
+            '<td>'+thumbHtml+'</td>' +
+            '<td><strong>'+oid+'</strong></td>' +
+            '<td>'+addr+'</td>' +
+            '<td>'+(f['Service Date']||'-')+'</td>' +
+            '<td>'+(f['Service Type']||'-')+'</td>' +
+            '<td><span class="pill '+pillClass+'">'+status+'</span></td>' +
+            '<td>'+(isComp?(compDate||'Yes'):'-')+'</td>' +
+            '<td><small>'+(f['Created At']||'-')+'</small></td>' +
+          '</tr>';
+        }).join('');
+
+        addLog('success','✅ Table updated');
+      } catch(err) {
+        addLog('error','❌ '+err.message);
+      }
+    }
+
+    function toggleAutoRefresh() {
+      const btn = document.getElementById('autoRefreshBtn');
+      if(autoInterval){ clearInterval(autoInterval); autoInterval=null; btn.textContent='⚡ Auto-Refresh ON'; addLog('warn','⏸️ Stopped'); }
+      else { autoInterval=setInterval(refreshData,10000); btn.textContent='⏸️ Auto-Refresh OFF'; addLog('success','▶️ Every 10s'); refreshData(); }
+    }
+
+    addLog('success','🚀 Tracker started');
+    refreshData();
+  </script>
+</body>
+</html>
