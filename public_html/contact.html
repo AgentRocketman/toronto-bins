@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — CurbIn</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--teal:#0d9488;--teal-dark:#0f766e;--teal-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8fafc;color:var(--slate);min-height:100vh}
+    nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1.5rem}
+    .nav-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;height:56px}
+    .nav-logo{text-decoration:none;display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.1rem;color:#0f172a}
+    .nav-logo img{height:28px;width:auto}
+    .page-header{background:linear-gradient(135deg,#0a5c56 0%,#0d9488 100%);padding:3rem 1.5rem;text-align:center;color:#fff}
+    .page-header h1{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:900;margin-bottom:.5rem}
+    .page-header p{opacity:.85;font-size:1rem;max-width:440px;margin:0 auto}
+    .page-body{max-width:560px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+    .card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,.07);padding:2rem}
+    .email-option{background:var(--teal-xlight);border:1px solid #99f6e4;border-radius:12px;padding:1rem 1.3rem;margin-bottom:1.8rem;font-size:.92rem;color:#0f172a;line-height:1.6}
+    .email-option a{color:var(--teal);font-weight:700;text-decoration:none}
+    .email-option a:hover{text-decoration:underline}
+    .divider{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;color:var(--slate-light);font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#e2e8f0}
+    .field{margin-bottom:1rem}
+    .field label{display:block;font-size:.85rem;font-weight:700;color:var(--slate);margin-bottom:.4rem}
+    .field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;color:#0f172a;background:#fff;transition:border .2s}
+    .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--teal)}
+    .field textarea{resize:vertical;min-height:130px}
+    .btn{display:block;width:100%;padding:14px;border-radius:12px;font-size:1rem;font-weight:800;border:none;cursor:pointer;transition:all .15s;text-align:center}
+    .btn-primary{background:var(--teal);color:#fff;margin-top:1.2rem}
+    .btn-primary:hover{background:var(--teal-dark)}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed}
+    .error-msg{color:#dc2626;font-size:.85rem;margin-top:.5rem;display:none}
+    .success-wrap{text-align:center;padding:1rem 0}
+    .success-icon{font-size:3rem;margin-bottom:1rem}
+    .success-title{font-size:1.3rem;font-weight:900;color:#0f172a;margin-bottom:.5rem}
+    .success-desc{font-size:.95rem;color:var(--slate-light);line-height:1.6}
+    .spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    a{color:var(--teal)}
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/"><img src="logo.jpg" alt="CurbIn"> CurbIn</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>Contact Us</h1>
+  <p>We typically respond within a few hours during business hours.</p>
+</div>
+
+<div class="page-body">
+  <div class="card">
+
+    <!-- Email option -->
+    <div class="email-option">
+      📧 Prefer email? Write to us directly at <a href="mailto:support@agentrocketman.com">support@agentrocketman.com</a> — or use the form below and we'll get back to you just the same.
+    </div>
+
+    <div class="divider">Or use this form</div>
+
+    <!-- Form -->
+    <div id="contact-form">
+      <div class="field">
+        <label>Your name</label>
+        <input type="text" id="name" placeholder="Full name">
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="email" placeholder="your@email.com">
+      </div>
+      <div class="field">
+        <label>Subject</label>
+        <select id="subject">
+          <option value="">Select a topic&hellip;</option>
+          <option value="Booking question">Booking question</option>
+          <option value="Service issue">Service issue</option>
+          <option value="Billing or payment">Billing or payment</option>
+          <option value="Cancellation help">Cancellation help</option>
+          <option value="General inquiry">General inquiry</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea id="message" placeholder="How can we help you?"></textarea>
+      </div>
+      <div class="error-msg" id="form-error"></div>
+      <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">Send Message</button>
+    </div>
+
+    <!-- Success state -->
+    <div id="contact-success" style="display:none">
+      <div class="success-wrap">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Message sent!</div>
+        <div class="success-desc">Thanks for reaching out. We'll get back to you at <strong id="success-email"></strong> within a few hours.</div>
+        <a href="/" style="display:inline-block;margin-top:1.5rem;color:var(--teal);font-weight:700;text-decoration:none">← Back to CurbIn</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer style="background:#f1f5f9;padding:2rem 1.5rem;text-align:center;border-top:1px solid #e2e8f0;font-size:.82rem;color:var(--slate-light)">
+  <p>&copy; 2026 CurbIn &middot; Toronto Bin Collection Service &middot; <a href="/" style="color:var(--teal)">Home</a> &middot; <a href="/terms.html" style="color:var(--teal)">Terms</a> &middot; <a href="/privacy.html" style="color:var(--teal)">Privacy</a></p>
+</footer>
+
+<script>
+async function submitForm() {
+  const name    = document.getElementById('name').value.trim();
+  const email   = document.getElementById('email').value.trim();
+  const subject = document.getElementById('subject').value;
+  const message = document.getElementById('message').value.trim();
+  const err     = document.getElementById('form-error');
+  const btn     = document.getElementById('submit-btn');
+
+  err.style.display = 'none';
+
+  if (!name || !email || !email.includes('@') || !subject || !message) {
+    err.textContent = 'Please fill in all fields before sending.';
+    err.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Sending&hellip;';
+
+  try {
+    const res = await fetch('/api/contact.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, subject, message })
+    });
+    const data = await res.json();
+
+    if (!data.success) throw new Error(data.error || 'Send failed');
+
+    document.getElementById('contact-form').style.display = 'none';
+    document.getElementById('success-email').textContent = email;
+    document.getElementById('contact-success').style.display = 'block';
+
+  } catch(e) {
+    err.textContent = 'Something went wrong. Please email us directly at support@agentrocketman.com.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Send Message';
+  }
+}
+</script>
+</body>
+</html>
