@@ -500,24 +500,15 @@ function positionSuggestions() {
   const rect = box.getBoundingClientRect();
   const vpH = (window.visualViewport || window).height;
   const spaceBelow = vpH - rect.bottom - 10;
-  const spaceAbove = rect.top - 10;
 
+  // Always show below the search box
   suggestionsDiv.style.position = 'fixed';
   suggestionsDiv.style.left = rect.left + 'px';
   suggestionsDiv.style.width = rect.width + 'px';
   suggestionsDiv.style.right = 'auto';
-
-  if (spaceBelow >= spaceAbove) {
-    // More space below — show under search box
-    suggestionsDiv.style.top = (rect.bottom + 6) + 'px';
-    suggestionsDiv.style.bottom = 'auto';
-    suggestionsDiv.style.maxHeight = Math.min(300, spaceBelow) + 'px';
-  } else {
-    // More space above (keyboard open) — flip above search box
-    suggestionsDiv.style.top = 'auto';
-    suggestionsDiv.style.bottom = (vpH - rect.top + 6) + 'px';
-    suggestionsDiv.style.maxHeight = Math.min(300, spaceAbove) + 'px';
-  }
+  suggestionsDiv.style.top = (rect.bottom + 6) + 'px';
+  suggestionsDiv.style.bottom = 'auto';
+  suggestionsDiv.style.maxHeight = Math.min(300, Math.max(spaceBelow, 200)) + 'px';
 }
 
 // Keep suggestions locked to search box while scrolling
