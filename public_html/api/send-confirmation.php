@@ -21,9 +21,9 @@ $address      = $body['address'] ?? '';
 $serviceType  = $body['serviceType'] ?? 'rollout';
 $frequency    = $body['frequency'] ?? 'adhoc';
 $amount       = $body['amount'] ?? 0; // in cents
-$subtotal     = $body['subtotal'] ?? null; // base amount (before tax)
-$hstAmount    = $body['hstAmount'] ?? null; // 13% tax
-$totalWithTax = $body['totalWithTax'] ?? null; // total with tax
+$subtotal     = $body['subtotal'] ?? null;
+$hstAmount    = $body['hstAmount'] ?? null;
+$totalWithTax = $body['totalWithTax'] ?? null;
 $bookingId    = $body['bookingId'] ?? '';
 $scheduleLines = $body['scheduleLines'] ?? [];
 $phone         = $body['customerPhone'] ?? '';
@@ -48,7 +48,7 @@ if ($serviceType === 'both') {
 // Format amount
 $amountDisplay = number_format($amount / 100, 2);
 
-// Format tax breakdown (if available)
+// Build tax breakdown if available
 $taxBreakdownHtml = '';
 if ($subtotal !== null && $hstAmount !== null && $totalWithTax !== null) {
     $subtotalDisplay = number_format($subtotal, 2);
