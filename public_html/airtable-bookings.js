@@ -9,7 +9,12 @@ function getAirtableApiKey() {
 }
 
 function generateBookingId() {
-  return 'BK-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+  // 5-char alphanumeric (A-Z, 0-9) = 60M+ combos — unique enough, easy to read over phone
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I/O/1/0 to avoid confusion
+  let id = '';
+  const rnd = crypto.getRandomValues(new Uint8Array(5));
+  for (let i = 0; i < 5; i++) id += chars[rnd[i] % chars.length];
+  return id;
 }
 
 async function saveBookingToAirtable(bookingData) {
@@ -77,7 +82,7 @@ async function saveBookingToAirtable(bookingData) {
       
       const recurringOrder = {
         fields: {
-          'Order ID': bookingId + '-RECURRING',
+          'Order ID': bookingId + '-R',
           'Booking ID': bookingId,
           'Service Type': bookingData.serviceType || '',
           'Frequency': 'Recurring',
@@ -111,7 +116,7 @@ async function saveBookingToAirtable(bookingData) {
       // Multiple ad hoc order records (one per date)
       const ordersToSave = bookingData.selectedDates.map(dateStr => ({
         fields: {
-          'Order ID': bookingId + '-' + dateStr,
+          'Order ID': bookingId + '-' + dateStr.replace(/-/g, '').slice(4),
           'Booking ID': bookingId,
           'Service Date': dateStr,
           'Service Type': bookingData.serviceType || '',

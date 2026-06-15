@@ -30,6 +30,7 @@ $serviceType     = $body['serviceType'] ?? 'rollout';
 $workerName      = $body['workerName'] ?? 'Driver';
 $completedDateTime = $body['completedDateTime'] ?? date('Y-m-d H:i');
 $imageUrl        = $body['imageUrl'] ?? null;
+$bookingId       = $body['bookingId'] ?? '';
 
 // ── Airtable config ──────────────────────────────────────────────────────────
 $AIRTABLE_KEY      = 'patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd';
@@ -104,6 +105,7 @@ $html = <<<HTML
       <p style="font-size:16px;color:#333;margin-bottom:20px;">Hi $customerName,</p>
       <p style="color:#555;line-height:1.6;">Your bin service has been completed. Here are the details:</p>
       <div style="background:#f9f9f9;border-left:4px solid #A4D233;padding:15px;margin:20px 0;border-radius:4px;">
+        <div style="margin-bottom:10px;font-size:14px;"><span style="font-weight:600;color:#555;display:inline-block;min-width:130px;">🆔 Booking ID:</span><span style="color:#333;font-weight:700;">$bookingId</span></div>
         <div style="margin-bottom:10px;font-size:14px;"><span style="font-weight:600;color:#555;display:inline-block;min-width:130px;">📍 Address:</span><span style="color:#333;">$address</span></div>
         <div style="margin-bottom:10px;font-size:14px;"><span style="font-weight:600;color:#555;display:inline-block;min-width:130px;">🔄 Service:</span><span style="color:#333;">$serviceLabel</span></div>
         <div style="margin-bottom:10px;font-size:14px;"><span style="font-weight:600;color:#555;display:inline-block;min-width:130px;">👷 Worker:</span><span style="color:#333;">$workerName</span></div>

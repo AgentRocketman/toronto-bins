@@ -962,7 +962,8 @@
         serviceType: stop.type,
         workerName: workerName,
         completedDateTime: stop.completedDateTime || new Date().toISOString(),
-        imageUrl: stop.imageUrl || null
+        imageUrl: stop.imageUrl || null,
+        bookingId: stop.bookingId || ''
       };
 
       fetch('/api/send-email.php', {
