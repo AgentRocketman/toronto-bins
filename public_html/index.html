@@ -163,6 +163,9 @@
     .date-card{border:2px solid #e2e8f0;border-radius:12px;padding:10px 14px;cursor:pointer;text-align:center;transition:all .15s;min-width:90px;background:#fff}
     .date-card:hover{border-color:var(--teal);background:var(--teal-xlight)}
     .date-card.selected{border-color:var(--teal);background:var(--teal);color:#fff}
+    .date-card.cutoff{cursor:not-allowed;opacity:.55;border-color:#e2e8f0;background:#f8fafc}
+    .date-card.cutoff:hover{border-color:#e2e8f0;background:#f8fafc}
+    .dc-cutoff{font-size:.62rem;color:#94a3b8;margin-top:3px;line-height:1.2}
     .dc-month{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
     .dc-day{font-size:1.05rem;font-weight:900;line-height:1.2;margin:2px 0}
     .dc-weekday{font-size:.68rem;opacity:.6;margin-bottom:6px}
@@ -864,6 +867,28 @@ function showPlanUI() {
 }
 
 // ===== Date cards =====
+// Returns true if the 4pm Toronto cutoff has passed for a given collection date
+function isPastCutoff(collectionDateStr) {
+  // Cutoff = 4pm Toronto time on the day BEFORE collection (day zone)
+  //        = 4pm Toronto time ON collection day (night zone)
+  const cutoffDay = currentIsNightZone ? collectionDateStr : (function(){
+    const d = new Date(collectionDateStr + 'T12:00:00');
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().split('T')[0];
+  })();
+  // Build cutoff moment: 4pm Toronto (America/Toronto)
+  // Get current Toronto hour by formatting now in Toronto timezone
+  const now = new Date();
+  const torontoNow = new Date(now.toLocaleString('en-CA', { timeZone: 'America/Toronto' }));
+  const todayToronto = formatDateISO(new Date(torontoNow.getFullYear(), torontoNow.getMonth(), torontoNow.getDate()));
+  const torontoHour = torontoNow.getHours();
+  const torontoMin = torontoNow.getMinutes();
+  if (cutoffDay < todayToronto) return true;  // cutoff day already past
+  if (cutoffDay > todayToronto) return false; // cutoff day still in the future
+  // cutoff day is today Toronto — check if past 4:00pm
+  return torontoHour > 16 || (torontoHour === 16 && torontoMin >= 0);
+}
+
 function buildDateCards() {
   if (!currentSchedule) return;
   const container = document.getElementById('date-cards');
@@ -882,16 +907,20 @@ function buildDateCards() {
     if (week.r) dots.push('<span class="dc-dot" style="background:#3182ce" title="Recycling"></span>');
     if (week.y) dots.push('<span class="dc-dot" style="background:#d69e2e" title="Yard Waste"></span>');
     if (week.c) dots.push('<span class="dc-dot" style="background:#e53e3e" title="Christmas Tree"></span>');
+    const pastCutoff = isPastCutoff(week.w);
     const card = document.createElement('div');
-    card.className = 'date-card' + (selectedDates.has(week.w) ? ' selected' : '');
+    card.className = 'date-card' + (pastCutoff ? ' cutoff' : (selectedDates.has(week.w) ? ' selected' : ''));
     card.dataset.date = week.w;
-    card.innerHTML = '<div class="dc-month">' + month + '</div><div class="dc-day">' + dayNum + '</div><div class="dc-weekday">' + weekday + '</div><div class="dc-dots">' + dots.join('') + '</div>';
-    card.addEventListener('click', function() {
-      if (selectedDates.has(week.w)) selectedDates.delete(week.w);
-      else selectedDates.add(week.w);
-      this.classList.toggle('selected');
-      updateTotal();
-    });
+    const cutoffNote = pastCutoff ? '<div class="dc-cutoff">Closed<br>4pm cutoff</div>' : '';
+    card.innerHTML = '<div class="dc-month">' + month + '</div><div class="dc-day">' + dayNum + '</div><div class="dc-weekday">' + weekday + '</div><div class="dc-dots">' + dots.join('') + '</div>' + cutoffNote;
+    if (!pastCutoff) {
+      card.addEventListener('click', function() {
+        if (selectedDates.has(week.w)) selectedDates.delete(week.w);
+        else selectedDates.add(week.w);
+        this.classList.toggle('selected');
+        updateTotal();
+      });
+    }
     container.appendChild(card);
   });
 }
