@@ -236,7 +236,8 @@
     .sticky-cta{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:#fff;border-top:1px solid #e2e8f0;padding:12px 16px;box-shadow:0 -4px 20px rgba(0,0,0,.1)}
     .sticky-cta-btn{display:block;background:var(--teal);color:#fff;text-align:center;padding:13px;border-radius:12px;font-weight:800;font-size:.95rem;text-decoration:none;transition:background .2s}
     .sticky-cta-btn:hover{background:var(--teal-dark)}
-    @media(max-width:640px){.sticky-cta{display:none}}
+    .sticky-cta{display:none!important}
+    .sticky-cta.visible{display:block!important}
 
     /* Reviews carousel */
     #reviews{background:#f0fdfa;padding:4rem 1.5rem}
@@ -1323,32 +1324,50 @@ function formatDateShort(isoStr) {
 </div>
 
 <script>
-// Sticky CTA: show when user reaches #how, hide when booking revealed
+// Sticky CTA: show when reviews in view, hide when hero visible or booking revealed
 document.addEventListener('DOMContentLoaded', function(){
-  var stickyCta     = document.getElementById('sticky-cta');
-  var howSection    = document.getElementById('how');
-  var bookingSection= document.getElementById('booking-section');
-  if (!stickyCta || !howSection) return;
+  var stickyCta      = document.getElementById('sticky-cta');
+  var heroSection    = document.getElementById('hero-anchor');
+  var reviewsSection = document.getElementById('reviews');
+  var bookingSection = document.getElementById('booking-section');
+  if (!stickyCta) return;
 
-  var howVisible = false;
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if (e.isIntersecting) {
-        howVisible = true;
-        if (!bookingSection || !bookingSection.classList.contains('revealed')) {
-          stickyCta.style.display = 'block';
-        }
+  var heroVisible    = true; // starts visible
+  var bookingRevealed = false;
+
+  function updateSticky() {
+    if (heroVisible || bookingRevealed) {
+      stickyCta.classList.remove('visible');
+    } else {
+      stickyCta.classList.add('visible');
+    }
+  }
+
+  // Watch hero — hide sticky when hero is on screen
+  if (heroSection) {
+    new IntersectionObserver(function(entries){
+      heroVisible = entries[0].isIntersecting;
+      updateSticky();
+    }, { threshold: 0.05 }).observe(heroSection);
+  }
+
+  // Watch reviews — once reached, allow sticky to show (if hero gone)
+  if (reviewsSection) {
+    var reached = false;
+    new IntersectionObserver(function(entries){
+      if (entries[0].isIntersecting && !reached) {
+        reached = true;
       }
-    });
-  }, { threshold: 0.1 });
-  io.observe(howSection);
+      // Only update if reviews section has been reached at least once
+      if (reached) updateSticky();
+    }, { threshold: 0.1 }).observe(reviewsSection);
+  }
 
-  // Hide once booking section is revealed
+  // Hide when booking section is revealed
   if (bookingSection) {
     new MutationObserver(function(){
-      if (bookingSection.classList.contains('revealed')) {
-        stickyCta.style.display = 'none';
-      }
+      bookingRevealed = bookingSection.classList.contains('revealed');
+      updateSticky();
     }).observe(bookingSection, { attributes: true, attributeFilter: ['class'] });
   }
 });
