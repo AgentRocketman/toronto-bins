@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage My Service — CurbIn</title>
+  <title>Cancel My Service — CurbIn</title>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--teal:#0d9488;--teal-dark:#0f766e;--teal-light:#ccfbf1;--teal-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
+    :root{--teal:#0d9488;--teal-dark:#0f766e;--teal-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8fafc;color:var(--slate);min-height:100vh}
     nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1.5rem}
     .nav-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;height:56px}
@@ -16,67 +16,39 @@
     .page-header h1{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:900;margin-bottom:.5rem}
     .page-header p{opacity:.85;font-size:1rem;max-width:400px;margin:0 auto}
     .page-body{max-width:560px;margin:0 auto;padding:2rem 1.5rem 4rem}
-
-    /* Steps */
     .step{display:none}
     .step.active{display:block}
-
-    /* Cards */
     .card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,.07);padding:2rem;margin-bottom:1.2rem}
     .card-title{font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:1.2rem}
-
-    /* Form inputs */
     .field{margin-bottom:1rem}
     .field label{display:block;font-size:.85rem;font-weight:700;color:var(--slate);margin-bottom:.4rem}
     .field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;color:#0f172a;background:#fff;transition:border .2s;appearance:none}
     .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--teal)}
     .field textarea{resize:vertical;min-height:80px}
-
-    /* Option cards */
-    .option-cards{display:flex;flex-direction:column;gap:12px}
-    .option-card{border:2px solid #e2e8f0;border-radius:14px;padding:1.2rem 1.4rem;cursor:pointer;transition:all .15s;background:#fff;text-align:left;width:100%}
-    .option-card:hover{border-color:var(--teal);background:var(--teal-xlight)}
-    .option-card.selected{border-color:var(--teal);background:var(--teal-xlight)}
-    .option-card.primary{border-color:#0d9488;background:var(--teal-xlight)}
-    .option-card .oc-title{font-weight:800;font-size:1rem;color:#0f172a;margin-bottom:.2rem}
-    .option-card .oc-desc{font-size:.85rem;color:var(--slate-light)}
-    .option-card .oc-badge{display:inline-block;background:var(--teal);color:#fff;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:99px;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em}
-    .option-card.danger-option{border-color:#fca5a5}
-    .option-card.danger-option:hover{border-color:#ef4444;background:#fef2f2}
-
-    /* Buttons */
-    .btn{display:block;width:100%;padding:14px;border-radius:12px;font-size:1rem;font-weight:800;border:none;cursor:pointer;transition:all .15s;text-align:center}
+    .btn{display:block;width:100%;padding:14px;border-radius:12px;font-size:1rem;font-weight:800;border:none;cursor:pointer;transition:all .15s;text-align:center;text-decoration:none}
     .btn-primary{background:var(--teal);color:#fff;margin-top:1.2rem}
     .btn-primary:hover{background:var(--teal-dark)}
     .btn-secondary{background:#f1f5f9;color:var(--slate);margin-top:.8rem}
     .btn-secondary:hover{background:#e2e8f0}
-    .btn-danger{background:#ef4444;color:#fff;margin-top:.8rem}
+    .btn-danger{background:#ef4444;color:#fff;margin-top:1rem}
     .btn-danger:hover{background:#dc2626}
-    .btn-link{background:none;border:none;color:var(--slate-light);font-size:.85rem;cursor:pointer;text-decoration:underline;margin-top:1rem;padding:.4rem 0}
-
-    /* Save offer */
-    .save-offer{background:#fef3c7;border:1px solid #fcd34d;border-radius:14px;padding:1.4rem;margin-bottom:1.2rem;text-align:center}
-    .save-offer .so-emoji{font-size:2rem;margin-bottom:.5rem}
-    .save-offer h3{font-size:1.05rem;font-weight:800;color:#92400e;margin-bottom:.4rem}
-    .save-offer p{font-size:.88rem;color:#a16207;line-height:1.5}
-
-    /* Giving up box */
-    .giving-up{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:1.1rem 1.3rem;margin-bottom:1.2rem}
-    .giving-up p{font-size:.88rem;color:#166534;line-height:1.6}
-    .giving-up strong{color:#15803d}
-
-    /* Success */
-    .success-icon{font-size:3.5rem;text-align:center;margin-bottom:1rem}
-    .success-title{font-size:1.4rem;font-weight:900;color:#0f172a;text-align:center;margin-bottom:.6rem}
-    .success-desc{font-size:.95rem;color:var(--slate-light);text-align:center;line-height:1.6}
-
-    /* Error */
-    .error-msg{color:#dc2626;font-size:.85rem;margin-top:.5rem;display:none}
-
-    /* Progress dots */
+    .save-offer{background:#fef3c7;border:1px solid #fcd34d;border-radius:14px;padding:1.6rem;margin-bottom:1.2rem;text-align:center}
+    .save-offer .so-emoji{font-size:2.5rem;margin-bottom:.6rem}
+    .save-offer h3{font-size:1.1rem;font-weight:800;color:#92400e;margin-bottom:.5rem}
+    .save-offer p{font-size:.9rem;color:#a16207;line-height:1.6}
+    .benefit-box{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem}
+    .benefit-box p{font-size:.88rem;color:#166534;line-height:1.7}
+    .rule-box{background:#fef2f2;border:1px solid #fca5a5;border-radius:10px;padding:12px 16px;font-size:.82rem;color:#991b1b;line-height:1.6;margin-top:1rem}
+    .success-wrap{text-align:center;padding:.5rem 0}
+    .success-icon{font-size:3.5rem;margin-bottom:1rem}
+    .success-title{font-size:1.4rem;font-weight:900;color:#0f172a;margin-bottom:.6rem}
+    .success-desc{font-size:.95rem;color:var(--slate-light);line-height:1.7;max-width:420px;margin:0 auto}
+    .error-msg{color:#dc2626;font-size:.85rem;margin-top:.6rem;display:none}
     .progress{display:flex;justify-content:center;gap:8px;margin-bottom:2rem}
-    .progress-dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;transition:background .3s}
-    .progress-dot.done{background:var(--teal)}
+    .progress-dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;transition:background .3s,transform .2s}
+    .progress-dot.done{background:var(--teal);transform:scale(1.2)}
+    .spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
@@ -88,13 +60,12 @@
 </nav>
 
 <div class="page-header">
-  <h1>Manage Your Service</h1>
-  <p>Pause, resume, or cancel your CurbIn service</p>
+  <h1>Cancel My Service</h1>
+  <p>We're sorry to see you go. This takes less than a minute.</p>
 </div>
 
 <div class="page-body">
 
-  <!-- Progress dots -->
   <div class="progress" id="progress">
     <div class="progress-dot done" id="dot1"></div>
     <div class="progress-dot" id="dot2"></div>
@@ -102,54 +73,31 @@
     <div class="progress-dot" id="dot4"></div>
   </div>
 
-  <!-- Step 1: Verify identity -->
+  <!-- Step 1: Verify -->
   <div class="step active" id="step1">
     <div class="card">
       <div class="card-title">Verify your booking</div>
       <div class="field">
         <label>Booking ID</label>
-        <input type="text" id="bookingId" placeholder="e.g. FP2SG" autocomplete="off" style="text-transform:uppercase;letter-spacing:.1em;font-weight:700">
+        <input type="text" id="bookingId" placeholder="e.g. FP2SG" autocomplete="off" style="text-transform:uppercase;letter-spacing:.12em;font-weight:700;font-size:1.1rem">
       </div>
       <div class="field">
         <label>Email address on the booking</label>
         <input type="email" id="email" placeholder="your@email.com">
       </div>
-      <div class="error-msg" id="step1-error">Please enter your Booking ID and email.</div>
+      <div class="error-msg" id="step1-error">Please enter both your Booking ID and email address.</div>
       <button class="btn btn-primary" onclick="goStep2()">Continue &rarr;</button>
     </div>
+    <p style="text-align:center;font-size:.82rem;color:var(--slate-light);margin-top:1rem">
+      Need help? Email us at <a href="mailto:support@agentrocketman.com" style="color:var(--teal)">support@agentrocketman.com</a>
+    </p>
   </div>
 
-  <!-- Step 2: Choose request type -->
+  <!-- Step 2: Reason -->
   <div class="step" id="step2">
     <div class="card">
-      <div class="card-title">What would you like to do?</div>
-      <div class="option-cards">
-
-        <button class="option-card primary" onclick="selectType('pause')" id="opt-pause">
-          <div class="oc-badge">Recommended</div>
-          <div class="oc-title">⏸ Pause my service</div>
-          <div class="oc-desc">Going away or don't need it for a while? Pause and come back anytime — no charge while paused.</div>
-        </button>
-
-        <button class="option-card" onclick="selectType('resume')" id="opt-resume">
-          <div class="oc-title">▶️ Resume my service</div>
-          <div class="oc-desc">Ready to restart your paused service? We'll pick up from your next collection day.</div>
-        </button>
-
-        <button class="option-card danger-option" onclick="selectType('cancel')" id="opt-cancel">
-          <div class="oc-title">✕ Cancel my service</div>
-          <div class="oc-desc">Permanently cancel your recurring subscription.</div>
-        </button>
-
-      </div>
-      <div class="error-msg" id="step2-error">Please select an option.</div>
-    </div>
-  </div>
-
-  <!-- Step 3: Reason -->
-  <div class="step" id="step3">
-    <div class="card">
-      <div class="card-title" id="step3-title">Tell us why</div>
+      <div class="card-title">Why are you cancelling?</div>
+      <p style="font-size:.88rem;color:var(--slate-light);margin-bottom:1.2rem;line-height:1.6">Your feedback helps us improve. Takes 10 seconds.</p>
       <div class="field">
         <label>Reason</label>
         <select id="reason">
@@ -162,210 +110,175 @@
         </select>
       </div>
       <div class="field">
-        <label>Anything else you&rsquo;d like us to know? <span style="font-weight:400;color:var(--slate-light)">(optional)</span></label>
-        <textarea id="message" placeholder="Your feedback helps us improve&hellip;"></textarea>
+        <label>Anything else? <span style="font-weight:400;color:var(--slate-light)">(optional)</span></label>
+        <textarea id="message" placeholder="Your feedback helps us get better&hellip;"></textarea>
       </div>
-      <div class="error-msg" id="step3-error">Please select a reason.</div>
-      <button class="btn btn-primary" onclick="goStep4()">Continue &rarr;</button>
-      <button class="btn btn-secondary" onclick="goStep(2)">← Back</button>
+      <div class="error-msg" id="step2-error">Please select a reason.</div>
+      <button class="btn btn-primary" onclick="goStep3()">Continue &rarr;</button>
+      <button class="btn btn-secondary" onclick="goStep(1)">← Back</button>
     </div>
   </div>
 
-  <!-- Step 4a: Save attempt (cancel only) -->
-  <div class="step" id="step4-cancel">
+  <!-- Step 3: Save attempt (friction) -->
+  <div class="step" id="step3">
     <div class="save-offer">
       <div class="so-emoji">🙏</div>
-      <h3>Before you go&hellip;</h3>
-      <p>We&rsquo;d hate to lose you. If it&rsquo;s not the right time, pausing keeps your spot — and your recurring rate of <strong>$5.95/week</strong>. If you cancel and come back later, standard ad hoc pricing applies.</p>
+      <h3>Before you cancel&hellip;</h3>
+      <p id="save-message">We'd hate to lose you. Is there anything we can do to keep you?</p>
     </div>
 
-    <div class="giving-up">
-      <p>✅ <strong>Your recurring rate is locked in.</strong> Cancel now and you&rsquo;ll lose it.<br>
-      ⏸ <strong>Pause instead</strong> — no charge while paused, restart whenever you&rsquo;re ready.</p>
-    </div>
-
-    <button class="btn btn-primary" onclick="switchToPause()">⏸ Actually, let me pause instead</button>
-    <button class="btn btn-danger" onclick="goStep5()">No thanks, cancel my service</button>
-    <button class="btn btn-secondary" onclick="goStep(2)">← Back</button>
-  </div>
-
-  <!-- Step 4b: Confirm pause/resume -->
-  <div class="step" id="step4-other">
-    <div class="card">
-      <div class="card-title" id="step4-other-title">Confirm your request</div>
-      <div id="step4-summary" style="font-size:.95rem;color:var(--slate-light);margin-bottom:1.4rem;line-height:1.7"></div>
-      <p style="font-size:.82rem;color:var(--slate-light);background:#f8fafc;padding:12px;border-radius:8px;line-height:1.6">
-        ⏱ <strong>48-hour rule:</strong> If your next collection is within 48 hours, that service will proceed as scheduled. Your request takes effect from the following collection.
+    <div class="benefit-box">
+      <p>
+        ✅ <strong>Your recurring rate of $5.95/week is locked in.</strong><br>
+        Cancel now and you lose it — standard rate applies if you come back.<br><br>
+        📧 <strong>Have a concern?</strong> Reply to any of our emails or write to <a href="mailto:support@agentrocketman.com" style="color:#166534;font-weight:600;">support@agentrocketman.com</a> — we'll make it right.
       </p>
-      <button class="btn btn-primary" id="confirm-btn" onclick="submitRequest()">Confirm Request</button>
-      <button class="btn btn-secondary" onclick="goStep(2)">← Back</button>
-      <div class="error-msg" id="step4-error">Something went wrong. Please try again.</div>
     </div>
+
+    <button class="btn btn-secondary" onclick="goStep(2)" style="margin-top:0">← Go back</button>
+    <button class="btn btn-danger" onclick="goStep4()">No thanks, cancel my service</button>
   </div>
 
-  <!-- Step 5: Confirm cancellation -->
-  <div class="step" id="step5">
+  <!-- Step 4: Final confirm -->
+  <div class="step" id="step4">
     <div class="card">
       <div class="card-title">Confirm cancellation</div>
       <p style="font-size:.95rem;color:var(--slate-light);margin-bottom:1.2rem;line-height:1.7">
-        You&rsquo;re about to permanently cancel your CurbIn service. This will stop all future bin collections and billing.
+        You're about to permanently cancel your CurbIn service for booking <strong id="confirm-booking-id" style="color:#0f172a"></strong>.
+        This will stop all future collections and billing.
       </p>
-      <p style="font-size:.82rem;color:var(--slate-light);background:#fef2f2;padding:12px;border-radius:8px;line-height:1.6;border:1px solid #fca5a5">
-        ⏱ <strong>48-hour rule:</strong> If your next collection is within 48 hours, that final service will proceed and be charged. Cancellation takes effect from the following week.
-      </p>
-      <button class="btn btn-danger" onclick="submitRequest()" style="margin-top:1.2rem">Yes, cancel my service</button>
-      <button class="btn btn-primary" onclick="switchToPause()" style="margin-top:.6rem">⏸ Pause instead</button>
+      <div class="rule-box">
+        ⏱ <strong>48-hour rule:</strong> Any collection scheduled within the next 48 hours will still proceed as planned.
+        For ad hoc bookings, dates beyond the 48-hour window will be automatically refunded to your original payment method.
+      </div>
+      <button class="btn btn-danger" id="confirm-btn" onclick="submitCancellation()">Yes, cancel my service</button>
       <button class="btn btn-secondary" onclick="goStep(2)">← Back</button>
-      <div class="error-msg" id="step5-error">Something went wrong. Please try again.</div>
+      <div class="error-msg" id="step4-error"></div>
     </div>
   </div>
 
   <!-- Success -->
   <div class="step" id="step-success">
-    <div class="card" style="text-align:center;padding:2.5rem">
-      <div class="success-icon">✅</div>
-      <div class="success-title" id="success-title">Request received!</div>
-      <div class="success-desc" id="success-desc"></div>
-      <a href="/" style="display:inline-block;margin-top:1.8rem;color:var(--teal);font-weight:700;text-decoration:none">← Back to CurbIn</a>
+    <div class="card">
+      <div class="success-wrap">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Service cancelled</div>
+        <div class="success-desc" id="success-desc"></div>
+        <a href="/" class="btn btn-primary" style="margin-top:2rem;display:inline-block;width:auto;padding:12px 28px;">← Back to CurbIn</a>
+      </div>
     </div>
   </div>
 
-</div><!-- /page-body -->
+</div>
 
 <script>
-  let state = {
-    bookingId: '',
-    email: '',
-    requestType: '',
-    reason: '',
-    message: ''
-  };
-  let currentStep = 1;
+  const state = { bookingId: '', email: '', reason: '', message: '' };
 
-  function showStep(n, id) {
+  function showStep(id) {
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-    document.getElementById(id || 'step' + n).classList.add('active');
-    currentStep = n;
-    updateDots();
+    document.getElementById(id).classList.add('active');
+    updateDots(id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function goStep(n) { showStep(n); }
+  function goStep(n) { showStep('step' + n); }
 
-  function updateDots() {
+  function updateDots(stepId) {
+    const map = { step1:1, step2:2, step3:3, step4:4, 'step-success':4 };
+    const current = map[stepId] || 1;
     for (let i = 1; i <= 4; i++) {
       const dot = document.getElementById('dot' + i);
-      if (dot) dot.classList.toggle('done', i <= currentStep);
+      if (dot) dot.classList.toggle('done', i <= current);
     }
+    if (stepId === 'step-success') document.getElementById('progress').style.display = 'none';
   }
 
   function goStep2() {
     const bookingId = document.getElementById('bookingId').value.trim().toUpperCase();
     const email     = document.getElementById('email').value.trim();
     const err       = document.getElementById('step1-error');
-    if (!bookingId || !email || !email.includes('@')) {
-      err.style.display = 'block'; return;
-    }
+    if (!bookingId || !email || !email.includes('@')) { err.style.display = 'block'; return; }
     err.style.display = 'none';
     state.bookingId = bookingId;
     state.email     = email;
-    showStep(2);
+    showStep('step2');
   }
 
-  function selectType(type) {
-    state.requestType = type;
-    document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-    document.getElementById('opt-' + type).classList.add('selected');
-
-    if (type === 'resume') {
-      // Skip reason, go straight to confirm
-      buildStep4Other();
-      showStep(3, 'step4-other');
-    } else {
-      // Pause or cancel — ask reason
-      document.getElementById('step3-title').textContent =
-        type === 'cancel' ? 'Why are you cancelling?' : 'Why are you pausing?';
-      showStep(3);
-    }
-  }
-
-  function goStep4() {
+  function goStep3() {
     const reason = document.getElementById('reason').value;
-    const err    = document.getElementById('step3-error');
+    const err    = document.getElementById('step2-error');
     if (!reason) { err.style.display = 'block'; return; }
     err.style.display = 'none';
     state.reason  = reason;
     state.message = document.getElementById('message').value.trim();
 
-    if (state.requestType === 'cancel') {
-      showStep(3, 'step4-cancel');
-    } else {
-      buildStep4Other();
-      showStep(4, 'step4-other');
-    }
-  }
-
-  function buildStep4Other() {
-    const labels = { pause: 'Pause Service', resume: 'Resume Service' };
-    const descs  = {
-      pause:  'Your service will be paused after your next scheduled collection (subject to the 48-hour rule). No charges will occur while paused.',
-      resume: 'Your service will resume from your next scheduled collection day. Weekly billing restarts automatically.'
+    // Personalise save message based on reason
+    const msgs = {
+      travelling:  "Going somewhere? We totally get it — but you'll lose your locked-in recurring rate if you cancel.",
+      expensive:   "We hear you on cost. Reach out to us — we may be able to help.",
+      unhappy:     "We're sorry to hear that. Please let us know what went wrong — we want to make it right.",
+      'not-needed':'Things change. But if you ever need us again, your rate won't be the same.",',
+      other:       "We'd hate to lose you. Is there anything we can do?"
     };
-    document.getElementById('step4-other-title').textContent = 'Confirm — ' + (labels[state.requestType] || '');
-    document.getElementById('step4-summary').innerHTML =
-      '<strong>Booking:</strong> ' + state.bookingId + '<br>' +
-      '<strong>Email:</strong> ' + state.email + '<br><br>' +
-      (descs[state.requestType] || '');
+    document.getElementById('save-message').textContent = msgs[reason] || "We'd hate to lose you.";
+    showStep('step3');
   }
 
-  function switchToPause() {
-    state.requestType = 'pause';
-    buildStep4Other();
-    showStep(4, 'step4-other');
+  function goStep4() {
+    document.getElementById('confirm-booking-id').textContent = state.bookingId;
+    showStep('step4');
   }
 
-  function goStep5() {
-    showStep(4, 'step5');
-  }
-
-  async function submitRequest() {
-    const errId = state.requestType === 'cancel' ? 'step5-error' : 'step4-error';
-    const errEl = document.getElementById(errId);
-    if (errEl) errEl.style.display = 'none';
+  async function submitCancellation() {
+    const btn = document.getElementById('confirm-btn');
+    const err = document.getElementById('step4-error');
+    err.style.display = 'none';
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Processing&hellip;';
 
     try {
-      const res = await fetch('/api/manage-request.php', {
+      const res = await fetch('/api/process-cancellation.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          bookingId:   state.bookingId,
-          email:       state.email,
-          requestType: state.requestType,
-          reason:      state.reason,
-          message:     state.message
+          bookingId: state.bookingId,
+          email:     state.email,
+          reason:    state.reason,
+          message:   state.message
         })
       });
+
       const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Request failed');
 
-      // Show success
-      const titles = { pause: 'Pause request received!', cancel: 'Cancellation request received!', resume: 'Resume request received!' };
-      const descs  = {
-        pause:  'We\'ll pause your service within 24 hours and confirm by email. Remember — if your next collection is within 48 hours, that service will still proceed.',
-        cancel: 'We\'ll process your cancellation within 24 hours and confirm by email. We\'re sorry to see you go — you\'re always welcome back.',
-        resume: 'We\'ll reactivate your service within 24 hours and confirm by email. Welcome back!'
-      };
-      document.getElementById('success-title').textContent = titles[state.requestType] || 'Request received!';
-      document.getElementById('success-desc').textContent  = descs[state.requestType] || 'We\'ll be in touch shortly.';
-      document.getElementById('progress').style.display = 'none';
-      showStep(5, 'step-success');
+      if (!data.success) {
+        err.textContent = data.error || 'Something went wrong. Please email support@agentrocketman.com directly.';
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Yes, cancel my service';
+        return;
+      }
 
-    } catch (err) {
-      if (errEl) { errEl.textContent = 'Something went wrong. Please email support@agentrocketman.com directly.'; errEl.style.display = 'block'; }
+      // Build success message
+      let desc = 'Your service has been cancelled and a confirmation has been sent to ' + state.email + '.';
+      if (data.stripeAction === 'refund_issued') {
+        desc += ' A refund of $' + data.refundAmount + ' CAD has been issued for your upcoming dates — please allow 5–10 business days.';
+      } else if (data.stripeAction === 'subscription_cancelled') {
+        desc += ' Your subscription has been cancelled and no further charges will be made.';
+      }
+      desc += ' We\'re sorry to see you go — you\'re always welcome back.';
+
+      document.getElementById('success-desc').textContent = desc;
+      showStep('step-success');
+
+    } catch (e) {
+      err.textContent = 'Network error. Please try again or email support@agentrocketman.com.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Yes, cancel my service';
     }
   }
 
-  // Booking ID auto-uppercase
+  // Auto-uppercase booking ID
   document.getElementById('bookingId').addEventListener('input', function() {
     this.value = this.value.toUpperCase();
   });
