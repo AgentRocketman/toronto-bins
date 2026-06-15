@@ -98,7 +98,7 @@
     /* Search autocomplete in hero */
     #address{flex:1;border:none;outline:none;font-size:1rem;color:var(--slate);background:transparent;padding:11px 0;min-width:0}
     #address::placeholder{color:#94a3b8}
-    .suggestions{position:fixed;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:2147483647;display:none;overflow-y:auto}
+    .suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:9999;display:none;max-height:280px;overflow-y:auto}
     .suggestions.show{display:block}
     .suggestion-item{padding:12px 18px;cursor:pointer;font-size:.93rem;color:#2d3748;border-bottom:1px solid #f7fafc;transition:background .12s;text-align:left}
     .suggestion-item:last-child{border-bottom:none}
@@ -262,8 +262,8 @@
           <input type="text" id="address" placeholder="Start typing your Toronto address&hellip;" autocomplete="off" />
           <button class="hero-search-btn" id="hero-search-btn">Check Schedule &rarr;</button>
         </div>
-        <div class="suggestions" id="suggestions"></div>
       </div>
+      <div class="suggestions" id="suggestions"></div>
       <p class="hero-note">&#128205; Serving Toronto residential addresses &middot; No commitment required</p>
       <div id="hero-loading"><span class="spinner-sm"></span>Looking up your schedule&hellip;</div>
       <div id="hero-error"></div>
@@ -491,31 +491,7 @@ const suggestionsDiv = document.getElementById('suggestions');
 let selectedIndex = -1;
 let debounceTimer = null;
 
-// Move suggestions to body so no parent overflow:hidden can clip it
-document.body.appendChild(suggestionsDiv);
 
-function positionSuggestions() {
-  if (!suggestionsDiv.classList.contains('show')) return;
-  const boxRect = document.querySelector('.hero-search-box').getBoundingClientRect();
-  const inputRect = addressInput.getBoundingClientRect();
-  const vp = window.visualViewport || { height: window.innerHeight, offsetTop: 0 };
-  const vpH = vp.height;
-  const spaceBelow = vpH - inputRect.bottom - 10;
-
-  // Always anchored directly below the input, same width as search box
-  suggestionsDiv.style.position = 'fixed';
-  suggestionsDiv.style.left = boxRect.left + 'px';
-  suggestionsDiv.style.width = boxRect.width + 'px';
-  suggestionsDiv.style.right = 'auto';
-  suggestionsDiv.style.top = (inputRect.bottom + 6) + 'px';
-  suggestionsDiv.style.bottom = 'auto';
-  suggestionsDiv.style.maxHeight = Math.min(300, Math.max(spaceBelow, 150)) + 'px';
-}
-
-// Keep suggestions locked to search box while scrolling
-window.addEventListener('scroll', positionSuggestions, { passive: true });
-window.visualViewport?.addEventListener('resize', positionSuggestions);
-window.visualViewport?.addEventListener('scroll', positionSuggestions);
 
 // ===== Address search =====
 addressInput.addEventListener('input', function() {
@@ -560,7 +536,6 @@ async function fetchSuggestions(query) {
       suggestionsDiv.appendChild(div);
     });
     suggestionsDiv.classList.add('show');
-    positionSuggestions();
   } catch(e) { console.error('Suggest error:', e); }
 }
 
