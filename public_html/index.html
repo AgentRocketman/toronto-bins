@@ -98,7 +98,7 @@
     /* Search autocomplete in hero */
     #address{flex:1;border:none;outline:none;font-size:1rem;color:var(--slate);background:transparent;padding:11px 0;min-width:0}
     #address::placeholder{color:#94a3b8}
-    .suggestions{position:fixed;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:9999;display:none;max-height:350px;overflow-y:auto;left:1.5rem;right:1.5rem;width:auto}
+    .suggestions{position:fixed;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:9999;display:none;max-height:350px;overflow-y:auto}
     .suggestions.show{display:block}
     .suggestion-item{padding:12px 18px;cursor:pointer;font-size:.93rem;color:#2d3748;border-bottom:1px solid #f7fafc;transition:background .12s}
     .suggestion-item:last-child{border-bottom:none}
@@ -527,22 +527,31 @@ function hideSuggestions() { suggestionsDiv.classList.remove('show'); suggestion
 
 function positionSuggestions() {
   if (!suggestionsDiv.classList.contains('show')) return;
-  const inputRect = addressInput.getBoundingClientRect();
-  const availableBelow = window.innerHeight - inputRect.bottom - 10;
-  const availableAbove = inputRect.top - 10;
-  const suggestionsHeight = 200;
-  
-  // Position below input by default
-  suggestionsDiv.style.top = (inputRect.bottom + 6) + 'px';
-  suggestionsDiv.style.bottom = 'auto';
-  
-  // If not enough space below but space above, position above input
-  if (availableBelow < suggestionsHeight && availableAbove >= suggestionsHeight) {
-    suggestionsDiv.style.top = 'auto';
-    suggestionsDiv.style.bottom = (window.innerHeight - inputRect.top + 6) + 'px';
-    suggestionsDiv.style.maxHeight = '200px';
+
+  // Anchor to the search box, not just the input
+  const boxRect = document.querySelector('.hero-search-box').getBoundingClientRect();
+  const vp = window.visualViewport || { height: window.innerHeight, offsetTop: 0 };
+  const vpBottom = vp.offsetTop + vp.height;
+  const availableBelow = vpBottom - boxRect.bottom - 8;
+  const availableAbove = boxRect.top - vp.offsetTop - 8;
+  const maxH = 250;
+
+  // Always align left/width to the search box
+  suggestionsDiv.style.left = boxRect.left + 'px';
+  suggestionsDiv.style.width = boxRect.width + 'px';
+  suggestionsDiv.style.right = 'auto';
+
+  if (availableBelow >= 120) {
+    // Enough space below — show under search box
+    suggestionsDiv.style.top = (boxRect.bottom + 8) + 'px';
+    suggestionsDiv.style.bottom = 'auto';
+    suggestionsDiv.style.maxHeight = Math.min(maxH, availableBelow) + 'px';
   } else {
-    suggestionsDiv.style.maxHeight = Math.min(350, Math.max(availableBelow - 10, 120)) + 'px';
+    // Not enough below — flip above search box
+    const h = Math.min(maxH, availableAbove);
+    suggestionsDiv.style.top = (boxRect.top - h - 8) + 'px';
+    suggestionsDiv.style.bottom = 'auto';
+    suggestionsDiv.style.maxHeight = h + 'px';
   }
 }
 
