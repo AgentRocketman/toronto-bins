@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-14T21:15:32.197Z",
+  "updatedAt": "2026-06-15T04:44:12.941Z",
   "entries": {
     "memory:memory/2026-06-13.md:34:69": {
       "key": "memory:memory/2026-06-13.md:34:69",
@@ -102,20 +102,22 @@
       "endLine": 31,
       "source": "memory",
       "snippet": "# 2026-06-12 — Testing Infrastructure & CurbIn v2 ## Hostinger MCP Setup - **Status:** Connected via API token (JuxzmiZ7ml4AAfv8GtBg5IBelbva8ZDsfg0u2GMcfd5ffe1c) - **Plan purchased:** Business Web Hosting (annual, $203.88) - **Order ID:** 1009510349 - **Datacenter:** Boston (closest to Toronto) - **Domain:** agentrocketman.com (active, DNS configured) - **Email:** support@agentrocketman.com (username: Yuserbsme, password: AgentEmail1!) - **IMAP/SMTP:** imap.hostinger.com:993, smtp.hostinger.com:465 (TLS) - **Himalaya config:** ~/.config/himalaya/config.toml (ready but IMAP not yet activated by Hostinger backend) - **Website:** Still provisioning on Hostinger (API hasn't returned it yet, but",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T18:35:14.230Z",
-      "lastRecalledAt": "2026-06-14T20:17:53.663Z",
+      "lastRecalledAt": "2026-06-15T04:44:12.941Z",
       "queryHashes": [
         "a5ec11e140cd",
         "d4acd4a1de9f",
-        "4a33655036df"
+        "4a33655036df",
+        "e2baa82997b8"
       ],
       "recallDays": [
-        "2026-06-14"
+        "2026-06-14",
+        "2026-06-15"
       ],
       "conceptTags": [
         "203.88",
@@ -135,21 +137,23 @@
       "endLine": 81,
       "source": "memory",
       "snippet": "- Removed 1.6s mystery wait - Added instant \"Scrolling to your schedule...\" feedback with spinner - Uses `transitionend` event for smart timing - Fallback 1.6s timeout for robustness - Works consistently on first AND subsequent clicks 3. **Dynamic recurring info** — Text now updates reactively when switching service types (Opus fix) 4. **Accordion** — Collapsible \"Upcoming Schedule\" (started session) 5. **Pricing** — Fixed recurring \"Both\" service to show $11.90/event 6. **Autocomplete scroll** — Fixed first-click scroll behavior ### Final Status: - ✅ GitHub Pages live: https://agentrocketman.github.io/toronto-bins/ - ✅ All UX issues resolved - ✅ Badge, scroll, pricing, recur",
-      "recallCount": 4,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 4,
+      "totalScore": 5,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T18:35:14.230Z",
-      "lastRecalledAt": "2026-06-14T20:41:54.678Z",
+      "lastRecalledAt": "2026-06-15T04:44:12.941Z",
       "queryHashes": [
         "a5ec11e140cd",
         "d4acd4a1de9f",
         "4a33655036df",
-        "8b33bf8a7dea"
+        "8b33bf8a7dea",
+        "e2baa82997b8"
       ],
       "recallDays": [
-        "2026-06-14"
+        "2026-06-14",
+        "2026-06-15"
       ],
       "conceptTags": [
         "1.6s",
@@ -231,18 +235,20 @@
       "endLine": 438,
       "source": "memory",
       "snippet": "3. **Date Format Options:** Configured for date field schema validation 4. **Checkbox Options:** Added icon + color to checkbox field definition 5. **API URLs Updated:** PHP files deployed with correct base ID ### Deployment Timeline - 06:31 UTC — PHP API files created - 06:34 UTC — Archive packaged and uploaded to Hostinger - 06:40 UTC — Health check passing, PHP 8.3 confirmed - 06:40 UTC — Discovered base ID mismatch - 16:26 UTC — Airtable base ID corrected, ServiceStops table created - 16:27 UTC — Full end-to-end testing completed - All tests passing, production ready ### Credentials & Configuration - **Airtable API Token:** patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T18:35:14.230Z",
-      "lastRecalledAt": "2026-06-14T18:35:14.230Z",
+      "lastRecalledAt": "2026-06-15T04:06:22.777Z",
       "queryHashes": [
-        "a5ec11e140cd"
+        "a5ec11e140cd",
+        "e4a834cad526"
       ],
       "recallDays": [
-        "2026-06-14"
+        "2026-06-14",
+        "2026-06-15"
       ],
       "conceptTags": [
         "8.3",
@@ -453,18 +459,20 @@
       "endLine": 221,
       "source": "memory",
       "snippet": "- **SSH deployment:** Unavailable from this environment - **Hostinger API deployment:** ✅ SUCCESS via `hostinger-api__hosting_deployStaticWebsite` - File: `/tmp/service-routing.tar.gz` - Deployed to: agentrocketman.com - Status: Upload accepted, deploy queued ## Service Routing Feature Status - NOT WORKING YET ⚠️ - **Issue:** Deployed file shows \"Service routing initialized with 8 stops\" (hardcoded fallback) - **Root cause:** Subagent-generated HTML contains BOTH dynamic + hardcoded code; falls back to hardcoded when dynamic fails - **Evidence:** No orders actually loaded from Airtable on test - **Blocker:** Dynamic code has bugs; needs proper debugging ## What Works - ✅ Hostinger A",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-14T21:15:32.197Z",
+      "lastRecalledAt": "2026-06-15T04:44:12.941Z",
       "queryHashes": [
-        "91f38a5d152b"
+        "91f38a5d152b",
+        "e2baa82997b8"
       ],
       "recallDays": [
-        "2026-06-14"
+        "2026-06-14",
+        "2026-06-15"
       ],
       "conceptTags": [
         "hostinger-api",
@@ -484,18 +492,20 @@
       "endLine": 43,
       "source": "memory",
       "snippet": "# Session Log: 2026-06-13 (UPDATED) ## CurbIn Backend Deployment — PHP Option (✅ COMPLETE) ### Final Status: FULLY TESTED & PRODUCTION READY 🚀 --- ## Implementation Summary ### PHP Backend Created & Deployed 5 production-ready endpoints on Hostinger: 1. **upload.php** — Image upload (MIME validation, 10MB limit) 2. **save-service.php** — Airtable sync via API 3. **optimize-route.php** — Route optimization (nearest-neighbor) 4. **health.php** — API status & system info 5. **services.php** — Retrieve all service records 6. **.htaccess** — CORS + Apache rewrite rules ### Test Results: ALL PASSED ✅ | Test | Result | Details | |------|--------|---------| | Image Upload | ✅ | 100x100 JPEG",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-14T21:15:32.197Z",
+      "lastRecalledAt": "2026-06-15T04:06:22.777Z",
       "queryHashes": [
-        "91f38a5d152b"
+        "91f38a5d152b",
+        "e4a834cad526"
       ],
       "recallDays": [
-        "2026-06-14"
+        "2026-06-14",
+        "2026-06-15"
       ],
       "conceptTags": [
         "production-ready",
@@ -546,18 +556,20 @@
       "endLine": 178,
       "source": "memory",
       "snippet": "- **Tests Run:** 6 (all passed ✅) - **Airtable Records Synced:** 6 - **Bugs Fixed:** 1 (base ID) - **Documentation Pages:** 2 - **Production Status:** READY 🚀 --- **Final Status:** ✅ PRODUCTION DEPLOYED **Last Update:** 2026-06-13 16:27 UTC **Next Review:** When team starts using with real data # Session Log: 2026-06-13 (UPDATED) ## CurbIn Backend Deployment — PHP Option (✅ COMPLETE) ### Final Status: FULLY TESTED & PRODUCTION READY 🚀 --- ## Implementation Summary ### PHP Backend Created & Deployed 5 production-ready endpoints on Hostinger: 1. **upload.php** — Image upload (MIME validation, 10MB limit) 2. **save-service.php** — Airtable sync via API 3. **optimize-route.php** — R",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-14T21:15:32.197Z",
+      "lastRecalledAt": "2026-06-15T04:06:22.777Z",
       "queryHashes": [
-        "91f38a5d152b"
+        "91f38a5d152b",
+        "e4a834cad526"
       ],
       "recallDays": [
-        "2026-06-14"
+        "2026-06-14",
+        "2026-06-15"
       ],
       "conceptTags": [
         "production-ready",
@@ -577,18 +589,20 @@
       "endLine": 77,
       "source": "memory",
       "snippet": "- **v34-v35:** Attempted stat filtering fixes (cache issues) - **v36:** ✅ Final resolution with cache-buster **Issues Resolved:** 3/3 1. ✅ Stats responsive grid (2 per row mobile) 2. ✅ Stats filtering (dynamic updates) 3. ✅ Browser cache (v36 with fresh reload) **Status:** ✅ PRODUCTION READY # 2026-06-14 Session Notes ## FTP Password Recovery + Deployment Attempt - **FTP password found:** FTPAgentPassword1! - **FTP deployment:** Failed (passive mode timeout during data transfer) - **SSH deployment:** Unavailable from this environment - **Hostinger API deployment:** ✅ SUCCESS via `hostinger-api__hosting_deployStaticWebsite` - File: `/tmp/service-routing.tar.gz` - Deployed to: agentroc",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-14T21:15:32.197Z",
+      "lastRecalledAt": "2026-06-15T04:44:12.941Z",
       "queryHashes": [
-        "91f38a5d152b"
+        "91f38a5d152b",
+        "e2baa82997b8"
       ],
       "recallDays": [
-        "2026-06-14"
+        "2026-06-14",
+        "2026-06-15"
       ],
       "conceptTags": [
         "v34-v35",
@@ -599,6 +613,68 @@
         "tmp/service-routing.tar.gz",
         "v34",
         "v35"
+      ]
+    },
+    "memory:memory/2026-06-13.md:338:380": {
+      "key": "memory:memory/2026-06-13.md:338:380",
+      "path": "memory/2026-06-13.md",
+      "startLine": 338,
+      "endLine": 380,
+      "source": "memory",
+      "snippet": "- **Duration:** ~2 hours (with earlier compaction context) - **API Endpoints Created:** 5 - **Tests Run:** 6 (all passed ✅) - **Airtable Records Synced:** 6 - **Bugs Fixed:** 1 (base ID) - **UI Features Added:** 4 - **Versions Deployed:** 7 (v1-v7) - **Documentation Pages:** 2 - **Production Status:** READY 🚀 --- **Final Status:** ✅ PRODUCTION DEPLOYED (v7 LIVE) **Last Update:** 2026-06-13 17:47 UTC **Features:** Backend API + Frontend UI (8 Toronto addresses, map routing, Airtable sync, image upload, checkbox locking, thumbnail modal) **Next Review:** When team starts using with real data # Session Log: 2026-06-13 (UPDATED) ## CurbIn Backend Deployment — PHP Option (✅ COMPLETE) #",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-15T04:06:22.777Z",
+      "lastRecalledAt": "2026-06-15T04:06:22.777Z",
+      "queryHashes": [
+        "e4a834cad526"
+      ],
+      "recallDays": [
+        "2026-06-15"
+      ],
+      "conceptTags": [
+        "v1-v7",
+        "duration",
+        "hours",
+        "earlier",
+        "compaction",
+        "context",
+        "api",
+        "endpoints"
+      ]
+    },
+    "memory:memory/2026-06-14.md:406:438": {
+      "key": "memory:memory/2026-06-14.md:406:438",
+      "path": "memory/2026-06-14.md",
+      "startLine": 406,
+      "endLine": 438,
+      "source": "memory",
+      "snippet": "- **Root cause:** catch block in `processPayment()` in `index.html` was always showing generic \"Payment failed\" even when `processBookingPayment` returned false (meaning Stripe already showed the real error) - **Fix:** Restructured catch block so it only shows error message if `processBookingPayment` didn't already handle it ### Deployment - Both fixes deployed via `hostinger-api__hosting_deployStaticWebsite` from full `public_html/` archive - Live at https://agentrocketman.com --- ## Service Routing Fixes (Afternoon/Evening session) ### Airtable address linking - `loadOrdersForDate()` fetches Orders table, uses Booking ID to filterByFormula query Bookings table - Extracts `Address` (cap",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-15T04:44:12.941Z",
+      "lastRecalledAt": "2026-06-15T04:44:12.941Z",
+      "queryHashes": [
+        "e2baa82997b8"
+      ],
+      "recallDays": [
+        "2026-06-15"
+      ],
+      "conceptTags": [
+        "index.html",
+        "hostinger-api",
+        "hosting-deploystaticwebsite",
+        "public-html",
+        "agentrocketman.com",
+        "afternoon/evening",
+        "root",
+        "cause"
       ]
     }
   }
