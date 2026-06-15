@@ -498,13 +498,26 @@ function positionSuggestions() {
   if (!suggestionsDiv.classList.contains('show')) return;
   const box = document.querySelector('.hero-search-box');
   const rect = box.getBoundingClientRect();
-  const vp = window.visualViewport || { height: window.innerHeight };
+  const vpH = (window.visualViewport || window).height;
+  const spaceBelow = vpH - rect.bottom - 10;
+  const spaceAbove = rect.top - 10;
+
   suggestionsDiv.style.position = 'fixed';
   suggestionsDiv.style.left = rect.left + 'px';
   suggestionsDiv.style.width = rect.width + 'px';
   suggestionsDiv.style.right = 'auto';
-  suggestionsDiv.style.top = (rect.bottom + 6) + 'px';
-  suggestionsDiv.style.maxHeight = Math.min(300, vp.height - rect.bottom - 20) + 'px';
+
+  if (spaceBelow >= spaceAbove) {
+    // More space below — show under search box
+    suggestionsDiv.style.top = (rect.bottom + 6) + 'px';
+    suggestionsDiv.style.bottom = 'auto';
+    suggestionsDiv.style.maxHeight = Math.min(300, spaceBelow) + 'px';
+  } else {
+    // More space above (keyboard open) — flip above search box
+    suggestionsDiv.style.top = 'auto';
+    suggestionsDiv.style.bottom = (vpH - rect.top + 6) + 'px';
+    suggestionsDiv.style.maxHeight = Math.min(300, spaceAbove) + 'px';
+  }
 }
 
 // Keep suggestions locked to search box while scrolling
