@@ -193,15 +193,42 @@
     if (stepId === 'step-success') document.getElementById('progress').style.display = 'none';
   }
 
-  function goStep2() {
+  async function goStep2() {
     const bookingId = document.getElementById('bookingId').value.trim().toUpperCase();
     const email     = document.getElementById('email').value.trim();
     const err       = document.getElementById('step1-error');
-    if (!bookingId || !email || !email.includes('@')) { err.style.display = 'block'; return; }
+    const btn       = document.querySelector('#step1 .btn-primary');
+    if (!bookingId || !email || !email.includes('@')) {
+      err.textContent = 'Please enter both your Booking ID and email address.';
+      err.style.display = 'block'; return;
+    }
+    // Verify booking exists in Airtable
     err.style.display = 'none';
-    state.bookingId = bookingId;
-    state.email     = email;
-    showStep('step2');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Verifying&hellip;';
+    try {
+      const res = await fetch('/api/verify-booking.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId, email })
+      });
+      const data = await res.json();
+      if (!data.found) {
+        err.textContent = data.error || 'Booking not found. Please check your Booking ID and email.';
+        err.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Continue →';
+        return;
+      }
+      state.bookingId = bookingId;
+      state.email     = email;
+      state.billingType = data.billingType || '';
+      btn.disabled = false; btn.textContent = 'Continue →';
+      showStep('step2');
+    } catch(e) {
+      err.textContent = 'Could not verify booking. Please try again.';
+      err.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Continue →';
+    }
   }
 
   function goStep3() {
@@ -214,11 +241,11 @@
 
     // Personalise save message based on reason
     const msgs = {
-      travelling:  "Going somewhere? We totally get it — but you'll lose your locked-in recurring rate if you cancel.",
-      expensive:   "We hear you on cost. Reach out to us — we may be able to help.",
-      unhappy:     "We're sorry to hear that. Please let us know what went wrong — we want to make it right.",
-      'not-needed':'Things change. But if you ever need us again, your rate won't be the same.",',
-      other:       "We'd hate to lose you. Is there anything we can do?"
+      travelling:   'Going somewhere? We totally get it — but you\'ll lose your locked-in recurring rate if you cancel.',
+      expensive:    'We hear you on cost. Reach out to us — we may be able to help.',
+      unhappy:      'We\'re sorry to hear that. Please let us know what went wrong — we want to make it right.',
+      'not-needed': 'Things change. But if you ever need us again, you\'re always welcome back.',
+      other:        'We\'d hate to lose you. Is there anything we can do?'
     };
     document.getElementById('save-message').textContent = msgs[reason] || "We'd hate to lose you.";
     showStep('step3');
