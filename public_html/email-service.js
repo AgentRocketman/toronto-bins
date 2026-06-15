@@ -2,15 +2,52 @@
 
 async function sendConfirmationEmail(bookingData, bookingId) {
   try {
-    // Format service dates for the email
-    let serviceDatesText = '';
-    if (bookingData.frequency === 'adhoc' && bookingData.selectedDates && bookingData.selectedDates.length > 0) {
-      serviceDatesText = bookingData.selectedDates.map(d => {
-        const date = new Date(d + 'T00:00:00');
-        return date.toLocaleDateString('en-CA', { weekday: 'short', month: 'short', day: 'numeric' });
-      }).join(', ');
-    } else if (bookingData.frequency === 'recurring') {
-      serviceDatesText = 'Every week (recurring)';
+    const svcType = bookingData.serviceType || 'rollout';
+    const hasRollOut = svcType === 'both' || svcType === 'rollout';
+    const hasRollIn  = svcType === 'both' || svcType === 'rollin';
+
+    // Helper: shift date back 1 day
+    function dayBefore(dateStr) {
+      const d = new Date(dateStr + 'T12:00:00');
+      d.setDate(d.getDate() - 1);
+      return d.toISOString().split('T')[0];
+    }
+
+    // Helper: format date nicely
+    function fmtDate(dateStr) {
+      return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-CA', {
+        weekday: 'long', month: 'long', day: 'numeric'
+      });
+    }
+
+    // Helper: get previous day name
+    const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    function prevDay(dayName) {
+      const idx = DAYS.indexOf(dayName);
+      return DAYS[(idx + 6) % 7];
+    }
+
+    // Build schedule breakdown for the email
+    let scheduleLines = [];
+
+    if (bookingData.frequency === 'recurring') {
+      const pickupDay = bookingData.dayOfWeek || 'Tuesday';
+      if (hasRollOut) {
+        scheduleLines.push('🗑️ Roll Out: Every ' + prevDay(pickupDay) + ' evening');
+      }
+      if (hasRollIn) {
+        scheduleLines.push('♻️ Roll In: Every ' + pickupDay + ' afternoon');
+      }
+    } else if (bookingData.selectedDates && bookingData.selectedDates.length > 0) {
+      for (const pickupDate of bookingData.selectedDates) {
+        if (hasRollOut) {
+          const roDate = dayBefore(pickupDate);
+          scheduleLines.push('🗑️ Roll Out: ' + fmtDate(roDate) + ' (evening)');
+        }
+        if (hasRollIn) {
+          scheduleLines.push('♻️ Roll In: ' + fmtDate(pickupDate) + ' (afternoon)');
+        }
+      }
     }
 
     const res = await fetch('/api/send-confirmation.php', {
@@ -25,7 +62,7 @@ async function sendConfirmationEmail(bookingData, bookingId) {
         frequency: bookingData.frequency,
         amount: bookingData.amount,
         bookingId: bookingId,
-        serviceDates: serviceDatesText
+        scheduleLines: scheduleLines
       })
     });
 

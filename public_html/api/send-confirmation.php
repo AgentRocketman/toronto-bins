@@ -22,8 +22,8 @@ $serviceType  = $body['serviceType'] ?? 'rollout';
 $frequency    = $body['frequency'] ?? 'adhoc';
 $amount       = $body['amount'] ?? 0; // in cents
 $bookingId    = $body['bookingId'] ?? '';
-$serviceDates = $body['serviceDates'] ?? '';
-$phone        = $body['customerPhone'] ?? '';
+$scheduleLines = $body['scheduleLines'] ?? [];
+$phone         = $body['customerPhone'] ?? '';
 
 if (!$toEmail) { echo json_encode(['success'=>false,'error'=>'No customer email']); exit; }
 
@@ -48,6 +48,17 @@ $amountDisplay = number_format($amount / 100, 2);
 // Format frequency
 $freqLabel = ($frequency === 'recurring') ? 'Weekly (Recurring)' : 'One-Time';
 
+// Build schedule HTML block from lines array
+$scheduleHtml = '';
+if (!empty($scheduleLines)) {
+    $scheduleHtml = '<div style="background:#f0fdf4;border-left:4px solid #3b82f6;padding:15px;margin:20px 0;border-radius:4px;">';
+    $scheduleHtml .= '<div style="font-weight:700;color:#334155;margin-bottom:10px;font-size:15px;">📅 Your Service Schedule</div>';
+    foreach ($scheduleLines as $line) {
+        $scheduleHtml .= '<div style="margin-bottom:6px;font-size:14px;color:#333;">' . htmlspecialchars($line) . '</div>';
+    }
+    $scheduleHtml .= '</div>';
+}
+
 // Build email HTML — matches completion email style (GFL Green → Blue gradient)
 $html = <<<HTML
 <!DOCTYPE html>
@@ -70,9 +81,8 @@ $html = <<<HTML
         <div style="margin-bottom:10px;font-size:14px;"><span style="font-weight:600;color:#555;display:inline-block;min-width:130px;">💰 Amount Paid:</span><span style="color:#333;">\$$amountDisplay CAD</span></div>
 HTML;
 
-if ($serviceDates) {
-    $html .= "        <div style=\"font-size:14px;\"><span style=\"font-weight:600;color:#555;display:inline-block;min-width:130px;\">🗓️ Service Dates:</span><span style=\"color:#333;\">$serviceDates</span></div>\n";
-}
+// Insert the detailed schedule block after the summary
+$html .= $scheduleHtml;
 
 $html .= <<<HTML
       </div>
