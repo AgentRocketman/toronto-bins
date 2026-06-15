@@ -98,11 +98,14 @@
     /* Search autocomplete in hero */
     #address{flex:1;border:none;outline:none;font-size:1rem;color:var(--slate);background:transparent;padding:11px 0;min-width:0}
     #address::placeholder{color:#94a3b8}
-    .suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:300;display:none;max-height:500px;overflow-y:auto}
+    .suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:300;display:none;max-height:350px;overflow-y:auto}
     .suggestions.show{display:block}
     .suggestion-item{padding:12px 18px;cursor:pointer;font-size:.93rem;color:#2d3748;border-bottom:1px solid #f7fafc;transition:background .12s}
     .suggestion-item:last-child{border-bottom:none}
     .suggestion-item:hover,.suggestion-item.active{background:var(--teal-xlight);color:var(--teal-dark)}
+    @media(max-width:768px){
+      .suggestions{max-height:200px}
+    }
     @keyframes spin{to{transform:rotate(360deg)}}
 
     /* Results placeholder (unused, kept for compat) */
