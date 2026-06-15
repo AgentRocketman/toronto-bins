@@ -495,6 +495,10 @@ let selectedIndex = -1;
 let debounceTimer = null;
 
 // ===== Address search =====
+addressInput.addEventListener('focus', function() {
+  setTimeout(positionSuggestions, 100);
+});
+
 addressInput.addEventListener('input', function() {
   clearTimeout(debounceTimer);
   const val = this.value.trim();
@@ -521,6 +525,33 @@ document.addEventListener('click', function(e) { if (!e.target.closest('.hero-se
 function highlightItem(items) { items.forEach((item, i) => item.classList.toggle('active', i === selectedIndex)); }
 function hideSuggestions() { suggestionsDiv.classList.remove('show'); suggestionsDiv.innerHTML = ''; selectedIndex = -1; }
 
+function positionSuggestions() {
+  if (!suggestionsDiv.classList.contains('show')) return;
+  const inputRect = addressInput.getBoundingClientRect();
+  const availableBelow = window.innerHeight - inputRect.bottom - 10;
+  const availableAbove = inputRect.top - 10;
+  const suggestionsHeight = 200;
+  
+  // If enough space below keyboard, position normally
+  if (availableBelow >= suggestionsHeight) {
+    suggestionsDiv.style.position = 'absolute';
+    suggestionsDiv.style.bottom = 'auto';
+    suggestionsDiv.style.maxHeight = '350px';
+  } 
+  // If not enough space below but space above, position above input
+  else if (availableAbove >= suggestionsHeight) {
+    suggestionsDiv.style.position = 'absolute';
+    suggestionsDiv.style.bottom = 'calc(100% + 6px)';
+    suggestionsDiv.style.top = 'auto';
+    suggestionsDiv.style.maxHeight = '200px';
+  }
+  // Otherwise, limit height to fit available space
+  else {
+    suggestionsDiv.style.position = 'absolute';
+    suggestionsDiv.style.maxHeight = Math.max(availableBelow - 10, 120) + 'px';
+  }
+}
+
 async function fetchSuggestions(query) {
   try {
     const json = await jsonp(SUGGEST_URL + encodeURIComponent(query));
@@ -535,6 +566,10 @@ async function fetchSuggestions(query) {
       suggestionsDiv.appendChild(div);
     });
     suggestionsDiv.classList.add('show');
+    // Position dropdown to fit viewport and keyboard
+    setTimeout(positionSuggestions, 0);
+    window.addEventListener('resize', positionSuggestions);
+    window.visualViewport?.addEventListener('resize', positionSuggestions);
   } catch(e) { console.error('Suggest error:', e); }
 }
 
