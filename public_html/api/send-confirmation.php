@@ -133,13 +133,23 @@ HTML;
 
 // Raw SMTP send (same as send-email.php)
 function smtpSend($host, $port, $user, $pass, $from, $to, $subject, $html) {
+    $logFile = '/tmp/smtp-debug-' . date('YmdHis') . '-' . uniqid() . '.log';
+    file_put_contents($logFile, "SMTP Send Attempt\n");
+    file_put_contents($logFile, "Host: $host:$port\n", FILE_APPEND);
+    file_put_contents($logFile, "From: $from\n", FILE_APPEND);
+    file_put_contents($logFile, "To: $to\n", FILE_APPEND);
+    
     $context = stream_context_create(['ssl' => [
         'verify_peer'       => false,
         'verify_peer_name'  => false,
         'allow_self_signed' => true,
     ]]);
     $sock = stream_socket_client("ssl://$host:$port", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $context);
-    if (!$sock) return ["ok" => false, "error" => "Connect failed: $errstr ($errno)"];
+    if (!$sock) {
+        file_put_contents($logFile, "Connection FAILED: $errstr ($errno)\n", FILE_APPEND);
+        return ["ok" => false, "error" => "Connect failed: $errstr ($errno)", "logFile" => basename($logFile)];
+    }
+    file_put_contents($logFile, "Connection OK\n", FILE_APPEND);
 
     $read = function() use ($sock) { return fgets($sock, 512); };
     $send = function($cmd) use ($sock) { fwrite($sock, "$cmd\r\n"); };
@@ -154,10 +164,13 @@ function smtpSend($host, $port, $user, $pass, $from, $to, $subject, $html) {
     $read();
     $send(base64_encode($pass));
     $r = $read();
+    file_put_contents($logFile, "Auth response: $r\n", FILE_APPEND);
     if (strpos($r, '235') === false) {
         fclose($sock);
-        return ["ok" => false, "error" => "Auth failed: $r"];
+        file_put_contents($logFile, "AUTH FAILED\n", FILE_APPEND);
+        return ["ok" => false, "error" => "Auth failed: $r", "logFile" => basename($logFile)];
     }
+    file_put_contents($logFile, "Auth OK\n", FILE_APPEND);
 
     $send("MAIL FROM:<$from>");  $read();
     $send("RCPT TO:<$to>");      $read();
@@ -174,9 +187,12 @@ function smtpSend($host, $port, $user, $pass, $from, $to, $subject, $html) {
 
     fwrite($sock, $msg);
     $r = $read();
+    file_put_contents($logFile, "Send response: $r\n", FILE_APPEND);
     $send("QUIT");
     fclose($sock);
-    return ["ok" => strpos($r, '250') !== false, "response" => trim($r)];
+    $ok = strpos($r, '250') !== false;
+    file_put_contents($logFile, "Result: " . ($ok ? "SUCCESS" : "FAILED") . "\n", FILE_APPEND);
+    return ["ok" => $ok, "response" => trim($r), "logFile" => basename($logFile)];
 }
 
 $result = smtpSend(
@@ -188,7 +204,7 @@ $result = smtpSend(
 );
 
 if ($result['ok']) {
-    echo json_encode(['success' => true, 'message' => "Confirmation sent to $toEmail"]);
+    echo json_encode(['success' => true, 'message' => "Confirmation sent to $toEmail", 'logFile' => $result['logFile'] ?? null]);
 } else {
-    echo json_encode(['success' => false, 'error' => $result['error'] ?? $result['response']]);
+    echo json_encode(['success' => false, 'error' => $result['error'] ?? $result['response'], 'logFile' => $result['logFile'] ?? null]);
 }
