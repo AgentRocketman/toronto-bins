@@ -218,6 +218,26 @@
     .thankyou p{color:var(--slate-light);font-size:.95rem;max-width:340px;margin:0 auto}
 
     /* FOOTER */
+    /* Aggregate rating */
+    .hero-rating{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:1.1rem;flex-wrap:wrap}
+    .hero-rating-stars{color:#fbbf24;font-size:1rem;letter-spacing:1px}
+    .hero-rating-text{color:rgba(255,255,255,.8);font-size:.85rem}
+    .hero-rating-divider{color:rgba(255,255,255,.3);font-size:.85rem}
+
+    /* Guarantee strip */
+    #guarantee{background:linear-gradient(135deg,#0f766e 0%,#0d9488 100%);padding:2.2rem 1.5rem;text-align:center}
+    .guarantee-inner{max-width:700px;margin:0 auto}
+    .guarantee-icon{font-size:2rem;margin-bottom:.5rem}
+    .guarantee-title{font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:.5rem}
+    .guarantee-text{font-size:.92rem;color:rgba(255,255,255,.85);line-height:1.7;max-width:560px;margin:0 auto}
+    .guarantee-text strong{color:#a7f3d0}
+
+    /* Sticky mobile CTA */
+    .sticky-cta{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:#fff;border-top:1px solid #e2e8f0;padding:12px 16px;box-shadow:0 -4px 20px rgba(0,0,0,.1)}
+    .sticky-cta-btn{display:block;background:var(--teal);color:#fff;text-align:center;padding:13px;border-radius:12px;font-weight:800;font-size:.95rem;text-decoration:none;transition:background .2s}
+    .sticky-cta-btn:hover{background:var(--teal-dark)}
+    @media(max-width:640px){.sticky-cta{display:block}}
+
     /* Reviews carousel */
     #reviews{background:#f0fdfa;padding:4rem 1.5rem}
     .reviews-eyebrow{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:.4rem;text-align:center}
@@ -294,7 +314,13 @@
         </div>
       </div>
       <div class="suggestions" id="suggestions"></div>
-      <p class="hero-note">&#128205; Serving Toronto residential addresses &middot; No commitment required</p>
+      <div class="hero-rating">
+        <span class="hero-rating-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <span class="hero-rating-text"><strong style="color:#fff">5.0</strong> &mdash; Loved by Toronto homeowners</span>
+        <span class="hero-rating-divider">&middot;</span>
+        <span class="hero-rating-text">No commitment required</span>
+      </div>
+      <p class="hero-note">&#128205; Serving Toronto residential addresses</p>
       <div id="hero-loading"><span class="spinner-sm"></span>Looking up your schedule&hellip;</div>
       <div id="hero-error"></div>
     </div>
@@ -528,6 +554,19 @@
       </div>
 
     </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<section id="guarantee">
+  <div class="guarantee-inner">
+    <div class="guarantee-icon">🛡️</div>
+    <div class="guarantee-title">Our service guarantee</div>
+    <p class="guarantee-text">
+      If we miss your scheduled collection, <strong>ad hoc customers get a full refund</strong> for that date.
+      <strong>Recurring customers get their next collection free.</strong>
+      No questions asked, no chasing required &mdash; it just happens.
+    </p>
   </div>
 </section>
 
@@ -1279,7 +1318,25 @@ function formatDateShort(isoStr) {
 <script src="airtable-bookings.js"></script>
 <script src="email-service.js"></script>
 
+<!-- Sticky mobile CTA -->
+<div class="sticky-cta" id="sticky-cta">
+  <a href="#hero-anchor" class="sticky-cta-btn" onclick="document.getElementById('sticky-cta').style.display='none'">&#128205; Check my address &rarr;</a>
+</div>
+
 <script>
+// Hide sticky CTA once booking section is revealed
+document.addEventListener('DOMContentLoaded', function(){
+  var bookingSection = document.getElementById('booking-section');
+  var stickyCta = document.getElementById('sticky-cta');
+  if (!bookingSection || !stickyCta) return;
+  var observer = new MutationObserver(function(){
+    if (bookingSection.classList.contains('revealed')) {
+      stickyCta.style.display = 'none';
+    }
+  });
+  observer.observe(bookingSection, { attributes: true, attributeFilter: ['class'] });
+});
+
 // FAQ accordion
 document.querySelectorAll('.faq-q').forEach(function(btn){
   btn.addEventListener('click', function(){
