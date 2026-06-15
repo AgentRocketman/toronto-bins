@@ -26,7 +26,17 @@
     .nav-links a:hover{color:var(--teal)}
     .nav-cta{background:var(--teal)!important;color:#fff!important;padding:8px 18px!important;border-radius:99px!important;font-weight:700!important;transition:background .2s!important}
     .nav-cta:hover{background:var(--teal-dark)!important}
-    @media(max-width:640px){.nav-links li:not(:last-child){display:none}}
+    .nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--slate)}
+    @media(max-width:640px){
+      .nav-links{display:none;position:absolute;top:60px;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;padding:.8rem 1.5rem 1.2rem;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:999;gap:0;border-top:1px solid #e2e8f0}
+      .nav-links.open{display:flex}
+      .nav-links li{padding:.6rem 0;border-bottom:1px solid #f1f5f9}
+      .nav-links li:last-child{border-bottom:none;padding-top:.8rem}
+      .nav-links a{font-size:1rem;color:var(--slate)}
+      .nav-cta{display:block;text-align:center!important;padding:12px!important;border-radius:10px!important}
+      .nav-hamburger{display:block}
+      nav{position:relative}
+    }
 
     /* HERO */
     .hero{background:linear-gradient(135deg,#0a5c56 0%,#0d9488 45%,#14b8a6 100%);padding:5.5rem 1.5rem 7rem;text-align:center;position:relative;overflow:visible}
@@ -289,11 +299,14 @@
 <nav>
   <div class="nav-inner">
     <a class="nav-logo" href="#"><img src="logo.jpg" alt="CurbIn"></a>
-    <ul class="nav-links">
-      <li><a href="#how">How It Works</a></li>
-      <li><a href="#pricing">Pricing</a></li>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleNav()">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#how" onclick="closeNav()">How It Works</a></li>
+      <li><a href="#pricing" onclick="closeNav()">Pricing</a></li>
       <li><a href="/contact.html">Contact</a></li>
-      <li><a href="#hero-anchor" class="nav-cta">Get Started</a></li>
+      <li><a href="#hero-anchor" class="nav-cta" onclick="closeNav()">Get Started</a></li>
     </ul>
   </div>
 </nav>
@@ -1371,6 +1384,25 @@ document.addEventListener('DOMContentLoaded', function(){
       updateSticky();
     }).observe(bookingSection, { attributes: true, attributeFilter: ['class'] });
   }
+});
+
+// Hamburger nav
+function toggleNav(){
+  var links = document.getElementById('nav-links');
+  var btn   = document.getElementById('nav-hamburger');
+  var open  = links.classList.toggle('open');
+  btn.innerHTML = open
+    ? '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>'
+    : '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>';
+}
+function closeNav(){
+  document.getElementById('nav-links').classList.remove('open');
+  document.getElementById('nav-hamburger').innerHTML = '<svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>';
+}
+// Close nav on outside tap
+document.addEventListener('click', function(e){
+  var nav = document.querySelector('nav');
+  if(nav && !nav.contains(e.target)) closeNav();
 });
 
 // FAQ accordion
