@@ -126,6 +126,7 @@ $html .= <<<HTML
     <div style="background:#f9f9f9;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
       <p style="margin:0;">© 2026 CurbIn · Toronto Bin Collection Service</p>
       <p style="margin:4px 0 0;"><a href="https://agentrocketman.com" style="color:#A4D233;text-decoration:none;">agentrocketman.com</a></p>
+      <p style="margin:8px 0 0;"><a href="https://agentrocketman.com/manage.html" style="color:#94a3b8;text-decoration:none;font-size:11px;">Pause, resume or cancel your service</a></p>
     </div>
   </div>
 </body>
