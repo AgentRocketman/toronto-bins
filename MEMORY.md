@@ -1,5 +1,13 @@
 # MEMORY.md - Long-Term Memory
 
+## Work Scope Rule (CRITICAL)
+**ONLY work on features explicitly requested by Chris.**
+- Do NOT refactor unrelated code
+- Do NOT "improve" other parts while working on Feature X
+- Do NOT rewrite code not mentioned in the current task
+- Stay focused on exactly what was asked
+- If you see issues elsewhere, ask first before fixing
+
 ## Token Optimization Strategy (ACTIVE)
 - **Planning/design:** Nexos (Opus) — keep brief
 - **Coding:** Claude Code CLI (`claude -p "..."`) — Anthropic billing
