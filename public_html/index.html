@@ -496,19 +496,20 @@ document.body.appendChild(suggestionsDiv);
 
 function positionSuggestions() {
   if (!suggestionsDiv.classList.contains('show')) return;
-  const box = document.querySelector('.hero-search-box');
-  const rect = box.getBoundingClientRect();
-  const vpH = (window.visualViewport || window).height;
-  const spaceBelow = vpH - rect.bottom - 10;
+  const boxRect = document.querySelector('.hero-search-box').getBoundingClientRect();
+  const inputRect = addressInput.getBoundingClientRect();
+  const vp = window.visualViewport || { height: window.innerHeight, offsetTop: 0 };
+  const vpH = vp.height;
+  const spaceBelow = vpH - inputRect.bottom - 10;
 
-  // Always show below the search box
+  // Always anchored directly below the input, same width as search box
   suggestionsDiv.style.position = 'fixed';
-  suggestionsDiv.style.left = rect.left + 'px';
-  suggestionsDiv.style.width = rect.width + 'px';
+  suggestionsDiv.style.left = boxRect.left + 'px';
+  suggestionsDiv.style.width = boxRect.width + 'px';
   suggestionsDiv.style.right = 'auto';
-  suggestionsDiv.style.top = (rect.bottom + 6) + 'px';
+  suggestionsDiv.style.top = (inputRect.bottom + 6) + 'px';
   suggestionsDiv.style.bottom = 'auto';
-  suggestionsDiv.style.maxHeight = Math.min(300, Math.max(spaceBelow, 200)) + 'px';
+  suggestionsDiv.style.maxHeight = Math.min(300, Math.max(spaceBelow, 150)) + 'px';
 }
 
 // Keep suggestions locked to search box while scrolling
