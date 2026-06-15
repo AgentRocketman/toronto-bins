@@ -77,3 +77,26 @@
 - **Email Account:** support@agentrocketman.com / Yuserbsme (password: AgentEmail1!)
 
 **See PROJECT_LOG.md for full session history & commits**
+
+## CurbIn HST Tax Implementation — COMPLETE ✅ (2026-06-15)
+- **Choice:** Option A — Tax added at checkout (standard Canadian practice)
+- **Tax Rate:** 13% HST (Ontario)
+- **Pricing Display:** Base prices shown ($8.95 Ad Hoc, $5.95 Recurring)
+- **Tax Note:** "Plus applicable taxes (13% HST added at checkout)" — added under pricing cards
+- **Checkout Flow:**
+  - Customer sees Subtotal + HST (13%) = Total breakdown BEFORE card entry
+  - Stripe charges full amount (base + tax)
+  - Confirmation email shows tax breakdown
+- **Files Updated:**
+  - `index.html` — Added HST_RATE const, updated tax display, added tax breakdown in openCheckout()
+  - `email-service.js` — Pass tax data to confirmation email endpoint
+  - `api/send-confirmation.php` — Display tax breakdown in email receipt
+  - `stripe-integration.js` — Restored proven working version
+- **Stripe Card Input Fix (2026-06-15 04:30 UTC):**
+  - Problem: Card fields wouldn't accept keyboard input + background page scrolling through modal
+  - Root cause: Overly complex initialization logic + wrong container sizing
+  - Solution: Restored `stripe-integration.js` from git history (working version)
+  - Fixed container sizing (`height: 48px` instead of `min-height`)
+  - Fixed background scrolling: added `body.modal-open { overflow: hidden }`
+  - Simplified initialization (removed over-engineered retry logic)
+- **Status:** ✅ Live at https://agentrocketman.com (all features working)

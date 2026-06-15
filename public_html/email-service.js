@@ -61,6 +61,9 @@ async function sendConfirmationEmail(bookingData, bookingId) {
         serviceType: bookingData.serviceType,
         frequency: bookingData.frequency,
         amount: bookingData.amount,
+        subtotal: bookingData.subtotal || null,
+        hstAmount: bookingData.hstAmount || null,
+        totalWithTax: bookingData.totalWithTax || null,
         bookingId: bookingId,
         scheduleLines: scheduleLines
       })

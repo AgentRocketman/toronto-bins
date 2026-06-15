@@ -13,7 +13,8 @@
       --shadow-lg:0 10px 30px rgba(0,0,0,.12);--radius:14px
     }
     html{scroll-behavior:smooth}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--slate);line-height:1.6}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--slate);line-height:1.6;transition:overflow .2s}
+    body.modal-open{overflow:hidden}
 
     /* NAV */
     nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0;padding:0 1.5rem}
@@ -80,6 +81,7 @@
     .price-features li::before{content:"✓";color:var(--teal);font-weight:800;font-size:.82rem;flex-shrink:0}
     .pricing-note{margin-top:1.8rem;text-align:center;font-size:.82rem;color:var(--slate-light)}
     .pricing-note strong{color:var(--slate)}
+    .tax-note{margin-top:0.8rem;text-align:center;font-size:.76rem;color:var(--slate-light);font-style:italic}
 
     /* BOOKING SECTION */
     #booking-section{overflow:hidden;max-height:0;opacity:0;transition:max-height 1.5s cubic-bezier(.4,0,.2,1),opacity .7s ease .15s;background:linear-gradient(180deg,#ecfdf5 0%,#fff 120px)}
@@ -187,7 +189,7 @@
     .btn-checkout:disabled{background:#cbd5e0;cursor:not-allowed;transform:none;box-shadow:none}
 
     /* MODAL */
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);overflow-y:auto}
     .modal-overlay.open{display:flex}
     .modal{background:#fff;border-radius:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.25);animation:slideUp .22s ease}
     @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -331,6 +333,7 @@
         </ul>
       </div>
     </div>
+    <p class="tax-note">Plus applicable taxes (13% HST added at checkout)</p>
     <p class="pricing-note"><strong>Note:</strong> Roll out and roll in are each a separate charge. Both on the same day? That&rsquo;s two events.</p>
   </div>
 </section>
@@ -480,6 +483,7 @@ let planType = 'adhoc'; // adhoc | recurring
 
 const PRICE_ADHOC = 8.95;
 const PRICE_RECURRING = 5.95;
+const HST_RATE = 0.13; // 13% Harmonized Sales Tax (Ontario)
 
 // ===== DOM refs =====
 const addressInput = document.getElementById('address');
@@ -769,7 +773,7 @@ function updateTotal() {
   const lineTotal = eventTotal * PRICE_ADHOC;
 
   itemsDiv.innerHTML = '<div class="total-item"><span>' + serviceLabel + ' &times; ' + count + ' date' + (count !== 1 ? 's' : '') + (serviceType === 'both' ? ' (&times;2 services)' : '') + '</span><span>$' + lineTotal.toFixed(2) + '</span></div>';
-  totalAmt.textContent = '$' + lineTotal.toFixed(2);
+  totalAmt.textContent = '$' + lineTotal.toFixed(2) + ' + tax';
   btn.disabled = false;
 }
 
@@ -785,20 +789,24 @@ function openCheckout() {
   const dayName = match ? match[1] : 'collection day';
 
   let datesHTML = '';
-  let totalVal = 0;
+  let subtotalVal = 0;
   let itemsHTML = '';
 
   if (planType === 'adhoc') {
     const sortedDates = [...selectedDates].sort();
     datesHTML = sortedDates.map(d => formatDateNice(d)).join('<br>');
     const eventCount = selectedDates.size * serviceMultiplier;
-    totalVal = eventCount * PRICE_ADHOC;
-    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">' + selectedDates.size + ' date' + (selectedDates.size !== 1 ? 's' : '') + (serviceType === 'both' ? ' &times; 2 services' : '') + '<br>= $' + totalVal.toFixed(2) + '</span></div>';
+    subtotalVal = eventCount * PRICE_ADHOC;
+    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">' + selectedDates.size + ' date' + (selectedDates.size !== 1 ? 's' : '') + (serviceType === 'both' ? ' &times; 2 services' : '') + '<br>= $' + subtotalVal.toFixed(2) + '</span></div>';
   } else {
     datesHTML = 'Every ' + dayName + ' (recurring)';
-    totalVal = PRICE_RECURRING * serviceMultiplier;
-    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">$' + totalVal.toFixed(2) + '/week</span></div>';
+    subtotalVal = PRICE_RECURRING * serviceMultiplier;
+    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">$' + subtotalVal.toFixed(2) + '/week</span></div>';
   }
+
+  // Calculate tax and total
+  const hstAmount = subtotalVal * HST_RATE;
+  const totalWithTax = subtotalVal + hstAmount;
 
   // Store booking data in global scope for payment processing
   window.currentBooking = {
@@ -808,16 +816,39 @@ function openCheckout() {
     address: currentAddress,
     serviceType: serviceType,
     frequency: planType,
-    amount: Math.round(totalVal * 100),
+    subtotal: subtotalVal,
+    hstAmount: hstAmount,
+    totalWithTax: totalWithTax,
+    amount: Math.round(totalWithTax * 100),
     selectedDates: planType === 'adhoc' ? [...selectedDates].sort() : []
   };
+
+  // Build tax breakdown section (for ad hoc only; recurring shows per week)
+  let taxBreakdownHTML = '';
+  if (planType === 'adhoc') {
+    taxBreakdownHTML = '<div style="margin-top:1.2rem;padding:12px;background:#f0fdf9;border:1px solid #b2f5ea;border-radius:8px;font-size:0.85rem;color:var(--slate)">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+        '<span>Subtotal</span>' +
+        '<span>$' + subtotalVal.toFixed(2) + '</span>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+        '<span>HST (13%)</span>' +
+        '<span>$' + hstAmount.toFixed(2) + '</span>' +
+      '</div>' +
+      '<div style="border-top:1px solid #b2f5ea;padding-top:6px;display:flex;justify-content:space-between;font-weight:700;color:var(--teal-dark)">' +
+        '<span>Total</span>' +
+        '<span>$' + totalWithTax.toFixed(2) + '</span>' +
+      '</div>' +
+    '</div>';
+  }
 
   body.innerHTML = '<div class="modal-row"><span class="mr-label">Address</span><span class="mr-value">' + (currentAddress || '') + '</span></div>' +
     '<div class="modal-row"><span class="mr-label">Service</span><span class="mr-value">' + serviceLabel + '</span></div>' +
     '<div class="modal-row"><span class="mr-label">Plan</span><span class="mr-value">' + (planType === 'adhoc' ? 'Ad Hoc' : 'Recurring') + '</span></div>' +
     '<div class="modal-row"><span class="mr-label">Date(s)</span><span class="mr-value">' + datesHTML + '</span></div>' +
     itemsHTML +
-    '<div class="modal-total"><span class="mt-label">' + (planType === 'recurring' ? 'Per week' : 'Total') + '</span><span class="mt-value">$' + totalVal.toFixed(2) + (planType === 'recurring' ? '/week' : '') + '</span></div>' +
+    taxBreakdownHTML +
+    '<div class="modal-total"><span class="mt-label">' + (planType === 'recurring' ? 'Per week (plus HST)' : 'Amount to be Charged') + '</span><span class="mt-value">$' + (planType === 'recurring' ? subtotalVal.toFixed(2) + '/week' : totalWithTax.toFixed(2)) + '</span></div>' +
     '<div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #e2e8f0"><p style="font-size:0.85rem;font-weight:600;color:var(--slate-light);margin-bottom:0.8rem">Your Details</p>' +
     '<input id="customer-name" type="text" placeholder="Full Name" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
     '<input id="customer-email" type="email" placeholder="Email" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
@@ -829,6 +860,7 @@ function openCheckout() {
     '</div>';
 
   overlay.classList.add('open');
+  document.body.classList.add('modal-open');
 }
 
 function goToPayment() {
@@ -854,28 +886,40 @@ function goToPayment() {
 
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
+  document.body.classList.remove('modal-open');
 }
 
 function showStripeForm() {
   const body = document.getElementById('modal-body');
   const booking = window.currentBooking || {};
+  const chargeAmount = booking.amount / 100;
 
   body.innerHTML = '<div style="margin-bottom:1.2rem"><label style="display:block;font-weight:600;margin-bottom:0.5rem;color:var(--slate)">Card Details</label>' +
-    '<div id="card-number" style="border:1px solid #e2e8f0;padding:12px;margin-bottom:0.8rem;border-radius:8px;background:#f8fafc;min-height:44px"></div>' +
+    '<div id="card-number" style="border:1px solid #e2e8f0;padding:12px;margin-bottom:0.8rem;border-radius:8px;background:#f8fafc;height:48px"></div>' +
     '<div style="display:flex;gap:0.8rem">' +
-      '<div id="card-expiry" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:44px;flex:1"></div>' +
-      '<div id="card-cvc" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;min-height:44px;flex:1"></div>' +
+      '<div id="card-expiry" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;height:48px;flex:1"></div>' +
+      '<div id="card-cvc" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;height:48px;flex:1"></div>' +
     '</div>' +
-    '<div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem"></div></div>' +
+    '<div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem;min-height:22px"></div></div>' +
     '<div style="padding:12px;background:var(--teal-xlight);border-radius:8px;margin:1rem 0;font-size:0.85rem;color:var(--slate)"><strong>Test card:</strong> 4242 4242 4242 4242 · Exp: any future · CVC: any 3 digits</div>' +
+    '<div style="margin:1rem 0;padding:12px;background:#f0fdf9;border:1px solid #b2f5ea;border-radius:8px;font-size:0.85rem;color:var(--slate)">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+        '<span>Subtotal</span>' +
+        '<span>$' + (booking.subtotal || 0).toFixed(2) + '</span>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+        '<span>HST (13%)</span>' +
+        '<span>$' + (booking.hstAmount || 0).toFixed(2) + '</span>' +
+      '</div>' +
+      '<div style="border-top:1px solid #b2f5ea;padding-top:6px;display:flex;justify-content:space-between;font-weight:700;color:var(--teal-dark)">' +
+        '<span>Total to Charge</span>' +
+        '<span>$' + chargeAmount.toFixed(2) + '</span>' +
+      '</div>' +
+    '</div>' +
     '<div class="modal-actions">' +
       '<button class="btn-back" onclick="closeModal()">&#8592; Cancel</button>' +
-      '<button class="btn-confirm" id="pay-btn" onclick="processPayment()">Pay $' + (booking.amount / 100).toFixed(2) + ' &#10003;</button>' +
+      '<button class="btn-confirm" id="pay-btn" onclick="processPayment()">Pay $' + chargeAmount.toFixed(2) + ' &#10003;</button>' +
     '</div>';
-
-  // Scroll modal to top so Stripe iframes anchor at correct viewport position
-  const modal = document.querySelector('.modal');
-  if (modal) modal.scrollTop = 0;
 
   // Mount Stripe card elements
   if (typeof initStripeForm === 'function') {

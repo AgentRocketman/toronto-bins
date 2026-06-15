@@ -21,6 +21,9 @@ $address      = $body['address'] ?? '';
 $serviceType  = $body['serviceType'] ?? 'rollout';
 $frequency    = $body['frequency'] ?? 'adhoc';
 $amount       = $body['amount'] ?? 0; // in cents
+$subtotal     = $body['subtotal'] ?? null; // base amount (before tax)
+$hstAmount    = $body['hstAmount'] ?? null; // 13% tax
+$totalWithTax = $body['totalWithTax'] ?? null; // total with tax
 $bookingId    = $body['bookingId'] ?? '';
 $scheduleLines = $body['scheduleLines'] ?? [];
 $phone         = $body['customerPhone'] ?? '';
@@ -44,6 +47,28 @@ if ($serviceType === 'both') {
 
 // Format amount
 $amountDisplay = number_format($amount / 100, 2);
+
+// Format tax breakdown (if available)
+$taxBreakdownHtml = '';
+if ($subtotal !== null && $hstAmount !== null && $totalWithTax !== null) {
+    $subtotalDisplay = number_format($subtotal, 2);
+    $hstDisplay = number_format($hstAmount, 2);
+    $totalDisplay = number_format($totalWithTax, 2);
+    $taxBreakdownHtml = '<div style="background:#f0fdf9;border-left:4px solid #14b8a6;padding:15px;margin:15px 0;border-radius:4px;font-size:14px;">' .
+        '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">' .
+            '<span style="color:#555;">Subtotal:</span>' .
+            '<span style="color:#333;font-weight:600;">$' . $subtotalDisplay . '</span>' .
+        '</div>' .
+        '<div style="display:flex;justify-content:space-between;margin-bottom:8px;">' .
+            '<span style="color:#555;">HST (13%):</span>' .
+            '<span style="color:#333;font-weight:600;">$' . $hstDisplay . '</span>' .
+        '</div>' .
+        '<div style="border-top:1px solid #b2f5ea;padding-top:8px;display:flex;justify-content:space-between;">' .
+            '<span style="color:#0f766e;font-weight:700;">Total Amount Paid:</span>' .
+            '<span style="color:#0f766e;font-weight:700;font-size:16px;">$' . $totalDisplay . '</span>' .
+        '</div>' .
+    '</div>';
+}
 
 // Format frequency
 $freqLabel = ($frequency === 'recurring') ? 'Weekly (Recurring)' : 'One-Time';
@@ -83,6 +108,11 @@ HTML;
 
 // Insert the detailed schedule block after the summary
 $html .= $scheduleHtml;
+
+// Insert tax breakdown if available
+if (!empty($taxBreakdownHtml)) {
+    $html .= $taxBreakdownHtml;
+}
 
 $html .= <<<HTML
       </div>
