@@ -13,7 +13,7 @@
       --shadow-lg:0 10px 30px rgba(0,0,0,.12);--radius:14px
     }
     html{scroll-behavior:smooth}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--slate);line-height:1.6;transition:overflow .2s}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--slate);line-height:1.6}
     body.modal-open{overflow:hidden}
 
     /* NAV */
@@ -98,7 +98,7 @@
     /* Search autocomplete in hero */
     #address{flex:1;border:none;outline:none;font-size:1rem;color:var(--slate);background:transparent;padding:11px 0;min-width:0}
     #address::placeholder{color:#94a3b8}
-    .suggestions{position:fixed;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:9999;display:none;overflow-y:auto}
+    .suggestions{position:fixed;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:2147483647;display:none;overflow-y:auto}
     .suggestions.show{display:block}
     .suggestion-item{padding:12px 18px;cursor:pointer;font-size:.93rem;color:#2d3748;border-bottom:1px solid #f7fafc;transition:background .12s;text-align:left}
     .suggestion-item:last-child{border-bottom:none}
