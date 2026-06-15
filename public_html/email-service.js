@@ -27,13 +27,19 @@ async function sendConfirmationEmail(bookingData, bookingId) {
       return DAYS[(idx + 6) % 7];
     }
 
+    const isNightZone = bookingData.isNightZone || false;
+
     // Build schedule breakdown for the email
     let scheduleLines = [];
 
     if (bookingData.frequency === 'recurring') {
       const pickupDay = bookingData.dayOfWeek || 'Tuesday';
       if (hasRollOut) {
-        scheduleLines.push('🗑️ Roll Out: Every ' + prevDay(pickupDay) + ' evening');
+        // Night zone: roll out same evening as collection; day zone: evening before
+        const rollOutLabel = isNightZone
+          ? '🌙 Roll Out: Every ' + pickupDay + ' early evening (overnight collection area)'
+          : '🗑️ Roll Out: Every ' + prevDay(pickupDay) + ' evening';
+        scheduleLines.push(rollOutLabel);
       }
       if (hasRollIn) {
         scheduleLines.push('♻️ Roll In: Every ' + pickupDay + ' afternoon');
@@ -41,8 +47,12 @@ async function sendConfirmationEmail(bookingData, bookingId) {
     } else if (bookingData.selectedDates && bookingData.selectedDates.length > 0) {
       for (const pickupDate of bookingData.selectedDates) {
         if (hasRollOut) {
-          const roDate = dayBefore(pickupDate);
-          scheduleLines.push('🗑️ Roll Out: ' + fmtDate(roDate) + ' (evening)');
+          // Night zone: roll out same day (early evening); day zone: evening before
+          const roDate = isNightZone ? pickupDate : dayBefore(pickupDate);
+          const roLabel = isNightZone
+            ? '🌙 Roll Out: ' + fmtDate(pickupDate) + ' (early evening — overnight collection)'
+            : '🗑️ Roll Out: ' + fmtDate(roDate) + ' (evening)';
+          scheduleLines.push(roLabel);
         }
         if (hasRollIn) {
           scheduleLines.push('♻️ Roll In: ' + fmtDate(pickupDate) + ' (afternoon)');
@@ -65,7 +75,8 @@ async function sendConfirmationEmail(bookingData, bookingId) {
         hstAmount: bookingData.hstAmount || null,
         totalWithTax: bookingData.totalWithTax || null,
         bookingId: bookingId,
-        scheduleLines: scheduleLines
+        scheduleLines: scheduleLines,
+        isNightZone: isNightZone
       })
     });
 

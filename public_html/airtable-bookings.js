@@ -86,6 +86,7 @@ async function saveBookingToAirtable(bookingData) {
 
     // Determine which service types to create orders for
     const svcType = bookingData.serviceType || 'rollout';
+    const isNightZone = bookingData.isNightZone || false;
     const serviceJobs = [];
     if (svcType === 'both' || svcType === 'rollout') serviceJobs.push('Roll Out');
     if (svcType === 'both' || svcType === 'rollin')  serviceJobs.push('Roll In');
@@ -115,7 +116,8 @@ async function saveBookingToAirtable(bookingData) {
 
       for (const job of serviceJobs) {
         const suffix = job === 'Roll Out' ? 'RO' : 'RI';
-        const workDay = job === 'Roll Out' ? dayOfWeekBefore(pickupDay) : pickupDay;
+        // Night zone: Roll Out happens same evening as collection (not day before)
+        const workDay = (job === 'Roll Out' && !isNightZone) ? dayOfWeekBefore(pickupDay) : pickupDay;
 
         await saveOrder({
           'Order ID': bookingId + '-' + suffix,
@@ -133,7 +135,8 @@ async function saveBookingToAirtable(bookingData) {
       for (const pickupDate of bookingData.selectedDates) {
         for (const job of serviceJobs) {
           const suffix = job === 'Roll Out' ? 'RO' : 'RI';
-          const workDate = job === 'Roll Out' ? dayBefore(pickupDate) : pickupDate;
+          // Night zone: Roll Out happens same evening as collection (not day before)
+          const workDate = (job === 'Roll Out' && !isNightZone) ? dayBefore(pickupDate) : pickupDate;
           const dateTag = workDate.replace(/-/g, '').slice(4); // MMDD
 
           await saveOrder({

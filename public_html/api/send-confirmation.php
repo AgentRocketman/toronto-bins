@@ -27,6 +27,7 @@ $totalWithTax = $body['totalWithTax'] ?? null;
 $bookingId    = $body['bookingId'] ?? '';
 $scheduleLines = $body['scheduleLines'] ?? [];
 $phone         = $body['customerPhone'] ?? '';
+$isNightZone   = $body['isNightZone'] ?? false;
 
 if (!$toEmail) { echo json_encode(['success'=>false,'error'=>'No customer email']); exit; }
 
@@ -118,7 +119,7 @@ $html .= <<<HTML
       </div>
       <div style="background:#f0fdf4;border-radius:8px;padding:16px;margin:20px 0;text-align:center;">
         <p style="color:#065f46;font-weight:600;margin:0;font-size:15px;">✅ You're all set!</p>
-        <p style="color:#059669;margin:6px 0 0;font-size:13px;">We'll handle your bins on collection day. No action needed from you.</p>
+        <p style="color:#059669;margin:6px 0 0;font-size:13px;"><?php echo $isNightZone ? 'Your area has overnight collection. We\'ll roll your bins to the curb early evening on your collection day. No action needed from you.' : 'We\'ll roll your bins out the evening before collection and return them the same afternoon. No action needed from you.'; ?></p>
       </div>
       <p style="color:#555;line-height:1.6;">If you have any questions, just reply to this email or contact us at <a href="mailto:support@agentrocketman.com" style="color:#3b82f6;">support@agentrocketman.com</a></p>
     </div>

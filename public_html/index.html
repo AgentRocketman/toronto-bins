@@ -594,9 +594,25 @@ const FIND_URL = 'https://map.toronto.ca/cotgeocoder/rest/geocoder/findAddressCa
 let currentSchedule = null;
 let currentCalendarName = null;
 let currentAddress = null;
+let currentIsNightZone = false;
 let selectedDates = new Set();
 let serviceType = 'rollout'; // rollout | rollin | both
 let planType = 'adhoc'; // adhoc | recurring
+
+// ===== Night collection zone detection =====
+// Source: City of Toronto 2026 curbside collection schedules
+function isNightCollection(lat, lng) {
+  // Monday night: east of Bathurst, south of Bloor/Danforth, west of Victoria Park
+  const monNight = lat < 43.668 && lat > 43.620 && lng > -79.414 && lng < -79.300;
+  // Tuesday night: Bloor corridor E&W between Bathurst and Danforth
+  const tueNight = lat > 43.655 && lat < 43.675 && lng > -79.415 && lng < -79.345;
+  // Wednesday night: Bathurst corridor, north of Bloor
+  const wedNight = lat > 43.663 && lat < 43.725 && lng > -79.419 && lng < -79.406;
+  // Thursday night: Bathurst south of Bloor + Bloor W west of Bathurst
+  const thuNight = (lat > 43.630 && lat < 43.666 && lng > -79.419 && lng < -79.406) ||
+                   (lat > 43.655 && lat < 43.672 && lng < -79.413 && lng > -79.455);
+  return monNight || tueNight || wedNight || thuNight;
+}
 
 const PRICE_ADHOC = 8.95;
 const PRICE_RECURRING = 5.95;
@@ -691,6 +707,10 @@ async function selectAddress(keyString, displayAddress) {
     currentCalendarName = calendarName;
     currentAddress = fullAddress;
     currentSchedule = CSV_DATA[calendarName];
+    // Detect night collection zone using geocoder coordinates
+    const lat = row.LATITUDE || row.OUTX || 0;
+    const lng = row.LONGITUDE || row.OUTY || 0;
+    currentIsNightZone = isNightCollection(lat, lng);
     revealBooking(fullAddress, calendarName, currentSchedule);
   } catch(e) {
     showHeroError('Could not look up this address. Please try another one.');
@@ -767,6 +787,27 @@ function revealBooking(address, calendarName, schedule) {
   serviceType = 'rollout'; planType = 'adhoc';
   document.querySelectorAll('#service-toggle .toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'rollout'));
   document.querySelectorAll('#plan-toggle .toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'adhoc'));
+
+  // Night zone: disable Roll In + Both, show note
+  const rollinBtn = document.querySelector('#service-toggle [data-val="rollin"]');
+  const bothBtn = document.querySelector('#service-toggle [data-val="both"]');
+  let nightNote = document.getElementById('night-zone-note');
+  if (currentIsNightZone) {
+    rollinBtn.disabled = true; rollinBtn.style.opacity = '0.35'; rollinBtn.style.cursor = 'not-allowed';
+    bothBtn.disabled = true;   bothBtn.style.opacity = '0.35';   bothBtn.style.cursor = 'not-allowed';
+    if (!nightNote) {
+      nightNote = document.createElement('p');
+      nightNote.id = 'night-zone-note';
+      nightNote.style.cssText = 'margin-top:0.6rem;font-size:0.8rem;color:#0d9488;background:#f0fdfa;border:1px solid #99f6e4;border-radius:8px;padding:8px 12px;';
+      document.getElementById('service-toggle').parentNode.appendChild(nightNote);
+    }
+    nightNote.style.display = 'block';
+    nightNote.innerHTML = '&#127769; <strong>Overnight collection area.</strong> Roll Out only &mdash; we arrive early evening on your collection day.';
+  } else {
+    rollinBtn.disabled = false; rollinBtn.style.opacity = ''; rollinBtn.style.cursor = '';
+    bothBtn.disabled = false;   bothBtn.style.opacity = ''; bothBtn.style.cursor = '';
+    if (nightNote) nightNote.style.display = 'none';
+  }
 
   // Reveal the booking section with smooth animation
   document.getElementById('booking-section').classList.add('revealed');
@@ -949,7 +990,8 @@ function openCheckout() {
     hstAmount: hstAmount,
     totalWithTax: totalWithTax,
     amount: Math.round(totalWithTax * 100),
-    selectedDates: planType === 'adhoc' ? [...selectedDates].sort() : []
+    selectedDates: planType === 'adhoc' ? [...selectedDates].sort() : [],
+    isNightZone: currentIsNightZone
   };
 
   // Build tax breakdown section (for ad hoc only; recurring shows per week)
