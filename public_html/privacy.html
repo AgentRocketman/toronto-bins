@@ -3,16 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/img/getmybin-icon.png">
+  <link rel="shortcut icon" href="/img/getmybin-icon.png">
   <title>Privacy Policy — GetMyBin</title>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{#71b80c:#0d9488;#71b80c-dark:#0f766e;--slate:#334155;--slate-light:#64748b}
+    :root{--green:#71b80c;--green-dark:#5a9109;--green-light:#d4f3a8;--green-xlight:#f7fce3;--slate:#334155;--slate-light:#64748b;--slate-xlight:#f1f5f9}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--slate);line-height:1.7}
-    nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1.5rem}
-    .nav-inner{max-width:800px;margin:0 auto;display:flex;align-items:center;height:56px}
-    .nav-logo{text-decoration:none;display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.1rem;color:#0f172a}
-    .nav-logo img{height:28px;width:auto}
-    .page-header{background:linear-gradient(135deg,#0a5c56 0%,#0d9488 100%);padding:3rem 1.5rem;color:#fff}
+    nav{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1.5rem;overflow:hidden}
+    .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:102px;overflow:hidden;gap:0}
+    .nav-logo{text-decoration:none;display:flex;align-items:center;gap:0;height:100%;padding:0;padding-left:0;margin:0 20px 0 0;flex-shrink:0}
+    .nav-logo img{height:100%;width:auto;object-fit:contain;margin-left:30px;transform:scale(1.5);transform-origin:center}
+    .nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center;flex-wrap:nowrap}
+    .nav-links a{color:var(--slate-light);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s;white-space:nowrap}
+    .nav-links a:hover{color:var(--green)}
+    .nav-cta{background:var(--green)!important;color:#fff!important;padding:8px 18px!important;border-radius:99px!important;font-weight:700!important;transition:background .2s!important;white-space:nowrap}
+    .nav-cta:hover{background:var(--green-dark)!important}
+    @media(max-width:640px){
+      nav{padding:0 0.8rem;overflow:hidden}
+      .nav-inner{height:60px;gap:6px;overflow:hidden}
+      .nav-logo{height:45px;margin-right:6px}
+      .nav-logo img{height:45px;max-width:75px;object-fit:contain;margin-left:30px;transform:scale(1.5);transform-origin:center}
+      .nav-links{gap:.8rem;flex-wrap:nowrap}
+      .nav-links a{font-size:.9rem;white-space:nowrap}
+      .nav-cta{padding:6px 10px!important;font-size:.9rem!important;white-space:nowrap;margin-left:.8rem!important}
+    }
+    .page-header{background:linear-gradient(135deg,#4a7c1f 0%,var(--green-dark) 35%,var(--green) 100%);padding:3rem 1.5rem;color:#fff}
     .page-header h1{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:900;margin-bottom:.4rem}
     .page-header p{opacity:.8;font-size:.95rem}
     .content{max-width:780px;margin:0 auto;padding:3rem 1.5rem 5rem}
@@ -21,10 +37,10 @@
     p{color:var(--slate);margin-bottom:1rem;font-size:.97rem}
     ul{margin:.5rem 0 1rem 1.4rem;color:var(--slate);font-size:.97rem}
     ul li{margin-bottom:.4rem}
-    .highlight{background:#f0fdf9;border-left:4px solid var(#71b80c);padding:14px 18px;border-radius:4px;margin:1.2rem 0;font-size:.95rem}
-    .highlight strong{color:#0f766e}
+    .highlight{background:var(--green-xlight);border-left:4px solid var(--green);padding:14px 18px;border-radius:4px;margin:1.2rem 0;font-size:.95rem}
+    .highlight strong{color:var(--green-dark)}
     .last-updated{font-size:.82rem;color:var(--slate-light);margin-bottom:2rem}
-    a{color:var(#71b80c)}
+    a{color:var(--green)}
     table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.92rem}
     table th{background:#f8fafc;padding:10px 14px;text-align:left;font-weight:700;color:#0f172a;border:1px solid #e2e8f0}
     table td{padding:10px 14px;border:1px solid #e2e8f0;color:var(--slate);vertical-align:top}
@@ -34,7 +50,12 @@
 
 <nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="/"><img src="logo.jpg" alt="GetMyBin"> GetMyBin</a>
+    <a class="nav-logo" href="/"><img src="img/getmybin-logo.jpg" alt="GetMyBin"></a>
+    <ul class="nav-links">
+      <li><a href="/#how">How It Works</a></li>
+      <li><a href="/#pricing">Pricing</a></li>
+      <li><a href="/#hero-anchor" class="nav-cta">Get Started</a></li>
+    </ul>
   </div>
 </nav>
 
