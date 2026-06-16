@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Employees — CurbIn Admin</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--teal:#0d9488;--teal-dark:#0f766e;--teal-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8fafc;color:var(--slate);min-height:100vh}
+    /* Auth gate */
+    #auth-gate{position:fixed;inset:0;background:linear-gradient(135deg,#0a5c56,#0d9488);display:flex;align-items:center;justify-content:center;padding:1.5rem;z-index:999}
+    .auth-card{background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);padding:2.5rem 2rem;width:100%;max-width:380px}
+    .auth-logo{text-align:center;margin-bottom:1.5rem}
+    .auth-logo img{height:36px}
+    .auth-title{font-size:1.1rem;font-weight:900;color:#0f172a;text-align:center;margin-bottom:.3rem}
+    .auth-sub{font-size:.82rem;color:var(--slate-light);text-align:center;margin-bottom:1.5rem}
+    /* Main */
+    #main{display:none}
+    nav{background:#0d9488;padding:0 1.5rem}
+    .nav-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .nav-brand{color:#fff;font-weight:900;font-size:1rem;display:flex;align-items:center;gap:8px}
+    .nav-brand img{height:28px;filter:brightness(10)}
+    .nav-logout{color:rgba(255,255,255,.75);font-size:.85rem;cursor:pointer;background:none;border:none;font-weight:600}
+    .nav-logout:hover{color:#fff}
+    .page-body{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+    .page-title{font-size:1.4rem;font-weight:900;color:#0f172a;margin-bottom:1.5rem}
+    .card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,.07);padding:1.8rem;margin-bottom:1.5rem}
+    .card-title{font-size:1rem;font-weight:800;color:#0f172a;margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+    .field label{display:block;font-size:.82rem;font-weight:700;color:var(--slate);margin-bottom:.35rem}
+    .field input{width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:.92rem;color:#0f172a;transition:border .2s}
+    .field input:focus{outline:none;border-color:var(--teal)}
+    .field-full{grid-column:1/-1}
+    .btn{padding:11px 22px;border-radius:10px;font-size:.92rem;font-weight:800;border:none;cursor:pointer;transition:all .15s}
+    .btn-primary{background:var(--teal);color:#fff}
+    .btn-primary:hover{background:var(--teal-dark)}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed}
+    .error-msg{color:#dc2626;font-size:.85rem;margin-top:.6rem;display:none}
+    .success-msg{color:#166534;background:#f0fdf4;border:1px solid #86efac;font-size:.85rem;padding:10px 14px;border-radius:8px;margin-top:.6rem;display:none}
+    .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:4px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    /* Auth gate fields */
+    .ag-field{margin-bottom:.9rem}
+    .ag-field label{display:block;font-size:.82rem;font-weight:700;color:var(--slate);margin-bottom:.35rem}
+    .ag-field input{width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:.92rem;color:#0f172a}
+    .ag-field input:focus{outline:none;border-color:var(--teal)}
+    .ag-btn{display:block;width:100%;padding:12px;border-radius:10px;font-size:.95rem;font-weight:800;border:none;cursor:pointer;background:var(--teal);color:#fff;margin-top:1rem}
+    .ag-err{color:#dc2626;font-size:.83rem;margin-top:.5rem;display:none}
+  </style>
+</head>
+<body>
+
+<!-- Admin auth gate -->
+<div id="auth-gate">
+  <div class="auth-card">
+    <div class="auth-logo"><img src="logo.jpg" alt="CurbIn"></div>
+    <div class="auth-title">Admin Access</div>
+    <div class="auth-sub">CurbIn Employee Management</div>
+    <div class="ag-field">
+      <label>Admin Password</label>
+      <input type="password" id="admin-pw" placeholder="Enter admin password">
+    </div>
+    <div class="ag-err" id="ag-err">Incorrect password.</div>
+    <button class="ag-btn" onclick="checkAdminAuth()">Access Admin Panel</button>
+  </div>
+</div>
+
+<!-- Main admin panel -->
+<div id="main">
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-brand"><img src="logo.jpg" alt="CurbIn"> Admin Panel</div>
+      <button class="nav-logout" onclick="adminLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="page-body">
+    <div class="page-title">👷 Create Employee Account</div>
+
+    <div class="card">
+      <div class="card-title">👤 Personal Details</div>
+      <div class="form-grid">
+        <div class="field"><label>First Name *</label><input type="text" id="firstName" placeholder="Jane"></div>
+        <div class="field"><label>Last Name *</label><input type="text" id="lastName" placeholder="Smith"></div>
+        <div class="field field-full"><label>Email Address *</label><input type="email" id="emp-email" placeholder="jane@example.com"></div>
+        <div class="field"><label>Password *</label><input type="password" id="emp-password" placeholder="Min. 8 characters"></div>
+        <div class="field"><label>Phone Number</label><input type="tel" id="phone" placeholder="+1 416 555 0100"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🚗 Vehicle Details</div>
+      <div class="form-grid">
+        <div class="field"><label>Car Make</label><input type="text" id="carMake" placeholder="Toyota"></div>
+        <div class="field"><label>Car Model</label><input type="text" id="carModel" placeholder="Corolla"></div>
+        <div class="field"><label>Car Color</label><input type="text" id="carColor" placeholder="White"></div>
+        <div class="field"><label>Plate Number</label><input type="text" id="plate" placeholder="ABCD 123" style="text-transform:uppercase"></div>
+      </div>
+    </div>
+
+    <div class="error-msg" id="form-error"></div>
+    <div class="success-msg" id="form-success"></div>
+    <button class="btn btn-primary" id="create-btn" onclick="createEmployee()">Create Employee Account</button>
+  </div>
+</div>
+
+<script>
+  const ADMIN_KEY = 'curbin-admin-xK9mP2026';
+  let adminPw = '';
+
+  // Check URL key
+  const urlKey = new URLSearchParams(window.location.search).get('key');
+  if (urlKey !== ADMIN_KEY) {
+    document.getElementById('auth-gate').innerHTML = '<div style="color:#fff;text-align:center;font-size:1.1rem;font-weight:700">Access denied.</div>';
+  }
+
+  function checkAdminAuth() {
+    const pw = document.getElementById('admin-pw').value;
+    const err = document.getElementById('ag-err');
+    // Verify server-side by attempting a dummy create
+    fetch('/api/auth/create-employee.php', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({adminKey: ADMIN_KEY, adminPassword: pw, _check: true, firstName:'_', lastName:'_', email:'_check@_', password:'_check_'})
+    }).then(r=>r.json()).then(d=>{
+      if (d.error === 'Unauthorized') { err.style.display='block'; return; }
+      adminPw = pw;
+      document.getElementById('auth-gate').style.display = 'none';
+      document.getElementById('main').style.display = 'block';
+      sessionStorage.setItem('curbin_admin_pw', pw);
+    });
+  }
+
+  // Resume session
+  const savedPw = sessionStorage.getItem('curbin_admin_pw');
+  if (savedPw && urlKey === ADMIN_KEY) { adminPw = savedPw; document.getElementById('auth-gate').style.display='none'; document.getElementById('main').style.display='block'; }
+
+  function adminLogout() { sessionStorage.removeItem('curbin_admin_pw'); window.location.reload(); }
+
+  async function createEmployee() {
+    const btn     = document.getElementById('create-btn');
+    const errEl   = document.getElementById('form-error');
+    const succEl  = document.getElementById('form-success');
+    errEl.style.display = 'none'; succEl.style.display = 'none';
+
+    const data = {
+      adminKey: ADMIN_KEY, adminPassword: adminPw,
+      firstName: document.getElementById('firstName').value.trim(),
+      lastName:  document.getElementById('lastName').value.trim(),
+      email:     document.getElementById('emp-email').value.trim(),
+      password:  document.getElementById('emp-password').value,
+      phone:     document.getElementById('phone').value.trim(),
+      carMake:   document.getElementById('carMake').value.trim(),
+      carModel:  document.getElementById('carModel').value.trim(),
+      carColor:  document.getElementById('carColor').value.trim(),
+      plate:     document.getElementById('plate').value.trim(),
+    };
+
+    if (!data.firstName || !data.lastName || !data.email || !data.password) {
+      errEl.textContent = 'First name, last name, email and password are required.'; errEl.style.display='block'; return;
+    }
+    if (data.password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; errEl.style.display='block'; return; }
+
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Creating…';
+
+    const res  = await fetch('/api/auth/create-employee.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    const resp = await res.json();
+
+    if (!resp.success) { errEl.textContent = resp.error || 'Failed to create employee.'; errEl.style.display='block'; btn.disabled=false; btn.textContent='Create Employee Account'; return; }
+
+    succEl.textContent = '✅ Employee account created! ID: ' + resp.employeeId + '. They can now log in at /employee-login.html';
+    succEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Create Employee Account';
+    // Clear form
+    ['firstName','lastName','emp-email','emp-password','phone','carMake','carModel','carColor','plate'].forEach(id => { document.getElementById(id).value = ''; });
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter' && document.getElementById('auth-gate').style.display !== 'none') checkAdminAuth(); });
+  document.getElementById('plate').addEventListener('input', function(){ this.value = this.value.toUpperCase(); });
+</script>
+</body>
+</html>

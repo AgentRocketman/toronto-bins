@@ -10,7 +10,14 @@ define('AIRTABLE_API_KEY', 'patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd6
 define('AIRTABLE_BASE', 'apptYNRJTXwItvied');
 define('AIRTABLE_BOOKINGS', 'tblKMhGnYjsH0z7Lj');
 define('AIRTABLE_ORDERS', 'tblGhNRi3ENwVpNty');
+define('AIRTABLE_EMPLOYEES', 'tbldH1el7qM0VNEje');
 define('AIRTABLE_API_BASE', 'https://api.airtable.com/v0');
+
+// Auth
+define('JWT_SECRET', 'CurbIn_JWT_s3cr3t_2026_X9kQ_mP7vR!');
+define('JWT_EXPIRY', 8 * 3600); // 8 hours
+define('ADMIN_KEY', 'curbin-admin-xK9mP2026');
+define('ADMIN_PASSWORD', 'CurbInAdmin2026!');
 
 // SMTP
 define('SMTP_HOST', 'smtp.hostinger.com');
@@ -76,6 +83,25 @@ function airtableRequest($method, $table, $data = [], $recordId = '') {
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     return ['code' => $httpCode, 'body' => json_decode($response, true)];
+}
+
+// JWT helpers
+function b64url($data) { return rtrim(strtr(base64_encode($data), '+/', '-_'), '='); }
+function generateJWT($payload) {
+    $header = b64url(json_encode(['alg'=>'HS256','typ'=>'JWT']));
+    $body   = b64url(json_encode($payload));
+    $sig    = b64url(hash_hmac('sha256', "$header.$body", JWT_SECRET, true));
+    return "$header.$body.$sig";
+}
+function verifyJWT($token) {
+    $parts = explode('.', $token);
+    if (count($parts) !== 3) return false;
+    [$h, $b, $s] = $parts;
+    $expected = b64url(hash_hmac('sha256', "$h.$b", JWT_SECRET, true));
+    if (!hash_equals($expected, $s)) return false;
+    $data = json_decode(base64_decode(str_pad(strtr($b, '-_', '+/'), strlen($b) % 4 ? strlen($b) + 4 - strlen($b) % 4 : strlen($b), '=')), true);
+    if (!$data || $data['exp'] < time()) return false;
+    return $data;
 }
 
 // SMTP email sender

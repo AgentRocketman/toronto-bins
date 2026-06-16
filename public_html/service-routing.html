@@ -377,11 +377,36 @@
   </style>
 </head>
 <body>
+<script>
+// Auth check — must run before page renders
+(function(){
+  var token = localStorage.getItem('curbin_emp_token');
+  if (!token) { window.location.href = '/employee-login.html'; return; }
+  fetch('/api/auth/verify.php', { headers: { 'Authorization': 'Bearer ' + token } })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!d.valid) { localStorage.removeItem('curbin_emp_token'); window.location.href = '/employee-login.html'; return; }
+      // Set employee name in worker input
+      var nameInput = document.getElementById('workerNameInput');
+      if (nameInput) nameInput.value = d.firstName;
+      // Show employee greeting
+      var greet = document.getElementById('emp-greeting');
+      if (greet) greet.textContent = 'Hi, ' + d.firstName + '!';
+    })
+    .catch(function(){ window.location.href = '/employee-login.html'; });
+})();
+</script>
   <div class="container">
     <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-header">
-        <div class="sidebar-title">📍 Service Schedule</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="sidebar-title">📍 Service Schedule</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span id="emp-greeting" style="font-size:.85rem;color:#64748b;font-weight:600"></span>
+            <button onclick="empLogout()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:4px 10px;font-size:.78rem;color:#64748b;cursor:pointer;font-weight:600">Sign Out</button>
+          </div>
+        </div>
         <input type="date" class="date-picker" id="datePicker">
         <div style="margin-top: 12px;">
           <label style="font-size: 0.95rem; color: #64748b; display: block; margin-bottom: 4px; font-weight: 600;">👤 Worker Name</label>
@@ -1325,6 +1350,13 @@
     // Start
     checkBackendHealth();
     init();
+  </script>
+  <script>
+  function empLogout() {
+    localStorage.removeItem('curbin_emp_token');
+    localStorage.removeItem('curbin_emp_name');
+    window.location.href = '/employee-login.html';
+  }
   </script>
 </body>
 </html>
