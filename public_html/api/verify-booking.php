@@ -1,6 +1,6 @@
 <?php
 /**
- * CurbIn — Verify Booking
+ * GetMyBin — Verify Booking
  * Checks booking ID + email exist in Airtable before proceeding with cancellation
  */
 require_once __DIR__ . '/config.php';

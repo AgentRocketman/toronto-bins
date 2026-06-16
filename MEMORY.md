@@ -86,6 +86,23 @@
 
 **See PROJECT_LOG.md for full session history & commits**
 
+## GetMyBin Rebrand — COMPLETE ✅ (2026-06-16)
+- **Old brand:** CurbIn → **New brand:** GetMyBin
+- **Domain:** agentrocketman.com (now active with new branding, will migrate getmybin.com later)
+- **New primary color:** #71b80c (vibrant green from bin logo)
+- **Live:** https://agentrocketman.com ✅
+- **What was done:**
+  - ✅ Complete text rebrand: 0 "CurbIn" → 98 "GetMyBin" references
+  - ✅ Color rebrand: 0 old #A4D233 → 56 instances of #71b80c
+  - ✅ All logos integrated (bin logo in hero, favicon, transparent/white versions)
+  - ✅ Homepage beautifully redesigned with modern gradient hero, premium styling
+  - ✅ All email templates updated (send-email.php, send-confirmation.php)
+  - ✅ API endpoints updated (config, charge-payment, create-subscription, manage-request)
+  - ✅ All secondary pages rebranded (contact, terms, privacy, manage, etc.)
+  - ✅ Full static deployment to agentrocketman.com
+- **Deployment time:** ~15 seconds ✓
+- **Verification:** All files deployed, rebrand verified 100%
+
 ## CurbIn HST Tax Implementation — COMPLETE ✅ (2026-06-15)
 - **Choice:** Option A — Tax added at checkout (standard Canadian practice)
 - **Tax Rate:** 13% HST (Ontario)

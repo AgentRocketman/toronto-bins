@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CurbIn Service Routing</title>
+  <title>GetMyBin Service Routing</title>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -380,12 +380,12 @@
 <script>
 // Auth check — must run before page renders
 (function(){
-  var token = localStorage.getItem('curbin_emp_token');
+  var token = localStorage.getItem('getmybin_emp_token');
   if (!token) { window.location.href = '/employee-login.html'; return; }
   fetch('/api/auth/verify.php', { headers: { 'Authorization': 'Bearer ' + token } })
     .then(function(r){ return r.json(); })
     .then(function(d){
-      if (!d.valid) { localStorage.removeItem('curbin_emp_token'); window.location.href = '/employee-login.html'; return; }
+      if (!d.valid) { localStorage.removeItem('getmybin_emp_token'); window.location.href = '/employee-login.html'; return; }
       // Set employee name in worker input
       var nameInput = document.getElementById('workerNameInput');
       if (nameInput) nameInput.value = d.firstName;
@@ -1353,8 +1353,8 @@
   </script>
   <script>
   function empLogout() {
-    localStorage.removeItem('curbin_emp_token');
-    localStorage.removeItem('curbin_emp_name');
+    localStorage.removeItem('getmybin_emp_token');
+    localStorage.removeItem('getmybin_emp_name');
     window.location.href = '/employee-login.html';
   }
   </script>

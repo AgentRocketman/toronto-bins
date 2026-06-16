@@ -177,9 +177,9 @@ function saveBookingLocally(bookingData) {
   };
 
   try {
-    let bookings = JSON.parse(localStorage.getItem('curbin_bookings') || '[]');
+    let bookings = JSON.parse(localStorage.getItem('getmybin_bookings') || '[]');
     bookings.push(booking);
-    localStorage.setItem('curbin_bookings', JSON.stringify(bookings));
+    localStorage.setItem('getmybin_bookings', JSON.stringify(bookings));
     console.log('✅ Booking saved to localStorage:', booking);
     
     return {

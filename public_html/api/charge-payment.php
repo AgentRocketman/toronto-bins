@@ -1,6 +1,6 @@
 <?php
 /**
- * CurbIn — Ad Hoc Payment
+ * GetMyBin — Ad Hoc Payment
  * Creates and confirms a Stripe PaymentIntent for one-time bookings
  */
 require_once __DIR__ . '/config.php';
@@ -35,7 +35,7 @@ $result = stripeRequest('POST', '/payment_intents', [
     'payment_method'       => $paymentMethodId,
     'confirm'              => 'true',
     'receipt_email'        => $customerEmail,
-    'description'          => 'CurbIn booking ' . $bookingId,
+    'description'          => 'GetMyBin booking ' . $bookingId,
     'metadata[booking_id]' => $bookingId,
     'metadata[customer]'   => $customerName,
     'return_url'           => 'https://agentrocketman.com',

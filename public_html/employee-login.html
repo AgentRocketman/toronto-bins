@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee Login — CurbIn</title>
+  <title>Employee Login — GetMyBin</title>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--teal:#0d9488;--teal-dark:#0f766e;--teal-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
+    :root{#71b80c:#0d9488;#71b80c-dark:#0f766e;#71b80c-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#0a5c56 0%,#0d9488 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
     .login-card{background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);padding:2.5rem 2rem;width:100%;max-width:420px}
     .login-logo{text-align:center;margin-bottom:1.8rem}
@@ -16,13 +16,13 @@
     .field{margin-bottom:1rem}
     .field label{display:block;font-size:.82rem;font-weight:700;color:var(--slate);margin-bottom:.35rem}
     .field input{width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;color:#0f172a;transition:border .2s}
-    .field input:focus{outline:none;border-color:var(--teal)}
+    .field input:focus{outline:none;border-color:var(#71b80c)}
     .btn{display:block;width:100%;padding:13px;border-radius:12px;font-size:1rem;font-weight:800;border:none;cursor:pointer;transition:all .15s;text-align:center;margin-top:1.2rem}
-    .btn-primary{background:var(--teal);color:#fff}
-    .btn-primary:hover{background:var(--teal-dark)}
+    .btn-primary{background:var(#71b80c);color:#fff}
+    .btn-primary:hover{background:var(#71b80c-dark)}
     .btn-primary:disabled{opacity:.6;cursor:not-allowed}
     .forgot-link{text-align:center;margin-top:1rem;font-size:.85rem}
-    .forgot-link a{color:var(--teal);text-decoration:none;font-weight:600}
+    .forgot-link a{color:var(#71b80c);text-decoration:none;font-weight:600}
     .error-msg{background:#fef2f2;border:1px solid #fca5a5;color:#dc2626;font-size:.85rem;padding:10px 14px;border-radius:8px;margin-top:.8rem;display:none}
     .spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -30,7 +30,7 @@
 </head>
 <body>
 <div class="login-card">
-  <div class="login-logo"><img src="logo.jpg" alt="CurbIn"></div>
+  <div class="login-logo"><img src="logo.jpg" alt="GetMyBin"></div>
   <div class="login-title">Employee Portal</div>
   <div class="login-sub">Sign in to access your service routing</div>
 
@@ -49,7 +49,7 @@
 
 <script>
   // Redirect if already logged in
-  const token = localStorage.getItem('curbin_emp_token');
+  const token = localStorage.getItem('getmybin_emp_token');
   if (token) {
     fetch('/api/auth/verify.php', { headers: { 'Authorization': 'Bearer ' + token } })
       .then(r => r.json()).then(d => { if (d.valid) window.location.href = '/service-routing.html'; });
@@ -68,8 +68,8 @@
       const res  = await fetch('/api/auth/login.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password}) });
       const data = await res.json();
       if (!data.success) { err.textContent = data.error || 'Login failed.'; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Sign In'; return; }
-      localStorage.setItem('curbin_emp_token', data.token);
-      localStorage.setItem('curbin_emp_name', data.firstName);
+      localStorage.setItem('getmybin_emp_token', data.token);
+      localStorage.setItem('getmybin_emp_name', data.firstName);
       window.location.href = '/service-routing.html';
     } catch(e) {
       err.textContent = 'Network error. Please try again.'; err.style.display = 'block';

@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cancel My Service — CurbIn</title>
+  <title>Cancel My Service — GetMyBin</title>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--teal:#0d9488;--teal-dark:#0f766e;--teal-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
+    :root{#71b80c:#0d9488;#71b80c-dark:#0f766e;#71b80c-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8fafc;color:var(--slate);min-height:100vh}
     nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1.5rem}
     .nav-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;height:56px}
@@ -23,11 +23,11 @@
     .field{margin-bottom:1rem}
     .field label{display:block;font-size:.85rem;font-weight:700;color:var(--slate);margin-bottom:.4rem}
     .field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;color:#0f172a;background:#fff;transition:border .2s;appearance:none}
-    .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--teal)}
+    .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(#71b80c)}
     .field textarea{resize:vertical;min-height:80px}
     .btn{display:block;width:100%;padding:14px;border-radius:12px;font-size:1rem;font-weight:800;border:none;cursor:pointer;transition:all .15s;text-align:center;text-decoration:none}
-    .btn-primary{background:var(--teal);color:#fff;margin-top:1.2rem}
-    .btn-primary:hover{background:var(--teal-dark)}
+    .btn-primary{background:var(#71b80c);color:#fff;margin-top:1.2rem}
+    .btn-primary:hover{background:var(#71b80c-dark)}
     .btn-secondary{background:#f1f5f9;color:var(--slate);margin-top:.8rem}
     .btn-secondary:hover{background:#e2e8f0}
     .btn-danger{background:#ef4444;color:#fff;margin-top:1rem}
@@ -46,7 +46,7 @@
     .error-msg{color:#dc2626;font-size:.85rem;margin-top:.6rem;display:none}
     .progress{display:flex;justify-content:center;gap:8px;margin-bottom:2rem}
     .progress-dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;transition:background .3s,transform .2s}
-    .progress-dot.done{background:var(--teal);transform:scale(1.2)}
+    .progress-dot.done{background:var(#71b80c);transform:scale(1.2)}
     .spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
     @keyframes spin{to{transform:rotate(360deg)}}
   </style>
@@ -55,7 +55,7 @@
 
 <nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="/"><img src="logo.jpg" alt="CurbIn"> CurbIn</a>
+    <a class="nav-logo" href="/"><img src="logo.jpg" alt="GetMyBin"> GetMyBin</a>
   </div>
 </nav>
 
@@ -89,7 +89,7 @@
       <button class="btn btn-primary" onclick="goStep2()">Continue &rarr;</button>
     </div>
     <p style="text-align:center;font-size:.82rem;color:var(--slate-light);margin-top:1rem">
-      Need help? Email us at <a href="mailto:support@agentrocketman.com" style="color:var(--teal)">support@agentrocketman.com</a>
+      Need help? Email us at <a href="mailto:support@agentrocketman.com" style="color:var(#71b80c)">support@agentrocketman.com</a>
     </p>
   </div>
 
@@ -144,7 +144,7 @@
     <div class="card">
       <div class="card-title">Confirm cancellation</div>
       <p style="font-size:.95rem;color:var(--slate-light);margin-bottom:1.2rem;line-height:1.7">
-        You're about to permanently cancel your CurbIn service for booking <strong id="confirm-booking-id" style="color:#0f172a"></strong>.
+        You're about to permanently cancel your GetMyBin service for booking <strong id="confirm-booking-id" style="color:#0f172a"></strong>.
         This will stop all future collections and billing.
       </p>
       <div class="rule-box">
@@ -164,7 +164,7 @@
         <div class="success-icon">✅</div>
         <div class="success-title">Service cancelled</div>
         <div class="success-desc" id="success-desc"></div>
-        <a href="/" class="btn btn-primary" style="margin-top:2rem;display:inline-block;width:auto;padding:12px 28px;">← Back to CurbIn</a>
+        <a href="/" class="btn btn-primary" style="margin-top:2rem;display:inline-block;width:auto;padding:12px 28px;">← Back to GetMyBin</a>
       </div>
     </div>
   </div>

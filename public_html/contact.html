@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Us — CurbIn</title>
+  <title>Contact Us — GetMyBin</title>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--teal:#0d9488;--teal-dark:#0f766e;--teal-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
+    :root{#71b80c:#0d9488;#71b80c-dark:#0f766e;#71b80c-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8fafc;color:var(--slate);min-height:100vh}
     nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1.5rem}
     .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
@@ -14,9 +14,9 @@
     .nav-logo img{height:32px;width:auto}
     .nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center}
     .nav-links a{color:var(--slate-light);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s}
-    .nav-links a:hover{color:var(--teal)}
-    .nav-cta{background:var(--teal)!important;color:#fff!important;padding:8px 18px!important;border-radius:99px!important;font-weight:700!important;transition:background .2s!important}
-    .nav-cta:hover{background:var(--teal-dark)!important}
+    .nav-links a:hover{color:var(#71b80c)}
+    .nav-cta{background:var(#71b80c)!important;color:#fff!important;padding:8px 18px!important;border-radius:99px!important;font-weight:700!important;transition:background .2s!important}
+    .nav-cta:hover{background:var(#71b80c-dark)!important}
     @media(max-width:640px){
       .nav-links{gap:.8rem}
       .nav-links a{font-size:.78rem}
@@ -27,19 +27,19 @@
     .page-header p{opacity:.85;font-size:1rem;max-width:440px;margin:0 auto}
     .page-body{max-width:560px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
     .card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,.07);padding:2rem}
-    .email-option{background:var(--teal-xlight);border:1px solid #99f6e4;border-radius:12px;padding:1rem 1.3rem;margin-bottom:1.8rem;font-size:.92rem;color:#0f172a;line-height:1.6}
-    .email-option a{color:var(--teal);font-weight:700;text-decoration:none}
+    .email-option{background:var(#71b80c-xlight);border:1px solid #99f6e4;border-radius:12px;padding:1rem 1.3rem;margin-bottom:1.8rem;font-size:.92rem;color:#0f172a;line-height:1.6}
+    .email-option a{color:var(#71b80c);font-weight:700;text-decoration:none}
     .email-option a:hover{text-decoration:underline}
     .divider{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;color:var(--slate-light);font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
     .divider::before,.divider::after{content:'';flex:1;height:1px;background:#e2e8f0}
     .field{margin-bottom:1rem}
     .field label{display:block;font-size:.85rem;font-weight:700;color:var(--slate);margin-bottom:.4rem}
     .field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;color:#0f172a;background:#fff;transition:border .2s}
-    .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--teal)}
+    .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(#71b80c)}
     .field textarea{resize:vertical;min-height:130px}
     .btn{display:block;width:100%;padding:14px;border-radius:12px;font-size:1rem;font-weight:800;border:none;cursor:pointer;transition:all .15s;text-align:center}
-    .btn-primary{background:var(--teal);color:#fff;margin-top:1.2rem}
-    .btn-primary:hover{background:var(--teal-dark)}
+    .btn-primary{background:var(#71b80c);color:#fff;margin-top:1.2rem}
+    .btn-primary:hover{background:var(#71b80c-dark)}
     .btn-primary:disabled{opacity:.6;cursor:not-allowed}
     .error-msg{color:#dc2626;font-size:.85rem;margin-top:.5rem;display:none}
     .success-wrap{text-align:center;padding:1rem 0}
@@ -48,18 +48,18 @@
     .success-desc{font-size:.95rem;color:var(--slate-light);line-height:1.6}
     .spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
     @keyframes spin{to{transform:rotate(360deg)}}
-    a{color:var(--teal)}
+    a{color:var(#71b80c)}
   </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="/"><img src="logo.jpg" alt="CurbIn"></a>
+    <a class="nav-logo" href="/"><img src="logo.jpg" alt="GetMyBin"></a>
     <ul class="nav-links">
       <li><a href="/#how">How It Works</a></li>
       <li><a href="/#pricing">Pricing</a></li>
-      <li><a href="/contact.html" style="color:var(--teal);font-weight:700">Contact</a></li>
+      <li><a href="/contact.html" style="color:var(#71b80c);font-weight:700">Contact</a></li>
       <li><a href="/#hero-anchor" class="nav-cta">Get Started</a></li>
     </ul>
   </div>
@@ -114,7 +114,7 @@
         <div class="success-icon">✅</div>
         <div class="success-title">Message sent!</div>
         <div class="success-desc">Thanks for reaching out. We'll get back to you at <strong id="success-email"></strong> within a few hours.</div>
-        <a href="/" style="display:inline-block;margin-top:1.5rem;color:var(--teal);font-weight:700;text-decoration:none">← Back to CurbIn</a>
+        <a href="/" style="display:inline-block;margin-top:1.5rem;color:var(#71b80c);font-weight:700;text-decoration:none">← Back to GetMyBin</a>
       </div>
     </div>
 
@@ -122,7 +122,7 @@
 </div>
 
 <footer style="background:#f1f5f9;padding:2rem 1.5rem;text-align:center;border-top:1px solid #e2e8f0;font-size:.82rem;color:var(--slate-light)">
-  <p>&copy; 2026 CurbIn &middot; Toronto Bin Collection Service &middot; <a href="/" style="color:var(--teal)">Home</a> &middot; <a href="/terms.html" style="color:var(--teal)">Terms</a> &middot; <a href="/privacy.html" style="color:var(--teal)">Privacy</a></p>
+  <p>&copy; 2026 GetMyBin &middot; Toronto Bin Collection Service &middot; <a href="/" style="color:var(#71b80c)">Home</a> &middot; <a href="/terms.html" style="color:var(#71b80c)">Terms</a> &middot; <a href="/privacy.html" style="color:var(#71b80c)">Privacy</a></p>
 </footer>
 
 <script>

@@ -1,6 +1,6 @@
 <?php
 /**
- * CurbIn — Manage Service Request
+ * GetMyBin — Manage Service Request
  * Receives pause/cancel/resume requests and notifies support
  */
 require_once __DIR__ . '/config.php';
@@ -42,7 +42,7 @@ $reasonLabels = [
 $reasonLabel = $reasonLabels[$reason] ?? $reason;
 
 // Email to support
-$subject = "[CurbIn] $typeLabel Request — Booking $bookingId";
+$subject = "[GetMyBin] $typeLabel Request — Booking $bookingId";
 $html = <<<HTML
 <!DOCTYPE html>
 <html>
@@ -73,7 +73,7 @@ $html .= <<<HTML
       </div>
     </div>
     <div style="background:#f9f9f9;padding:16px 20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
-      <p style="margin:0;">CurbIn · Toronto Bin Collection Service · <a href="https://agentrocketman.com" style="color:#0d9488;">agentrocketman.com</a></p>
+      <p style="margin:0;">GetMyBin · Toronto Bin Collection Service · <a href="https://agentrocketman.com" style="color:#0d9488;">agentrocketman.com</a></p>
     </div>
   </div>
 </body>
@@ -82,16 +82,16 @@ HTML;
 
 // Customer confirmation email content
 $customerSubjects = [
-    'pause'  => 'Your CurbIn service has been paused',
-    'cancel' => 'Your CurbIn service cancellation is confirmed',
-    'resume' => 'Your CurbIn service is back on!',
+    'pause'  => 'Your GetMyBin service has been paused',
+    'cancel' => 'Your GetMyBin service cancellation is confirmed',
+    'resume' => 'Your GetMyBin service is back on!',
 ];
 $customerMessages = [
     'pause'  => "We've received your pause request for booking <strong>$bookingId</strong>. Your service will be paused after your next scheduled collection (subject to the 48-hour rule). No charges will occur while paused.<br><br>Ready to restart anytime? <a href='https://agentrocketman.com/manage' style='color:#0d9488;'>Visit your service page &rarr;</a>",
     'cancel' => "We've confirmed your cancellation for booking <strong>$bookingId</strong>. If your next collection is within 48 hours, that final service will proceed as scheduled.<br><br>We're sorry to see you go — you're always welcome back at <a href='https://agentrocketman.com' style='color:#0d9488;'>agentrocketman.com</a>.",
-    'resume' => "Great news — your CurbIn service has been reactivated for booking <strong>$bookingId</strong>. We'll pick up from your next scheduled collection day and weekly billing resumes automatically.<br><br>Welcome back! If you have any questions, reply to this email.",
+    'resume' => "Great news — your GetMyBin service has been reactivated for booking <strong>$bookingId</strong>. We'll pick up from your next scheduled collection day and weekly billing resumes automatically.<br><br>Welcome back! If you have any questions, reply to this email.",
 ];
-$customerSubject = $customerSubjects[$requestType] ?? 'Your CurbIn service request';
+$customerSubject = $customerSubjects[$requestType] ?? 'Your GetMyBin service request';
 $customerMsg     = $customerMessages[$requestType] ?? "We've received your request for booking $bookingId and will process it within 24 hours.";
 
 $customerHtml = <<<HTML
@@ -102,7 +102,7 @@ $customerHtml = <<<HTML
   <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);overflow:hidden;">
     <div style="background:linear-gradient(135deg,#0a5c56 0%,#0d9488 100%);color:#fff;padding:30px 20px;text-align:center;">
       <h1 style="margin:0;font-size:24px;font-weight:700;">$customerSubject</h1>
-      <p style="margin:8px 0 0;opacity:.85;font-size:14px;">CurbIn Bin Collection Service</p>
+      <p style="margin:8px 0 0;opacity:.85;font-size:14px;">GetMyBin Bin Collection Service</p>
     </div>
     <div style="padding:30px 20px;">
       <p style="font-size:16px;color:#333;margin-bottom:16px;">Hi there,</p>
@@ -114,7 +114,7 @@ $customerHtml = <<<HTML
       <p style="margin-top:24px;color:#64748b;font-size:14px;line-height:1.6;">Questions? Reply to this email or contact us at <a href="mailto:support@agentrocketman.com" style="color:#0d9488;">support@agentrocketman.com</a></p>
     </div>
     <div style="background:#f9f9f9;padding:16px 20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
-      <p style="margin:0;">&copy; 2026 CurbIn &middot; Toronto Bin Collection Service</p>
+      <p style="margin:0;">&copy; 2026 GetMyBin &middot; Toronto Bin Collection Service</p>
       <p style="margin:4px 0 0;"><a href="https://agentrocketman.com/manage" style="color:#94a3b8;text-decoration:none;">Manage your service</a></p>
     </div>
   </div>
@@ -145,7 +145,7 @@ function sendEmail($host, $port, $user, $pass, $from, $to, $toName, $subject, $h
     $send("MAIL FROM: <$from>"); $read();
     $send("RCPT TO: <$to>"); $read();
     $send("DATA"); $read();
-    $msg  = "From: CurbIn <$from>\r\n";
+    $msg  = "From: GetMyBin <$from>\r\n";
     $msg .= "To: $toName <$to>\r\n";
     $msg .= "Subject: $subject\r\n";
     $msg .= "MIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n";
@@ -157,7 +157,7 @@ function sendEmail($host, $port, $user, $pass, $from, $to, $toName, $subject, $h
 }
 
 // Send internal notification to support
-$sent = sendEmail($SMTP_HOST, $SMTP_PORT, $SMTP_USER, $SMTP_PASS, $FROM, 'support@agentrocketman.com', 'CurbIn Support', $subject, $html);
+$sent = sendEmail($SMTP_HOST, $SMTP_PORT, $SMTP_USER, $SMTP_PASS, $FROM, 'support@agentrocketman.com', 'GetMyBin Support', $subject, $html);
 if (!$sent) {
     echo json_encode(['success' => false, 'error' => 'Mail server unavailable']);
     exit;

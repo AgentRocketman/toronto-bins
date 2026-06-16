@@ -1,6 +1,6 @@
 <?php
 /**
- * CurbIn — Recurring Subscription
+ * GetMyBin — Recurring Subscription
  * Creates a Stripe Customer + weekly Subscription for recurring bookings
  */
 require_once __DIR__ . '/config.php';
@@ -30,7 +30,7 @@ if (!$paymentMethodId || $weeklyAmount <= 0 || !$customerEmail) {
 }
 
 $serviceLabel = $serviceType === 'both' ? 'Roll Out + Roll In' : ($serviceType === 'rollin' ? 'Roll In' : 'Roll Out');
-$productName  = 'CurbIn Weekly — ' . $serviceLabel;
+$productName  = 'GetMyBin Weekly — ' . $serviceLabel;
 
 // Step 1: Create Stripe Customer
 $customerResult = stripeRequest('POST', '/customers', [

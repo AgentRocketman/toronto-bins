@@ -1,6 +1,6 @@
 <?php
 /**
- * CurbIn — Contact Form
+ * GetMyBin — Contact Form
  * Forwards contact form submissions to support@agentrocketman.com
  */
 require_once __DIR__ . '/config.php';
@@ -52,7 +52,7 @@ HTML;
 // Send to support
 $sent = sendSmtpEmail(
     SUPPORT_EMAIL,
-    'CurbIn Support',
+    'GetMyBin Support',
     "📬 Contact: $subject — from $name",
     $html
 );
@@ -68,7 +68,7 @@ $autoReplyHtml = <<<HTML
   <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);overflow:hidden;">
     <div style="background:linear-gradient(135deg,#0a5c56 0%,#0d9488 100%);color:#fff;padding:30px 20px;text-align:center;">
       <h1 style="margin:0;font-size:22px;font-weight:700;">We got your message!</h1>
-      <p style="margin:8px 0 0;opacity:.85;font-size:14px;">CurbIn Bin Collection Service</p>
+      <p style="margin:8px 0 0;opacity:.85;font-size:14px;">GetMyBin Bin Collection Service</p>
     </div>
     <div style="padding:30px 20px;">
       <p style="font-size:15px;color:#333;margin-bottom:16px;">Hi $name,</p>
@@ -80,13 +80,13 @@ $autoReplyHtml = <<<HTML
       <p style="color:#64748b;font-size:14px;line-height:1.6;">In the meantime, you can also reach us directly at <a href="mailto:support@agentrocketman.com" style="color:#0d9488;">support@agentrocketman.com</a>.</p>
     </div>
     <div style="background:#f9f9f9;padding:16px 20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
-      <p style="margin:0;">&copy; 2026 CurbIn &middot; Toronto Bin Collection Service</p>
+      <p style="margin:0;">&copy; 2026 GetMyBin &middot; Toronto Bin Collection Service</p>
       <p style="margin:4px 0 0;"><a href="https://agentrocketman.com" style="color:#94a3b8;text-decoration:none;">agentrocketman.com</a></p>
     </div>
   </div>
 </body></html>
 HTML;
 
-sendSmtpEmail($email, $name, "We received your message — CurbIn", $autoReplyHtml);
+sendSmtpEmail($email, $name, "We received your message — GetMyBin", $autoReplyHtml);
 
 echo json_encode(['success' => true]);

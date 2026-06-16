@@ -1,5 +1,5 @@
 <?php
-// CurbIn Configuration
+// GetMyBin Configuration
 
 // Stripe
 define('STRIPE_SECRET_KEY', 'sk_test_51SFgOXRoaqSc6FkpqmcozU4mGNxDZTQJfkgcwti8z2kg7Lq3SkuCrsenYDn2kDYDZ9Gu6v4xPCtZiPDhALX7w9KN00Zw7AOcpt');
@@ -14,10 +14,10 @@ define('AIRTABLE_EMPLOYEES', 'tbldH1el7qM0VNEje');
 define('AIRTABLE_API_BASE', 'https://api.airtable.com/v0');
 
 // Auth
-define('JWT_SECRET', 'CurbIn_JWT_s3cr3t_2026_X9kQ_mP7vR!');
+define('JWT_SECRET', 'GetMyBin_JWT_s3cr3t_2026_X9kQ_mP7vR!');
 define('JWT_EXPIRY', 8 * 3600); // 8 hours
-define('ADMIN_KEY', 'curbin-admin-xK9mP2026');
-define('ADMIN_PASSWORD', 'CurbInAdmin2026!');
+define('ADMIN_KEY', 'getmybin-admin-xK9mP2026');
+define('ADMIN_PASSWORD', 'GetMyBinAdmin2026!');
 
 // SMTP
 define('SMTP_HOST', 'smtp.hostinger.com');
@@ -120,7 +120,7 @@ function sendSmtpEmail($to, $toName, $subject, $html) {
     $send('MAIL FROM: <' . SMTP_USER . '>'); $read();
     $send('RCPT TO: <' . $to . '>'); $read();
     $send('DATA'); $read();
-    $msg  = 'From: CurbIn <' . SMTP_USER . ">\r\n";
+    $msg  = 'From: GetMyBin <' . SMTP_USER . ">\r\n";
     $msg .= "To: $toName <$to>\r\n";
     $msg .= "Subject: $subject\r\n";
     $msg .= "MIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n";

@@ -1,6 +1,6 @@
 <?php
 /**
- * CurbIn — Automated Cancellation
+ * GetMyBin — Automated Cancellation
  * Full automation: Stripe cancel/refund + Airtable update + customer & support emails
  */
 require_once __DIR__ . '/config.php';
@@ -166,7 +166,7 @@ $customerHtml = <<<HTML
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;margin:0;padding:20px;">
   <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);overflow:hidden;">
     <div style="background:linear-gradient(135deg,#0a5c56 0%,#0d9488 100%);color:#fff;padding:30px 20px;text-align:center;">
-      <h1 style="margin:0;font-size:24px;font-weight:700;">Your CurbIn service has been cancelled</h1>
+      <h1 style="margin:0;font-size:24px;font-weight:700;">Your GetMyBin service has been cancelled</h1>
       <p style="margin:8px 0 0;opacity:.85;font-size:14px;">Booking ID: $bookingId</p>
     </div>
     <div style="padding:30px 20px;">
@@ -187,7 +187,7 @@ $customerHtml = <<<HTML
       <p style="color:#64748b;font-size:14px;margin-top:20px;">Questions? Reply to this email or reach us at <a href="mailto:support@agentrocketman.com" style="color:#0d9488;">support@agentrocketman.com</a></p>
     </div>
     <div style="background:#f9f9f9;padding:16px 20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
-      <p style="margin:0;">© 2026 CurbIn · Toronto Bin Collection Service</p>
+      <p style="margin:0;">© 2026 GetMyBin · Toronto Bin Collection Service</p>
       <p style="margin:4px 0 0;"><a href="https://agentrocketman.com" style="color:#94a3b8;text-decoration:none;">agentrocketman.com</a></p>
     </div>
   </div>
@@ -234,8 +234,8 @@ $supportHtml .= <<<HTML
 HTML;
 
 // ─── Step 7: Send emails ─────────────────────────────────────────────────────
-sendSmtpEmail($email, $customerName, 'Your CurbIn service has been cancelled', $customerHtml);
-sendSmtpEmail(SUPPORT_EMAIL, 'CurbIn Support', "🚫 Cancellation Processed — Booking $bookingId", $supportHtml);
+sendSmtpEmail($email, $customerName, 'Your GetMyBin service has been cancelled', $customerHtml);
+sendSmtpEmail(SUPPORT_EMAIL, 'GetMyBin Support', "🚫 Cancellation Processed — Booking $bookingId", $supportHtml);
 
 // ─── Done ────────────────────────────────────────────────────────────────────
 echo json_encode([

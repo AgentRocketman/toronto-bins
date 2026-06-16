@@ -1,6 +1,6 @@
 <?php
 /**
- * CurbIn - Send Completion Email
+ * GetMyBin - Send Completion Email
  * Looks up customer by address in Airtable, sends completion email via Hostinger SMTP
  */
 
@@ -97,14 +97,14 @@ $html = <<<HTML
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;margin:0;padding:20px;">
   <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);overflow:hidden;">
-    <div style="background:linear-gradient(135deg,#A4D233 0%,#3b82f6 100%);color:#fff;padding:30px 20px;text-align:center;">
+    <div style="background:linear-gradient(135deg,#71b80c 0%,#3b82f6 100%);color:#fff;padding:30px 20px;text-align:center;">
       <h1 style="margin:0;font-size:28px;font-weight:600;">✅ Service Completed</h1>
-      <p style="margin:8px 0 0;opacity:0.9;font-size:15px;">CurbIn Bin Collection Service</p>
+      <p style="margin:8px 0 0;opacity:0.9;font-size:15px;">GetMyBin Bin Collection Service</p>
     </div>
     <div style="padding:30px 20px;">
       <p style="font-size:16px;color:#333;margin-bottom:20px;">Hi $customerName,</p>
       <p style="color:#555;line-height:1.6;">Your bin service has been completed. Here are the details:</p>
-      <div style="background:#f9f9f9;border-left:4px solid #A4D233;padding:15px;margin:20px 0;border-radius:4px;">
+      <div style="background:#f9f9f9;border-left:4px solid #71b80c;padding:15px;margin:20px 0;border-radius:4px;">
         <div style="margin-bottom:10px;font-size:14px;"><span style="font-weight:600;color:#555;display:inline-block;min-width:130px;">🆔 Booking ID:</span><span style="color:#333;font-weight:700;">$bookingId</span></div>
         <div style="margin-bottom:10px;font-size:14px;"><span style="font-weight:600;color:#555;display:inline-block;min-width:130px;">📍 Address:</span><span style="color:#333;">$address</span></div>
         <div style="margin-bottom:10px;font-size:14px;"><span style="font-weight:600;color:#555;display:inline-block;min-width:130px;">🔄 Service:</span><span style="color:#333;">$serviceLabel</span></div>
@@ -112,11 +112,11 @@ $html = <<<HTML
         <div style="font-size:14px;"><span style="font-weight:600;color:#555;display:inline-block;min-width:130px;">🕐 Completed:</span><span style="color:#333;">$completedDateTime</span></div>
       </div>
       $imageBlock
-      <p style="color:#555;line-height:1.6;">Thank you for choosing CurbIn! Your bins are taken care of.</p>
+      <p style="color:#555;line-height:1.6;">Thank you for choosing GetMyBin! Your bins are taken care of.</p>
     </div>
     <div style="background:#f9f9f9;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
-      <p style="margin:0;">© 2026 CurbIn · Toronto Bin Collection Service</p>
-      <p style="margin:4px 0 0;"><a href="https://agentrocketman.com" style="color:#A4D233;text-decoration:none;">agentrocketman.com</a></p>
+      <p style="margin:0;">© 2026 GetMyBin · Toronto Bin Collection Service</p>
+      <p style="margin:4px 0 0;"><a href="https://agentrocketman.com" style="color:#71b80c;text-decoration:none;">agentrocketman.com</a></p>
     </div>
   </div>
 </body>
@@ -156,7 +156,7 @@ function smtpSend($host, $port, $user, $pass, $from, $to, $subject, $html) {
     $send("DATA");               $read();
 
     $boundary = md5(uniqid());
-    $msg  = "From: CurbIn <$from>\r\n";
+    $msg  = "From: GetMyBin <$from>\r\n";
     $msg .= "To: $to\r\n";
     $msg .= "Subject: $subject\r\n";
     $msg .= "MIME-Version: 1.0\r\n";
@@ -176,7 +176,7 @@ $result = smtpSend(
     $SMTP_HOST, $SMTP_PORT, $SMTP_USER, $SMTP_PASS,
     $SMTP_USER,
     $toEmail,
-    "✅ Your CurbIn service at $address is complete",
+    "✅ Your GetMyBin service at $address is complete",
     $html
 );
 
