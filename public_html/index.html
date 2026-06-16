@@ -19,8 +19,8 @@
     /* NAV */
     nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0;padding:0 1.5rem}
     .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:85px}
-    .nav-logo{text-decoration:none;display:flex;align-items:center;gap:12px}
-    .nav-logo img{height:75px;width:auto;object-fit:contain}
+    .nav-logo{text-decoration:none;display:flex;align-items:center;gap:12px;height:100%;padding:5px 0}
+    .nav-logo img{height:100%;width:auto;object-fit:contain}
     .nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center}
     .nav-links a{color:var(--slate-light);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s}
     .nav-links a:hover{color:var(--green)}
@@ -28,7 +28,7 @@
     .nav-cta:hover{background:var(--green-dark)!important}
     @media(max-width:640px){
       .nav-inner{height:60px}
-      .nav-logo img{height:45px}
+      .nav-logo img{height:100%}
       .nav-links{gap:.8rem}
       .nav-links a{font-size:.78rem}
       .nav-cta{padding:6px 12px!important;font-size:.78rem!important}
