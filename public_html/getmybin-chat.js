@@ -198,7 +198,7 @@
 /* ═══ MOBILE (≤ 768 px) ═══ */
 @media (max-width: 768px) {
   .gmb-icon {
-    bottom: 20px; right: 16px;
+    bottom: 100px; right: 16px;
     width: 56px; height: 56px;
     font-size: 26px;
   }
