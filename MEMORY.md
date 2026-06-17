@@ -138,6 +138,7 @@
 - **Feature:** AI customer support chatbot on website
 - **Stack:** Vanilla JS, OpenAI ChatGPT API (gpt-3.5-turbo), 100% self-contained
 - **Design:** Sticky green icon (💬) bottom-right, beautiful modal interface
+- **Icon Position:** bottom: 120px (desktop), bottom: 100px (mobile) — above address bar
 - **Mobile:** Fully optimized for iPhone using visualViewport API
   - Full-screen slide-up modal on mobile
   - Input field always visible above keyboard (no hidden fields)
@@ -148,7 +149,8 @@
   - Pricing ($5.95/week, $8.95 ad-hoc)
   - $1 promo details
   - HST tax info (13%)
-  - Service area (GTA)
+  - Service area: **Toronto + districts (Old Toronto, North York, Scarborough, Etobicoke, East York, York) — NOT GTA (Mississauga, Brampton, etc.)**
   - Contact support@agentrocketman.com
+- **Tone:** Short, concise responses (1-3 sentences max)
 - **Status:** ✅ Live at https://agentrocketman.com (Opus-optimized, works great on mobile & desktop)
 - **Files:** `/getmybin-chat.js` (complete widget)
