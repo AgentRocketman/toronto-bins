@@ -273,8 +273,15 @@ Subscription Management:
 - Payment is automatic via Stripe
 
 Service Areas:
-- All of Greater Toronto Area (GTA)
-- Coverage includes residential and some commercial properties
+- City of Toronto and its administrative districts only:
+  - Old Toronto
+  - North York
+  - Scarborough
+  - Etobicoke
+  - East York
+  - York
+- We do NOT currently serve Greater Toronto Area cities like Mississauga, Brampton, etc.
+- Coverage includes residential and some commercial properties within these districts
 
 Contact & Support:
 - Email: support@agentrocketman.com
