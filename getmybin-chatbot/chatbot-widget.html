@@ -1,0 +1,73 @@
+<!-- 
+  GetMyBin AI Chat Widget
+  Drop this snippet before </body> on any page at agentrocketman.com
+  Replace YOUR_OPENAI_API_KEY with your actual key (or proxy through a backend)
+-->
+
+<div id="gmb-chat-widget">
+  <!-- Floating Chat Button -->
+  <button id="gmb-chat-toggle" aria-label="Chat with GetMyBin AI" title="Chat with us!">
+    <svg id="gmb-icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+    <svg id="gmb-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+    <span id="gmb-unread-badge" style="display:none">1</span>
+  </button>
+
+  <!-- Chat Modal -->
+  <div id="gmb-chat-modal" class="gmb-hidden">
+    <!-- Header -->
+    <div id="gmb-chat-header">
+      <div id="gmb-header-info">
+        <div id="gmb-avatar">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        </div>
+        <div>
+          <div id="gmb-header-title">GetMyBin Assistant</div>
+          <div id="gmb-header-status">
+            <span id="gmb-status-dot"></span>
+            <span id="gmb-status-text">Online</span>
+          </div>
+        </div>
+      </div>
+      <button id="gmb-chat-close" aria-label="Close chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Messages Area -->
+    <div id="gmb-chat-messages">
+      <!-- Welcome message injected by JS -->
+    </div>
+
+    <!-- Quick Actions (shown initially) -->
+    <div id="gmb-quick-actions">
+      <button class="gmb-quick-btn" data-msg="How does GetMyBin work?">🗑️ How it works</button>
+      <button class="gmb-quick-btn" data-msg="What are your prices?">💰 Pricing</button>
+      <button class="gmb-quick-btn" data-msg="What areas do you cover?">📍 Coverage area</button>
+      <button class="gmb-quick-btn" data-msg="Tell me about the $1 promo">🎉 $1 Promo</button>
+    </div>
+
+    <!-- Input Area -->
+    <div id="gmb-chat-input-area">
+      <div id="gmb-input-wrapper">
+        <textarea id="gmb-chat-input" placeholder="Ask about our bin service..." rows="1" maxlength="500"></textarea>
+        <button id="gmb-send-btn" aria-label="Send message" disabled>
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+      <div id="gmb-powered-by">Powered by GetMyBin AI</div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="chatbot-widget.css">
+<script src="chatbot-widget.js"></script>

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-15T04:44:12.941Z",
+  "updatedAt": "2026-06-17T16:57:31.980Z",
   "entries": {
     "memory:memory/2026-06-13.md:34:69": {
       "key": "memory:memory/2026-06-13.md:34:69",
@@ -363,18 +363,20 @@
       "endLine": 279,
       "source": "memory",
       "snippet": "- ✅ API endpoints live and tested - ✅ Image storage working - ✅ Airtable sync verified - ✅ Error handling implemented - ✅ CORS configured - ✅ Security validation in place - ✅ Documentation complete - ✅ End-to-end flow validated - ✅ Worker tracking implemented - ✅ Route optimization working --- ## What's Working NOW **Service Routing App** — https://agentrocketman.com/service-routing.html - ✅ Load map with all 8 addresses - ✅ Click checkbox → mark complete (green + checkmark) - ✅ Instant sync to Airtable - ✅ Update worker name → synced to all new records - ✅ Image upload buttons ready (saves to /bin-pics/) - ✅ Date picker for scheduling **Backend API** — /api/ folder on agentrocketman.com",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T20:17:53.663Z",
-      "lastRecalledAt": "2026-06-14T20:17:53.663Z",
+      "lastRecalledAt": "2026-06-17T15:22:44.266Z",
       "queryHashes": [
-        "4a33655036df"
+        "4a33655036df",
+        "39fcc196c0f0"
       ],
       "recallDays": [
-        "2026-06-14"
+        "2026-06-14",
+        "2026-06-17"
       ],
       "conceptTags": [
         "end-to-end",
@@ -492,20 +494,22 @@
       "endLine": 43,
       "source": "memory",
       "snippet": "# Session Log: 2026-06-13 (UPDATED) ## CurbIn Backend Deployment — PHP Option (✅ COMPLETE) ### Final Status: FULLY TESTED & PRODUCTION READY 🚀 --- ## Implementation Summary ### PHP Backend Created & Deployed 5 production-ready endpoints on Hostinger: 1. **upload.php** — Image upload (MIME validation, 10MB limit) 2. **save-service.php** — Airtable sync via API 3. **optimize-route.php** — Route optimization (nearest-neighbor) 4. **health.php** — API status & system info 5. **services.php** — Retrieve all service records 6. **.htaccess** — CORS + Apache rewrite rules ### Test Results: ALL PASSED ✅ | Test | Result | Details | |------|--------|---------| | Image Upload | ✅ | 100x100 JPEG",
-      "recallCount": 2,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-15T04:06:22.777Z",
+      "lastRecalledAt": "2026-06-17T15:22:44.266Z",
       "queryHashes": [
         "91f38a5d152b",
-        "e4a834cad526"
+        "e4a834cad526",
+        "39fcc196c0f0"
       ],
       "recallDays": [
         "2026-06-14",
-        "2026-06-15"
+        "2026-06-15",
+        "2026-06-17"
       ],
       "conceptTags": [
         "production-ready",
@@ -556,20 +560,22 @@
       "endLine": 178,
       "source": "memory",
       "snippet": "- **Tests Run:** 6 (all passed ✅) - **Airtable Records Synced:** 6 - **Bugs Fixed:** 1 (base ID) - **Documentation Pages:** 2 - **Production Status:** READY 🚀 --- **Final Status:** ✅ PRODUCTION DEPLOYED **Last Update:** 2026-06-13 16:27 UTC **Next Review:** When team starts using with real data # Session Log: 2026-06-13 (UPDATED) ## CurbIn Backend Deployment — PHP Option (✅ COMPLETE) ### Final Status: FULLY TESTED & PRODUCTION READY 🚀 --- ## Implementation Summary ### PHP Backend Created & Deployed 5 production-ready endpoints on Hostinger: 1. **upload.php** — Image upload (MIME validation, 10MB limit) 2. **save-service.php** — Airtable sync via API 3. **optimize-route.php** — R",
-      "recallCount": 2,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-15T04:06:22.777Z",
+      "lastRecalledAt": "2026-06-17T15:22:44.266Z",
       "queryHashes": [
         "91f38a5d152b",
-        "e4a834cad526"
+        "e4a834cad526",
+        "39fcc196c0f0"
       ],
       "recallDays": [
         "2026-06-14",
-        "2026-06-15"
+        "2026-06-15",
+        "2026-06-17"
       ],
       "conceptTags": [
         "production-ready",
@@ -622,18 +628,20 @@
       "endLine": 380,
       "source": "memory",
       "snippet": "- **Duration:** ~2 hours (with earlier compaction context) - **API Endpoints Created:** 5 - **Tests Run:** 6 (all passed ✅) - **Airtable Records Synced:** 6 - **Bugs Fixed:** 1 (base ID) - **UI Features Added:** 4 - **Versions Deployed:** 7 (v1-v7) - **Documentation Pages:** 2 - **Production Status:** READY 🚀 --- **Final Status:** ✅ PRODUCTION DEPLOYED (v7 LIVE) **Last Update:** 2026-06-13 17:47 UTC **Features:** Backend API + Frontend UI (8 Toronto addresses, map routing, Airtable sync, image upload, checkbox locking, thumbnail modal) **Next Review:** When team starts using with real data # Session Log: 2026-06-13 (UPDATED) ## CurbIn Backend Deployment — PHP Option (✅ COMPLETE) #",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-15T04:06:22.777Z",
-      "lastRecalledAt": "2026-06-15T04:06:22.777Z",
+      "lastRecalledAt": "2026-06-17T15:22:44.266Z",
       "queryHashes": [
-        "e4a834cad526"
+        "e4a834cad526",
+        "39fcc196c0f0"
       ],
       "recallDays": [
-        "2026-06-15"
+        "2026-06-15",
+        "2026-06-17"
       ],
       "conceptTags": [
         "v1-v7",
@@ -675,6 +683,223 @@
         "afternoon/evening",
         "root",
         "cause"
+      ]
+    },
+    "memory:memory/2026-06-13.md:98:146": {
+      "key": "memory:memory/2026-06-13.md:98:146",
+      "path": "memory/2026-06-13.md",
+      "startLine": 98,
+      "endLine": 146,
+      "source": "memory",
+      "snippet": "**Service Routing App** — https://agentrocketman.com/service-routing.html - ✅ Load map with all 8 addresses - ✅ Click checkbox → mark complete (green + checkmark) - ✅ Instant sync to Airtable - ✅ Update worker name → synced to all new records - ✅ Image upload buttons ready (saves to /bin-pics/) - ✅ Date picker for scheduling **Backend API** — /api/ folder on agentrocketman.com - ✅ Health check: `/api/health.php` - ✅ Image upload: `/api/upload.php` - ✅ Airtable sync: `/api/save-service.php` - ✅ Route optimization: `/api/optimize-route.php` - ✅ Get services: `/api/services.php` **Airtable Integration** - ✅ ServiceStops table created - ✅ 6 test records synced & verified - ✅ All field types co",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-17T15:22:44.266Z",
+      "lastRecalledAt": "2026-06-17T15:22:44.266Z",
+      "queryHashes": [
+        "39fcc196c0f0"
+      ],
+      "recallDays": [
+        "2026-06-17"
+      ],
+      "conceptTags": [
+        "bin-pics",
+        "agentrocketman.com",
+        "api/health.php",
+        "api/upload.php",
+        "api/save-service.php",
+        "api/optimize-route.php",
+        "api/services.php",
+        "service"
+      ]
+    },
+    "memory:memory/2026-06-14.md:432:450": {
+      "key": "memory:memory/2026-06-14.md:432:450",
+      "path": "memory/2026-06-14.md",
+      "startLine": 432,
+      "endLine": 450,
+      "source": "memory",
+      "snippet": "- `/data/.openclaw/workspace/public_html/` is source of truth for all production files - ALWAYS deploy full folder — never partial deploys (partial archives wipe other files on server) --- ## Files in public_html/ (as of end of session) - `index.html` — homepage with accordion, Save 34% badge, /week pricing; Stripe payment fixes - `service-routing.html` — Airtable integration + email + status update + thumbnail loading - `stripe-integration.js` — individual card elements + disableLink: true + explicit unmount() - `api/health.php`, `api/upload.php`, `api/save-service.php`, `api/services.php`, `api/optimize-route.php`, `api/send-email.php` - `airtable-bookings.js`, `email-service.js`, `logo.",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-17T15:22:44.266Z",
+      "lastRecalledAt": "2026-06-17T15:22:44.266Z",
+      "queryHashes": [
+        "39fcc196c0f0"
+      ],
+      "recallDays": [
+        "2026-06-17"
+      ],
+      "conceptTags": [
+        "openclaw/workspace/public-html",
+        "public-html",
+        "index.html",
+        "service-routing.html",
+        "stripe-integration.js",
+        "api/health.php",
+        "api/upload.php",
+        "api/save-service.php"
+      ]
+    },
+    "memory:memory/2026-06-16.md:86:126": {
+      "key": "memory:memory/2026-06-16.md:86:126",
+      "path": "memory/2026-06-16.md",
+      "startLine": 86,
+      "endLine": 126,
+      "source": "memory",
+      "snippet": "- Logo: 30px left margin (ALL screens), vertically centered, 1.8x scale (mobile), 1.3x scale (Chrome desktop), 1x scale (Safari desktop) - Links: How It Works, Pricing, Get Started button - Mobile link spacing: .6rem between all links (equal spacing) - Mobile logo: margin-top -5px (moved up slightly) - Color: Green (#71b80c) throughout - Favicon: Green wheelie bin (PNG, transparent background) **All Pages Unified:** ✅ index.html - Homepage ✅ contact.html - Contact page ✅ privacy.html - Privacy policy ✅ terms.html - Terms of service All 4 pages have IDENTICAL navigation with same styling, spacing, and functionality. **Total Commits This Session: 15+ 1. fb3571d - Session memory + favicon 2.",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-17T16:57:31.980Z",
+      "lastRecalledAt": "2026-06-17T16:57:31.980Z",
+      "queryHashes": [
+        "a74f84274fd9"
+      ],
+      "recallDays": [
+        "2026-06-17"
+      ],
+      "conceptTags": [
+        "1.8x",
+        "1.3x",
+        "margin-top",
+        "index.html",
+        "contact.html",
+        "privacy.html",
+        "terms.html",
+        "logo"
+      ]
+    },
+    "memory:memory/2026-06-16.md:1:33": {
+      "key": "memory:memory/2026-06-16.md:1:33",
+      "path": "memory/2026-06-16.md",
+      "startLine": 1,
+      "endLine": 33,
+      "source": "memory",
+      "snippet": "# 2026-06-16 - GetMyBin Rebrand & Navigation Refinement ## GetMyBin Rebrand - COMPLETE ✅ - **Old brand:** CurbIn → **New brand:** GetMyBin - **Color change:** Old #A4D233 → New vibrant green #71b80c (56+ instances) - **Logos added:** 5 new logos (bin icons, transparent, white backgrounds) - All HTML, JS, PHP, email templates updated - Full rebrand deployed to agentrocketman.com ✓ ## Navigation Bar Refinements - **Height:** Reduced from 205px → 102px (50% slimmer on desktop), 40px → 60px (mobile) - **Background:** Semi-transparent → Solid white (#fff) - **Logo positioning:** - Added 20px left margin (final) - 1.5x scale (transform:scale(1.5)) - Overflow:hidden to prevent top/bottom s",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-17T16:57:31.980Z",
+      "lastRecalledAt": "2026-06-17T16:57:31.980Z",
+      "queryHashes": [
+        "a74f84274fd9"
+      ],
+      "recallDays": [
+        "2026-06-17"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "semi-transparent",
+        "1.5x",
+        "1.5",
+        "top/bottom",
+        "getmybin",
+        "rebrand",
+        "navigation"
+      ]
+    },
+    "memory:memory/2026-06-16.md:120:152": {
+      "key": "memory:memory/2026-06-16.md:120:152",
+      "path": "memory/2026-06-16.md",
+      "startLine": 120,
+      "endLine": 152,
+      "source": "memory",
+      "snippet": "# 2026-06-16 - GetMyBin Rebrand & Navigation Refinement ## GetMyBin Rebrand - COMPLETE ✅ - **Old brand:** CurbIn → **New brand:** GetMyBin - **Color change:** Old #A4D233 → New vibrant green #71b80c (56+ instances) - **Logos added:** 5 new logos (bin icons, transparent, white backgrounds) - All HTML, JS, PHP, email templates updated - Full rebrand deployed to agentrocketman.com ✓ ## Navigation Bar Refinements - **Height:** Reduced from 205px → 102px (50% slimmer on desktop), 40px → 60px (mobile) - **Background:** Semi-transparent → Solid white (#fff) - **Logo positioning:** - Added 20px left margin (final) - 1.5x scale (transform:scale(1.5)) - Overflow:hidden to prevent top/bottom s",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-17T16:57:31.980Z",
+      "lastRecalledAt": "2026-06-17T16:57:31.980Z",
+      "queryHashes": [
+        "a74f84274fd9"
+      ],
+      "recallDays": [
+        "2026-06-17"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "semi-transparent",
+        "1.5x",
+        "1.5",
+        "top/bottom",
+        "getmybin",
+        "rebrand",
+        "navigation"
+      ]
+    },
+    "memory:memory/2026-06-16.md:25:60": {
+      "key": "memory:memory/2026-06-16.md:25:60",
+      "path": "memory/2026-06-16.md",
+      "startLine": 25,
+      "endLine": 60,
+      "source": "memory",
+      "snippet": "- Mobile: Logo left margin 20px, extra padding to prevent cropping on edges - All color refs updated: --teal → --green (CSS variables) ## Commits Made (in order) - 5371420: Full GetMyBin rebrand (logos, text, colors) - 8a2aa34 through fe15153: 20+ nav refinement commits - Final commit: fe15153 (Contact link removal + 20px logo margin) ## Current Live State - **Domain:** https://agentrocketman.com ✓ - **All features working:** Address search, booking, Stripe, email confirmations, Airtable integration - **Desktop & mobile:** Fully responsive, nav bar clean and professional - **Logo:** Prominent, well-positioned, no overflow issues ## Contact Page Navigation Update (Latest) - **File:** `/da",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-17T16:57:31.980Z",
+      "lastRecalledAt": "2026-06-17T16:57:31.980Z",
+      "queryHashes": [
+        "a74f84274fd9"
+      ],
+      "recallDays": [
+        "2026-06-17"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "well-positioned",
+        "mobile",
+        "logo",
+        "left",
+        "margin",
+        "20px",
+        "extra"
+      ]
+    },
+    "memory:memory/2026-06-16.md:144:179": {
+      "key": "memory:memory/2026-06-16.md:144:179",
+      "path": "memory/2026-06-16.md",
+      "startLine": 144,
+      "endLine": 179,
+      "source": "memory",
+      "snippet": "- Mobile: Logo left margin 20px, extra padding to prevent cropping on edges - All color refs updated: --teal → --green (CSS variables) ## Commits Made (in order) - 5371420: Full GetMyBin rebrand (logos, text, colors) - 8a2aa34 through fe15153: 20+ nav refinement commits - Final commit: fe15153 (Contact link removal + 20px logo margin) ## Current Live State - **Domain:** https://agentrocketman.com ✓ - **All features working:** Address search, booking, Stripe, email confirmations, Airtable integration - **Desktop & mobile:** Fully responsive, nav bar clean and professional - **Logo:** Prominent, well-positioned, no overflow issues ## Contact Page Navigation Update (Latest) - **File:** `/da",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-17T16:57:31.980Z",
+      "lastRecalledAt": "2026-06-17T16:57:31.980Z",
+      "queryHashes": [
+        "a74f84274fd9"
+      ],
+      "recallDays": [
+        "2026-06-17"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "well-positioned",
+        "mobile",
+        "logo",
+        "left",
+        "margin",
+        "20px",
+        "extra"
       ]
     }
   }

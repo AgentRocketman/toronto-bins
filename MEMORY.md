@@ -133,3 +133,22 @@
 - **Verification:** Sent test confirmation for booking FP2SG — 2 emails received successfully
 - **Current status:** ✅ Email confirmations working reliably
 - **Next:** Monitor for any future failures; debug logs will help diagnose
+
+## GetMyBin AI Chat Widget — COMPLETE ✅ (2026-06-17)
+- **Feature:** AI customer support chatbot on website
+- **Stack:** Vanilla JS, OpenAI ChatGPT API (gpt-3.5-turbo), 100% self-contained
+- **Design:** Sticky green icon (💬) bottom-right, beautiful modal interface
+- **Mobile:** Fully optimized for iPhone using visualViewport API
+  - Full-screen slide-up modal on mobile
+  - Input field always visible above keyboard (no hidden fields)
+  - Smart keyboard detection & layout adjustment
+  - Proper safe area support (notch, home indicator)
+- **Desktop:** 400px × 600px modal, smooth animations
+- **Knowledge Base:** Complete GetMyBin service info embedded in system prompt
+  - Pricing ($5.95/week, $8.95 ad-hoc)
+  - $1 promo details
+  - HST tax info (13%)
+  - Service area (GTA)
+  - Contact support@agentrocketman.com
+- **Status:** ✅ Live at https://agentrocketman.com (Opus-optimized, works great on mobile & desktop)
+- **Files:** `/getmybin-chat.js` (complete widget)
