@@ -48,7 +48,8 @@
 ✅ **Use Hostinger API, NOT FTP/SSH**
 - ALWAYS deploy from `/data/.openclaw/workspace/public_html/` — the master folder
 - NEVER deploy a partial archive (it wipes other files on the server)
-- To deploy: `cd /data/.openclaw/workspace/public_html && tar -czf /tmp/full-deploy.tar.gz .` then call deployStaticWebsite
+- To deploy: `cd /data/.openclaw/workspace/public_html && tar -czf /tmp/full-deploy.tar.gz --exclude='./bin-pics/*.jpg' --exclude='./bin-pics/*.png' --exclude='./bin-pics/*.gif' --exclude='./bin-pics/*.webp' .` then call deployStaticWebsite
+- The `--exclude` keeps uploaded driver photos safe — tar extraction never deletes existing server files, it only adds/overwrites what's in the archive
 - Before ANY deploy: copy changed file(s) into public_html/ first, then tar the whole folder
 - Deploy completes in ~15 seconds
 - This is the ONLY reliable method

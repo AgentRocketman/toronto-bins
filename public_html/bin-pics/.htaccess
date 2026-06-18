@@ -1,0 +1,6 @@
+# Allow image files
+<FilesMatch "\.(jpe?g|png|gif|webp)$">
+    Allow from all
+</FilesMatch>
+# Block listing
+Options -Indexes
