@@ -803,15 +803,10 @@
       <hr class="divider">
       <div id="bin-placement-block" style="display:none;">
         <div class="bin-placement-title">📍 Show us where to leave your bin <span class="bin-placement-optional">(optional)</span></div>
-        <div class="bin-placement-help">Drag the view to look around. Tap the white arrows or double-click to walk forward. Aim the green crosshair at your bin spot and tap <strong>Drop Pin Here</strong>.</div>
+        <div class="bin-placement-help">Drag the view to look around. Tap the white arrows or double-click to walk forward. <strong>Aim the green crosshair</strong> at your bin spot — we’ll save it when you tap <strong>Go to Checkout</strong>.</div>
         <div id="bp-sv-wrap" style="position:relative;">
           <div id="bp-streetview"></div>
           <div id="bp-crosshair" aria-hidden="true"></div>
-        </div>
-        <div id="bp-status">No pin dropped yet — aim the crosshair and tap “Drop Pin Here”.</div>
-        <div class="bp-actions">
-          <button type="button" class="bp-btn bp-btn-primary" id="bp-drop-btn">🗑️ Drop Pin Here</button>
-          <button type="button" class="bp-btn" id="bp-clear-btn">Clear Pin</button>
         </div>
       </div>
       <div id="bin-placement-unavailable" style="display:none;">
@@ -1243,6 +1238,8 @@ function updateTotal() {
 document.getElementById('btn-checkout').addEventListener('click', openCheckout);
 
 function openCheckout() {
+  // Auto-drop the bin pin at the current crosshair position before capturing placement data.
+  if (typeof bpAutoDropAtCrosshair === 'function') bpAutoDropAtCrosshair();
   const overlay = document.getElementById('modal-overlay');
   const body = document.getElementById('modal-body');
   const serviceMultiplier = serviceType === 'both' ? 2 : 1;
@@ -1504,11 +1501,6 @@ function resetBinPlacement() {
   if (svDiv) svDiv.innerHTML = '';
   const crosshair = document.getElementById('bp-crosshair');
   if (crosshair) crosshair.classList.remove('hidden');
-  const status = document.getElementById('bp-status');
-  if (status) {
-    status.textContent = 'No pin dropped yet — aim the crosshair and tap “Drop Pin Here”.';
-    status.classList.remove('placed');
-  }
 }
 
 // Called from updateTotal() the first time a selection is made.
@@ -1649,15 +1641,8 @@ function bpPlacePin(latLng) {
 }
 
 function bpUpdateStatus() {
-  const status = document.getElementById('bp-status');
-  if (!status) return;
-  if (bpBinLatLng) {
-    status.textContent = '✅ Pin placed — drag to fine-tune, or clear it and aim again.';
-    status.classList.add('placed');
-  } else {
-    status.textContent = 'No pin dropped yet — aim the crosshair and tap “Drop Pin Here”.';
-    status.classList.remove('placed');
-  }
+  // No-op: the status text was removed when the explicit drop/clear buttons were removed.
+  // The crosshair itself is the live status indicator.
 }
 
 function bpGetPlacementData() {
@@ -1675,24 +1660,14 @@ function bpGetPlacementData() {
   };
 }
 
-// Wire up buttons (delegated so they survive even though the block is hidden initially)
-document.addEventListener('click', (e) => {
-  if (e.target && e.target.id === 'bp-drop-btn') {
-    if (!bpPanorama) return;
-    const latLng = bpGetLatLngAtCrosshair();
-    if (!latLng) return;
-    bpPlacePin(latLng);
-    document.getElementById('bp-crosshair').classList.add('hidden');
-  } else if (e.target && e.target.id === 'bp-clear-btn') {
-    if (bpBinMarker) {
-      bpBinMarker.setMap(null);
-      bpBinMarker = null;
-      bpBinLatLng = null;
-      document.getElementById('bp-crosshair').classList.remove('hidden');
-      bpUpdateStatus();
-    }
-  }
-});
+// Auto-drop the pin at the crosshair location when checkout is clicked
+function bpAutoDropAtCrosshair() {
+  if (!bpPanorama) return null;
+  const latLng = bpGetLatLngAtCrosshair();
+  if (!latLng) return null;
+  bpPlacePin(latLng);
+  return latLng;
+}
 </script>
 
 <script>
