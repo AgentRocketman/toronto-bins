@@ -17,6 +17,27 @@ function generateBookingId() {
   return id;
 }
 
+// Geocode a postal address into a lat/lng using the secure /api/geocode.php endpoint.
+// Returns { lat, lng } or null. Cached in sessionStorage per address.
+async function geocodeAddressForMap(address) {
+  if (!address) return null;
+  const cacheKey = 'gc:' + address;
+  try {
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) return JSON.parse(cached);
+  } catch (_) {}
+  try {
+    const res = await fetch('/api/geocode.php?address=' + encodeURIComponent(address));
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data && data.lat && data.lng) {
+      sessionStorage.setItem(cacheKey, JSON.stringify({ lat: data.lat, lng: data.lng }));
+      return { lat: data.lat, lng: data.lng };
+    }
+  } catch (e) { console.warn('geocode failed', e); }
+  return null;
+}
+
 async function saveBookingToAirtable(bookingData) {
   const AIRTABLE_API_KEY = getAirtableApiKey();
   
@@ -36,6 +57,22 @@ async function saveBookingToAirtable(bookingData) {
     binFields['Bin Placement'] = JSON.stringify(bp);
   }
 
+  // Geocode the customer's address so the routing page can show the marker at the
+  // right spot on the map (previously every booking fell back to downtown Toronto).
+  // Prefer cameraLatLng from the bin-placement record if we have it (it's closer to
+  // the customer's property than the geocoder result for a generic address).
+  let addressLatLng = null;
+  if (bp && bp.cameraLatLng && bp.cameraLatLng.lat && bp.cameraLatLng.lng) {
+    addressLatLng = { lat: bp.cameraLatLng.lat, lng: bp.cameraLatLng.lng };
+  } else if (bookingData.address) {
+    addressLatLng = await geocodeAddressForMap(bookingData.address);
+  }
+  const geoFields = {};
+  if (addressLatLng) {
+    geoFields['Lat'] = addressLatLng.lat;
+    geoFields['Lng'] = addressLatLng.lng;
+  }
+
   // 1. Save Booking record
   const bookingRecord = {
     fields: Object.assign({
@@ -51,7 +88,7 @@ async function saveBookingToAirtable(bookingData) {
       'Stripe Customer ID': bookingData.stripeCustomerId || '',
       'Billing Type': bookingData.frequency === 'recurring' ? 'Recurring Subscription' : 'One-Time Charge',
       'Created At': todayISO
-    }, binFields),
+    }, geoFields, binFields),
     typecast: true
   };
 
@@ -131,8 +168,10 @@ async function saveBookingToAirtable(bookingData) {
 
     // Helper: save a single order record to Airtable
     async function saveOrder(fields) {
-      // Add bin placement fields onto every Order row so the driver page can render the pin per stop.
-      const fullFields = Object.assign({}, fields, binFields);
+      // Add bin placement + geocoded lat/lng onto every Order row so the driver
+      // page can both pin the bin location and map the marker at the correct
+      // address without needing to look up the Booking record.
+      const fullFields = Object.assign({}, fields, geoFields, binFields);
       // Schema-tolerant retry: strip any UNKNOWN_FIELD_NAME and re-POST.
       function extractUnknownField(msg) {
         const m = msg && msg.match(/Unknown field name:\s*["']?([^"']+)["']?/i);

@@ -863,6 +863,19 @@
 
         markers.push(marker);
       });
+
+      // Auto-fit the map to all stops so they're always in view (was previously
+      // centered on a downtown Toronto sentinel, which hid suburban stops).
+      if (markers.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        markers.forEach(m => bounds.extend(m.getPosition()));
+        if (driverLocation && driverMarker) bounds.extend(driverMarker.getPosition());
+        map.fitBounds(bounds, { top: 60, right: 60, bottom: 60, left: 60 });
+        // Don't over-zoom for a single stop.
+        google.maps.event.addListenerOnce(map, 'idle', () => {
+          if (map.getZoom() > 16) map.setZoom(16);
+        });
+      }
     }
 
     // Render service list
@@ -1363,15 +1376,13 @@
             const bookingData = bookingRecords[0];
             const bookingFields = bookingData.fields || {};
             
-            // Extract address and coordinates from booking
+            // Extract address. Coordinates: prefer the Order's stored Lat/Lng (set
+            // at booking-save time via geocoder), then the Booking's, then the bin's
+            // camera coords (close enough — it's the Street View camera position
+            // for the customer's property), and only fall back to a downtown sentinel
+            // when we have absolutely nothing else.
             const address = bookingFields['Address'] || 'Unknown Address';
-            const lat = parseFloat(bookingFields['lat']) || 43.6629;
-            const lng = parseFloat(bookingFields['lng']) || -79.3957;
-            
-            // Convert service type to our internal type (rollin/rollout)
-            const type = serviceType.toLowerCase().includes('roll in') ? 'rollin' : 'rollout';
-            const completed = status.toLowerCase().includes('completed');
-            
+
             // Bin placement is stored as one JSON string in "Bin Placement" (prefer
             // the Order's copy, fall back to the Booking's).
             let binPlacement = null;
@@ -1380,6 +1391,28 @@
               try { binPlacement = JSON.parse(binBlob); }
               catch (e) { console.warn('Bad Bin Placement JSON for order', orderId, e); }
             }
+
+            const pickNum = (key) => {
+              for (const obj of [fields, bookingFields]) {
+                const v = obj[key];
+                if (v !== undefined && v !== null && v !== '' && !isNaN(parseFloat(v))) return parseFloat(v);
+              }
+              return null;
+            };
+            let lat = pickNum('Lat') ?? pickNum('lat');
+            let lng = pickNum('Lng') ?? pickNum('lng');
+            if ((lat == null || lng == null) && binPlacement && binPlacement.cameraLatLng) {
+              lat = lat ?? binPlacement.cameraLatLng.lat;
+              lng = lng ?? binPlacement.cameraLatLng.lng;
+            }
+            if (lat == null || lng == null) {
+              console.warn(`No coords for ${orderId} (${address}) — falling back to downtown sentinel`);
+              lat = 43.6629; lng = -79.3957;
+            }
+            
+            // Convert service type to our internal type (rollin/rollout)
+            const type = serviceType.toLowerCase().includes('roll in') ? 'rollin' : 'rollout';
+            const completed = status.toLowerCase().includes('completed');
 
             // Create stop object
             const stop = {
