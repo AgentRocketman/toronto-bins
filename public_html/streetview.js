@@ -85,9 +85,16 @@
 
       const geocoder = new google.maps.Geocoder();
       
-      geocoder.geocode({ address: address }, (results, status) => {
+      // Format address for better geocoding
+      const formattedAddress = `${address}, Toronto, Ontario, Canada`;
+      console.log('Geocoding address:', formattedAddress);
+      
+      geocoder.geocode({ address: formattedAddress }, (results, status) => {
+        console.log('Geocode status:', status, 'Results:', results?.length);
+        
         if (status === google.maps.GeocoderStatus.OK && results[0]) {
           const location = results[0].geometry.location;
+          console.log('Location found:', location.lat(), location.lng());
           
           // Create Street View
           const streetView = new google.maps.StreetViewPanorama(container, {
@@ -101,8 +108,13 @@
           });
           console.log('Street View displayed for:', address);
         } else {
-          console.warn('Street View not available for this address:', status);
-          container.innerHTML = '<p style="padding: 20px; color: #999; text-align: center;">Street View not available for this address</p>';
+          console.warn('Geocode failed or Street View not available:', status);
+          console.log('Full address tried:', formattedAddress);
+          // Show helpful message
+          container.innerHTML = `<div style="padding: 20px; color: #999; text-align: center; font-size: 0.9rem;">
+            <p>Street View not available for this address</p>
+            <p style="font-size: 0.8rem; margin-top: 10px; color: #bbb;">Try: "123 Main St" or "King St W, Toronto"</p>
+          </div>`;
         }
       });
     } catch (err) {
