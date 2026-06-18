@@ -103,6 +103,13 @@ foreach ($records as $record) {
     }
 }
 
+// Sort messages within each session by timestamp (chronological order)
+foreach ($sessions as &$session) {
+    usort($session['messages'], function($a, $b) {
+        return strtotime($a['timestamp']) - strtotime($b['timestamp']);
+    });
+}
+
 // Prepare session summaries for OpenAI
 $sessionSummaryPrompts = [];
 foreach ($sessions as $sessionId => $sessionData) {
