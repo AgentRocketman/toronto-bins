@@ -536,6 +536,16 @@
           sessionEl.appendChild(detail);
 
           header.addEventListener('click', () => {
+            // If this session is not open, close all others
+            if (!sessionEl.classList.contains('open')) {
+              // Close all other sessions
+              document.querySelectorAll('.session-item.open').forEach(item => {
+                if (item !== sessionEl) {
+                  item.classList.remove('open');
+                }
+              });
+            }
+            // Toggle this session
             sessionEl.classList.toggle('open');
           });
 
