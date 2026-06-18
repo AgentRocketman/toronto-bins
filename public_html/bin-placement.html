@@ -131,15 +131,17 @@
     <!-- Step 2: Street View -->
     <div class="step" id="step2" style="display:none;">
       <span class="step-num">2</span>
-      <span class="step-title">Drag the view to frame your bin spot</span>
+      <span class="step-title">Drop your bin pin in the view</span>
       <div class="help-text">
-        <strong>How to:</strong> Click & drag inside the view to rotate. Use + / – to zoom.
-        Frame the exact spot where you want your bin placed — driveway corner, behind side gate, etc.
+        <strong>How to:</strong> <strong>Click</strong> anywhere in the view to drop your 🗑️ bin pin.
+        <strong>Drag</strong> the pin to fine-tune. Click & drag empty space to rotate the view.
       </div>
       <div id="streetview-container" class="empty"></div>
+      <div id="pin-status" style="margin-top:.6rem;font-size:.85rem;color:var(--slate-light);text-align:center;">No pin dropped yet — click in the view to place one.</div>
       <textarea id="notes" placeholder="Optional notes (e.g. 'Behind the blue recycling bin', 'Side gate is unlocked')"></textarea>
       <div class="actions">
         <button class="secondary" id="reset-btn">↺ Reset View</button>
+        <button class="secondary" id="clear-pin-btn">🗑️ Clear Pin</button>
         <button class="primary" id="save-btn">💾 Save This Spot</button>
       </div>
     </div>
@@ -164,6 +166,8 @@
     let buildingLocation = null;
     let initialPov = null;
     let mapsApiKey = null;
+    let binMarker = null;
+    let binLatLng = null;
 
     const addressInput = document.getElementById('address-input');
     const loadBtn = document.getElementById('load-btn');
@@ -171,7 +175,9 @@
     const svContainer = document.getElementById('streetview-container');
     const notesEl = document.getElementById('notes');
     const resetBtn = document.getElementById('reset-btn');
+    const clearPinBtn = document.getElementById('clear-pin-btn');
     const saveBtn = document.getElementById('save-btn');
+    const pinStatus = document.getElementById('pin-status');
     const savedState = document.getElementById('saved-state');
     const editBtn = document.getElementById('edit-btn');
     const doneBtn = document.getElementById('done-btn');
@@ -277,15 +283,21 @@
                 zoomControl: true,
                 fullscreenControl: true,
                 addressControl: true,
-                clickToGo: true,
-                linksControl: true
+                clickToGo: false,
+                linksControl: false
               });
+
+              // Set up bin pin behavior
+              setupBinPin();
 
               // If we have saved POV, restore it
               if (saved && saved.address === address && saved.pov) {
                 if (saved.pano) panorama.setPano(saved.pano);
                 panorama.setPov({ heading: saved.pov.heading, pitch: saved.pov.pitch });
                 if (saved.pov.zoom != null) panorama.setZoom(saved.pov.zoom);
+                if (saved.binLatLng) {
+                  placeBinPin(new google.maps.LatLng(saved.binLatLng.lat, saved.binLatLng.lng));
+                }
               }
 
               loadBtn.disabled = false;
@@ -301,6 +313,73 @@
         loadBtn.textContent = 'Load Street View →';
       }
     }
+
+    function placeBinPin(latLng) {
+      if (!panorama) return;
+      binLatLng = latLng;
+
+      const binIcon = {
+        url: 'data:image/svg+xml;utf8,' + encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="60" height="72" viewBox="0 0 60 72">' +
+            '<defs><filter id="s" x="-50%" y="-50%" width="200%" height="200%">' +
+            '<feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity=".35"/></filter></defs>' +
+            '<g filter="url(#s)">' +
+            '<path d="M30 2C16 2 6 12 6 26c0 18 24 44 24 44s24-26 24-44C54 12 44 2 30 2z" fill="#71b80c" stroke="white" stroke-width="2"/>' +
+            '<text x="30" y="36" text-anchor="middle" font-size="26" fill="white">🗑️</text>' +
+            '</g></svg>'
+        ),
+        scaledSize: new google.maps.Size(60, 72),
+        anchor: new google.maps.Point(30, 70)
+      };
+
+      if (!binMarker) {
+        binMarker = new google.maps.Marker({
+          position: latLng,
+          map: panorama,
+          icon: binIcon,
+          draggable: true,
+          title: 'Drag me to your bin spot',
+          zIndex: 1000
+        });
+        binMarker.addListener('dragend', () => {
+          binLatLng = binMarker.getPosition();
+          updatePinStatus();
+        });
+      } else {
+        binMarker.setPosition(latLng);
+      }
+      updatePinStatus();
+    }
+
+    function updatePinStatus() {
+      if (binLatLng) {
+        pinStatus.innerHTML = '✅ Pin placed — drag to fine-tune, or click elsewhere to move it.';
+        pinStatus.style.color = 'var(--green-dark)';
+      } else {
+        pinStatus.innerHTML = 'No pin dropped yet — click in the view to place one.';
+        pinStatus.style.color = 'var(--slate-light)';
+      }
+    }
+
+    function setupBinPin() {
+      if (!panorama) return;
+      // Click anywhere in panorama to drop/move the pin
+      panorama.addListener('click', (e) => {
+        if (e && e.latLng) {
+          placeBinPin(e.latLng);
+        }
+      });
+    }
+
+    clearPinBtn.addEventListener('click', () => {
+      if (binMarker) {
+        binMarker.setMap(null);
+        binMarker = null;
+        binLatLng = null;
+        updatePinStatus();
+        toast('Pin removed');
+      }
+    });
 
     loadBtn.addEventListener('click', loadStreetView);
     addressInput.addEventListener('keydown', (e) => {
@@ -332,6 +411,8 @@
         pov: { heading: pov.heading, pitch: pov.pitch, zoom },
         cameraLatLng: position ? { lat: position.lat(), lng: position.lng() } : null,
         buildingLatLng: buildingLocation ? { lat: buildingLocation.lat(), lng: buildingLocation.lng() } : null,
+        binLatLng: binLatLng ? { lat: binLatLng.lat(), lng: binLatLng.lng() } : null,
+        hasPin: !!binLatLng,
         savedAt: new Date().toISOString()
       };
 
