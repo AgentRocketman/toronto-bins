@@ -86,16 +86,16 @@
       const geocoder = new google.maps.Geocoder();
       const streetViewService = new google.maps.StreetViewService();
       
-      // Format address for better geocoding
-      const formattedAddress = `${address}, Toronto, Ontario, Canada`;
-      console.log('Geocoding address:', formattedAddress);
+      console.log('Geocoding address:', address);
       
       geocoder.geocode({ address: formattedAddress }, (results, status) => {
         console.log('Geocode status:', status, 'Results:', results?.length);
         
         if (status === google.maps.GeocoderStatus.OK && results[0]) {
           const location = results[0].geometry.location;
+          const formattedAddr = results[0].formatted_address;
           console.log('Location found:', location.lat(), location.lng());
+          console.log('Formatted address from geocoder:', formattedAddr);
           
           // Check if Street View is available at this location
           streetViewService.getPanorama(
@@ -126,10 +126,10 @@
             }
           );
         } else {
-          console.warn('Geocode failed:', status);
+          console.warn('Geocode failed:', status, '- Address was:', address);
           container.innerHTML = `<div style="padding: 20px; color: #999; text-align: center; font-size: 0.9rem;">
-            <p>Address not found</p>
-            <p style="font-size: 0.75rem; margin-top: 10px; color: #bbb;">Try a complete address like "123 Main St, Toronto"</p>
+            <p>Address not found by geocoder</p>
+            <p style="font-size: 0.75rem; margin-top: 10px; color: #bbb;">Geocode status: ${status}<br>Check browser console for details</p>
           </div>`;
         }
       });

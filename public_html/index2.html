@@ -1460,10 +1460,9 @@ window.addEventListener('DOMContentLoaded', function() {
     const observer = new MutationObserver(function() {
       const isRevealed = bookingSection.classList.contains('revealed');
       const container = document.getElementById('streetview-container');
-      const addressEl = document.getElementById('ac-address-text');
       
-      if (isRevealed && addressEl) {
-        const address = addressEl.textContent?.trim();
+      if (isRevealed && window.currentAddress) {
+        const address = window.currentAddress.trim();
         if (address && typeof window.streetView !== 'undefined') {
           container.style.display = 'block';
           console.log('Displaying Street View for:', address);
