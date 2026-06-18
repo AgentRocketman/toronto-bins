@@ -528,11 +528,7 @@
           
           detail.innerHTML = `
             <div class="session-detail-inner">
-              <div class="session-meta">
-                <div class="meta-item"><span class="meta-label">Session ID:</span> ${session.sessionId}</div>
-                <div class="meta-item"><span class="meta-label">Messages:</span> ${session.messageCount}</div>
-              </div>
-              <p style="font-size: 0.85rem; color: var(--slate); margin-bottom: 12px;"><strong>Summary:</strong> ${session.summary || 'No summary available.'}</p>
+              <div style="margin-bottom: 12px; font-size: 0.9rem; color: var(--slate);"><strong>${session.messageCount} messages</strong></div>
               <div style="border-top: 1px solid #e2e8f0; padding-top: 12px;"><strong style="font-size: 0.85rem;">Chat History:</strong>${chatHTML}</div>
             </div>
           `;
