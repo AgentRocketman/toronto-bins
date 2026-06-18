@@ -1623,7 +1623,12 @@
           "</svg>"
         ),
         scaledSize: new google.maps.Size(56, 76),
-        anchor: new google.maps.Point(28, 74)  // tip of teardrop sits on the ground
+        // Anchor at the icon's CENTER (not the tip). Street View clips Markers
+        // whose anchor projects below the camera horizon, which made the marker
+        // disappear when the driver was at/near the saved spot. Centering the
+        // anchor floats the pin at eye-level so it stays visible from any nearby
+        // vantage point. The visual "tip" still points at the right ground spot.
+        anchor: new google.maps.Point(28, 38)
       };
       binSpotMarker = new google.maps.Marker({
         position: binLatLng,
@@ -1631,7 +1636,8 @@
         icon: binIcon,
         draggable: false,
         title: 'Customer\'s requested bin spot',
-        zIndex: 1000
+        zIndex: 1000,
+        optimized: false   // Force the marker to render via DOM, avoiding canvas-batch clipping
       });
     }
 
