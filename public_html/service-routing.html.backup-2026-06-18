@@ -4,16 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GetMyBin Service Routing</title>
-  <!-- Load Google Maps API with key from secure backend -->
-  <script>
-    (async function() {
-      const response = await fetch('/api/maps-key.php');
-      const data = await response.json();
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}`;
-      document.head.appendChild(script);
-    })();
-  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
@@ -94,39 +85,10 @@
 
     .stop-header {
       display: flex;
-      gap: 10px;
+      gap: 0;
       align-items: center;
       margin-bottom: 8px;
     }
-
-    /* Street View thumbnail (sits between sequence # and address) */
-    .sv-thumb {
-      flex-shrink: 0;
-      width: 80px;
-      height: 60px;
-      border-radius: 8px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      border: 2px solid #71b80c;
-      background: #e5e7eb url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M21 6.5l-4-4-3 3-7-7-7 7v11h21v-10z' fill='%239ca3af'/></svg>") center/40% no-repeat;
-      transition: transform .15s, box-shadow .15s;
-    }
-    .sv-thumb:hover { transform: scale(1.04); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
-    .sv-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .sv-thumb .sv-overlay {
-      position: absolute; inset: auto 0 0 0; padding: 2px 4px;
-      background: linear-gradient(180deg, transparent, rgba(0,0,0,.55));
-      color: #fff; font-size: 10px; font-weight: 700; text-align: center;
-      letter-spacing: .5px; pointer-events: none;
-    }
-    .sv-thumb.placeholder { cursor: default; border-color: #cbd5e1; }
-    .sv-thumb.placeholder::after {
-      content: 'No view'; position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      color: #64748b; font-size: 10px; font-weight: 600;
-    }
-    .sv-thumb.placeholder { background-image: none; background: #f1f5f9; }
 
     .sequence-number {
       min-width: 32px;
@@ -136,6 +98,7 @@
       justify-content: center;
       font-weight: 700;
       font-size: 1.5rem;
+      margin-right: 12px;
       flex-shrink: 0;
       font-family: 'Courier New', monospace;
       line-height: 1;
@@ -144,8 +107,7 @@
     .stop-checkbox {
       width: 36px;
       height: 36px;
-      margin-right: 0;
-      margin-left: auto;          /* push to the far right */
+      margin-right: 12px;
       cursor: pointer;
       accent-color: #10b981;
       transition: opacity 0.2s ease;
@@ -479,54 +441,11 @@
     </div>
   </div>
 
-  <!-- BIN SPOT MODAL (Street View with locked-in pin) -->
-  <div id="binSpotModal" class="bin-spot-modal" style="display:none;">
-    <div class="bin-spot-modal-content">
-      <div class="bin-spot-modal-header">
-        <div>
-          <h3>📍 Bin Placement</h3>
-          <p id="binSpotAddress"></p>
-        </div>
-        <button class="bin-spot-close" type="button" aria-label="Close">&times;</button>
-      </div>
-      <div id="binSpotSvWrap" style="position:relative;">
-        <div id="binSpotStreetView"></div>
-        <div id="binSpotLockedCrosshair" aria-hidden="true"></div>
-      </div>
-      <div class="bin-spot-modal-help">
-        🔍 The green crosshair marks the exact spot the customer requested. You can look around and walk forward (white arrows), the pin stays anchored.
-      </div>
-    </div>
-  </div>
-
-  <style>
-    .stop-bin-spot{margin-top:8px}
-    .bin-spot-button{background:#71b80c;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-weight:600;font-size:.9rem;cursor:pointer;width:100%;transition:background .15s}
-    .bin-spot-button:hover{background:#5a9109}
-
-    .bin-spot-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px}
-    .bin-spot-modal.show{display:flex !important}
-    .bin-spot-modal-content{background:#fff;border-radius:16px;max-width:900px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 25px 50px rgba(0,0,0,.3)}
-    .bin-spot-modal-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid #e5e7eb;background:linear-gradient(135deg,#71b80c,#5a9109);color:#fff}
-    .bin-spot-modal-header h3{margin:0;font-size:1.1rem;font-weight:700}
-    .bin-spot-modal-header p{margin:.2rem 0 0;font-size:.85rem;opacity:.9}
-    .bin-spot-close{background:rgba(255,255,255,.2);border:none;color:#fff;font-size:1.8rem;width:36px;height:36px;border-radius:50%;cursor:pointer;line-height:1}
-    .bin-spot-close:hover{background:rgba(255,255,255,.35)}
-    #binSpotStreetView{width:100%;height:520px;background:#e2e8f0}
-    @media (max-width:600px){#binSpotStreetView{height:380px}}
-    .bin-spot-modal-help{padding:.8rem 1.25rem;font-size:.85rem;color:#64748b;background:#f0fdf9;border-top:1px solid #b2f5ea}
-
-    /* Locked crosshair overlay — same look as customer side */
-    #binSpotLockedCrosshair{position:absolute;top:70%;left:50%;transform:translate(-50%,-50%);pointer-events:none;width:90px;height:90px;z-index:5;
-      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'><circle cx='45' cy='45' r='20' fill='none' stroke='%23ffffff' stroke-width='4.5'/><circle cx='45' cy='45' r='20' fill='none' stroke='%2371b80c' stroke-width='3'/><line x1='45' y1='4' x2='45' y2='22' stroke='%23ffffff' stroke-width='4.5'/><line x1='45' y1='4' x2='45' y2='22' stroke='%2371b80c' stroke-width='3'/><line x1='45' y1='68' x2='45' y2='86' stroke='%23ffffff' stroke-width='4.5'/><line x1='45' y1='68' x2='45' y2='86' stroke='%2371b80c' stroke-width='3'/><line x1='4' y1='45' x2='22' y2='45' stroke='%23ffffff' stroke-width='4.5'/><line x1='4' y1='45' x2='22' y2='45' stroke='%2371b80c' stroke-width='3'/><line x1='68' y1='45' x2='86' y2='45' stroke='%23ffffff' stroke-width='4.5'/><line x1='68' y1='45' x2='86' y2='45' stroke='%2371b80c' stroke-width='3'/><circle cx='45' cy='45' r='4' fill='%2371b80c' stroke='%23ffffff' stroke-width='1.5'/></svg>");
-      background-size:contain;background-repeat:no-repeat;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
-  </style>
-
 
 
   <script>
     // Config
-    // Google Maps API key is now loaded securely from /api/maps-key.php
+    const GOOGLE_MAPS_API_KEY = 'AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI';
     const API_BASE_URL = window.location.origin + '/api'; // PHP API on same domain
     let BACKEND_READY = false; // Will be set to true when backend responds
 
@@ -873,33 +792,10 @@
       item.dataset.stopId = stop.id;
 
       const seqNum = sequenceNumbers[stop.id] || '?';
-      // Street View thumbnail: prefer the customer's saved pose. Falls back to a
-      // building-front view via the address lat/lng if there is no pin yet.
-      // Uses the cheap Street View Static API via /api/streetview-thumb.php so the
-      // Maps API key stays server-side and Google caches the image edge-side.
-      const thumbId = `sv-thumb-${stop.id}`;
-      let svThumbHTML;
-      if (stop.binPano && stop.binLat != null && stop.binLng != null) {
-        const q = new URLSearchParams({
-          pano: stop.binPano,
-          heading: stop.binPovHeading ?? 0,
-          pitch:   stop.binPovPitch   ?? 0,
-          fov: 90, w: 160, h: 120
-        }).toString();
-        svThumbHTML = `<div class="sv-thumb" id="${thumbId}" data-action="view-bin-spot" title="Open Street View with bin spot"><img src="/api/streetview-thumb.php?${q}" alt="Bin spot preview" loading="lazy" onerror="this.style.display='none'"><div class="sv-overlay">📍 VIEW</div></div>`;
-      } else if (stop.lat && stop.lng) {
-        const q = new URLSearchParams({
-          lat: stop.lat, lng: stop.lng, heading: 0, pitch: 0, fov: 90, w: 160, h: 120
-        }).toString();
-        svThumbHTML = `<div class="sv-thumb placeholder" id="${thumbId}" title="No bin spot pinned yet"><img src="/api/streetview-thumb.php?${q}" alt="" loading="lazy" onerror="this.style.display='none'"></div>`;
-      } else {
-        svThumbHTML = `<div class="sv-thumb placeholder"></div>`;
-      }
-
       item.innerHTML = `
         <div class="stop-header">
           <div class="sequence-number">${seqNum}</div>
-          ${svThumbHTML}
+          <input type="checkbox" class="stop-checkbox" ${stop.completed ? 'checked' : ''} ${!stop.imageUrl ? 'disabled' : ''}>
           <div class="stop-info">
             <a class="stop-address" href="https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" title="Get directions with voice guidance to ${stop.address}">${stop.address}</a>
             <span class="stop-status ${stop.completed ? 'completed' : ''}">
@@ -907,7 +803,6 @@
             </span>
           </div>
           ${stop.imageUrl ? `<img src="${stop.imageUrl}" class="stop-thumbnail" alt="Bin photo" />` : ''}
-          <input type="checkbox" class="stop-checkbox" ${stop.completed ? 'checked' : ''} ${!stop.imageUrl ? 'disabled' : ''}>
         </div>
         <div class="stop-image-upload">
           <label class="upload-label">📷 Bin Photo</label>
@@ -927,11 +822,6 @@
 
       checkbox.addEventListener('change', () => {
         markComplete(stop.id, checkbox.checked);
-      });
-
-      // Either the legacy bin-spot button OR the new SV thumbnail opens the modal
-      item.querySelectorAll('[data-action="view-bin-spot"]').forEach(el => {
-        el.addEventListener('click', () => openBinSpotModal(stop));
       });
 
       uploadBtn.addEventListener('click', () => {
@@ -1358,15 +1248,6 @@
             const type = serviceType.toLowerCase().includes('roll in') ? 'rollin' : 'rollout';
             const completed = status.toLowerCase().includes('completed');
             
-            // Bin placement is stored as one JSON string in "Bin Placement" (prefer
-            // the Order's copy, fall back to the Booking's).
-            let binPlacement = null;
-            const binBlob = fields['Bin Placement'] || bookingFields['Bin Placement'] || '';
-            if (binBlob) {
-              try { binPlacement = JSON.parse(binBlob); }
-              catch (e) { console.warn('Bad Bin Placement JSON for order', orderId, e); }
-            }
-
             // Create stop object
             const stop = {
               id: orderRecord.id,
@@ -1378,15 +1259,7 @@
               imageUrl: null,
               lat: lat,
               lng: lng,
-              airtableOrderRecordId: orderRecord.id,
-              // Bin placement (only set when the customer dropped a pin)
-              binPano:       binPlacement?.pano || null,
-              binLat:        binPlacement?.binLatLng?.lat ?? null,
-              binLng:        binPlacement?.binLatLng?.lng ?? null,
-              binPovHeading: binPlacement?.pov?.heading ?? null,
-              binPovPitch:   binPlacement?.pov?.pitch ?? null,
-              binPovZoom:    binPlacement?.pov?.zoom ?? null,
-              hasBinPin:     !!binPlacement?.hasPin
+              airtableOrderRecordId: orderRecord.id
             };
             
             stops.push(stop);
@@ -1477,159 +1350,6 @@
     // Start
     checkBackendHealth();
     init();
-  </script>
-
-  <!-- Street View module for bin spot modal -->
-  <script src="streetview.js"></script>
-  <script>
-    // ===== Bin Spot Modal & per-stop SV thumbnails =====
-    let binSpotPanorama = null;
-    let binSpotMarker = null;
-    const stopThumbPanos = new Map();   // thumbId -> panorama instance
-    let _thumbObserver = null;
-
-    async function ensureMapsApi() {
-      if (window.google && window.google.maps) return;
-      await window.streetView.init();
-      let attempts = 0;
-      while (!window.google || !window.google.maps) {
-        await new Promise(r => setTimeout(r, 100));
-        if (++attempts > 50) throw new Error('Maps API not loaded');
-      }
-    }
-
-    // Mount the saved Street View pose as a tiny non-interactive panorama inside
-    // the thumbnail container. Uses IntersectionObserver so we only spin up
-    // panoramas for stops actually scrolled into view.
-    function mountStopThumb(stop, thumbId) {
-      if (!stop.binPano && !(stop.lat && stop.lng)) return;
-      if (!_thumbObserver) {
-        _thumbObserver = new IntersectionObserver((entries) => {
-          for (const e of entries) {
-            if (!e.isIntersecting) continue;
-            const el = e.target;
-            _thumbObserver.unobserve(el);
-            const data = el._stopData;
-            if (data) renderStopThumb(data, el);
-          }
-        }, { rootMargin: '200px' });
-      }
-      requestAnimationFrame(() => {
-        const el = document.getElementById(thumbId);
-        if (!el) return;
-        el._stopData = stop;
-        _thumbObserver.observe(el);
-      });
-    }
-
-    async function renderStopThumb(stop, el) {
-      try { await ensureMapsApi(); } catch (e) { return; }
-      const opts = {
-        pov: { heading: stop.binPovHeading ?? 0, pitch: stop.binPovPitch ?? 0 },
-        zoom: 0,
-        disableDefaultUI: true,
-        clickToGo: false, linksControl: false, panControl: false, zoomControl: false,
-        addressControl: false, fullscreenControl: false,
-        motionTracking: false, motionTrackingControl: false,
-        showRoadLabels: false, scrollwheel: false
-      };
-      if (stop.binPano) opts.pano = stop.binPano;
-      else opts.position = { lat: stop.lat, lng: stop.lng };
-      const p = new google.maps.StreetViewPanorama(el, opts);
-      stopThumbPanos.set(el.id, p);
-      // Block thumbnail interactions so the click bubbles up to the wrapper.
-      const shield = document.createElement('div');
-      shield.style.cssText = 'position:absolute;inset:0;cursor:pointer;z-index:6;background:transparent;';
-      el.appendChild(shield);
-    }
-
-    async function openBinSpotModal(stop) {
-      const modal = document.getElementById('binSpotModal');
-      const addrEl = document.getElementById('binSpotAddress');
-      addrEl.textContent = stop.address || '';
-      modal.classList.add('show');
-
-      try {
-        await window.streetView.init();
-        let attempts = 0;
-        while (!window.google || !window.google.maps) {
-          await new Promise(r => setTimeout(r, 100));
-          if (++attempts > 50) throw new Error('Maps API not loaded');
-        }
-        renderBinSpot(stop);
-      } catch (e) {
-        console.error('Failed to open bin spot modal:', e);
-      }
-    }
-
-    function renderBinSpot(stop) {
-      const container = document.getElementById('binSpotStreetView');
-      const binLatLng = new google.maps.LatLng(stop.binLat, stop.binLng);
-      const pov = {
-        heading: stop.binPovHeading ?? 0,
-        pitch:   stop.binPovPitch   ?? 0
-      };
-      const zoom = stop.binPovZoom ?? 0;
-
-      // Mount the panorama at the customer's saved pano/POV
-      binSpotPanorama = new google.maps.StreetViewPanorama(container, {
-        pano: stop.binPano,
-        pov: pov,
-        zoom: zoom,
-        streetViewControl: false,
-        panControl: false,
-        zoomControl: true,
-        fullscreenControl: true,
-        addressControl: false,
-        clickToGo: true,
-        linksControl: true,
-        motionTracking: false,
-        motionTrackingControl: false
-      });
-
-      // Drop a non-draggable pin at the exact saved bin location
-      const binIcon = {
-        url: 'data:image/svg+xml;utf8,' + encodeURIComponent(
-          "<svg xmlns='http://www.w3.org/2000/svg' width='60' height='72' viewBox='0 0 60 72'>" +
-            "<defs><filter id='s' x='-50%' y='-50%' width='200%' height='200%'>" +
-            "<feDropShadow dx='0' dy='2' stdDeviation='2' flood-opacity='.35'/></filter></defs>" +
-            "<g filter='url(#s)'>" +
-            "<path d='M30 2C16 2 6 12 6 26c0 18 24 44 24 44s24-26 24-44C54 12 44 2 30 2z' fill='#71b80c' stroke='white' stroke-width='2'/>" +
-            "<text x='30' y='36' text-anchor='middle' font-size='26' fill='white'>\u{1F5D1}\u{FE0F}</text>" +
-            "</g></svg>"
-        ),
-        scaledSize: new google.maps.Size(60, 72),
-        anchor: new google.maps.Point(30, 70)
-      };
-      binSpotMarker = new google.maps.Marker({
-        position: binLatLng,
-        map: binSpotPanorama,
-        icon: binIcon,
-        draggable: false,
-        title: 'Customer\'s requested bin spot',
-        zIndex: 1000
-      });
-    }
-
-    function closeBinSpotModal() {
-      const modal = document.getElementById('binSpotModal');
-      modal.classList.remove('show');
-      // Clean up to free memory
-      if (binSpotMarker) { binSpotMarker.setMap(null); binSpotMarker = null; }
-      if (binSpotPanorama) {
-        document.getElementById('binSpotStreetView').innerHTML = '';
-        binSpotPanorama = null;
-      }
-    }
-
-    // Bind close interactions
-    document.querySelector('.bin-spot-close').addEventListener('click', closeBinSpotModal);
-    document.getElementById('binSpotModal').addEventListener('click', (e) => {
-      if (e.target.id === 'binSpotModal') closeBinSpotModal();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && document.getElementById('binSpotModal').classList.contains('show')) closeBinSpotModal();
-    });
   </script>
   <script>
   function empLogout() {
