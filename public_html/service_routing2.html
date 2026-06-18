@@ -1310,6 +1310,17 @@
             const type = serviceType.toLowerCase().includes('roll in') ? 'rollin' : 'rollout';
             const completed = status.toLowerCase().includes('completed');
             
+            // Bin placement (prefer Order fields, fall back to Booking fields if present)
+            const pickBin = (key) => {
+              if (fields[key] !== undefined && fields[key] !== null && fields[key] !== '') return fields[key];
+              if (bookingFields[key] !== undefined && bookingFields[key] !== null && bookingFields[key] !== '') return bookingFields[key];
+              return undefined;
+            };
+            const binPano = pickBin('Bin Pano');
+            const binLat  = pickBin('Bin Lat');
+            const binLng  = pickBin('Bin Lng');
+            const hasBinPin = pickBin('Has Bin Pin');
+
             // Create stop object
             const stop = {
               id: orderRecord.id,
@@ -1321,7 +1332,15 @@
               imageUrl: null,
               lat: lat,
               lng: lng,
-              airtableOrderRecordId: orderRecord.id
+              airtableOrderRecordId: orderRecord.id,
+              // Bin placement (only present if the customer dropped a pin)
+              binPano: binPano || null,
+              binLat: binLat !== undefined ? parseFloat(binLat) : null,
+              binLng: binLng !== undefined ? parseFloat(binLng) : null,
+              binPovHeading: pickBin('Bin POV Heading') !== undefined ? parseFloat(pickBin('Bin POV Heading')) : null,
+              binPovPitch:   pickBin('Bin POV Pitch')   !== undefined ? parseFloat(pickBin('Bin POV Pitch'))   : null,
+              binPovZoom:    pickBin('Bin POV Zoom')    !== undefined ? parseFloat(pickBin('Bin POV Zoom'))    : null,
+              hasBinPin: !!hasBinPin
             };
             
             stops.push(stop);

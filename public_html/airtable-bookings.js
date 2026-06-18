@@ -141,21 +141,42 @@ async function saveBookingToAirtable(bookingData) {
 
     // Helper: save a single order record to Airtable
     async function saveOrder(fields) {
-      try {
-        const res = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${ORDERS_TABLE_ID}`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields })
-        });
-        if (res.ok) {
-          orderCount++;
-          console.log('✅ Order saved:', fields['Order ID'], fields['Service Type'], fields['Service Date'] || fields['Day of Week']);
-        } else {
-          const err = await res.json();
-          console.warn('Failed to save order:', fields['Order ID'], err);
+      // Add bin placement fields onto every Order row so the driver page can render the pin per stop.
+      const fullFields = Object.assign({}, fields, binFields);
+      // Schema-tolerant retry: strip any UNKNOWN_FIELD_NAME and re-POST.
+      function extractUnknownField(msg) {
+        const m = msg && msg.match(/Unknown field name:\s*["']?([^"']+)["']?/i);
+        return m ? m[1] : null;
+      }
+      let attempt = 0;
+      let currentFields = { ...fullFields };
+      while (attempt < 6) {
+        attempt++;
+        try {
+          const res = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${ORDERS_TABLE_ID}`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fields: currentFields, typecast: true })
+          });
+          if (res.ok) {
+            orderCount++;
+            console.log('✅ Order saved:', currentFields['Order ID'], currentFields['Service Type'], currentFields['Service Date'] || currentFields['Day of Week']);
+            return;
+          }
+          const err = await res.json().catch(() => ({}));
+          const msg = err?.error?.message || '';
+          const offending = extractUnknownField(msg);
+          if (offending && currentFields.hasOwnProperty(offending)) {
+            console.warn(`Orders table missing field "${offending}" — retrying without it.`);
+            delete currentFields[offending];
+            continue;
+          }
+          console.warn('Failed to save order:', currentFields['Order ID'], err);
+          return;
+        } catch (err) {
+          console.warn('Error saving order:', currentFields['Order ID'], err);
+          return;
         }
-      } catch (err) {
-        console.warn('Error saving order:', fields['Order ID'], err);
       }
     }
 
