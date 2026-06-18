@@ -1608,36 +1608,11 @@ function bpGetLatLngAtCrosshair() {
   return google.maps.geometry.spherical.computeOffset(cam, distance, pov.heading);
 }
 
+// Customer side: capture the bin spot silently — no visible marker.
+// The driver view (service_routing2.html) renders the green pin when servicing the stop.
 function bpPlacePin(latLng) {
   if (!bpPanorama) return;
   bpBinLatLng = latLng;
-  const binIcon = {
-    url: 'data:image/svg+xml;utf8,' + encodeURIComponent(
-      "<svg xmlns='http://www.w3.org/2000/svg' width='60' height='72' viewBox='0 0 60 72'>" +
-        "<defs><filter id='s' x='-50%' y='-50%' width='200%' height='200%'>" +
-        "<feDropShadow dx='0' dy='2' stdDeviation='2' flood-opacity='.35'/></filter></defs>" +
-        "<g filter='url(#s)'>" +
-        "<path d='M30 2C16 2 6 12 6 26c0 18 24 44 24 44s24-26 24-44C54 12 44 2 30 2z' fill='#71b80c' stroke='white' stroke-width='2'/>" +
-        "<text x='30' y='36' text-anchor='middle' font-size='26' fill='white'>\u{1F5D1}\u{FE0F}</text>" +
-        "</g></svg>"
-    ),
-    scaledSize: new google.maps.Size(60, 72),
-    anchor: new google.maps.Point(30, 70)
-  };
-  if (!bpBinMarker) {
-    bpBinMarker = new google.maps.Marker({
-      position: latLng, map: bpPanorama, icon: binIcon,
-      draggable: true, title: 'Drag me to your bin spot', zIndex: 1000
-    });
-    bpBinMarker.addListener('dragend', () => {
-      bpBinLatLng = bpBinMarker.getPosition();
-      bpUpdateStatus();
-    });
-  } else {
-    bpBinMarker.setPosition(latLng);
-    bpBinMarker.setMap(bpPanorama);
-  }
-  bpUpdateStatus();
 }
 
 function bpUpdateStatus() {
