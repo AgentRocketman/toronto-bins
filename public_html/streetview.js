@@ -88,7 +88,7 @@
       
       console.log('Geocoding address:', address);
       
-      geocoder.geocode({ address: formattedAddress }, (results, status) => {
+      geocoder.geocode({ address: address }, (results, status) => {
         console.log('Geocode status:', status, 'Results:', results?.length);
         
         if (status === google.maps.GeocoderStatus.OK && results[0]) {
