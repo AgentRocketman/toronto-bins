@@ -1452,28 +1452,31 @@ function formatDateShort(isoStr) {
 
 <script>
 // Street View initialization
-(function() {
-  const bookingSection = document.getElementById('booking-section');
-  if (bookingSection) {
+window.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    const bookingSection = document.getElementById('booking-section');
+    if (!bookingSection) return;
+    
     const observer = new MutationObserver(function() {
-      if (bookingSection.classList.contains('revealed')) {
-        // Initialize Street View when booking section is revealed
-        if (typeof window.streetView !== 'undefined') {
-          window.streetView.init().then(() => {
-            const addressText = document.getElementById('ac-address-text')?.textContent || '';
-            if (addressText) {
-              document.getElementById('streetview-container').style.display = 'block';
-              window.streetView.display(addressText, 'streetview-container');
-            }
-          });
+      const isRevealed = bookingSection.classList.contains('revealed');
+      const container = document.getElementById('streetview-container');
+      const addressEl = document.getElementById('ac-address-text');
+      
+      if (isRevealed && addressEl) {
+        const address = addressEl.textContent?.trim();
+        if (address && typeof window.streetView !== 'undefined') {
+          container.style.display = 'block';
+          console.log('Displaying Street View for:', address);
+          window.streetView.display(address, 'streetview-container');
         }
-      } else {
-        document.getElementById('streetview-container').style.display = 'none';
+      } else if (container) {
+        container.style.display = 'none';
       }
     });
+    
     observer.observe(bookingSection, { attributes: true, attributeFilter: ['class'] });
-  }
-})();
+  }, 500);
+});
 </script>
 
 <script>
