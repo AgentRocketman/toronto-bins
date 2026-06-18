@@ -423,6 +423,12 @@ Tone & Style:
 
     history.push({ role: role === 'user' ? 'user' : 'assistant', content: text });
     if (history.length > CFG.maxMessages) history.splice(0, history.length - CFG.maxMessages);
+
+    // Log message (async, don't block UI)
+    if (typeof window.gmbLogMessage === 'function') {
+      const messageType = role === 'user' ? 'question' : 'answer';
+      window.gmbLogMessage(messageType, text).catch(err => console.warn('Log failed:', err));
+    }
   }
 
   /* ─── Typing indicator ──────────────────────────────────────── */
