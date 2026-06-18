@@ -171,7 +171,6 @@
       <div id="streetview-wrap" style="position:relative;">
         <div id="streetview-container" class="empty"></div>
         <div id="crosshair" aria-hidden="true"></div>
-        <div class="crosshair-label" id="crosshair-label">🎯 Aim here → drop pin</div>
       </div>
       <div id="pin-status" style="margin-top:.6rem;font-size:.85rem;color:var(--slate-light);text-align:center;">No pin dropped yet — aim the crosshair and tap “Drop Pin Here”.</div>
       <textarea id="notes" placeholder="Optional notes (e.g. 'Behind the blue recycling bin', 'Side gate is unlocked')"></textarea>
@@ -453,7 +452,7 @@
       }
     });
 
-    const crosshairLabel = document.getElementById('crosshair-label');
+    const crosshairLabel = document.getElementById('crosshair-label');  // legacy, may be null
 
     dropPinBtn.addEventListener('click', () => {
       if (!panorama) {

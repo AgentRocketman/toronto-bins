@@ -27,9 +27,28 @@ async function saveBookingToAirtable(bookingData) {
   const bookingId = generateBookingId();
   const todayISO = new Date().toISOString().split('T')[0];
   
+  // Pull bin-placement data (may be null)
+  const bp = bookingData.binPlacement || null;
+  const binFields = {};
+  if (bp && bp.hasPin) {
+    if (bp.pano)                   binFields['Bin Pano']       = String(bp.pano);
+    if (bp.pov && bp.pov.heading != null) binFields['Bin POV Heading'] = Number(bp.pov.heading);
+    if (bp.pov && bp.pov.pitch   != null) binFields['Bin POV Pitch']   = Number(bp.pov.pitch);
+    if (bp.pov && bp.pov.zoom    != null) binFields['Bin POV Zoom']    = Number(bp.pov.zoom);
+    if (bp.binLatLng) {
+      binFields['Bin Lat'] = Number(bp.binLatLng.lat);
+      binFields['Bin Lng'] = Number(bp.binLatLng.lng);
+    }
+    if (bp.cameraLatLng) {
+      binFields['Camera Lat'] = Number(bp.cameraLatLng.lat);
+      binFields['Camera Lng'] = Number(bp.cameraLatLng.lng);
+    }
+    binFields['Has Bin Pin'] = true;
+  }
+
   // 1. Save Booking record
   const bookingRecord = {
-    fields: {
+    fields: Object.assign({
       'Booking ID': bookingId,
       'Customer Name': bookingData.customerName || '',
       'Email': bookingData.customerEmail || '',
@@ -42,11 +61,12 @@ async function saveBookingToAirtable(bookingData) {
       'Stripe Customer ID': bookingData.stripeCustomerId || '',
       'Billing Type': bookingData.frequency === 'recurring' ? 'Recurring Subscription' : 'One-Time Charge',
       'Created At': todayISO
-    }
+    }, binFields),
+    typecast: true
   };
 
   try {
-    const bookingResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`, {
+    let bookingResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
@@ -54,6 +74,23 @@ async function saveBookingToAirtable(bookingData) {
       },
       body: JSON.stringify(bookingRecord)
     });
+
+    // If Airtable rejects unknown bin-placement columns (not yet added to schema),
+    // retry without those fields so the booking still saves.
+    if (!bookingResponse.ok && Object.keys(binFields).length) {
+      const error = await bookingResponse.json();
+      const msg = error?.error?.message || '';
+      if (/UNKNOWN_FIELD_NAME|unknown field/i.test(msg)) {
+        console.warn('Bin placement columns missing from Bookings table; retrying without them. Add: Bin Pano, Bin POV Heading/Pitch/Zoom, Bin Lat/Lng, Camera Lat/Lng, Has Bin Pin');
+        const legacyFields = Object.assign({}, bookingRecord.fields);
+        for (const k of Object.keys(binFields)) delete legacyFields[k];
+        bookingResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: legacyFields, typecast: true })
+        });
+      }
+    }
 
     if (!bookingResponse.ok) {
       const error = await bookingResponse.json();
