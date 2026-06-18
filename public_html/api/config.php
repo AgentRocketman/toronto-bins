@@ -13,6 +13,9 @@ define('AIRTABLE_CHATLOGS_TABLE', 'tblatXRj8Ka7hyGyZ'); // ChatLogs table
 define('OPENAI_API_KEY', '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');
 // TODO: Move to environment variable for production security
 
+// Google Maps API key — stored securely, never exposed to client
+define('GOOGLE_MAPS_API_KEY', 'AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI');
+
 // CORS and security headers
 header('Access-Control-Allow-Origin: https://agentrocketman.com');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');

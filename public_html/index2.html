@@ -619,11 +619,41 @@
 
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false">
+          Which areas do you cover?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>We serve all Toronto residential addresses with City of Toronto curbside collection. Not sure if that&rsquo;s you? Type your address at the top &mdash; we&rsquo;ll tell you instantly.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
           Which bins do you handle?
           <span class="faq-chevron">+</span>
         </button>
         <div class="faq-a" role="region">
           <p>All of them &mdash; garbage, recycling, green bin, and yard waste. Whatever the City collects at your address on your collection day, we handle it.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          When do you roll out the bins to the curb and when do you roll them back in?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>We roll your bins to the curb the evening before your scheduled collection day and return them to their designated spot the following afternoon after they&rsquo;ve been emptied by the city collection truck.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Do you follow Toronto&rsquo;s holiday schedule changes?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>Yes. We follow the City of Toronto&rsquo;s adjusted holiday schedule automatically. If the City moves your collection day, we move with it &mdash; no action needed from you.</p>
         </div>
       </div>
 
@@ -644,26 +674,6 @@
         </button>
         <div class="faq-a" role="region">
           <p>If we miss your scheduled service for any reason, you don&rsquo;t pay for that event. Simple as that.</p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">
-          Do you follow Toronto&rsquo;s holiday schedule changes?
-          <span class="faq-chevron">+</span>
-        </button>
-        <div class="faq-a" role="region">
-          <p>Yes. We follow the City of Toronto&rsquo;s adjusted holiday schedule automatically. If the City moves your collection day, we move with it &mdash; no action needed from you.</p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">
-          Which areas do you cover?
-          <span class="faq-chevron">+</span>
-        </button>
-        <div class="faq-a" role="region">
-          <p>We serve all Toronto residential addresses with City of Toronto curbside collection. Not sure if that&rsquo;s you? Type your address at the top &mdash; we&rsquo;ll tell you instantly.</p>
         </div>
       </div>
 
@@ -695,6 +705,8 @@
       </div>
       <button class="ac-change" onclick="resetSearch()">&#9998; Change Address</button>
     </div>
+
+    <div id="streetview-container" style="width: 100%; height: 400px; border-radius: 14px; overflow: hidden; margin-bottom: 2.5rem; box-shadow: 0 4px 12px rgba(0,0,0,.08); display: none;"></div>
 
     <div class="next-pickup">
       <div class="next-pickup-label">&#128197; Next Collection</div>
@@ -1430,11 +1442,39 @@ function formatDateShort(isoStr) {
 <script src="stripe-integration.js"></script>
 <script src="airtable-bookings.js"></script>
 <script src="email-service.js"></script>
+<script src="chat-logger.js"></script>
+<script src="streetview.js"></script>
 
 <!-- Sticky mobile CTA -->
 <div class="sticky-cta" id="sticky-cta">
   <a href="#hero-anchor" class="sticky-cta-btn" onclick="document.getElementById('sticky-cta').style.display='none'">&#128205; Check my address &rarr;</a>
 </div>
+
+<script>
+// Street View initialization
+(function() {
+  const bookingSection = document.getElementById('booking-section');
+  if (bookingSection) {
+    const observer = new MutationObserver(function() {
+      if (bookingSection.classList.contains('revealed')) {
+        // Initialize Street View when booking section is revealed
+        if (typeof window.streetView !== 'undefined') {
+          window.streetView.init().then(() => {
+            const addressText = document.getElementById('ac-address-text')?.textContent || '';
+            if (addressText) {
+              document.getElementById('streetview-container').style.display = 'block';
+              window.streetView.display(addressText, 'streetview-container');
+            }
+          });
+        }
+      } else {
+        document.getElementById('streetview-container').style.display = 'none';
+      }
+    });
+    observer.observe(bookingSection, { attributes: true, attributeFilter: ['class'] });
+  }
+})();
+</script>
 
 <script>
 // Sticky CTA: show when reviews in view, hide when hero visible or booking revealed
@@ -1574,6 +1614,13 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
 
   resetTimer();
 })();
+</script>
+
+<!-- GetMyBin Chat Widget -->
+<script src="/getmybin-chat.js"></script>
+<script>
+  // Initialize chat widget with your OpenAI API key
+  // API key is now handled server-side in /api/chat.php — not exposed to client
 </script>
 </body>
 </html>
