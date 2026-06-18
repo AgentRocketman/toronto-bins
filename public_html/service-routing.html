@@ -4,14 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GetMyBin Service Routing</title>
-  <!-- Load Google Maps API with key from secure backend -->
+  <!-- Load Google Maps API with key from secure backend.
+       Exposes window.googleMapsReady (Promise) so the rest of the page can wait on it. -->
   <script>
-    (async function() {
-      const response = await fetch('/api/maps-key.php');
-      const data = await response.json();
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}`;
-      document.head.appendChild(script);
+    window.googleMapsReady = (async function() {
+      try {
+        const response = await fetch('/api/maps-key.php');
+        const data = await response.json();
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}&libraries=geometry,places`;
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('Google Maps script failed to load'));
+          document.head.appendChild(script);
+        });
+        // Wait one tick for google.maps namespace to be populated
+        let attempts = 0;
+        while ((!window.google || !window.google.maps) && attempts < 50) {
+          await new Promise(r => setTimeout(r, 50));
+          attempts++;
+        }
+      } catch (e) {
+        console.error('Failed to load Google Maps API:', e);
+      }
     })();
   </script>
   <style>
@@ -1443,10 +1458,14 @@
 
     // Set today's date and load orders
     function setTodayDate() {
-      const today = new Date().toISOString().split('T')[0];
+      // Allow ?date=YYYY-MM-DD in the URL to override today (useful for debugging future bookings)
+      const urlDate = new URLSearchParams(location.search).get('date');
+      const today = (urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate))
+        ? urlDate
+        : new Date().toISOString().split('T')[0];
       document.getElementById('datePicker').value = today;
       
-      // Load orders for today on init
+      // Load orders for today (or the override date) on init
       loadOrdersForDate(today);
       
       // Load orders when date picker changes
@@ -1474,9 +1493,13 @@
         });
     }
 
-    // Start
+    // Start — wait for Google Maps to be ready before init(), otherwise initMap()
+    // throws on `new google.maps.Map(...)` and the rest of init() (date picker,
+    // worker name, orders fetch) never runs.
     checkBackendHealth();
-    init();
+    (window.googleMapsReady || Promise.resolve()).then(() => init()).catch((e) => {
+      console.error('init() failed:', e);
+    });
   </script>
 
   <!-- Street View module for bin spot modal -->
