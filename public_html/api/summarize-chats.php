@@ -41,17 +41,22 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fromDate) || !preg_match('/^\d{4}-\d{2
     exit();
 }
 
-// Fetch all chats in date range from Airtable
-$filterFormula = "{date} >= '" . $fromDate . "' AND {date} <= '" . $toDate . "'";
-$result = airtableCall('GET', '/' . AIRTABLE_CHATLOGS_TABLE . '?filterByFormula=' . urlencode($filterFormula));
+// Fetch all chats from Airtable (no filter for now, filter in PHP)
+$result = airtableCall('GET', '/' . AIRTABLE_CHATLOGS_TABLE . '?maxRecords=1000');
 
 if ($result['code'] !== 200) {
     http_response_code(500);
-    echo json_encode(['error' => 'Failed to fetch chats from Airtable']);
+    echo json_encode(['error' => 'Failed to fetch chats from Airtable', 'details' => $result['body']]);
     exit();
 }
 
-$records = $result['body']['records'] ?? [];
+$allRecords = $result['body']['records'] ?? [];
+
+// Filter records by date range in PHP
+$records = array_filter($allRecords, function($record) use ($fromDate, $toDate) {
+    $date = $record['fields']['date'] ?? '';
+    return $date >= $fromDate && $date <= $toDate;
+});
 
 if (empty($records)) {
     http_response_code(200);
