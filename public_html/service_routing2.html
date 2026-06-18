@@ -94,10 +94,39 @@
 
     .stop-header {
       display: flex;
-      gap: 0;
+      gap: 10px;
       align-items: center;
       margin-bottom: 8px;
     }
+
+    /* Street View thumbnail (sits between sequence # and address) */
+    .sv-thumb {
+      flex-shrink: 0;
+      width: 80px;
+      height: 60px;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      border: 2px solid #71b80c;
+      background: #e5e7eb url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M21 6.5l-4-4-3 3-7-7-7 7v11h21v-10z' fill='%239ca3af'/></svg>") center/40% no-repeat;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .sv-thumb:hover { transform: scale(1.04); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+    .sv-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .sv-thumb .sv-overlay {
+      position: absolute; inset: auto 0 0 0; padding: 2px 4px;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.55));
+      color: #fff; font-size: 10px; font-weight: 700; text-align: center;
+      letter-spacing: .5px; pointer-events: none;
+    }
+    .sv-thumb.placeholder { cursor: default; border-color: #cbd5e1; }
+    .sv-thumb.placeholder::after {
+      content: 'No view'; position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #64748b; font-size: 10px; font-weight: 600;
+    }
+    .sv-thumb.placeholder { background-image: none; background: #f1f5f9; }
 
     .sequence-number {
       min-width: 32px;
@@ -107,7 +136,6 @@
       justify-content: center;
       font-weight: 700;
       font-size: 1.5rem;
-      margin-right: 12px;
       flex-shrink: 0;
       font-family: 'Courier New', monospace;
       line-height: 1;
@@ -116,7 +144,8 @@
     .stop-checkbox {
       width: 36px;
       height: 36px;
-      margin-right: 12px;
+      margin-right: 0;
+      margin-left: auto;          /* push to the far right */
       cursor: pointer;
       accent-color: #10b981;
       transition: opacity 0.2s ease;
@@ -844,10 +873,24 @@
       item.dataset.stopId = stop.id;
 
       const seqNum = sequenceNumbers[stop.id] || '?';
+      // Street View thumbnail: prefer the customer's saved pose. Falls back to a
+      // building-front view via the address lat/lng if there is no pin yet.
+      // Rendered as a tiny non-interactive live Panorama (uses the JS Maps API key
+      // we already have authorized) — see initStopThumbs() after render.
+      const thumbId = `sv-thumb-${stop.id}`;
+      let svThumbHTML;
+      if (stop.binPano && stop.binLat != null && stop.binLng != null) {
+        svThumbHTML = `<div class="sv-thumb" id="${thumbId}" data-action="view-bin-spot" title="Open Street View with bin spot"><div class="sv-overlay">📍 VIEW</div></div>`;
+      } else if (stop.lat && stop.lng) {
+        svThumbHTML = `<div class="sv-thumb placeholder" id="${thumbId}" title="No bin spot pinned yet"></div>`;
+      } else {
+        svThumbHTML = `<div class="sv-thumb placeholder"></div>`;
+      }
+
       item.innerHTML = `
         <div class="stop-header">
           <div class="sequence-number">${seqNum}</div>
-          <input type="checkbox" class="stop-checkbox" ${stop.completed ? 'checked' : ''} ${!stop.imageUrl ? 'disabled' : ''}>
+          ${svThumbHTML}
           <div class="stop-info">
             <a class="stop-address" href="https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" title="Get directions with voice guidance to ${stop.address}">${stop.address}</a>
             <span class="stop-status ${stop.completed ? 'completed' : ''}">
@@ -855,6 +898,7 @@
             </span>
           </div>
           ${stop.imageUrl ? `<img src="${stop.imageUrl}" class="stop-thumbnail" alt="Bin photo" />` : ''}
+          <input type="checkbox" class="stop-checkbox" ${stop.completed ? 'checked' : ''} ${!stop.imageUrl ? 'disabled' : ''}>
         </div>
         <div class="stop-image-upload">
           <label class="upload-label">📷 Bin Photo</label>
@@ -864,11 +908,6 @@
           </button>
           <div class="compression-status"></div>
         </div>
-        ${stop.binPano && stop.binLat && stop.binLng ? `
-          <div class="stop-bin-spot">
-            <button class="bin-spot-button" type="button" data-action="view-bin-spot">📍 View Bin Spot</button>
-          </div>
-        ` : ''}
       `;
 
       const checkbox = item.querySelector('.stop-checkbox');
@@ -881,10 +920,13 @@
         markComplete(stop.id, checkbox.checked);
       });
 
-      const binSpotBtn = item.querySelector('[data-action="view-bin-spot"]');
-      if (binSpotBtn) {
-        binSpotBtn.addEventListener('click', () => openBinSpotModal(stop));
-      }
+      // Either the legacy bin-spot button OR the new SV thumbnail opens the modal
+      item.querySelectorAll('[data-action="view-bin-spot"]').forEach(el => {
+        el.addEventListener('click', () => openBinSpotModal(stop));
+      });
+
+      // Lazy-mount the SV thumbnail when it scrolls into view (saves API calls)
+      mountStopThumb(stop, thumbId);
 
       uploadBtn.addEventListener('click', () => {
         fileInput.click();
@@ -1434,9 +1476,66 @@
   <!-- Street View module for bin spot modal -->
   <script src="streetview.js"></script>
   <script>
-    // ===== Bin Spot Modal =====
+    // ===== Bin Spot Modal & per-stop SV thumbnails =====
     let binSpotPanorama = null;
     let binSpotMarker = null;
+    const stopThumbPanos = new Map();   // thumbId -> panorama instance
+    let _thumbObserver = null;
+
+    async function ensureMapsApi() {
+      if (window.google && window.google.maps) return;
+      await window.streetView.init();
+      let attempts = 0;
+      while (!window.google || !window.google.maps) {
+        await new Promise(r => setTimeout(r, 100));
+        if (++attempts > 50) throw new Error('Maps API not loaded');
+      }
+    }
+
+    // Mount the saved Street View pose as a tiny non-interactive panorama inside
+    // the thumbnail container. Uses IntersectionObserver so we only spin up
+    // panoramas for stops actually scrolled into view.
+    function mountStopThumb(stop, thumbId) {
+      if (!stop.binPano && !(stop.lat && stop.lng)) return;
+      if (!_thumbObserver) {
+        _thumbObserver = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            const el = e.target;
+            _thumbObserver.unobserve(el);
+            const data = el._stopData;
+            if (data) renderStopThumb(data, el);
+          }
+        }, { rootMargin: '200px' });
+      }
+      requestAnimationFrame(() => {
+        const el = document.getElementById(thumbId);
+        if (!el) return;
+        el._stopData = stop;
+        _thumbObserver.observe(el);
+      });
+    }
+
+    async function renderStopThumb(stop, el) {
+      try { await ensureMapsApi(); } catch (e) { return; }
+      const opts = {
+        pov: { heading: stop.binPovHeading ?? 0, pitch: stop.binPovPitch ?? 0 },
+        zoom: 0,
+        disableDefaultUI: true,
+        clickToGo: false, linksControl: false, panControl: false, zoomControl: false,
+        addressControl: false, fullscreenControl: false,
+        motionTracking: false, motionTrackingControl: false,
+        showRoadLabels: false, scrollwheel: false
+      };
+      if (stop.binPano) opts.pano = stop.binPano;
+      else opts.position = { lat: stop.lat, lng: stop.lng };
+      const p = new google.maps.StreetViewPanorama(el, opts);
+      stopThumbPanos.set(el.id, p);
+      // Block thumbnail interactions so the click bubbles up to the wrapper.
+      const shield = document.createElement('div');
+      shield.style.cssText = 'position:absolute;inset:0;cursor:pointer;z-index:6;background:transparent;';
+      el.appendChild(shield);
+    }
 
     async function openBinSpotModal(stop) {
       const modal = document.getElementById('binSpotModal');
