@@ -454,15 +454,16 @@
 
       // Render top issues (clean up summary text if needed)
       let summaryText = data.summary || 'No summary available.';
-      // Remove markdown code blocks if present
-      summaryText = summaryText.replace(/```[\s\S]*?```/g, '').replace(/^\n+|\n+$/g, '').trim();
-      // If it's just a JSON array string, parse and format it
+      // Remove markdown code blocks with or without language identifier
+      summaryText = summaryText.replace(/```[a-z]*\s*\n?([\s\S]*?)```/g, '$1').replace(/^\n+|\n+$/g, '').trim();
+      // If it's a JSON array, parse and format it
       if (summaryText.startsWith('[')) {
         try {
           const issues = JSON.parse(summaryText);
           summaryText = 'Top customer concerns include: ' + issues.slice(0, 3).join(', ') + '.';
         } catch (e) {
           // Keep original text if parsing fails
+          summaryText = 'Top issues detected. See list below.';
         }
       }
       document.getElementById('summaryText').textContent = summaryText;
