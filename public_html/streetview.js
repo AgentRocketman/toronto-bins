@@ -99,21 +99,27 @@
           
           // Check if Street View is available at this location
           streetViewService.getPanorama(
-            { location: location, radius: 50 },
+            { location: location, radius: 50, source: google.maps.StreetViewSource.OUTDOOR },
             (panoData, streetViewStatus) => {
               console.log('Street View status:', streetViewStatus);
               
               if (streetViewStatus === google.maps.StreetViewStatus.OK) {
+                // Compute heading from camera (panorama) location toward the building
+                const cameraLocation = panoData.location.latLng;
+                const heading = google.maps.geometry.spherical.computeHeading(cameraLocation, location);
+                console.log('Computed heading:', heading, 'from', cameraLocation.lat(), cameraLocation.lng(), 'to', location.lat(), location.lng());
+                
                 console.log('Creating Street View Panorama...');
-                // Create Street View
+                // Create Street View at the camera location with computed heading toward building
                 const streetView = new google.maps.StreetViewPanorama(container, {
-                  position: location,
-                  pov: { heading: 0, pitch: 0 },
+                  pano: panoData.location.pano,
+                  pov: { heading: heading, pitch: 0 },
                   zoom: 1,
                   streetViewControl: true,
                   panControl: true,
                   zoomControl: true,
-                  fullscreenControl: true
+                  fullscreenControl: true,
+                  addressControl: true
                 });
                 console.log('Street View displayed for:', address);
               } else {
