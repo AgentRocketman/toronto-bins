@@ -114,7 +114,7 @@
                 const streetView = new google.maps.StreetViewPanorama(container, {
                   pano: panoData.location.pano,
                   pov: { heading: heading, pitch: 0 },
-                  zoom: 1,
+                  zoom: 0,
                   streetViewControl: true,
                   panControl: true,
                   zoomControl: true,
