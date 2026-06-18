@@ -1593,7 +1593,9 @@
       };
       const zoom = stop.binPovZoom ?? 0;
 
-      // Mount the panorama at the customer's saved pano/POV
+      // Mount the panorama at the customer's saved pano/POV.
+      // NOTE: position:'relative' is set on the wrapper #binSpotSvWrap so we can
+      // overlay our own pin DOM element on top of the panorama.
       binSpotPanorama = new google.maps.StreetViewPanorama(container, {
         pano: stop.binPano,
         pov: pov,
@@ -1609,43 +1611,116 @@
         motionTrackingControl: false
       });
 
-      // Inverted teardrop pin in brand green. Uses only solid fills + simple shapes
-      // because Google Maps Marker icons rendered from data: URLs are picky about
-      // SVG gradients and filters (they often render blank). Tip sits at the saved
-      // ground location; the marker is anchored to a real world LatLng so it stays
-      // locked when the driver pans, walks, or rotates the panorama.
-      const binIcon = {
-        url: 'data:image/svg+xml;utf8,' + encodeURIComponent(
-          "<svg xmlns='http://www.w3.org/2000/svg' width='56' height='76' viewBox='0 0 56 76'>" +
-            "<path d='M28 4 C 14 4, 4 14, 4 28 C 4 42, 28 70, 28 70 C 28 70, 52 42, 52 28 C 52 14, 42 4, 28 4 Z' fill='#71b80c' stroke='white' stroke-width='3' stroke-linejoin='round'/>" +
-            "<circle cx='28' cy='26' r='8' fill='white'/>" +
-            "<circle cx='28' cy='26' r='4.5' fill='#5a9109'/>" +
-          "</svg>"
-        ),
-        scaledSize: new google.maps.Size(56, 76),
-        // Anchor at the icon's CENTER (not the tip). Street View clips Markers
-        // whose anchor projects below the camera horizon, which made the marker
-        // disappear when the driver was at/near the saved spot. Centering the
-        // anchor floats the pin at eye-level so it stays visible from any nearby
-        // vantage point. The visual "tip" still points at the right ground spot.
-        anchor: new google.maps.Point(28, 38)
-      };
-      binSpotMarker = new google.maps.Marker({
-        position: binLatLng,
-        map: binSpotPanorama,
-        icon: binIcon,
-        draggable: false,
-        title: 'Customer\'s requested bin spot',
-        zIndex: 1000,
-        optimized: false   // Force the marker to render via DOM, avoiding canvas-batch clipping
-      });
+      // ---------- Custom DOM-overlay pin ----------
+      // We do NOT use google.maps.Marker on the panorama. Modern Maps API silently
+      // drops legacy Marker overlays from StreetViewPanorama (the marker is created
+      // but never rendered into the DOM — confirmed by inspection). Instead we paint
+      // our own absolutely-positioned <div> on top of the panorama and reposition
+      // it on every POV/zoom/pano change by projecting the bin's lat/lng onto the
+      // panorama's view frustum.
+
+      // Build the pin element once and append to the wrapper.
+      const wrap = document.getElementById('binSpotSvWrap');
+      let pin = document.getElementById('binSpotPinOverlay');
+      if (pin) pin.remove();
+      pin = document.createElement('div');
+      pin.id = 'binSpotPinOverlay';
+      pin.title = "Customer's requested bin spot";
+      pin.innerHTML =
+        "<svg xmlns='http://www.w3.org/2000/svg' width='56' height='76' viewBox='0 0 56 76'>" +
+          "<path d='M28 4 C 14 4, 4 14, 4 28 C 4 42, 28 70, 28 70 C 28 70, 52 42, 52 28 C 52 14, 42 4, 28 4 Z' fill='#71b80c' stroke='white' stroke-width='3' stroke-linejoin='round'/>" +
+          "<circle cx='28' cy='26' r='8' fill='white'/>" +
+          "<circle cx='28' cy='26' r='4.5' fill='#5a9109'/>" +
+        "</svg>";
+      pin.style.cssText = [
+        'position:absolute',
+        'pointer-events:none',
+        'z-index:50',
+        'transform-origin:50% 100%',  // anchor tip on the projected ground point
+        'will-change:transform,opacity',
+        'transition:opacity .12s ease-out',
+        'display:none'
+      ].join(';');
+      wrap.appendChild(pin);
+
+      // Re-projection: turn camera pos + POV + bin pos into a screen (x,y) within
+      // the panorama container, plus a depth measure so we can hide when behind.
+      function reprojectPin() {
+        if (!binSpotPanorama) return;
+        const camera = binSpotPanorama.getPosition();
+        if (!camera) return;
+        const povNow = binSpotPanorama.getPov();
+        const zoomNow = binSpotPanorama.getZoom();
+
+        // Bearing from camera to bin (degrees, 0° = N, 90° = E)
+        const bearing = google.maps.geometry.spherical.computeHeading(camera, binLatLng);
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(camera, binLatLng);
+
+        // Angular delta between camera heading and bearing-to-bin
+        let dHeading = ((bearing - povNow.heading + 540) % 360) - 180;  // [-180, 180]
+
+        // Pitch needed to look at the bin: assume bin is at ground level (~2.5m below camera).
+        // The vertical angle from camera horizon down to the bin is atan(camHeight / distance).
+        const camHeight = 2.5;
+        const pitchToBin = -Math.atan2(camHeight, Math.max(distance, 0.1)) * 180 / Math.PI;
+        let dPitch = pitchToBin - povNow.pitch;
+
+        // Width/height of the container
+        const W = container.clientWidth;
+        const H = container.clientHeight;
+
+        // FOV at zoom level z: horizontal FOV ≈ 180 / 2^z (Google Street View convention)
+        const hFovDeg = Math.max(20, Math.min(180, 180 / Math.pow(2, zoomNow)));
+        const vFovDeg = hFovDeg * (H / W);
+
+        // Behind the camera?
+        if (Math.abs(dHeading) > hFovDeg * 1.2) { pin.style.display = 'none'; return; }
+
+        // Project: angles → normalized [-0.5, 0.5] → pixels
+        const xNorm = (dHeading / hFovDeg);   // [-0.5..0.5] when in view
+        const yNorm = (-dPitch / vFovDeg);    // pitch up = screen up = negative
+        const x = W / 2 + xNorm * W;
+        const y = H / 2 + yNorm * H;
+
+        // Scale: shrink with distance (1.0 at 5m → ~0.4 at 30m), clamp
+        const scale = Math.max(0.35, Math.min(1.6, 6 / Math.max(distance, 2)));
+
+        // Position the pin so its bottom-center sits at (x, y).
+        const W_pin = 56 * scale, H_pin = 76 * scale;
+        pin.style.left = (x - W_pin / 2) + 'px';
+        pin.style.top  = (y - H_pin) + 'px';
+        pin.style.width  = W_pin + 'px';
+        pin.style.height = H_pin + 'px';
+        pin.style.display = '';
+        pin.style.opacity = '1';
+      }
+
+      // Hook every event that can shift the projection.
+      binSpotPanorama.addListener('pov_changed', reprojectPin);
+      binSpotPanorama.addListener('zoom_changed', reprojectPin);
+      binSpotPanorama.addListener('pano_changed', reprojectPin);
+      binSpotPanorama.addListener('position_changed', reprojectPin);
+      // Initial paint after the panorama has had a tick to size itself.
+      requestAnimationFrame(reprojectPin);
+      setTimeout(reprojectPin, 250);
+      setTimeout(reprojectPin, 800);
+      // Also reproject on window resize / fullscreen toggle
+      window.addEventListener('resize', reprojectPin);
+      // Stash on the pin so closeBinSpotModal can unbind
+      pin._reproject = reprojectPin;
+      binSpotMarker = pin;  // reused for cleanup
     }
 
     function closeBinSpotModal() {
       const modal = document.getElementById('binSpotModal');
       modal.classList.remove('show');
       // Clean up to free memory
-      if (binSpotMarker) { binSpotMarker.setMap(null); binSpotMarker = null; }
+      if (binSpotMarker) {
+        // binSpotMarker is now a DOM element (pin overlay), not a google.maps.Marker.
+        if (binSpotMarker._reproject) window.removeEventListener('resize', binSpotMarker._reproject);
+        if (binSpotMarker.parentNode) binSpotMarker.parentNode.removeChild(binSpotMarker);
+        binSpotMarker = null;
+      }
       if (binSpotPanorama) {
         document.getElementById('binSpotStreetView').innerHTML = '';
         binSpotPanorama = null;
