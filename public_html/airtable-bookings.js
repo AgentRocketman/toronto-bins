@@ -66,31 +66,39 @@ async function saveBookingToAirtable(bookingData) {
   };
 
   try {
-    let bookingResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(bookingRecord)
-    });
+    // Helper: extract the offending field name from an Airtable UNKNOWN_FIELD_NAME error
+    function extractUnknownField(msg) {
+      const m = msg && msg.match(/Unknown field name:\s*["']?([^"']+)["']?/i);
+      return m ? m[1] : null;
+    }
 
-    // If Airtable rejects unknown bin-placement columns (not yet added to schema),
-    // retry without those fields so the booking still saves.
-    if (!bookingResponse.ok && Object.keys(binFields).length) {
-      const error = await bookingResponse.json();
-      const msg = error?.error?.message || '';
-      if (/UNKNOWN_FIELD_NAME|unknown field/i.test(msg)) {
-        console.warn('Bin placement columns missing from Bookings table; retrying without them. Add: Bin Pano, Bin POV Heading/Pitch/Zoom, Bin Lat/Lng, Camera Lat/Lng, Has Bin Pin');
-        const legacyFields = Object.assign({}, bookingRecord.fields);
-        for (const k of Object.keys(binFields)) delete legacyFields[k];
-        bookingResponse = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`, {
+    // POST with retry: strip any rejected field names one at a time until it accepts.
+    async function postWithSchemaRetry(fields, maxAttempts = 6) {
+      let attempt = 0;
+      let currentFields = { ...fields };
+      while (attempt < maxAttempts) {
+        attempt++;
+        const res = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: legacyFields, typecast: true })
+          body: JSON.stringify({ fields: currentFields, typecast: true })
         });
+        if (res.ok) return res;
+        const error = await res.json().catch(() => ({}));
+        const msg = error?.error?.message || '';
+        const offending = extractUnknownField(msg);
+        if (offending && currentFields.hasOwnProperty(offending)) {
+          console.warn(`Bookings table missing field "${offending}" — retrying without it.`);
+          delete currentFields[offending];
+          continue;
+        }
+        // Not an unknown-field error — surface it.
+        throw new Error(`Airtable error: ${msg || 'Unknown error'}`);
       }
+      throw new Error('Airtable error: too many missing fields, giving up.');
     }
+
+    const bookingResponse = await postWithSchemaRetry(bookingRecord.fields);
 
     if (!bookingResponse.ok) {
       const error = await bookingResponse.json();

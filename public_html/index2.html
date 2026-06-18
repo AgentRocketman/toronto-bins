@@ -1269,6 +1269,9 @@ function openCheckout() {
 
   // Store booking data in global scope for payment processing
   const binPlacement = typeof bpGetPlacementData === 'function' ? bpGetPlacementData() : null;
+  // Pickup day name (e.g. "Tuesday") parsed from the calendar/schedule the customer matched into
+  const dowMatch = currentCalendarName ? currentCalendarName.match(/^([A-Za-z]+)/) : null;
+  const pickupDayOfWeek = dowMatch ? dowMatch[1] : 'Tuesday';
   window.currentBooking = {
     customerName: '',
     customerEmail: '',
@@ -1276,6 +1279,7 @@ function openCheckout() {
     address: currentAddress,
     serviceType: serviceType,
     frequency: planType,
+    dayOfWeek: pickupDayOfWeek,
     subtotal: subtotalVal,
     hstAmount: hstAmount,
     totalWithTax: totalWithTax,
