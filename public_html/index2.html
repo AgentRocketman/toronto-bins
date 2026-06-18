@@ -1053,6 +1053,18 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('booking-section').classList.add('revealed');
   buildDateCards();
   document.getElementById('adhoc-dates').style.display = 'block';
+  
+  // Display Street View for the address
+  setTimeout(() => {
+    if (typeof window.streetView !== 'undefined' && window.currentAddress) {
+      const container = document.getElementById('streetview-container');
+      if (container) {
+        container.style.display = 'block';
+        console.log('Displaying Street View for:', window.currentAddress);
+        window.streetView.display(window.currentAddress, 'streetview-container');
+      }
+    }
+  }, 100);
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
 
@@ -1451,31 +1463,7 @@ function formatDateShort(isoStr) {
 </div>
 
 <script>
-// Street View initialization
-window.addEventListener('DOMContentLoaded', function() {
-  setTimeout(function() {
-    const bookingSection = document.getElementById('booking-section');
-    if (!bookingSection) return;
-    
-    const observer = new MutationObserver(function() {
-      const isRevealed = bookingSection.classList.contains('revealed');
-      const container = document.getElementById('streetview-container');
-      
-      if (isRevealed && window.currentAddress) {
-        const address = window.currentAddress.trim();
-        if (address && typeof window.streetView !== 'undefined') {
-          container.style.display = 'block';
-          console.log('Displaying Street View for:', address);
-          window.streetView.display(address, 'streetview-container');
-        }
-      } else if (container) {
-        container.style.display = 'none';
-      }
-    });
-    
-    observer.observe(bookingSection, { attributes: true, attributeFilter: ['class'] });
-  }, 500);
-});
+// Street View is now initialized in revealBooking() function
 </script>
 
 <script>
