@@ -479,11 +479,16 @@
         });
       }
 
-      // Render sessions
+      // Render sessions (sorted by timestamp, oldest first)
       const sessionsList = document.getElementById('sessionsList');
       sessionsList.innerHTML = '';
       if (data.sessions && data.sessions.length > 0) {
-        data.sessions.forEach(session => {
+        // Sort sessions by timestamp (chronological order)
+        const sortedSessions = [...data.sessions].sort((a, b) => {
+          return new Date(a.timestamp) - new Date(b.timestamp);
+        });
+        
+        sortedSessions.forEach(session => {
           const sessionEl = document.createElement('div');
           sessionEl.className = 'session-item';
 
