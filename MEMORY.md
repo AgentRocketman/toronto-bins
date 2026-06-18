@@ -78,6 +78,50 @@
 - ✅ Dynamic recurring info text updates
 - ✅ Deployed FINAL version (curbin-v2-final.html with transitionend fix)
 
+## Bin Placement (Street View pin) — 2026-06-18 ✅
+
+**Customer side** (`index2.html`):
+- Replaced "Your Order" summary block with embedded Street View + green crosshair (at 70% down so horizon stays visible)
+- Customer aims crosshair at bin spot, hits **Go to Checkout** → pin auto-drops at crosshair (no Drop/Clear buttons)
+- **No visible pin marker** on customer side — coords captured silently
+- Checkout button starts disabled, enables when adhoc date picked OR recurring chosen
+- Friendly fallback when Street View not available for the address
+- Pin data flows into `window.currentBooking.binPlacement = { pano, pov, cameraLatLng, binLatLng, hasPin }`
+
+**Driver side** (`service_routing2.html`):
+- Each stop with saved pin data gets a 📍 **View Bin Spot** button
+- Modal recreates the customer's exact panorama + POV
+- Green 🗑️ pin anchored at saved lat/lng (stays glued when driver walks/rotates)
+- Locked green crosshair overlay at same 70% position the customer saw
+- ESC / X / backdrop closes the modal
+
+**Persistence**: `airtable-bookings.js` writes Bin Pano / Bin POV {Heading,Pitch,Zoom} / Bin Lat/Lng / Camera Lat/Lng / Has Bin Pin to Bookings table. **Graceful fallback**: if those columns don't exist yet, retries without them so the booking still saves. **TODO**: add those columns to the Bookings table in Airtable for the data to actually persist.
+
+**Standalone tools**: `/streetview-test.html` (debug) and `/bin-placement.html` (standalone pin-drop page that can be linked from confirmation emails like `?address=...`).
+
+## Critical Bug Fix — api/config.php (2026-06-18) 🔥
+
+**The chat-logging rewrite in commit `c5b9e50` accidentally overwrote api/config.php**, deleting all the auth/Stripe/SMTP/JWT helpers. As a result, these endpoints have been silently returning HTTP 500 for the past few days:
+
+- `/api/auth/login.php` (employee login broken)
+- `/api/charge-payment.php` (ad hoc payments broken)
+- `/api/create-subscription.php` (recurring subs broken)
+- `/api/send-confirmation.php` (confirmation emails broken)
+- `/api/contact.php`, `/api/manage-request.php`, `/api/process-cancellation.php`, `/api/verify-booking.php`
+
+**Fix (commit 3c8b67c)**: Merged both helper styles into one config.php — added back `airtableRequest`, `stripeRequest`, `corsHeaders`, `generateJWT`, `verifyJWT`, `sendSmtpEmail`, plus all `AIRTABLE_*` / `STRIPE_*` / `JWT_*` / `ADMIN_*` / `SMTP_*` constants, while keeping the chat-logging helpers (`airtableCall`, `openaiCall`, `getClientIP`, `getBrowserInfo`). **All endpoints now return 200.**
+
+**Lesson**: any time config.php is touched, smoke-test the auth + payment + email endpoints. ANY of those failing silently in production = lost bookings/customers.
+
+## Employee Login (2026-06-18) ✅
+
+- URL: https://agentrocketman.com/employee-login.html
+- Test account: `chris@agentrocketman.com` / `Chris2026!` (Employee ID: EMP-E32E2B)
+- After login, routes to driver service routing page
+- Admin credentials (for creating new employees via `/api/auth/create-employee.php`):
+  - `ADMIN_KEY`: `getmybin-admin-xK9mP2026`
+  - `ADMIN_PASSWORD`: `GetMyBinAdmin2026!`
+
 ## Hostinger Credentials
 - **API token:** B4V2bxKyjkRgso0JS9CkiCqkqUZ32PhAzA16cxcB87d7b57e
 - **FTP Username:** u686706869
