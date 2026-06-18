@@ -64,15 +64,37 @@
       background:#e2e8f0;margin-top:1rem;position:relative;
       box-shadow:var(--shadow-sm);
     }
+    @keyframes crosshairPulse {
+      0%,100% { transform:translate(-50%,-50%) scale(1); }
+      50%     { transform:translate(-50%,-50%) scale(1.08); }
+    }
+    @keyframes crosshairRingPulse {
+      0%   { transform:translate(-50%,-50%) scale(1);   opacity:.7; }
+      100% { transform:translate(-50%,-50%) scale(2.2); opacity:0;  }
+    }
     #crosshair{
       position:absolute;top:70%;left:50%;transform:translate(-50%,-50%);
-      pointer-events:none;width:48px;height:48px;
-      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><circle cx='24' cy='24' r='10' fill='none' stroke='%23ffffff' stroke-width='3'/><circle cx='24' cy='24' r='10' fill='none' stroke='%2371b80c' stroke-width='2'/><line x1='24' y1='4' x2='24' y2='14' stroke='%23ffffff' stroke-width='3'/><line x1='24' y1='4' x2='24' y2='14' stroke='%2371b80c' stroke-width='2'/><line x1='24' y1='34' x2='24' y2='44' stroke='%23ffffff' stroke-width='3'/><line x1='24' y1='34' x2='24' y2='44' stroke='%2371b80c' stroke-width='2'/><line x1='4' y1='24' x2='14' y2='24' stroke='%23ffffff' stroke-width='3'/><line x1='4' y1='24' x2='14' y2='24' stroke='%2371b80c' stroke-width='2'/><line x1='34' y1='24' x2='44' y2='24' stroke='%23ffffff' stroke-width='3'/><line x1='34' y1='24' x2='44' y2='24' stroke='%2371b80c' stroke-width='2'/><circle cx='24' cy='24' r='2' fill='%2371b80c'/></svg>");
+      pointer-events:none;width:110px;height:110px;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110 110'><circle cx='55' cy='55' r='26' fill='none' stroke='%23ffffff' stroke-width='6'/><circle cx='55' cy='55' r='26' fill='none' stroke='%2371b80c' stroke-width='4'/><line x1='55' y1='4' x2='55' y2='26' stroke='%23ffffff' stroke-width='6'/><line x1='55' y1='4' x2='55' y2='26' stroke='%2371b80c' stroke-width='4'/><line x1='55' y1='84' x2='55' y2='106' stroke='%23ffffff' stroke-width='6'/><line x1='55' y1='84' x2='55' y2='106' stroke='%2371b80c' stroke-width='4'/><line x1='4' y1='55' x2='26' y2='55' stroke='%23ffffff' stroke-width='6'/><line x1='4' y1='55' x2='26' y2='55' stroke='%2371b80c' stroke-width='4'/><line x1='84' y1='55' x2='106' y2='55' stroke='%23ffffff' stroke-width='6'/><line x1='84' y1='55' x2='106' y2='55' stroke='%2371b80c' stroke-width='4'/><circle cx='55' cy='55' r='5' fill='%2371b80c' stroke='%23ffffff' stroke-width='2'/></svg>");
       background-size:contain;background-repeat:no-repeat;
       z-index:5;
-      filter:drop-shadow(0 1px 2px rgba(0,0,0,.4));
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));
+      animation:crosshairPulse 1.6s ease-in-out infinite;
     }
-    #crosshair.hidden{display:none;}
+    #crosshair::after{
+      content:'';position:absolute;top:50%;left:50%;
+      width:50px;height:50px;border:3px solid #71b80c;border-radius:50%;
+      transform:translate(-50%,-50%);
+      animation:crosshairRingPulse 1.8s ease-out infinite;
+    }
+    .crosshair-label{
+      position:absolute;top:calc(70% + 70px);left:50%;transform:translateX(-50%);
+      background:rgba(113,184,12,.95);color:white;font-weight:600;font-size:.85rem;
+      padding:.35rem .9rem;border-radius:999px;white-space:nowrap;
+      box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:none;z-index:5;
+      letter-spacing:.2px;
+    }
+    #crosshair.hidden,#crosshair.hidden + .crosshair-label{display:none;}
     #streetview-container.empty::before{
       content:"Enter an address above to start";
       position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -149,6 +171,7 @@
       <div id="streetview-wrap" style="position:relative;">
         <div id="streetview-container" class="empty"></div>
         <div id="crosshair" aria-hidden="true"></div>
+        <div class="crosshair-label" id="crosshair-label">🎯 Aim here → drop pin</div>
       </div>
       <div id="pin-status" style="margin-top:.6rem;font-size:.85rem;color:var(--slate-light);text-align:center;">No pin dropped yet — aim the crosshair and tap “Drop Pin Here”.</div>
       <textarea id="notes" placeholder="Optional notes (e.g. 'Behind the blue recycling bin', 'Side gate is unlocked')"></textarea>
@@ -424,10 +447,13 @@
         binMarker = null;
         binLatLng = null;
         crosshair.classList.remove('hidden');
+        if (crosshairLabel) crosshairLabel.style.display = '';
         updatePinStatus();
         toast('Pin removed');
       }
     });
+
+    const crosshairLabel = document.getElementById('crosshair-label');
 
     dropPinBtn.addEventListener('click', () => {
       if (!panorama) {
@@ -441,6 +467,7 @@
       }
       placeBinPin(latLng);
       crosshair.classList.add('hidden');
+      if (crosshairLabel) crosshairLabel.style.display = 'none';
       toast('Pin dropped! Drag it to fine-tune.');
     });
 
