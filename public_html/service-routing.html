@@ -1609,26 +1609,18 @@
         motionTrackingControl: false
       });
 
-      // Inverted teardrop pin in brand green — tip touches the ground at the exact
-      // saved bin location. The marker is anchored to a real world LatLng, so it
-      // stays locked even when the driver pans, walks, or rotates the panorama.
+      // Inverted teardrop pin in brand green. Uses only solid fills + simple shapes
+      // because Google Maps Marker icons rendered from data: URLs are picky about
+      // SVG gradients and filters (they often render blank). Tip sits at the saved
+      // ground location; the marker is anchored to a real world LatLng so it stays
+      // locked when the driver pans, walks, or rotates the panorama.
       const binIcon = {
         url: 'data:image/svg+xml;utf8,' + encodeURIComponent(
           "<svg xmlns='http://www.w3.org/2000/svg' width='56' height='76' viewBox='0 0 56 76'>" +
-            "<defs><filter id='s' x='-50%' y='-50%' width='200%' height='200%'>" +
-            "<feDropShadow dx='0' dy='3' stdDeviation='2.5' flood-opacity='.5'/></filter>" +
-            "<radialGradient id='g' cx='35%' cy='30%' r='75%'>" +
-            "<stop offset='0%' stop-color='#a4e636'/>" +
-            "<stop offset='60%' stop-color='#71b80c'/>" +
-            "<stop offset='100%' stop-color='#5a9109'/>" +
-            "</radialGradient></defs>" +
-            "<g filter='url(#s)'>" +
-              // Inverted teardrop: round top, tapering to a sharp point at the bottom
-              "<path d='M28 4 C 14 4, 4 14, 4 28 C 4 42, 28 70, 28 70 C 28 70, 52 42, 52 28 C 52 14, 42 4, 28 4 Z' fill='url(#g)' stroke='white' stroke-width='3' stroke-linejoin='round'/>" +
-              // Inner highlight ring
-              "<circle cx='28' cy='26' r='7' fill='white' fill-opacity='.95'/>" +
-              "<circle cx='28' cy='26' r='4' fill='#5a9109'/>" +
-            "</g></svg>"
+            "<path d='M28 4 C 14 4, 4 14, 4 28 C 4 42, 28 70, 28 70 C 28 70, 52 42, 52 28 C 52 14, 42 4, 28 4 Z' fill='#71b80c' stroke='white' stroke-width='3' stroke-linejoin='round'/>" +
+            "<circle cx='28' cy='26' r='8' fill='white'/>" +
+            "<circle cx='28' cy='26' r='4.5' fill='#5a9109'/>" +
+          "</svg>"
         ),
         scaledSize: new google.maps.Size(56, 76),
         anchor: new google.maps.Point(28, 74)  // tip of teardrop sits on the ground
