@@ -237,9 +237,7 @@
 
   /* ─── Configuration ──────────────────────────────────────────── */
   const CFG = {
-    apiKey: null,
-    endpoint: 'https://api.openai.com/v1/chat/completions',
-    model: 'gpt-3.5-turbo',
+    endpoint: '/api/chat.php',
     maxMessages: 50,
     systemPrompt: `You are the friendly and helpful GetMyBin customer support assistant. You represent a Toronto-based bin collection service.
 
@@ -452,11 +450,6 @@ Tone & Style:
     const text = el.input.value.trim();
     if (!text || waiting) return;
 
-    if (!CFG.apiKey) {
-      addBubble('Chat is not configured yet. Please set your API key.', 'assistant');
-      return;
-    }
-
     el.input.value = '';
     el.sendBtn.disabled = true;
     waiting = true;
@@ -466,26 +459,23 @@ Tone & Style:
 
     try {
       const payload = {
-        model: CFG.model,
-        messages: [{ role: 'system', content: CFG.systemPrompt }, ...history],
-        temperature: 0.7,
-        max_tokens: 500
+        messages: [{ role: 'system', content: CFG.systemPrompt }, ...history]
       };
 
       const res = await fetch(CFG.endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + CFG.apiKey
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
 
-      if (!res.ok) throw new Error('API ' + res.status);
-
       const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'API error ' + res.status);
+
       hideTyping();
-      addBubble(data.choices[0].message.content, 'assistant');
+      addBubble(data.content, 'assistant');
     } catch (err) {
       hideTyping();
       console.error('GetMyBin chat error:', err);
