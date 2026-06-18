@@ -875,14 +875,23 @@
       const seqNum = sequenceNumbers[stop.id] || '?';
       // Street View thumbnail: prefer the customer's saved pose. Falls back to a
       // building-front view via the address lat/lng if there is no pin yet.
-      // Rendered as a tiny non-interactive live Panorama (uses the JS Maps API key
-      // we already have authorized) — see initStopThumbs() after render.
+      // Uses the cheap Street View Static API via /api/streetview-thumb.php so the
+      // Maps API key stays server-side and Google caches the image edge-side.
       const thumbId = `sv-thumb-${stop.id}`;
       let svThumbHTML;
       if (stop.binPano && stop.binLat != null && stop.binLng != null) {
-        svThumbHTML = `<div class="sv-thumb" id="${thumbId}" data-action="view-bin-spot" title="Open Street View with bin spot"><div class="sv-overlay">📍 VIEW</div></div>`;
+        const q = new URLSearchParams({
+          pano: stop.binPano,
+          heading: stop.binPovHeading ?? 0,
+          pitch:   stop.binPovPitch   ?? 0,
+          fov: 90, w: 160, h: 120
+        }).toString();
+        svThumbHTML = `<div class="sv-thumb" id="${thumbId}" data-action="view-bin-spot" title="Open Street View with bin spot"><img src="/api/streetview-thumb.php?${q}" alt="Bin spot preview" loading="lazy" onerror="this.style.display='none'"><div class="sv-overlay">📍 VIEW</div></div>`;
       } else if (stop.lat && stop.lng) {
-        svThumbHTML = `<div class="sv-thumb placeholder" id="${thumbId}" title="No bin spot pinned yet"></div>`;
+        const q = new URLSearchParams({
+          lat: stop.lat, lng: stop.lng, heading: 0, pitch: 0, fov: 90, w: 160, h: 120
+        }).toString();
+        svThumbHTML = `<div class="sv-thumb placeholder" id="${thumbId}" title="No bin spot pinned yet"><img src="/api/streetview-thumb.php?${q}" alt="" loading="lazy" onerror="this.style.display='none'"></div>`;
       } else {
         svThumbHTML = `<div class="sv-thumb placeholder"></div>`;
       }
@@ -924,9 +933,6 @@
       item.querySelectorAll('[data-action="view-bin-spot"]').forEach(el => {
         el.addEventListener('click', () => openBinSpotModal(stop));
       });
-
-      // Lazy-mount the SV thumbnail when it scrolls into view (saves API calls)
-      mountStopThumb(stop, thumbId);
 
       uploadBtn.addEventListener('click', () => {
         fileInput.click();
