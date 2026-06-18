@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <link rel="icon" type="image/png" href="/img/getmybin-icon.png">
+  <title>GetMyBin — Show Us Your Bin Spot</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --green:#71b80c;--green-dark:#5a9109;--green-light:#d4f3a8;--green-xlight:#f7fce3;
+      --slate:#334155;--slate-light:#64748b;--slate-xlight:#f1f5f9;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.1);--shadow-md:0 4px 6px rgba(0,0,0,.1);
+      --shadow-lg:0 10px 25px rgba(0,0,0,.15);
+    }
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+      background:linear-gradient(135deg,#f7fce3 0%,#e8f5d8 100%);
+      min-height:100vh;color:var(--slate);
+      line-height:1.5;padding:20px;
+    }
+    .container{max-width:900px;margin:0 auto;}
+    header{text-align:center;margin-bottom:1.5rem;}
+    header img{height:40px;}
+    h1{font-size:1.6rem;color:var(--green-dark);margin-top:.4rem;}
+    .subtitle{color:var(--slate-light);font-size:.95rem;margin-top:.3rem;}
+
+    .step{
+      background:white;border-radius:16px;padding:1.5rem;margin-bottom:1.2rem;
+      box-shadow:var(--shadow-md);
+    }
+    .step-num{
+      display:inline-block;width:28px;height:28px;background:var(--green);
+      color:white;border-radius:50%;text-align:center;line-height:28px;
+      font-weight:700;font-size:.9rem;margin-right:.5rem;
+    }
+    .step-title{font-size:1.1rem;font-weight:600;color:var(--slate);display:inline-block;}
+
+    input[type="text"]{
+      width:100%;padding:.85rem 1rem;border:2px solid var(--slate-xlight);
+      border-radius:10px;font-size:1rem;margin-top:.8rem;
+      transition:border-color .2s;
+    }
+    input[type="text"]:focus{outline:none;border-color:var(--green);}
+
+    button.primary{
+      background:var(--green);color:white;border:none;padding:.85rem 1.5rem;
+      border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;
+      transition:background .2s;width:100%;margin-top:.8rem;
+    }
+    button.primary:hover{background:var(--green-dark);}
+    button.primary:disabled{background:#cbd5e1;cursor:not-allowed;}
+
+    button.secondary{
+      background:white;color:var(--slate);border:2px solid var(--slate-xlight);
+      padding:.7rem 1.2rem;border-radius:10px;font-size:.95rem;
+      font-weight:500;cursor:pointer;transition:all .2s;
+    }
+    button.secondary:hover{border-color:var(--green);color:var(--green-dark);}
+
+    #streetview-container{
+      width:100%;height:480px;border-radius:14px;overflow:hidden;
+      background:#e2e8f0;margin-top:1rem;position:relative;
+      box-shadow:var(--shadow-sm);
+    }
+    #streetview-container.empty::before{
+      content:"Enter an address above to start";
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      color:var(--slate-light);font-size:.95rem;
+    }
+
+    .help-text{
+      background:var(--green-xlight);border-left:4px solid var(--green);
+      padding:.8rem 1rem;border-radius:8px;margin-top:1rem;font-size:.9rem;
+      color:var(--slate);
+    }
+    .help-text strong{color:var(--green-dark);}
+
+    textarea{
+      width:100%;padding:.8rem 1rem;border:2px solid var(--slate-xlight);
+      border-radius:10px;font-size:.95rem;font-family:inherit;
+      resize:vertical;min-height:80px;margin-top:.6rem;
+    }
+    textarea:focus{outline:none;border-color:var(--green);}
+
+    .actions{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap;}
+    .actions button{flex:1;min-width:140px;}
+
+    .saved-state{
+      background:var(--green-xlight);border:2px solid var(--green);
+      border-radius:14px;padding:1.5rem;margin-top:1rem;text-align:center;
+    }
+    .saved-state h3{color:var(--green-dark);margin-bottom:.5rem;}
+    .saved-state .checkmark{font-size:2.5rem;}
+
+    .hidden{display:none;}
+
+    #status-msg{
+      position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+      background:var(--slate);color:white;padding:.7rem 1.4rem;border-radius:10px;
+      font-size:.9rem;opacity:0;transition:opacity .3s;z-index:1000;
+      box-shadow:var(--shadow-lg);
+    }
+    #status-msg.show{opacity:1;}
+
+    @media (max-width:600px){
+      body{padding:12px;}
+      .step{padding:1.1rem;}
+      h1{font-size:1.3rem;}
+      #streetview-container{height:360px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="/img/getmybin-logo.png" alt="GetMyBin" onerror="this.style.display='none'">
+      <h1>📍 Show Us Your Bin Spot</h1>
+      <p class="subtitle">Help our drivers know exactly where to leave your bin every week.</p>
+    </header>
+
+    <!-- Step 1: Address -->
+    <div class="step">
+      <span class="step-num">1</span>
+      <span class="step-title">Confirm your address</span>
+      <input type="text" id="address-input" placeholder="123 Main St, Toronto" autocomplete="off">
+      <button class="primary" id="load-btn">Load Street View →</button>
+    </div>
+
+    <!-- Step 2: Street View -->
+    <div class="step" id="step2" style="display:none;">
+      <span class="step-num">2</span>
+      <span class="step-title">Drag the view to frame your bin spot</span>
+      <div class="help-text">
+        <strong>How to:</strong> Click & drag inside the view to rotate. Use + / – to zoom.
+        Frame the exact spot where you want your bin placed — driveway corner, behind side gate, etc.
+      </div>
+      <div id="streetview-container" class="empty"></div>
+      <textarea id="notes" placeholder="Optional notes (e.g. 'Behind the blue recycling bin', 'Side gate is unlocked')"></textarea>
+      <div class="actions">
+        <button class="secondary" id="reset-btn">↺ Reset View</button>
+        <button class="primary" id="save-btn">💾 Save This Spot</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Saved -->
+    <div class="saved-state hidden" id="saved-state">
+      <div class="checkmark">✅</div>
+      <h3>Got it!</h3>
+      <p>Your bin placement is saved. Our drivers will use this view to place your bin in exactly the right spot.</p>
+      <div class="actions">
+        <button class="secondary" id="edit-btn">✏️ Edit View</button>
+        <button class="primary" id="done-btn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="status-msg"></div>
+
+  <script src="/streetview.js"></script>
+  <script>
+    let panorama = null;
+    let buildingLocation = null;
+    let initialPov = null;
+    let mapsApiKey = null;
+
+    const addressInput = document.getElementById('address-input');
+    const loadBtn = document.getElementById('load-btn');
+    const step2 = document.getElementById('step2');
+    const svContainer = document.getElementById('streetview-container');
+    const notesEl = document.getElementById('notes');
+    const resetBtn = document.getElementById('reset-btn');
+    const saveBtn = document.getElementById('save-btn');
+    const savedState = document.getElementById('saved-state');
+    const editBtn = document.getElementById('edit-btn');
+    const doneBtn = document.getElementById('done-btn');
+
+    function toast(msg, ms = 2500) {
+      const el = document.getElementById('status-msg');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), ms);
+    }
+
+    // Pre-fill address from URL ?address= or localStorage
+    const urlAddr = new URLSearchParams(location.search).get('address');
+    const saved = JSON.parse(localStorage.getItem('binPlacement') || 'null');
+    if (urlAddr) {
+      addressInput.value = urlAddr;
+    } else if (saved && saved.address) {
+      addressInput.value = saved.address;
+      notesEl.value = saved.notes || '';
+    }
+
+    // Set up Places Autocomplete after Maps API is loaded
+    async function setupAutocomplete() {
+      try {
+        await window.streetView.init();
+        // Wait for google.maps
+        let attempts = 0;
+        while (!window.google || !window.google.maps || !window.google.maps.places) {
+          await new Promise(r => setTimeout(r, 100));
+          if (++attempts > 50) return;
+        }
+        const ac = new google.maps.places.Autocomplete(addressInput, {
+          componentRestrictions: { country: 'ca' },
+          fields: ['formatted_address', 'geometry']
+        });
+        ac.addListener('place_changed', () => {
+          const place = ac.getPlace();
+          if (place && place.formatted_address) {
+            addressInput.value = place.formatted_address;
+          }
+        });
+      } catch (e) {
+        console.warn('Autocomplete setup failed:', e);
+      }
+    }
+    setupAutocomplete();
+
+    async function loadStreetView() {
+      const address = addressInput.value.trim();
+      if (!address) {
+        toast('Please enter an address');
+        return;
+      }
+
+      loadBtn.disabled = true;
+      loadBtn.textContent = 'Loading...';
+      step2.style.display = 'block';
+      svContainer.classList.remove('empty');
+      svContainer.innerHTML = '';
+
+      try {
+        await window.streetView.init();
+        // Wait for Maps API ready
+        let attempts = 0;
+        while (!window.google || !window.google.maps) {
+          await new Promise(r => setTimeout(r, 100));
+          if (++attempts > 50) throw new Error('Maps API not loaded');
+        }
+
+        const geocoder = new google.maps.Geocoder();
+        const svService = new google.maps.StreetViewService();
+
+        geocoder.geocode({ address }, (results, status) => {
+          if (status !== 'OK' || !results[0]) {
+            toast('Address not found');
+            loadBtn.disabled = false;
+            loadBtn.textContent = 'Load Street View →';
+            return;
+          }
+
+          buildingLocation = results[0].geometry.location;
+
+          svService.getPanorama(
+            { location: buildingLocation, radius: 50, source: google.maps.StreetViewSource.OUTDOOR },
+            (panoData, svStatus) => {
+              if (svStatus !== 'OK') {
+                svContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#999;">Street View not available for this address. You can still save notes below.</div>';
+                loadBtn.disabled = false;
+                loadBtn.textContent = 'Load Street View →';
+                return;
+              }
+
+              const cameraLoc = panoData.location.latLng;
+              const heading = google.maps.geometry.spherical.computeHeading(cameraLoc, buildingLocation);
+              initialPov = { heading, pitch: 0, zoom: 0 };
+
+              panorama = new google.maps.StreetViewPanorama(svContainer, {
+                pano: panoData.location.pano,
+                pov: { heading, pitch: 0 },
+                zoom: 0,
+                streetViewControl: true,
+                panControl: true,
+                zoomControl: true,
+                fullscreenControl: true,
+                addressControl: true,
+                clickToGo: true,
+                linksControl: true
+              });
+
+              // If we have saved POV, restore it
+              if (saved && saved.address === address && saved.pov) {
+                if (saved.pano) panorama.setPano(saved.pano);
+                panorama.setPov({ heading: saved.pov.heading, pitch: saved.pov.pitch });
+                if (saved.pov.zoom != null) panorama.setZoom(saved.pov.zoom);
+              }
+
+              loadBtn.disabled = false;
+              loadBtn.textContent = 'Load Street View →';
+              toast('Drag to frame your bin spot');
+            }
+          );
+        });
+      } catch (err) {
+        console.error(err);
+        toast('Error loading Street View');
+        loadBtn.disabled = false;
+        loadBtn.textContent = 'Load Street View →';
+      }
+    }
+
+    loadBtn.addEventListener('click', loadStreetView);
+    addressInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); loadStreetView(); }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      if (panorama && initialPov) {
+        panorama.setPov({ heading: initialPov.heading, pitch: initialPov.pitch });
+        panorama.setZoom(initialPov.zoom);
+        toast('View reset');
+      }
+    });
+
+    saveBtn.addEventListener('click', () => {
+      if (!panorama) {
+        toast('Load Street View first');
+        return;
+      }
+      const pov = panorama.getPov();
+      const zoom = panorama.getZoom();
+      const pano = panorama.getPano();
+      const position = panorama.getPosition();
+
+      const data = {
+        address: addressInput.value.trim(),
+        notes: notesEl.value.trim(),
+        pano,
+        pov: { heading: pov.heading, pitch: pov.pitch, zoom },
+        cameraLatLng: position ? { lat: position.lat(), lng: position.lng() } : null,
+        buildingLatLng: buildingLocation ? { lat: buildingLocation.lat(), lng: buildingLocation.lng() } : null,
+        savedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem('binPlacement', JSON.stringify(data));
+      console.log('Saved bin placement:', data);
+
+      // TODO: POST to backend when ready
+      // fetch('/api/save-bin-placement.php', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+
+      step2.style.display = 'none';
+      savedState.classList.remove('hidden');
+      toast('Bin spot saved ✓');
+    });
+
+    editBtn.addEventListener('click', () => {
+      savedState.classList.add('hidden');
+      step2.style.display = 'block';
+    });
+
+    doneBtn.addEventListener('click', () => {
+      window.location.href = '/';
+    });
+
+    // Auto-load if address pre-filled
+    if (urlAddr || (saved && saved.address)) {
+      setTimeout(loadStreetView, 600);
+    }
+  </script>
+</body>
+</html>
