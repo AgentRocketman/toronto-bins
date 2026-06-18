@@ -64,6 +64,15 @@
       background:#e2e8f0;margin-top:1rem;position:relative;
       box-shadow:var(--shadow-sm);
     }
+    #crosshair{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      pointer-events:none;width:48px;height:48px;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><circle cx='24' cy='24' r='10' fill='none' stroke='%23ffffff' stroke-width='3'/><circle cx='24' cy='24' r='10' fill='none' stroke='%2371b80c' stroke-width='2'/><line x1='24' y1='4' x2='24' y2='14' stroke='%23ffffff' stroke-width='3'/><line x1='24' y1='4' x2='24' y2='14' stroke='%2371b80c' stroke-width='2'/><line x1='24' y1='34' x2='24' y2='44' stroke='%23ffffff' stroke-width='3'/><line x1='24' y1='34' x2='24' y2='44' stroke='%2371b80c' stroke-width='2'/><line x1='4' y1='24' x2='14' y2='24' stroke='%23ffffff' stroke-width='3'/><line x1='4' y1='24' x2='14' y2='24' stroke='%2371b80c' stroke-width='2'/><line x1='34' y1='24' x2='44' y2='24' stroke='%23ffffff' stroke-width='3'/><line x1='34' y1='24' x2='44' y2='24' stroke='%2371b80c' stroke-width='2'/><circle cx='24' cy='24' r='2' fill='%2371b80c'/></svg>");
+      background-size:contain;background-repeat:no-repeat;
+      z-index:5;
+      filter:drop-shadow(0 1px 2px rgba(0,0,0,.4));
+    }
+    #crosshair.hidden{display:none;}
     #streetview-container.empty::before{
       content:"Enter an address above to start";
       position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -131,19 +140,23 @@
     <!-- Step 2: Street View -->
     <div class="step" id="step2" style="display:none;">
       <span class="step-num">2</span>
-      <span class="step-title">Drop your bin pin in the view</span>
+      <span class="step-title">Place your bin pin</span>
       <div class="help-text">
-        <strong>How to:</strong> <strong>Click</strong> anywhere in the view to drop your 🗑️ bin pin.
-        <strong>Drag</strong> the pin to fine-tune. Click & drag empty space to rotate the view.
+        <strong>How to:</strong> Drag the view to aim the crosshair at your bin spot, then tap
+        <strong>Drop Pin Here</strong>. After dropping, <strong>drag the pin</strong> to fine-tune.
       </div>
-      <div id="streetview-container" class="empty"></div>
-      <div id="pin-status" style="margin-top:.6rem;font-size:.85rem;color:var(--slate-light);text-align:center;">No pin dropped yet — click in the view to place one.</div>
+      <div id="streetview-wrap" style="position:relative;">
+        <div id="streetview-container" class="empty"></div>
+        <div id="crosshair" aria-hidden="true"></div>
+      </div>
+      <div id="pin-status" style="margin-top:.6rem;font-size:.85rem;color:var(--slate-light);text-align:center;">No pin dropped yet — aim the crosshair and tap “Drop Pin Here”.</div>
       <textarea id="notes" placeholder="Optional notes (e.g. 'Behind the blue recycling bin', 'Side gate is unlocked')"></textarea>
       <div class="actions">
+        <button class="primary" id="drop-pin-btn" style="flex:2;">🗑️ Drop Pin Here</button>
+        <button class="secondary" id="clear-pin-btn">Clear Pin</button>
         <button class="secondary" id="reset-btn">↺ Reset View</button>
-        <button class="secondary" id="clear-pin-btn">🗑️ Clear Pin</button>
-        <button class="primary" id="save-btn">💾 Save This Spot</button>
       </div>
+      <button class="primary" id="save-btn" style="margin-top:.8rem;">💾 Save This Spot</button>
     </div>
 
     <!-- Step 3: Saved -->
@@ -176,8 +189,10 @@
     const notesEl = document.getElementById('notes');
     const resetBtn = document.getElementById('reset-btn');
     const clearPinBtn = document.getElementById('clear-pin-btn');
+    const dropPinBtn = document.getElementById('drop-pin-btn');
     const saveBtn = document.getElementById('save-btn');
     const pinStatus = document.getElementById('pin-status');
+    const crosshair = document.getElementById('crosshair');
     const savedState = document.getElementById('saved-state');
     const editBtn = document.getElementById('edit-btn');
     const doneBtn = document.getElementById('done-btn');
@@ -347,6 +362,7 @@
         });
       } else {
         binMarker.setPosition(latLng);
+        binMarker.setMap(panorama);
       }
       updatePinStatus();
     }
@@ -356,19 +372,25 @@
         pinStatus.innerHTML = '✅ Pin placed — drag to fine-tune, or click elsewhere to move it.';
         pinStatus.style.color = 'var(--green-dark)';
       } else {
-        pinStatus.innerHTML = 'No pin dropped yet — click in the view to place one.';
+        pinStatus.innerHTML = 'No pin dropped yet — aim the crosshair and tap “Drop Pin Here”.';
         pinStatus.style.color = 'var(--slate-light)';
       }
     }
 
     function setupBinPin() {
-      if (!panorama) return;
-      // Click anywhere in panorama to drop/move the pin
-      panorama.addListener('click', (e) => {
-        if (e && e.latLng) {
-          placeBinPin(e.latLng);
-        }
-      });
+      // Crosshair-based pin placement — reliable across desktop & mobile
+    }
+
+    // Convert current panorama POV + camera position into a world LatLng at ~6m ahead
+    function getLatLngAtCrosshair() {
+      if (!panorama) return null;
+      const cam = panorama.getPosition();
+      if (!cam) return null;
+      const pov = panorama.getPov();
+      const zoom = panorama.getZoom();
+      // Distance in meters — closer at higher zoom (more precise placement)
+      const distance = Math.max(3, 12 / Math.pow(2, zoom));
+      return google.maps.geometry.spherical.computeOffset(cam, distance, pov.heading);
     }
 
     clearPinBtn.addEventListener('click', () => {
@@ -376,9 +398,25 @@
         binMarker.setMap(null);
         binMarker = null;
         binLatLng = null;
+        crosshair.classList.remove('hidden');
         updatePinStatus();
         toast('Pin removed');
       }
+    });
+
+    dropPinBtn.addEventListener('click', () => {
+      if (!panorama) {
+        toast('Load Street View first');
+        return;
+      }
+      const latLng = getLatLngAtCrosshair();
+      if (!latLng) {
+        toast('Could not compute pin location');
+        return;
+      }
+      placeBinPin(latLng);
+      crosshair.classList.add('hidden');
+      toast('Pin dropped! Drag it to fine-tune.');
     });
 
     loadBtn.addEventListener('click', loadStreetView);
