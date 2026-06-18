@@ -224,9 +224,39 @@
     .session-summary {
       font-weight: 600;
       color: var(--slate);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      word-wrap: break-word;
+      white-space: normal;
+      line-height: 1.4;
+    }
+    .chat-messages {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .chat-msg {
+      display: flex;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .chat-msg.question {
+      background: #f3f4f6;
+      justify-content: flex-end;
+    }
+    .chat-msg.answer {
+      background: #e8f5e0;
+      justify-content: flex-start;
+    }
+    .chat-msg-text {
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    .chat-msg-time {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 4px;
     }
     .session-count {
       font-size: 0.8rem;
@@ -421,9 +451,22 @@
 
       document.getElementById('sessionCount').textContent = data.sessionCount;
       document.getElementById('messageCount').textContent = data.messageCount;
-      document.getElementById('summaryText').textContent = data.summary || 'No summary available.';
 
-      // Render top issues
+      // Render top issues (clean up summary text if needed)
+      let summaryText = data.summary || 'No summary available.';
+      // Remove markdown code blocks if present
+      summaryText = summaryText.replace(/```[\s\S]*?```/g, '').replace(/^\n+|\n+$/g, '').trim();
+      // If it's just a JSON array string, parse and format it
+      if (summaryText.startsWith('[')) {
+        try {
+          const issues = JSON.parse(summaryText);
+          summaryText = 'Top customer concerns include: ' + issues.slice(0, 3).join(', ') + '.';
+        } catch (e) {
+          // Keep original text if parsing fails
+        }
+      }
+      document.getElementById('summaryText').textContent = summaryText;
+      
       const issuesList = document.getElementById('issuesList');
       issuesList.innerHTML = '';
       if (data.topIssues && data.topIssues.length > 0) {
@@ -456,13 +499,35 @@
 
           const detail = document.createElement('div');
           detail.className = 'session-detail';
+          
+          // Build chat messages HTML
+          let chatHTML = '<div class="chat-messages">';
+          if (session.messages && session.messages.length > 0) {
+            session.messages.forEach(msg => {
+              const msgClass = msg.type === 'question' ? 'question' : 'answer';
+              const msgLabel = msg.type === 'question' ? '👤 Customer' : '🤖 Assistant';
+              const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+              chatHTML += `
+                <div class="chat-msg ${msgClass}">
+                  <div>
+                    <div style="font-weight: 600; color: var(--slate-light); font-size: 0.8rem; margin-bottom: 4px;">${msgLabel}</div>
+                    <div class="chat-msg-text">${escapeHtml(msg.content)}</div>
+                    <div class="chat-msg-time">${time}</div>
+                  </div>
+                </div>
+              `;
+            });
+          }
+          chatHTML += '</div>';
+          
           detail.innerHTML = `
             <div class="session-detail-inner">
               <div class="session-meta">
                 <div class="meta-item"><span class="meta-label">Session ID:</span> ${session.sessionId}</div>
                 <div class="meta-item"><span class="meta-label">Messages:</span> ${session.messageCount}</div>
               </div>
-              <p style="font-size: 0.85rem; color: var(--slate);"><strong>Summary:</strong> ${session.summary || 'No summary available.'}</p>
+              <p style="font-size: 0.85rem; color: var(--slate); margin-bottom: 12px;"><strong>Summary:</strong> ${session.summary || 'No summary available.'}</p>
+              <div style="border-top: 1px solid #e2e8f0; padding-top: 12px;"><strong style="font-size: 0.85rem;">Chat History:</strong>${chatHTML}</div>
             </div>
           `;
 
@@ -493,6 +558,12 @@
 
     function hideError() {
       document.getElementById('errorBox').style.display = 'none';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
   </script>
 </body>

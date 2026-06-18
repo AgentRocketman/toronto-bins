@@ -150,9 +150,9 @@ if ($openaiResult['code'] === 200 && isset($openaiResult['body']['choices'][0]['
     }
 }
 
-// Summarize each session (in parallel would be better, but this is simpler)
+// Summarize each session and get chat messages
 $sessionResults = [];
-foreach ($sessionSummaryPrompts as $sp) {
+foreach ($sessions as $sessionId => $sessionData) {
     $sessionOpenaiResult = openaiCall([
         [
             'role' => 'system',
@@ -160,7 +160,7 @@ foreach ($sessionSummaryPrompts as $sp) {
         ],
         [
             'role' => 'user',
-            'content' => $sp['prompt']
+            'content' => "Summarize this GetMyBin customer support chat in 1 sentence:\n" . implode(" | ", array_slice($sessionData['questions'], 0, 5))
         ]
     ], 'gpt-3.5-turbo', 0.5);
     
@@ -170,11 +170,12 @@ foreach ($sessionSummaryPrompts as $sp) {
     }
     
     $sessionResults[] = [
-        'sessionId' => $sp['sessionId'],
-        'timestamp' => $sp['timestamp'],
-        'messageCount' => $sp['messageCount'],
-        'preview' => substr($sp['preview'], 0, 80),
-        'summary' => $sessionSummary
+        'sessionId' => $sessionId,
+        'timestamp' => $sessionData['timestamp'],
+        'messageCount' => count($sessionData['messages']),
+        'preview' => substr($sessionData['messages'][0]['content'] ?? '', 0, 80),
+        'summary' => $sessionSummary,
+        'messages' => $sessionData['messages'] // Include full message history
     ];
 }
 
