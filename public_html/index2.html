@@ -946,6 +946,7 @@ async function selectAddress(keyString, displayAddress) {
     }
     currentCalendarName = calendarName;
     currentAddress = fullAddress;
+    window.currentAddress = fullAddress;
     currentSchedule = CSV_DATA[calendarName];
     // Detect night collection zone using geocoder coordinates
     const lat = row.LATITUDE || row.OUTX || 0;
@@ -1056,13 +1057,16 @@ function revealBooking(address, calendarName, schedule) {
   
   // Display Street View for the address
   setTimeout(() => {
-    if (typeof window.streetView !== 'undefined' && window.currentAddress) {
+    const addrForStreetView = window.currentAddress || currentAddress;
+    if (typeof window.streetView !== 'undefined' && addrForStreetView) {
       const container = document.getElementById('streetview-container');
       if (container) {
         container.style.display = 'block';
-        console.log('Displaying Street View for:', window.currentAddress);
-        window.streetView.display(window.currentAddress, 'streetview-container');
+        console.log('Displaying Street View for:', addrForStreetView);
+        window.streetView.display(addrForStreetView, 'streetview-container');
       }
+    } else {
+      console.warn('Street View skipped:', { hasModule: typeof window.streetView !== 'undefined', address: addrForStreetView });
     }
   }, 100);
   document.getElementById('recurring-info').style.display = 'none';
