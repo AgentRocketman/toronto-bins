@@ -84,6 +84,7 @@
       }
 
       const geocoder = new google.maps.Geocoder();
+      const streetViewService = new google.maps.StreetViewService();
       
       // Format address for better geocoding
       const formattedAddress = `${address}, Toronto, Ontario, Canada`;
@@ -96,24 +97,39 @@
           const location = results[0].geometry.location;
           console.log('Location found:', location.lat(), location.lng());
           
-          // Create Street View
-          const streetView = new google.maps.StreetViewPanorama(container, {
-            position: location,
-            pov: { heading: 0, pitch: 0 },
-            zoom: 1,
-            streetViewControl: true,
-            panControl: true,
-            zoomControl: true,
-            fullscreenControl: true
-          });
-          console.log('Street View displayed for:', address);
+          // Check if Street View is available at this location
+          streetViewService.getPanorama(
+            { location: location, radius: 50 },
+            (panoData, streetViewStatus) => {
+              console.log('Street View status:', streetViewStatus);
+              
+              if (streetViewStatus === google.maps.StreetViewStatus.OK) {
+                console.log('Creating Street View Panorama...');
+                // Create Street View
+                const streetView = new google.maps.StreetViewPanorama(container, {
+                  position: location,
+                  pov: { heading: 0, pitch: 0 },
+                  zoom: 1,
+                  streetViewControl: true,
+                  panControl: true,
+                  zoomControl: true,
+                  fullscreenControl: true
+                });
+                console.log('Street View displayed for:', address);
+              } else {
+                console.warn('Street View not available:', streetViewStatus);
+                container.innerHTML = `<div style="padding: 20px; color: #999; text-align: center; font-size: 0.9rem;">
+                  <p>Street View not available for this location</p>
+                  <p style="font-size: 0.75rem; margin-top: 10px; color: #bbb;">Try major streets like "100 King St W" or "Yonge St, Toronto"</p>
+                </div>`;
+              }
+            }
+          );
         } else {
-          console.warn('Geocode failed or Street View not available:', status);
-          console.log('Full address tried:', formattedAddress);
-          // Show helpful message
+          console.warn('Geocode failed:', status);
           container.innerHTML = `<div style="padding: 20px; color: #999; text-align: center; font-size: 0.9rem;">
-            <p>Street View not available for this address</p>
-            <p style="font-size: 0.8rem; margin-top: 10px; color: #bbb;">Try: "123 Main St" or "King St W, Toronto"</p>
+            <p>Address not found</p>
+            <p style="font-size: 0.75rem; margin-top: 10px; color: #bbb;">Try a complete address like "123 Main St, Toronto"</p>
           </div>`;
         }
       });
