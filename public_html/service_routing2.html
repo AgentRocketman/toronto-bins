@@ -1310,16 +1310,14 @@
             const type = serviceType.toLowerCase().includes('roll in') ? 'rollin' : 'rollout';
             const completed = status.toLowerCase().includes('completed');
             
-            // Bin placement (prefer Order fields, fall back to Booking fields if present)
-            const pickBin = (key) => {
-              if (fields[key] !== undefined && fields[key] !== null && fields[key] !== '') return fields[key];
-              if (bookingFields[key] !== undefined && bookingFields[key] !== null && bookingFields[key] !== '') return bookingFields[key];
-              return undefined;
-            };
-            const binPano = pickBin('Bin Pano');
-            const binLat  = pickBin('Bin Lat');
-            const binLng  = pickBin('Bin Lng');
-            const hasBinPin = pickBin('Has Bin Pin');
+            // Bin placement is stored as one JSON string in "Bin Placement" (prefer
+            // the Order's copy, fall back to the Booking's).
+            let binPlacement = null;
+            const binBlob = fields['Bin Placement'] || bookingFields['Bin Placement'] || '';
+            if (binBlob) {
+              try { binPlacement = JSON.parse(binBlob); }
+              catch (e) { console.warn('Bad Bin Placement JSON for order', orderId, e); }
+            }
 
             // Create stop object
             const stop = {
@@ -1333,14 +1331,14 @@
               lat: lat,
               lng: lng,
               airtableOrderRecordId: orderRecord.id,
-              // Bin placement (only present if the customer dropped a pin)
-              binPano: binPano || null,
-              binLat: binLat !== undefined ? parseFloat(binLat) : null,
-              binLng: binLng !== undefined ? parseFloat(binLng) : null,
-              binPovHeading: pickBin('Bin POV Heading') !== undefined ? parseFloat(pickBin('Bin POV Heading')) : null,
-              binPovPitch:   pickBin('Bin POV Pitch')   !== undefined ? parseFloat(pickBin('Bin POV Pitch'))   : null,
-              binPovZoom:    pickBin('Bin POV Zoom')    !== undefined ? parseFloat(pickBin('Bin POV Zoom'))    : null,
-              hasBinPin: !!hasBinPin
+              // Bin placement (only set when the customer dropped a pin)
+              binPano:       binPlacement?.pano || null,
+              binLat:        binPlacement?.binLatLng?.lat ?? null,
+              binLng:        binPlacement?.binLatLng?.lng ?? null,
+              binPovHeading: binPlacement?.pov?.heading ?? null,
+              binPovPitch:   binPlacement?.pov?.pitch ?? null,
+              binPovZoom:    binPlacement?.pov?.zoom ?? null,
+              hasBinPin:     !!binPlacement?.hasPin
             };
             
             stops.push(stop);

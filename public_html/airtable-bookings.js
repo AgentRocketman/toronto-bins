@@ -27,23 +27,13 @@ async function saveBookingToAirtable(bookingData) {
   const bookingId = generateBookingId();
   const todayISO = new Date().toISOString().split('T')[0];
   
-  // Pull bin-placement data (may be null)
+  // Pull bin-placement data (may be null). Stored as a single JSON string in the
+  // "Bin Placement" column on both Bookings and Orders, so we don't need a schema
+  // with 9 separate columns. The driver page parses this back when rendering stops.
   const bp = bookingData.binPlacement || null;
   const binFields = {};
   if (bp && bp.hasPin) {
-    if (bp.pano)                   binFields['Bin Pano']       = String(bp.pano);
-    if (bp.pov && bp.pov.heading != null) binFields['Bin POV Heading'] = Number(bp.pov.heading);
-    if (bp.pov && bp.pov.pitch   != null) binFields['Bin POV Pitch']   = Number(bp.pov.pitch);
-    if (bp.pov && bp.pov.zoom    != null) binFields['Bin POV Zoom']    = Number(bp.pov.zoom);
-    if (bp.binLatLng) {
-      binFields['Bin Lat'] = Number(bp.binLatLng.lat);
-      binFields['Bin Lng'] = Number(bp.binLatLng.lng);
-    }
-    if (bp.cameraLatLng) {
-      binFields['Camera Lat'] = Number(bp.cameraLatLng.lat);
-      binFields['Camera Lng'] = Number(bp.cameraLatLng.lng);
-    }
-    binFields['Has Bin Pin'] = true;
+    binFields['Bin Placement'] = JSON.stringify(bp);
   }
 
   // 1. Save Booking record
