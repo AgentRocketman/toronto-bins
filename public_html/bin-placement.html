@@ -142,8 +142,9 @@
       <span class="step-num">2</span>
       <span class="step-title">Place your bin pin</span>
       <div class="help-text">
-        <strong>How to:</strong> Drag the view to aim the crosshair at your bin spot, then tap
-        <strong>Drop Pin Here</strong>. After dropping, <strong>drag the pin</strong> to fine-tune.
+        <strong>How to:</strong> <strong>Drag</strong> to look around. <strong>Tap the white arrows</strong>
+        (or double-click) to walk forward and get closer. Aim the crosshair at your bin spot, then tap
+        <strong>Drop Pin Here</strong>. After dropping, drag the pin to fine-tune.
       </div>
       <div id="streetview-wrap" style="position:relative;">
         <div id="streetview-container" class="empty"></div>
@@ -298,8 +299,15 @@
                 zoomControl: true,
                 fullscreenControl: true,
                 addressControl: true,
-                clickToGo: false,
-                linksControl: false
+                clickToGo: true,      // double-click to walk forward
+                linksControl: true,   // show on-screen arrows for adjacent panoramas
+                motionTracking: false,
+                motionTrackingControl: false
+              });
+
+              // When the user walks to a new panorama, log it (the marker stays anchored to its lat/lng)
+              panorama.addListener('pano_changed', () => {
+                console.log('Walked to panorama:', panorama.getPano(), 'at', panorama.getPosition()?.toString());
               });
 
               // Set up bin pin behavior
