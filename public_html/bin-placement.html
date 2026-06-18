@@ -65,7 +65,7 @@
       box-shadow:var(--shadow-sm);
     }
     #crosshair{
-      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      position:absolute;top:70%;left:50%;transform:translate(-50%,-50%);
       pointer-events:none;width:48px;height:48px;
       background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><circle cx='24' cy='24' r='10' fill='none' stroke='%23ffffff' stroke-width='3'/><circle cx='24' cy='24' r='10' fill='none' stroke='%2371b80c' stroke-width='2'/><line x1='24' y1='4' x2='24' y2='14' stroke='%23ffffff' stroke-width='3'/><line x1='24' y1='4' x2='24' y2='14' stroke='%2371b80c' stroke-width='2'/><line x1='24' y1='34' x2='24' y2='44' stroke='%23ffffff' stroke-width='3'/><line x1='24' y1='34' x2='24' y2='44' stroke='%2371b80c' stroke-width='2'/><line x1='4' y1='24' x2='14' y2='24' stroke='%23ffffff' stroke-width='3'/><line x1='4' y1='24' x2='14' y2='24' stroke='%2371b80c' stroke-width='2'/><line x1='34' y1='24' x2='44' y2='24' stroke='%23ffffff' stroke-width='3'/><line x1='34' y1='24' x2='44' y2='24' stroke='%2371b80c' stroke-width='2'/><circle cx='24' cy='24' r='2' fill='%2371b80c'/></svg>");
       background-size:contain;background-repeat:no-repeat;
@@ -381,15 +381,32 @@
       // Crosshair-based pin placement — reliable across desktop & mobile
     }
 
-    // Convert current panorama POV + camera position into a world LatLng at ~6m ahead
+    // Convert current panorama POV + camera position into a world LatLng at the crosshair
+    // Crosshair sits at 70% down the view, so it's aimed at the ground in front of the user
     function getLatLngAtCrosshair() {
       if (!panorama) return null;
       const cam = panorama.getPosition();
       if (!cam) return null;
       const pov = panorama.getPov();
       const zoom = panorama.getZoom();
-      // Distance in meters — closer at higher zoom (more precise placement)
-      const distance = Math.max(3, 12 / Math.pow(2, zoom));
+      // The crosshair is offset 20% down from view center.
+      // Approximate vertical FOV in degrees: ~90deg at zoom 0, halves each zoom level.
+      const vFovDeg = 90 / Math.pow(2, zoom);
+      // Effective downward pitch at the crosshair = current pitch - (offset fraction * FOV)
+      const crosshairPitchDeg = pov.pitch - (0.20 * vFovDeg);
+      // Camera is ~2.5m above the ground. Project a ray from camera through the crosshair
+      // and find where it hits the ground plane.
+      const cameraHeightM = 2.5;
+      const pitchRad = crosshairPitchDeg * Math.PI / 180;
+      // If looking up or horizontal, fall back to a fixed distance ahead.
+      let distance;
+      if (pitchRad >= -0.05) {
+        distance = 8; // ~8m ahead if user hasn't tilted down
+      } else {
+        distance = cameraHeightM / Math.tan(-pitchRad);
+        // Clamp to a sensible range so a near-horizontal aim doesn't fly off
+        distance = Math.max(2, Math.min(distance, 30));
+      }
       return google.maps.geometry.spherical.computeOffset(cam, distance, pov.heading);
     }
 
