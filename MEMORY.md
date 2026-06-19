@@ -151,7 +151,7 @@
   - Booking information (Booking ID, Customer Name, Email, Address, Created At)
   - Payment information (Amount, Stripe Payment ID, Stripe Subscription ID)
   - Location info with coordinates
-  - Street View panorama with bin placement (if available)
+  - **Smart fallback:** If Street View unavailable, shows coordinates + link to open in Google Maps
   - Related orders from same booking
 - **Actions:** Cancel/Refund button linking to cancellation page
 
