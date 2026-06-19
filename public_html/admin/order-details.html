@@ -62,7 +62,6 @@
     .image-info-label { font-size: 0.8rem; color: #64748b; text-transform: uppercase; font-weight: 600; }
     .image-info-value { font-size: 0.9rem; color: #334155; margin-top: 4px; }
     
-    .actions { display: flex; gap: 12px; margin-top: 24px; }
     .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .btn-primary { background: linear-gradient(135deg, #71b80c, #5a9409); color: white; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(113, 184, 12, 0.3); }
@@ -130,6 +129,9 @@
             <div class="field-label">Created At</div>
             <div class="field-value" id="createdAt">-</div>
           </div>
+          <div style="margin-top: 16px;">
+            <button class="btn btn-danger" onclick="refundBooking()" style="width: 100%;">🗑️ Refund Entire Booking</button>
+          </div>
         </div>
       </div>
 
@@ -185,13 +187,7 @@
         </div>
       </div>
 
-      <!-- Actions -->
-      <div class="card">
-        <h2>Actions</h2>
-        <div class="actions">
-          <button class="btn btn-danger" onclick="cancelOrder()">🗑️ Cancel / Refund Order</button>
-        </div>
-      </div>
+
     </div>
   </div>
 
@@ -323,15 +319,18 @@
           document.getElementById('mapFallback').style.display = 'block';
         }
 
-        // Populate related orders - make them clickable
+        // Populate related orders - make them clickable with refund buttons
         if (relatedOrders.length > 0) {
           const relatedHtml = relatedOrders.map(o => `
-            <div class="order-item related-order-link" onclick="goToOrderDetails('${o.airtableId}')">
-              <div class="order-item-info">
+            <div class="order-item" style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+              <div class="order-item-info related-order-link" onclick="goToOrderDetails('${o.airtableId}')" style="flex: 1; cursor: pointer;">
                 <div class="order-item-date" style="color: #0f766e; text-decoration: underline;">${o.orderId}</div>
                 <div class="order-item-type">${o.serviceType} • ${o.serviceDate}</div>
               </div>
-              <span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span>
+                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="refundOrder('${o.airtableId}', '${o.orderId}')">🗑️</button>
+              </div>
             </div>
           `).join('');
           document.getElementById('relatedOrdersContainer').innerHTML = relatedHtml;
@@ -372,13 +371,24 @@
       document.getElementById('errorMsg').style.display = 'block';
     }
 
-    function cancelOrder() {
+    function refundBooking() {
       const order = window.currentOrder;
       if (!order) {
         alert('Order information not available');
         return;
       }
-      window.location.href = `/admin/cancel-order.html?orderId=${getUrlParam('orderId')}&bookingId=${order.bookingId}&email=${encodeURIComponent(order.email)}`;
+      // Refund entire booking
+      window.location.href = `/admin/cancel-order.html?bookingId=${order.bookingId}&email=${encodeURIComponent(order.email)}`;
+    }
+
+    function refundOrder(orderId, orderName) {
+      const order = window.currentOrder;
+      if (!order) {
+        alert('Order information not available');
+        return;
+      }
+      // Refund specific order
+      window.location.href = `/admin/cancel-order.html?orderId=${orderId}&bookingId=${order.bookingId}&email=${encodeURIComponent(order.email)}&orderName=${encodeURIComponent(orderName)}`;
     }
 
     function goToOrderDetails(orderId) {

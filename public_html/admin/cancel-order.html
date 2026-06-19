@@ -56,13 +56,13 @@
     <div id="successMsg" class="success" style="display: none;"></div>
 
     <div id="content" style="display: none;">
-      <div class="warning-box">
-        <strong>⚠️ Warning:</strong> Cancelling this order will refund the customer and remove all services associated with it.
+      <div class="warning-box" id="warningBox">
+        <strong>⚠️ Warning:</strong> Cancelling this will refund the customer.
       </div>
 
       <div class="card">
-        <h2>Order Information</h2>
-        <p><strong>Order ID:</strong> <span id="orderIdDisplay">-</span></p>
+        <h2 id="cardTitle">Order Information</h2>
+        <p id="orderIdLine" style="display: none;"><strong>Order ID:</strong> <span id="orderIdDisplay">-</span></p>
         <p><strong>Booking ID:</strong> <span id="bookingIdDisplay">-</span></p>
         <p><strong>Email:</strong> <span id="emailDisplay">-</span></p>
       </div>
@@ -123,13 +123,31 @@
       const orderId = getUrlParam('orderId');
       const bookingId = getUrlParam('bookingId');
       const email = getUrlParam('email');
+      const orderName = getUrlParam('orderName');
 
-      if (!orderId || !bookingId || !email) {
-        showError('Missing order information');
+      if (!bookingId || !email) {
+        showError('Missing booking information');
         return;
       }
 
-      document.getElementById('orderIdDisplay').textContent = orderId;
+      // Determine if this is a booking-level or order-level refund
+      const isOrderRefund = orderId && orderId !== bookingId;
+
+      if (isOrderRefund) {
+        // Refunding specific order
+        document.querySelector('h1').textContent = '🗑️ Refund Order';
+        document.getElementById('cardTitle').textContent = 'Order Information';
+        document.getElementById('orderIdLine').style.display = 'block';
+        document.getElementById('orderIdDisplay').textContent = orderName || orderId;
+        document.getElementById('warningBox').innerHTML = '<strong>⚠️ Warning:</strong> You are refunding a specific order. Other orders in this booking will remain active.';
+      } else {
+        // Refunding entire booking
+        document.querySelector('h1').textContent = '🗑️ Refund Booking';
+        document.getElementById('cardTitle').textContent = 'Booking Information';
+        document.getElementById('orderIdLine').style.display = 'none';
+        document.getElementById('warningBox').innerHTML = '<strong>⚠️ Warning:</strong> You are refunding the entire booking. ALL orders will be cancelled.';
+      }
+
       document.getElementById('bookingIdDisplay').textContent = bookingId;
       document.getElementById('emailDisplay').textContent = email;
 
@@ -145,21 +163,29 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Processing...';
 
+      const orderId = getUrlParam('orderId');
       const bookingId = getUrlParam('bookingId');
       const email = getUrlParam('email');
       const reason = document.getElementById('reason').value;
       const message = document.getElementById('message').value;
 
       try {
+        const payload = {
+          bookingId: bookingId,
+          email: email,
+          reason: reason,
+          message: message
+        };
+
+        // If orderId is provided and different from bookingId, include it for order-level refund
+        if (orderId && orderId !== bookingId) {
+          payload.orderId = orderId;
+        }
+
         const response = await fetch('/api/process-cancellation.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            bookingId: bookingId,
-            email: email,
-            reason: reason,
-            message: message
-          })
+          body: JSON.stringify(payload)
         });
 
         const data = await response.json();

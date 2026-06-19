@@ -16,6 +16,7 @@ if (!$body) {
 }
 
 $bookingId = strtoupper(trim($body['bookingId'] ?? ''));
+$orderId   = $body['orderId'] ?? null; // Optional: for refunding specific order only
 $email     = strtolower(trim($body['email'] ?? ''));
 $reason    = $body['reason'] ?? '';
 $message   = trim($body['message'] ?? '');
@@ -23,6 +24,9 @@ $message   = trim($body['message'] ?? '');
 if (!$bookingId || !$email) {
     echo json_encode(['success' => false, 'error' => 'Booking ID and email are required']); exit;
 }
+
+// Determine if this is order-level or booking-level refund
+$isOrderLevelRefund = !empty($orderId);
 
 // ─── Step 1: Look up booking in Airtable ────────────────────────────────────
 $formula = "AND({Booking ID}='" . addslashes($bookingId) . "',LOWER({Email})='" . addslashes($email) . "')";
@@ -56,7 +60,10 @@ $refundAmount   = 0;
 $refundDates    = 0;
 $stripeError    = '';
 
-if ($billingType === 'Recurring Subscription' && $stripeSubId) {
+// For order-level refunds, skip Stripe processing (manual refund required)
+if ($isOrderLevelRefund) {
+    $stripeAction = 'order_level_manual_refund';
+} else if ($billingType === 'Recurring Subscription' && $stripeSubId) {
     // Cancel subscription immediately — no refund (service runs to end of paid week)
     $cancelResult = stripeRequest('DELETE', '/subscriptions/' . $stripeSubId);
     if ($cancelResult['code'] < 400) {
@@ -107,34 +114,42 @@ if ($billingType === 'Recurring Subscription' && $stripeSubId) {
     }
 }
 
-// ─── Step 4: Update Airtable booking status ──────────────────────────────────
-airtableRequest('PATCH', AIRTABLE_BOOKINGS, [
-    'fields' => [
-        'Status'            => 'Cancelled',
-        'Cancellation Date' => $now->format('Y-m-d'),
-    ]
-], $recordId);
+// ─── Step 4: Update Airtable based on refund type ──────────────────────────
+if ($isOrderLevelRefund) {
+    // ORDER-LEVEL REFUND: Only cancel the specific order
+    airtableRequest('PATCH', AIRTABLE_ORDERS, [
+        'fields' => ['Status' => 'Cancelled']
+    ], $orderId);
+} else {
+    // BOOKING-LEVEL REFUND: Cancel the entire booking and all future orders
+    airtableRequest('PATCH', AIRTABLE_BOOKINGS, [
+        'fields' => [
+            'Status'            => 'Cancelled',
+            'Cancellation Date' => $now->format('Y-m-d'),
+        ]
+    ], $recordId);
 
-// ─── Step 5: Cancel future orders in Airtable ───────────────────────────────
-$ordersToCancel = [];
-$allOrdersResult = airtableRequest('GET', AIRTABLE_ORDERS, [
-    'filterByFormula' => "AND({Booking ID}='" . addslashes($bookingId) . "',{Status}!='Cancelled')",
-    'fields[]'        => ['Service Date', 'Day of Week', 'Frequency', 'Status']
-]);
+    // ─── Step 5: Cancel future orders in Airtable ───────────────────────────────
+    $ordersToCancel = [];
+    $allOrdersResult = airtableRequest('GET', AIRTABLE_ORDERS, [
+        'filterByFormula' => "AND({Booking ID}='" . addslashes($bookingId) . "',{Status}!='Cancelled')",
+        'fields[]'        => ['Service Date', 'Day of Week', 'Frequency', 'Status']
+    ]);
 
-$allOrders = $allOrdersResult['body']['records'] ?? [];
-foreach ($allOrders as $order) {
-    $svcDate  = $order['fields']['Service Date'] ?? '';
-    $freq     = $order['fields']['Frequency'] ?? '';
-    // Cancel: recurring orders always, ad hoc only if beyond 48hr cutoff
-    if ($freq === 'Recurring' || $svcDate > $cutoffDate) {
-        $ordersToCancel[] = ['id' => $order['id'], 'fields' => ['Status' => 'Cancelled']];
+    $allOrders = $allOrdersResult['body']['records'] ?? [];
+    foreach ($allOrders as $order) {
+        $svcDate  = $order['fields']['Service Date'] ?? '';
+        $freq     = $order['fields']['Frequency'] ?? '';
+        // Cancel: recurring orders always, ad hoc only if beyond 48hr cutoff
+        if ($freq === 'Recurring' || $svcDate > $cutoffDate) {
+            $ordersToCancel[] = ['id' => $order['id'], 'fields' => ['Status' => 'Cancelled']];
+        }
     }
-}
 
-// Batch cancel (Airtable allows up to 10 per request)
-foreach (array_chunk($ordersToCancel, 10) as $batch) {
-    airtableRequest('PATCH', AIRTABLE_ORDERS, ['records' => $batch]);
+    // Batch cancel (Airtable allows up to 10 per request)
+    foreach (array_chunk($ordersToCancel, 10) as $batch) {
+        airtableRequest('PATCH', AIRTABLE_ORDERS, ['records' => $batch]);
+    }
 }
 
 // ─── Step 6: Build email content ─────────────────────────────────────────────
