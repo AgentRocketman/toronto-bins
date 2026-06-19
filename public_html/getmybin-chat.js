@@ -247,9 +247,17 @@ Service Overview:
 - Professional, reliable service - no missed collections
 
 Pricing:
-- Recurring subscription: $5.95/week (billed weekly)
-- Ad-hoc/one-time service: $8.95 per rollout
+- Recurring subscription: $5.95/week per event (billed weekly)
+- Ad-hoc/one-time service: $8.95 per event
 - Tax: 13% HST added at checkout (Ontario)
+
+⚠️ CRITICAL - Two Separate Charges ALWAYS:
+- Roll out to curb = 1 charge
+- Roll in back to property = 1 separate charge
+- This applies to BOTH recurring AND ad-hoc services
+- Each event is billed independently
+- Example: Recurring service with both events = $5.95 + $5.95 = $11.90/week (plus tax)
+- Example: Ad-hoc with both events = $8.95 + $8.95 = $17.90 one-time (plus tax)
 
 Current Promotion:
 - New customers: Get your first rollout for just $1 (recurring subscription only)
@@ -260,9 +268,12 @@ Current Promotion:
 How It Works:
 1. Check your collection schedule on our website
 2. Sign up for recurring or book ad-hoc service
-3. On collection day, we roll your bins to the curb
-4. After collection, we roll them back to where they were
-5. Track everything through your online dashboard
+3. On collection day, we roll your bins to the curb (Event #1 - $5.95 recurring / $8.95 ad-hoc)
+4. After collection, we roll them back to where they were (Event #2 - $5.95 recurring / $8.95 ad-hoc)
+5. Each event is charged separately - you choose which events you need
+6. Track everything through your online dashboard
+
+Billing Model: Both roll-out and roll-in are independent charges whether you're on recurring or ad-hoc. Choose the service level that fits your needs
 
 Subscription Management:
 - Cancel anytime with one-click (no penalties, no customer service calls needed)

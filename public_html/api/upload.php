@@ -41,6 +41,15 @@ try {
     $upload_dir = __DIR__ . '/../bin-pics';
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0755, true);
+        // Write .htaccess so images are served correctly
+        file_put_contents($upload_dir . '/.htaccess',
+            "# Allow image files\n" .
+            "<FilesMatch \"\\.(jpe?g|png|gif|webp)$\">\n" .
+            "    Allow from all\n" .
+            "</FilesMatch>\n" .
+            "# Block listing\n" .
+            "Options -Indexes\n"
+        );
     }
 
     // Generate unique filename

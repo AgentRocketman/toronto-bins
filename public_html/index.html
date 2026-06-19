@@ -299,6 +299,27 @@
     .total-item{display:flex;justify-content:space-between;font-size:.88rem;color:var(--slate)}
     .total-hr{border:none;border-top:1px solid #e2e8f0;margin:10px 0}
     .total-final{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:900;color:#0f172a}
+    /* ===== Bin placement (Street View pin) ===== */
+    #bin-placement-block{margin-top:1.2rem}
+    .bin-placement-title{font-size:1rem;font-weight:700;color:var(--slate);margin-bottom:.35rem}
+    .bin-placement-optional{font-weight:500;color:var(--slate-light);font-size:.85rem;margin-left:.3rem}
+    .bin-placement-help{font-size:.85rem;color:var(--slate-light);background:#f0fdf9;border-left:3px solid var(--green);padding:.6rem .8rem;border-radius:8px;margin-bottom:.7rem;line-height:1.45}
+    #bp-streetview{width:100%;height:340px;border-radius:12px;overflow:hidden;background:#e2e8f0;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    @media (max-width:600px){#bp-streetview{height:280px}}
+    #bp-crosshair{position:absolute;top:70%;left:50%;transform:translate(-50%,-50%);pointer-events:none;width:100px;height:100px;z-index:5;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='22' fill='none' stroke='%23ffffff' stroke-width='5'/><circle cx='50' cy='50' r='22' fill='none' stroke='%2371b80c' stroke-width='3.5'/><line x1='50' y1='4' x2='50' y2='24' stroke='%23ffffff' stroke-width='5'/><line x1='50' y1='4' x2='50' y2='24' stroke='%2371b80c' stroke-width='3.5'/><line x1='50' y1='76' x2='50' y2='96' stroke='%23ffffff' stroke-width='5'/><line x1='50' y1='76' x2='50' y2='96' stroke='%2371b80c' stroke-width='3.5'/><line x1='4' y1='50' x2='24' y2='50' stroke='%23ffffff' stroke-width='5'/><line x1='4' y1='50' x2='24' y2='50' stroke='%2371b80c' stroke-width='3.5'/><line x1='76' y1='50' x2='96' y2='50' stroke='%23ffffff' stroke-width='5'/><line x1='76' y1='50' x2='96' y2='50' stroke='%2371b80c' stroke-width='3.5'/><circle cx='50' cy='50' r='4' fill='%2371b80c' stroke='%23ffffff' stroke-width='1.5'/></svg>");
+      background-size:contain;background-repeat:no-repeat;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));animation:bpPulse 1.6s ease-in-out infinite}
+    @keyframes bpPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.08)}}
+    #bp-crosshair.hidden{display:none}
+    #bp-status{margin-top:.55rem;font-size:.85rem;color:var(--slate-light);text-align:center;min-height:1.2em}
+    #bp-status.placed{color:var(--green-dark);font-weight:600}
+    .bp-actions{display:flex;gap:.5rem;margin-top:.7rem;margin-bottom:.8rem;flex-wrap:wrap}
+    .bp-btn{flex:1;min-width:130px;padding:.7rem 1rem;border-radius:10px;border:2px solid var(--slate-xlight);background:#fff;color:var(--slate);font-weight:600;font-size:.92rem;cursor:pointer;transition:all .15s}
+    .bp-btn:hover{border-color:var(--green);color:var(--green-dark)}
+    .bp-btn-primary{background:var(--green);color:#fff;border-color:var(--green);flex:2}
+    .bp-btn-primary:hover{background:var(--green-dark);border-color:var(--green-dark);color:#fff}
+    .bp-unavailable{background:#fff7ed;border:1px dashed #fb923c;color:#9a3412;padding:.75rem 1rem;border-radius:10px;font-size:.88rem;margin-top:1rem}
+
     .btn-checkout{display:block;width:100%;margin-top:1rem;background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;font-size:1.02rem;font-weight:800;padding:16px;border-radius:14px;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 20px rgba(13,148,136,.3)}
     .btn-checkout:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(13,148,136,.4)}
     .btn-checkout:disabled{background:#cbd5e0;cursor:not-allowed;transform:none;box-shadow:none}
@@ -706,6 +727,8 @@
       <button class="ac-change" onclick="resetSearch()">&#9998; Change Address</button>
     </div>
 
+
+
     <div class="next-pickup">
       <div class="next-pickup-label">&#128197; Next Collection</div>
       <div class="next-date" id="next-date"></div>
@@ -778,13 +801,18 @@
 
     <div id="total-wrap">
       <hr class="divider">
-      <div class="total-box">
-        <div class="total-box-title">Your Order</div>
-        <div class="total-items" id="total-items"></div>
-        <hr class="total-hr">
-        <div class="total-final"><span>Total</span><span id="total-amount">$0.00</span></div>
+      <div id="bin-placement-block" style="display:none;">
+        <div class="bin-placement-title">📍 Show us where to leave your bin <span class="bin-placement-optional">(optional)</span></div>
+        <div class="bin-placement-help">Drag the view to look around. Tap the white arrows or double-click to walk forward. <strong>Aim the green crosshair</strong> at your bin spot — we’ll save it when you tap <strong>Go to Checkout</strong>.</div>
+        <div id="bp-sv-wrap" style="position:relative;">
+          <div id="bp-streetview"></div>
+          <div id="bp-crosshair" aria-hidden="true"></div>
+        </div>
       </div>
-      <button class="btn-checkout" id="btn-checkout">Go to Checkout &rarr;</button>
+      <div id="bin-placement-unavailable" style="display:none;">
+        <div class="bp-unavailable">Street View isn’t available for this address — no worries, we’ll find your bins. 👍</div>
+      </div>
+      <button class="btn-checkout" id="btn-checkout" disabled>Go to Checkout &rarr;</button>
     </div>
   </div>
 </div>
@@ -944,6 +972,7 @@ async function selectAddress(keyString, displayAddress) {
     }
     currentCalendarName = calendarName;
     currentAddress = fullAddress;
+    window.currentAddress = fullAddress;
     currentSchedule = CSV_DATA[calendarName];
     // Detect night collection zone using geocoder coordinates
     const lat = row.LATITUDE || row.OUTX || 0;
@@ -1053,6 +1082,9 @@ function revealBooking(address, calendarName, schedule) {
   document.getElementById('adhoc-dates').style.display = 'block';
   document.getElementById('recurring-info').style.display = 'none';
   document.getElementById('total-wrap').style.display = 'none';
+
+  // Reset the bin-placement section for the new address
+  resetBinPlacement();
 
   // Scroll to booking anchor once reveal animation completes
   const bookingSection = document.getElementById('booking-section');
@@ -1184,43 +1216,30 @@ function buildRecurringInfo() {
 // ===== Running total =====
 function updateTotal() {
   const wrap = document.getElementById('total-wrap');
-  const itemsDiv = document.getElementById('total-items');
-  const totalAmt = document.getElementById('total-amount');
   const btn = document.getElementById('btn-checkout');
 
-  if (planType === 'recurring') {
-    wrap.style.display = 'block';
-    const serviceMultiplier = serviceType === 'both' ? 2 : 1;
-    const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
-    const eventPrice = (PRICE_RECURRING * serviceMultiplier).toFixed(2);
-    itemsDiv.innerHTML = '<div class="total-item"><span>' + serviceLabel + ' &times; Recurring</span><span>$' + eventPrice + '/week</span></div>';
-    totalAmt.textContent = '$' + eventPrice + '/week';
-    btn.disabled = false;
-    return;
-  }
+  // Has the customer made a billable selection?
+  const hasSelection = (planType === 'recurring') || (planType === 'adhoc' && selectedDates.size > 0);
 
-  // adhoc
-  const count = selectedDates.size;
-  if (count === 0) {
+  if (!hasSelection) {
     wrap.style.display = 'none';
+    btn.disabled = true;
     return;
   }
+
   wrap.style.display = 'block';
-
-  const serviceMultiplier = serviceType === 'both' ? 2 : 1;
-  const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
-  const eventTotal = count * serviceMultiplier;
-  const lineTotal = eventTotal * PRICE_ADHOC;
-
-  itemsDiv.innerHTML = '<div class="total-item"><span>' + serviceLabel + ' &times; ' + count + ' date' + (count !== 1 ? 's' : '') + (serviceType === 'both' ? ' (&times;2 services)' : '') + '</span><span>$' + lineTotal.toFixed(2) + '</span></div>';
-  totalAmt.textContent = '$' + lineTotal.toFixed(2) + ' + tax';
   btn.disabled = false;
+
+  // Make sure the Street View block is mounted (lazily, first time we have a selection)
+  ensureBinPlacementMounted();
 }
 
 // ===== Checkout =====
 document.getElementById('btn-checkout').addEventListener('click', openCheckout);
 
 function openCheckout() {
+  // Auto-drop the bin pin at the current crosshair position before capturing placement data.
+  if (typeof bpAutoDropAtCrosshair === 'function') bpAutoDropAtCrosshair();
   const overlay = document.getElementById('modal-overlay');
   const body = document.getElementById('modal-body');
   const serviceMultiplier = serviceType === 'both' ? 2 : 1;
@@ -1249,6 +1268,10 @@ function openCheckout() {
   const totalWithTax = subtotalVal + hstAmount;
 
   // Store booking data in global scope for payment processing
+  const binPlacement = typeof bpGetPlacementData === 'function' ? bpGetPlacementData() : null;
+  // Pickup day name (e.g. "Tuesday") parsed from the calendar/schedule the customer matched into
+  const dowMatch = currentCalendarName ? currentCalendarName.match(/^([A-Za-z]+)/) : null;
+  const pickupDayOfWeek = dowMatch ? dowMatch[1] : 'Tuesday';
   window.currentBooking = {
     customerName: '',
     customerEmail: '',
@@ -1256,12 +1279,14 @@ function openCheckout() {
     address: currentAddress,
     serviceType: serviceType,
     frequency: planType,
+    dayOfWeek: pickupDayOfWeek,
     subtotal: subtotalVal,
     hstAmount: hstAmount,
     totalWithTax: totalWithTax,
     amount: Math.round(totalWithTax * 100),
     selectedDates: planType === 'adhoc' ? [...selectedDates].sort() : [],
-    isNightZone: currentIsNightZone
+    isNightZone: currentIsNightZone,
+    binPlacement: binPlacement  // null if customer skipped, or no Street View available
   };
 
   // Build tax breakdown section (for ad hoc only; recurring shows per week)
@@ -1403,9 +1428,9 @@ async function processPayment() {
 
 function showPaymentSuccess(bookingId, bookingData, savedLocation, ordersCount) {
   const body = document.getElementById('modal-body');
-  const locationText = savedLocation ? `<p style="font-size:0.8rem;color:var(--slate-light);margin-top:0.75rem;padding:0.75rem;background:var(--green-xlight);border-radius:8px"><strong>Saved to:</strong> ${savedLocation}</p>` : '';
+  const locationText = '';
   const ordersText = ordersCount > 0 ? `<p style="font-size:0.8rem;color:var(--slate-light);margin-top:0.75rem;padding:0.75rem;background:var(--green-xlight);border-radius:8px"><strong>${ordersCount} service date(s)</strong> scheduled</p>` : '';
-  body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">✅</div><h3>Payment Successful!</h3><p>Your booking is confirmed. We\'ll contact you at ' + bookingData.customerEmail + ' within 24 hours.</p><p style="font-size:0.85rem;color:var(--slate-light);margin-top:0.5rem"><strong>Booking ID:</strong> ' + bookingId + '</p>' + locationText + ordersText + '</div><div class="modal-actions"><button class="btn-confirm" onclick="closeModal()" style="flex:1">Done</button></div>';
+  body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">✅</div><h3>Payment Successful!</h3><p>Your booking is confirmed! A confirmation email is on its way to <strong>' + bookingData.customerEmail + '</strong>.</p><p style="font-size:0.85rem;color:var(--slate-light);margin-top:0.5rem"><strong>Booking ID:</strong> ' + bookingId + '</p>' + ordersText + '</div><div class="modal-actions"><button class="btn-confirm" onclick="window.location.href=\'index.html\'" style="flex:1">Done</button></div>';
   
   // Send confirmation emails (async, don't block)
   if (typeof sendConfirmationEmail === 'function') {
@@ -1441,11 +1466,188 @@ function formatDateShort(isoStr) {
 <script src="airtable-bookings.js"></script>
 <script src="email-service.js"></script>
 <script src="chat-logger.js"></script>
+<script src="streetview.js"></script>
 
 <!-- Sticky mobile CTA -->
 <div class="sticky-cta" id="sticky-cta">
   <a href="#hero-anchor" class="sticky-cta-btn" onclick="document.getElementById('sticky-cta').style.display='none'">&#128205; Check my address &rarr;</a>
 </div>
+
+<script>
+// ===== Bin Placement (Street View pin) =====
+// Lives in the booking section where "Your Order" used to be. Becomes visible
+// when the customer makes a billable selection (an ad-hoc date or recurring mode).
+
+let bpPanorama = null;
+let bpBinMarker = null;
+let bpBinLatLng = null;
+let bpBuildingLocation = null;
+let bpInitialPov = null;
+let bpAddress = null;
+let bpMounted = false;
+let bpUnavailable = false;
+
+function resetBinPlacement() {
+  // Called from revealBooking() when a new address is loaded.
+  bpPanorama = null;
+  bpBinMarker = null;
+  bpBinLatLng = null;
+  bpBuildingLocation = null;
+  bpInitialPov = null;
+  bpAddress = null;
+  bpMounted = false;
+  bpUnavailable = false;
+  const block = document.getElementById('bin-placement-block');
+  const unavail = document.getElementById('bin-placement-unavailable');
+  if (block) block.style.display = 'none';
+  if (unavail) unavail.style.display = 'none';
+  const svDiv = document.getElementById('bp-streetview');
+  if (svDiv) svDiv.innerHTML = '';
+  const crosshair = document.getElementById('bp-crosshair');
+  if (crosshair) crosshair.classList.remove('hidden');
+}
+
+// Called from updateTotal() the first time a selection is made.
+async function ensureBinPlacementMounted() {
+  const address = window.currentAddress || (typeof currentAddress !== 'undefined' ? currentAddress : null);
+  if (!address) return;
+
+  // If already mounted for this address, just make sure it's visible (or the unavailable notice is).
+  if (bpMounted && address === bpAddress) {
+    const block = document.getElementById('bin-placement-block');
+    const unavail = document.getElementById('bin-placement-unavailable');
+    if (bpUnavailable) { block.style.display = 'none'; unavail.style.display = 'block'; }
+    else { block.style.display = 'block'; unavail.style.display = 'none'; }
+    return;
+  }
+
+  bpMounted = true;
+  bpAddress = address;
+  bpUnavailable = false;
+
+  if (typeof window.streetView === 'undefined') {
+    console.warn('streetview module not loaded');
+    bpUnavailable = true;
+    document.getElementById('bin-placement-unavailable').style.display = 'block';
+    return;
+  }
+
+  try {
+    await window.streetView.init();
+    let attempts = 0;
+    while (!window.google || !window.google.maps) {
+      await new Promise(r => setTimeout(r, 100));
+      if (++attempts > 50) throw new Error('Maps API not loaded');
+    }
+
+    const geocoder = new google.maps.Geocoder();
+    const svService = new google.maps.StreetViewService();
+
+    geocoder.geocode({ address }, (results, status) => {
+      if (status !== 'OK' || !results[0]) {
+        bpUnavailable = true;
+        document.getElementById('bin-placement-block').style.display = 'none';
+        document.getElementById('bin-placement-unavailable').style.display = 'block';
+        return;
+      }
+      bpBuildingLocation = results[0].geometry.location;
+
+      svService.getPanorama(
+        { location: bpBuildingLocation, radius: 50, source: google.maps.StreetViewSource.OUTDOOR },
+        (panoData, svStatus) => {
+          if (svStatus !== 'OK') {
+            bpUnavailable = true;
+            document.getElementById('bin-placement-block').style.display = 'none';
+            document.getElementById('bin-placement-unavailable').style.display = 'block';
+            return;
+          }
+          const cameraLoc = panoData.location.latLng;
+          const heading = google.maps.geometry.spherical.computeHeading(cameraLoc, bpBuildingLocation);
+          bpInitialPov = { heading, pitch: 0, zoom: 0 };
+
+          const container = document.getElementById('bp-streetview');
+          bpPanorama = new google.maps.StreetViewPanorama(container, {
+            pano: panoData.location.pano,
+            pov: { heading, pitch: 0 },
+            zoom: 0,
+            streetViewControl: false,
+            panControl: false,
+            zoomControl: true,
+            fullscreenControl: true,
+            addressControl: false,
+            clickToGo: true,
+            linksControl: true,
+            motionTracking: false,
+            motionTrackingControl: false
+          });
+
+          // Show the block
+          document.getElementById('bin-placement-block').style.display = 'block';
+          document.getElementById('bin-placement-unavailable').style.display = 'none';
+        }
+      );
+    });
+  } catch (e) {
+    console.error('Street View init failed:', e);
+    bpUnavailable = true;
+    document.getElementById('bin-placement-unavailable').style.display = 'block';
+  }
+}
+
+// Ground-projection: crosshair sits at 70% down the panorama; project a ray from the
+// camera (~2.5m above ground) through the crosshair and find where it hits the ground.
+function bpGetLatLngAtCrosshair() {
+  if (!bpPanorama) return null;
+  const cam = bpPanorama.getPosition();
+  if (!cam) return null;
+  const pov = bpPanorama.getPov();
+  const zoom = bpPanorama.getZoom();
+  const vFovDeg = 90 / Math.pow(2, zoom);
+  const crosshairPitchDeg = pov.pitch - (0.20 * vFovDeg);
+  const cameraHeightM = 2.5;
+  const pitchRad = crosshairPitchDeg * Math.PI / 180;
+  let distance;
+  if (pitchRad >= -0.05) distance = 8;
+  else { distance = cameraHeightM / Math.tan(-pitchRad); distance = Math.max(2, Math.min(distance, 30)); }
+  return google.maps.geometry.spherical.computeOffset(cam, distance, pov.heading);
+}
+
+// Customer side: capture the bin spot silently — no visible marker.
+// The driver view (service_routing2.html) renders the green pin when servicing the stop.
+function bpPlacePin(latLng) {
+  if (!bpPanorama) return;
+  bpBinLatLng = latLng;
+}
+
+function bpUpdateStatus() {
+  // No-op: the status text was removed when the explicit drop/clear buttons were removed.
+  // The crosshair itself is the live status indicator.
+}
+
+function bpGetPlacementData() {
+  if (!bpPanorama) return null;
+  const pov = bpPanorama.getPov();
+  const zoom = bpPanorama.getZoom();
+  const pano = bpPanorama.getPano();
+  const position = bpPanorama.getPosition();
+  return {
+    pano,
+    pov: { heading: pov.heading, pitch: pov.pitch, zoom },
+    cameraLatLng: position ? { lat: position.lat(), lng: position.lng() } : null,
+    binLatLng: bpBinLatLng ? { lat: bpBinLatLng.lat(), lng: bpBinLatLng.lng() } : null,
+    hasPin: !!bpBinLatLng
+  };
+}
+
+// Auto-drop the pin at the crosshair location when checkout is clicked
+function bpAutoDropAtCrosshair() {
+  if (!bpPanorama) return null;
+  const latLng = bpGetLatLngAtCrosshair();
+  if (!latLng) return null;
+  bpPlacePin(latLng);
+  return latLng;
+}
+</script>
 
 <script>
 // Sticky CTA: show when reviews in view, hide when hero visible or booking revealed

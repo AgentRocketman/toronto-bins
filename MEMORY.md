@@ -48,8 +48,8 @@
 ✅ **Use Hostinger API, NOT FTP/SSH**
 - ALWAYS deploy from `/data/.openclaw/workspace/public_html/` — the master folder
 - NEVER deploy a partial archive (it wipes other files on the server)
-- To deploy: `cd /data/.openclaw/workspace/public_html && tar -czf /tmp/full-deploy.tar.gz --exclude='./bin-pics/*.jpg' --exclude='./bin-pics/*.png' --exclude='./bin-pics/*.gif' --exclude='./bin-pics/*.webp' .` then call deployStaticWebsite
-- The `--exclude` keeps uploaded driver photos safe — tar extraction never deletes existing server files, it only adds/overwrites what's in the archive
+- To deploy: `cd /data/.openclaw/workspace/public_html && tar -czf /tmp/full-deploy.tar.gz --exclude='./bin-pics' .` then call deployStaticWebsite
+- **EXCLUDE entire `bin-pics/` dir** — Hostinger does a sync-style deploy that DELETES server files not in the archive. Driver-uploaded photos live only on the server, never in the workspace. `upload.php` auto-creates the dir + `.htaccess` on first upload.
 - Before ANY deploy: copy changed file(s) into public_html/ first, then tar the whole folder
 - Deploy completes in ~15 seconds
 - This is the ONLY reliable method
@@ -122,6 +122,29 @@
 - Admin credentials (for creating new employees via `/api/auth/create-employee.php`):
   - `ADMIN_KEY`: `getmybin-admin-xK9mP2026`
   - `ADMIN_PASSWORD`: `GetMyBinAdmin2026!`
+
+## Admin Panel Login System — UPDATED ✅ (2026-06-19)
+- **URL:** https://agentrocketman.com/admin-login.html
+- **Admin Email:** support@getmybin.com
+- **Admin Password:** GetMyBinAdmin2026! (stored in Airtable now)
+- **Two-pane layout:**
+  - **Top pane:** Navigation (Dashboard, Service Schedule, Chat Analytics, Change Password), user greeting, logout button
+  - **Bottom pane:** Iframe with selected content
+- **Authentication:** JWT tokens (7-day expiry)
+- **Airtable Integration:**
+  - **Table:** `Admins` (in base apptYNRJTXwItvied)
+  - **Fields:** Email, Password, FirstName, LastName, Active, CreatedAt, LastPasswordChange
+  - Initial admin: support@getmybin.com / GetMyBinAdmin2026!
+- **Files:**
+  - `/admin-login.html` — Login form (queries Airtable)
+  - `/admin-panel.html` — Main admin interface
+  - `/api/admin-auth/login.php` — Token generation (Airtable lookup)
+  - `/api/admin-auth/verify.php` — Token validation
+  - `/api/admin-auth/change-password.php` — Change password (updates Airtable)
+  - `/api/admin-auth/create-admin.php` — Create new admin account
+  - `/api/admin-auth/setup-admins-table.php` — Setup script (run once)
+  - `/admin/dashboard.html` — Dashboard
+  - `/admin/change-password.html` — Change password page
 
 ## Hostinger Credentials
 - **API token:** B4V2bxKyjkRgso0JS9CkiCqkqUZ32PhAzA16cxcB87d7b57e

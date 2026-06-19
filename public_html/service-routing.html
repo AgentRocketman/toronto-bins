@@ -54,6 +54,12 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
+    @media (min-width: 769px) {
+      .sidebar {
+        width: 455px;
+      }
+    }
+
     .sidebar-header {
       margin-bottom: 20px;
     }
@@ -72,6 +78,15 @@
       border-radius: 6px;
       font-size: 1.1rem;
       margin-bottom: 20px;
+    }
+
+    @media (min-width: 769px) {
+      /* Keep date text small, but input taller for bigger calendar popup */
+      .date-picker {
+        font-size: 1.1rem;
+        padding: 20px 12px;
+        height: 60px;
+      }
     }
 
     .service-group {
@@ -103,6 +118,11 @@
       border-color: #6ee7b7;
     }
 
+    .stop-item.pending {
+      background: #fffbeb;
+      border-color: #fde047;
+    }
+
     .stop-item:hover {
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
@@ -110,15 +130,32 @@
     .stop-header {
       display: flex;
       gap: 10px;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 8px;
+      flex-wrap: wrap;
     }
 
-    /* Street View thumbnail (sits between sequence # and address) */
+    .stop-header-top {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stop-header-bottom {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    /* Street View thumbnail (far left on bottom row) */
     .sv-thumb {
       flex-shrink: 0;
-      width: 80px;
-      height: 60px;
+      width: 120px;
+      height: 120px;
       border-radius: 8px;
       overflow: hidden;
       position: relative;
@@ -126,6 +163,13 @@
       border: 2px solid #71b80c;
       background: #e5e7eb url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M21 6.5l-4-4-3 3-7-7-7 7v11h21v-10z' fill='%239ca3af'/></svg>") center/40% no-repeat;
       transition: transform .15s, box-shadow .15s;
+    }
+
+    @media (max-width: 768px) {
+      .sv-thumb {
+        width: 80px;
+        height: 60px;
+      }
     }
     .sv-thumb:hover { transform: scale(1.04); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
     .sv-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -139,9 +183,15 @@
     .sv-thumb.placeholder::after {
       content: 'No view'; position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      color: #64748b; font-size: 10px; font-weight: 600;
+      color: #64748b; font-size: 12px; font-weight: 600;
     }
     .sv-thumb.placeholder { background-image: none; background: #f1f5f9; }
+
+    @media (max-width: 768px) {
+      .sv-thumb.placeholder::after {
+        font-size: 10px;
+      }
+    }
 
     .sequence-number {
       min-width: 32px;
@@ -157,18 +207,28 @@
     }
 
     .stop-checkbox {
-      width: 36px;
-      height: 36px;
+      width: 72px;
+      height: 72px;
       margin-right: 0;
       margin-left: auto;          /* push to the far right */
       cursor: pointer;
       accent-color: #10b981;
       transition: opacity 0.2s ease;
       flex-shrink: 0;
-      padding: 4px;
+      padding: 8px;
       border-radius: 4px;
       border: 2px solid #e2e8f0;
       display: block;
+    }
+
+    @media (max-width: 768px) {
+      .stop-checkbox {
+        width: 36px;
+        height: 36px;
+        padding: 4px;
+        border-radius: 4px;
+        border: 2px solid #e2e8f0;
+      }
     }
 
     .stop-checkbox:disabled {
@@ -184,14 +244,23 @@
     }
 
     .stop-thumbnail {
-      width: 75px;
-      height: 75px;
-      border-radius: 6px;
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
       object-fit: cover;
       border: 2px solid #10b981;
-      margin-left: 8px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      flex: 0 0 auto;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .stop-thumbnail {
+        width: 75px;
+        height: 75px;
+        border-radius: 6px;
+      }
     }
 
     .stop-thumbnail:hover {
@@ -286,10 +355,10 @@
       font-weight: 600;
       font-size: 1.1rem;
       color: #0f766e;
-      margin-bottom: 4px;
       text-decoration: none;
       cursor: pointer;
-      display: block;
+      display: inline;
+      margin-right: 8px;
     }
 
     .stop-address:hover {
@@ -303,16 +372,23 @@
 
     .stop-status {
       font-size: 0.9rem;
-      padding: 2px 6px;
+      padding: 4px 8px;
       border-radius: 4px;
       background: #fef3c7;
       color: #92400e;
       display: inline-block;
+      white-space: nowrap;
+      font-weight: 600;
     }
 
     .stop-status.completed {
       background: #d1fae5;
       color: #065f46;
+    }
+
+    .stop-item.pending .stop-status {
+      background: #fcd34d;
+      color: #78350f;
     }
 
     .stop-image-upload {
@@ -334,18 +410,27 @@
     .upload-button {
       width: 100%;
       padding: 8px 12px;
-      background: #0f766e;
-      color: white;
+      background: #fcd34d;
+      color: #78350f;
       border: none;
       border-radius: 4px;
       font-size: 1rem;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, color 0.2s;
       font-weight: 600;
     }
 
     .upload-button:hover {
-      background: #115e59;
+      background: #fbbf24;
+    }
+
+    .upload-button.uploaded {
+      background: #10b981;
+      color: white;
+    }
+
+    .upload-button.uploaded:hover {
+      background: #059669;
     }
 
     .upload-button.loading {
@@ -433,15 +518,23 @@
 <script>
 // Auth check — must run before page renders
 (function(){
-  var token = localStorage.getItem('getmybin_emp_token');
+  // Check for employee token OR admin token
+  var token = localStorage.getItem('getmybin_emp_token') || localStorage.getItem('adminToken');
   if (!token) { window.location.href = '/employee-login.html'; return; }
+  
+  // If admin token, just show as Admin
+  var adminEmail = localStorage.getItem('adminEmail');
+  if (adminEmail) {
+    var greet = document.getElementById('emp-greeting');
+    if (greet) greet.textContent = 'Admin: ' + adminEmail;
+    return;
+  }
+  
+  // Otherwise verify as employee
   fetch('/api/auth/verify.php', { headers: { 'Authorization': 'Bearer ' + token } })
     .then(function(r){ return r.json(); })
     .then(function(d){
       if (!d.valid) { localStorage.removeItem('getmybin_emp_token'); window.location.href = '/employee-login.html'; return; }
-      // Set employee name in worker input
-      var nameInput = document.getElementById('workerNameInput');
-      if (nameInput) nameInput.value = d.firstName;
       // Show employee greeting
       var greet = document.getElementById('emp-greeting');
       if (greet) greet.textContent = 'Hi, ' + d.firstName + '!';
@@ -461,10 +554,6 @@
           </div>
         </div>
         <input type="date" class="date-picker" id="datePicker">
-        <div style="margin-top: 12px;">
-          <label style="font-size: 0.95rem; color: #64748b; display: block; margin-bottom: 4px; font-weight: 600;">👤 Worker Name</label>
-          <input type="text" id="workerNameInput" placeholder="Your name" class="date-picker" style="font-size: 1.1rem;">
-        </div>
       </div>
 
       <!-- ROLL-INS -->
@@ -573,7 +662,6 @@
     function init() {
       initMap();
       setTodayDate();
-      loadWorkerName();
       getDriverLocation();
       console.log('Service routing initialized with', currentStops.length, 'stops');
     }
@@ -709,17 +797,6 @@
     }
 
     // Load/save worker name
-    function loadWorkerName() {
-      const saved = localStorage.getItem('workerName') || 'Driver';
-      const input = document.getElementById('workerNameInput');
-      if (input) {
-        input.value = saved;
-        input.addEventListener('change', (e) => {
-          localStorage.setItem('workerName', e.target.value);
-        });
-      }
-    }
-
     // Map initialization
     function initMap() {
       const torontoCenter = { lat: 43.6629, lng: -79.3957 };
@@ -820,10 +897,10 @@
         const position = { lat: stop.lat, lng: stop.lng };
         const seqNum = sequenceNumbers[stop.id] || '?';
         
-        // Determine marker color: green if completed, otherwise blue (rollout) or purple (rollin)
+        // Determine marker color: green if completed, orange if pending
         let markerColor = '#10b981'; // Green for completed
         if (!stop.completed) {
-          markerColor = stop.type === 'rollout' ? '#3b82f6' : '#8b5cf6';
+          markerColor = '#fcd34d'; // Orange for pending (both rollout and rollin)
         }
         
         const marker = new google.maps.Marker({
@@ -896,7 +973,7 @@
     // Render individual stop item
     function renderStopItem(stop, container) {
       const item = document.createElement('div');
-      item.className = `stop-item ${stop.completed ? 'completed' : ''}`;
+      item.className = `stop-item ${stop.completed ? 'completed' : 'pending'}`;
       item.dataset.stopId = stop.id;
 
       const seqNum = sequenceNumbers[stop.id] || '?';
@@ -924,23 +1001,23 @@
       }
 
       item.innerHTML = `
-        <div class="stop-header">
+        <div class="stop-header-top">
           <div class="sequence-number">${seqNum}</div>
+          <a class="stop-address" href="https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" title="Get directions with voice guidance to ${stop.address}">${stop.address}</a>
+          <span class="stop-status ${stop.completed ? 'completed' : ''}">
+            ${stop.completed ? '✓ Done' : '⏳ Pending'}
+          </span>
+        </div>
+        <div class="stop-header-bottom">
           ${svThumbHTML}
-          <div class="stop-info">
-            <a class="stop-address" href="https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" title="Get directions with voice guidance to ${stop.address}">${stop.address}</a>
-            <span class="stop-status ${stop.completed ? 'completed' : ''}">
-              ${stop.completed ? '✓ Done' : '⏳ Pending'}
-            </span>
-          </div>
-          ${stop.imageUrl ? `<img src="${stop.imageUrl}" class="stop-thumbnail" alt="Bin photo" />` : ''}
+          ${stop.imageUrl ? `<img src="${stop.imageUrl}" class="stop-thumbnail" alt="Bin photo" />` : '<div style="flex: 0 0 120px; height: 120px;"></div>'}
           <input type="checkbox" class="stop-checkbox" ${stop.completed ? 'checked' : ''} ${!stop.imageUrl ? 'disabled' : ''}>
         </div>
         <div class="stop-image-upload">
           <label class="upload-label">📷 Bin Photo</label>
           <input type="file" class="upload-input" accept="image/*" style="display:none;">
-          <button class="upload-button" data-stop-id="${stop.id}">
-            ${stop.imageUrl ? '✓ Photo' : 'Upload Photo'}
+          <button class="upload-button ${stop.completed ? 'uploaded' : ''}" data-stop-id="${stop.id}">
+            ${stop.completed ? '✓ Photo' : 'Upload Photo'}
           </button>
           <div class="compression-status"></div>
         </div>
@@ -1168,6 +1245,7 @@
         }
         
         renderServiceList();
+        
         renderMarkers(optimizedRoute.length > 0 ? optimizedRoute : currentStops); // Update marker colors
         calculateOptimalRoute();
         syncToAirtable(stop);
@@ -1227,7 +1305,6 @@
               syncToAirtable(stop);
               if (btn) {
                 btn.classList.remove('loading');
-                btn.textContent = '✓ Photo';
               }
               // Clear status after success
               if (statusDiv) {
@@ -1503,6 +1580,13 @@
       // Load orders when date picker changes
       document.getElementById('datePicker').addEventListener('change', (e) => {
         loadOrdersForDate(e.target.value);
+      });
+      
+      // Open calendar popup when clicking the date picker input
+      document.getElementById('datePicker').addEventListener('click', (e) => {
+        if (e.target.showPicker) {
+          e.target.showPicker();
+        }
       });
     }
 

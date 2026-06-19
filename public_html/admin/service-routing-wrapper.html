@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Routing</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 20px; }
+    .loader { text-align: center; padding: 40px; }
+    iframe { width: 100%; height: 100vh; border: none; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <p>Loading Service Schedule...</p>
+  </div>
+  <iframe id="innerFrame" src="/service-routing.html"></iframe>
+
+  <script>
+    // Store admin token as employee token temporarily for loading
+    const adminToken = localStorage.getItem('adminToken');
+    if (adminToken) {
+      localStorage.setItem('getmybin_emp_token', adminToken);
+    }
+
+    document.getElementById('innerFrame').onload = function() {
+      console.log('Service routing page loaded');
+      document.querySelector('.loader').style.display = 'none';
+    };
+
+    document.getElementById('innerFrame').onerror = function() {
+      document.querySelector('.loader').innerHTML = '<p style="color: red;">Failed to load Service Routing page. Please try again.</p>';
+    };
+  </script>
+</body>
+</html>

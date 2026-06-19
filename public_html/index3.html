@@ -21,34 +21,123 @@
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--slate);line-height:1.6}
     body.modal-open{overflow:hidden}
 
-    /* NAV */
-    nav{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1.5rem;overflow:hidden}
-    .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:102px;overflow:hidden;gap:0}
-    .nav-logo{text-decoration:none;display:flex;align-items:center;justify-content:center;gap:0;height:100%;padding:0;padding-left:0;margin:0 20px 0 0;flex-shrink:0}
-    .nav-logo img{height:100%;width:auto;object-fit:contain;margin-left:40px !important;transform:scale(1.3);transform-origin:center}
-    /* Safari desktop: scale 0.5 */
-    @supports (-webkit-touch-callout: none) {
-      .nav-logo img{transform:scale(0.5) !important}
+    /* ===== NAVIGATION BAR ===== */
+    /* Rebuilt from scratch — clean, modern, fully responsive */
+    nav{
+      position:sticky;
+      top:0;
+      z-index:200;
+      background:#fff;
+      border-bottom:1px solid #e2e8f0;
+      box-shadow:0 1px 3px rgba(0,0,0,.04);
+      width:100%;
     }
-    .nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center;flex-wrap:nowrap}
-    .nav-links a{color:var(--slate-light);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s;white-space:nowrap}
+    .nav-inner{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      height:72px;
+      padding:0 24px 0 40px;
+      gap:16px;
+    }
+    .nav-logo{
+      display:flex;
+      align-items:center;
+      text-decoration:none;
+      flex-shrink:0;
+      height:100%;
+    }
+    .nav-logo img{
+      height:44px;
+      width:auto;
+      object-fit:contain;
+      display:block;
+    }
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:32px;
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+    .nav-links a{
+      color:var(--slate);
+      text-decoration:none;
+      font-size:.95rem;
+      font-weight:600;
+      transition:color .2s ease;
+      white-space:nowrap;
+      padding:8px 0;
+    }
     .nav-links a:hover{color:var(--green)}
-    .nav-cta{background:var(--green)!important;color:#fff!important;padding:8px 18px!important;border-radius:99px!important;font-weight:700!important;transition:background .2s!important;white-space:nowrap}
-    .nav-cta:hover{background:var(--green-dark)!important}
-    @media(max-width:640px) or (orientation:landscape and max-width:900px){
-      nav{padding:0 0.8rem;overflow:hidden}
-      .nav-inner{height:60px;gap:6px;overflow:hidden}
-      .nav-logo{height:45px;margin-right:6px;margin-top:-5px}
-      .nav-logo img{height:45px;max-width:75px;object-fit:contain;margin-left:40px !important;transform:scale(1.8);transform-origin:center}
-      .nav-links{gap:.3rem;flex-wrap:nowrap}
-      .nav-links a{font-size:.9rem;white-space:nowrap}
-      .nav-links li:first-child a{margin-right:.6rem}
-      .nav-links li:nth-child(2) a{margin-right:.6rem}
-      .nav-cta{padding:6px 8px!important;font-size:.9rem!important;white-space:nowrap;margin-left:0!important}
-      /* Safari mobile: scale 1.8 */
-      @supports (-webkit-touch-callout: none) {
-        .nav-logo img{transform:scale(1.8) !important}
+    .nav-cta{
+      background:var(--green);
+      color:#fff;
+      padding:10px 48px;
+      border-radius:99px;
+      font-weight:700;
+      font-size:.92rem;
+      transition:background .2s ease,transform .15s ease,box-shadow .2s ease;
+      box-shadow:0 2px 8px rgba(113,184,12,.25);
+    }
+    .nav-cta:hover{
+      background:var(--green-dark);
+      color:#fff;
+      transform:translateY(-1px);
+      box-shadow:0 4px 12px rgba(113,184,12,.35);
+    }
+
+    /* Tablet (768px – 1023px) */
+    @media (max-width:1023px){
+      .nav-inner{
+        padding:0 20px 0 32px;
+        height:68px;
       }
+      .nav-logo img{height:42px}
+      .nav-links{gap:24px}
+      .nav-links a{font-size:.9rem}
+      .nav-cta{padding:9px 44px;font-size:.9rem}
+    }
+
+    /* Mobile Portrait (480px – 767px) */
+    @media (max-width:767px){
+      .nav-inner{
+        padding:0 16px 0 20px;
+        height:60px;
+        gap:8px;
+      }
+      .nav-logo img{height:36px}
+      .nav-links{gap:14px}
+      .nav-links a{font-size:.85rem;padding:6px 0}
+      .nav-cta{padding:8px 38px;font-size:.85rem}
+    }
+
+    /* Small Mobile (up to 479px) */
+    @media (max-width:479px){
+      .nav-inner{
+        padding:0 12px 0 16px;
+        height:56px;
+        gap:6px;
+      }
+      .nav-logo img{height:32px}
+      .nav-links{gap:10px}
+      .nav-links a{font-size:.78rem}
+      .nav-cta{padding:7px 36px;font-size:.78rem}
+    }
+
+    /* Mobile Landscape (up to 900px wide, short height) */
+    @media (max-width:900px) and (orientation:landscape) and (max-height:500px){
+      .nav-inner{
+        height:54px;
+        padding:0 16px 0 24px;
+      }
+      .nav-logo img{height:34px}
+      .nav-links{gap:18px}
+      .nav-links a{font-size:.85rem}
+      .nav-cta{padding:7px 40px;font-size:.85rem}
     }
 
     /* HERO */
@@ -153,7 +242,7 @@
     .no-check{color:#cbd5e0}
     .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;padding:10px 14px;background:#f8fafc;border-radius:10px;font-size:.76rem;color:var(--slate-light)}
     .legend-item{display:flex;align-items:center;gap:5px}
-    .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .legend-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0}
 
     /* ACCORDION */
     .schedule-accordion{margin-bottom:1.5rem}
@@ -193,7 +282,7 @@
     .dc-day{font-size:1.05rem;font-weight:900;line-height:1.2;margin:2px 0}
     .dc-weekday{font-size:.68rem;opacity:.6;margin-bottom:6px}
     .dc-dots{display:flex;justify-content:center;gap:3px;flex-wrap:wrap;min-height:10px}
-    .dc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .dc-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 
     /* Recurring */
     #recurring-info{display:none;margin-top:1.5rem}
@@ -308,14 +397,16 @@
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
+<!-- ===== NAVIGATION BAR (rebuilt) ===== -->
+<nav role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
-    <a class="nav-logo" href="/"><img src="img/getmybin-logo.jpg" alt="GetMyBin"></a>
+    <a class="nav-logo" href="/" aria-label="GetMyBin home">
+      <img src="/img/getmybin-logo.jpg" alt="GetMyBin">
+    </a>
     <ul class="nav-links">
       <li><a href="/#how">How It Works</a></li>
       <li><a href="/#pricing">Pricing</a></li>
-      <li><a href="/#hero-anchor" class="nav-cta">&nbsp;&nbsp;&nbsp;Get Started&nbsp;&nbsp;&nbsp;</a></li>
+      <li><a href="/#hero-anchor" class="nav-cta">&nbsp;&nbsp;&nbsp;&nbsp;Get Started&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
     </ul>
   </div>
 </nav>
@@ -528,11 +619,41 @@
 
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false">
+          Which areas do you cover?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>We serve all Toronto residential addresses with City of Toronto curbside collection. Not sure if that&rsquo;s you? Type your address at the top &mdash; we&rsquo;ll tell you instantly.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
           Which bins do you handle?
           <span class="faq-chevron">+</span>
         </button>
         <div class="faq-a" role="region">
           <p>All of them &mdash; garbage, recycling, green bin, and yard waste. Whatever the City collects at your address on your collection day, we handle it.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          When do you roll out the bins to the curb and when do you roll them back in?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>We roll your bins to the curb the evening before your scheduled collection day and return them to their designated spot the following afternoon after they&rsquo;ve been emptied by the city collection truck.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Do you follow Toronto&rsquo;s holiday schedule changes?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>Yes. We follow the City of Toronto&rsquo;s adjusted holiday schedule automatically. If the City moves your collection day, we move with it &mdash; no action needed from you.</p>
         </div>
       </div>
 
@@ -553,26 +674,6 @@
         </button>
         <div class="faq-a" role="region">
           <p>If we miss your scheduled service for any reason, you don&rsquo;t pay for that event. Simple as that.</p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">
-          Do you follow Toronto&rsquo;s holiday schedule changes?
-          <span class="faq-chevron">+</span>
-        </button>
-        <div class="faq-a" role="region">
-          <p>Yes. We follow the City of Toronto&rsquo;s adjusted holiday schedule automatically. If the City moves your collection day, we move with it &mdash; no action needed from you.</p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">
-          Which areas do you cover?
-          <span class="faq-chevron">+</span>
-        </button>
-        <div class="faq-a" role="region">
-          <p>We serve all Toronto residential addresses with City of Toronto curbside collection. Not sure if that&rsquo;s you? Type your address at the top &mdash; we&rsquo;ll tell you instantly.</p>
         </div>
       </div>
 
@@ -1339,6 +1440,7 @@ function formatDateShort(isoStr) {
 <script src="stripe-integration.js"></script>
 <script src="airtable-bookings.js"></script>
 <script src="email-service.js"></script>
+<script src="chat-logger.js"></script>
 
 <!-- Sticky mobile CTA -->
 <div class="sticky-cta" id="sticky-cta">
@@ -1483,6 +1585,13 @@ document.querySelectorAll('.faq-q').forEach(function(btn){
 
   resetTimer();
 })();
+</script>
+
+<!-- GetMyBin Chat Widget -->
+<script src="/getmybin-chat.js"></script>
+<script>
+  // Initialize chat widget with your OpenAI API key
+  // API key is now handled server-side in /api/chat.php — not exposed to client
 </script>
 </body>
 </html>

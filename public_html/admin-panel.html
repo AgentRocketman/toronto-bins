@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GetMyBin Admin Panel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #334155;
+    }
+
+    .admin-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .admin-header {
+      background: linear-gradient(135deg, #71b80c, #5a9409);
+      color: white;
+      padding: 16px 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      z-index: 1000;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links button {
+      background: none;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .nav-links button:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-links button.active {
+      background: white;
+      color: #5a9409;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: auto;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .content-wrapper {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .admin-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+
+    @media (max-width: 768px) {
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-right {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .nav-links {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <div class="header-left">
+        <div class="logo">🚀 GetMyBin Admin</div>
+        <div class="nav-links">
+          <button id="dashboardBtn" class="nav-btn" data-page="dashboard">📊 Dashboard</button>
+          <button id="routingBtn" class="nav-btn" data-page="/service-routing.html">📍 Service Schedule</button>
+          <button id="analyticsBtn" class="nav-btn" data-page="/admin/chat_analytics.html">💬 Chat Analytics</button>
+          <button id="changePasswordBtn" class="nav-btn" data-page="change-password">🔐 Change Password</button>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="user-info">
+          <span>👤</span>
+          <span id="adminEmail">Admin</span>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="content-wrapper">
+      <iframe id="contentFrame" class="admin-iframe" title="Admin Content"></iframe>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = 'dashboard';
+
+    // Set up button click handlers
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const page = this.getAttribute('data-page');
+        console.log('Button clicked, navigating to:', page);
+        navigateTo(page);
+      });
+    });
+
+    // Logout button
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      console.log('Logout clicked');
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminEmail');
+      window.location.href = '/admin-login.html';
+    });
+
+    function updateActiveButton() {
+      document.getElementById('dashboardBtn').classList.remove('active');
+      document.getElementById('routingBtn').classList.remove('active');
+      document.getElementById('analyticsBtn').classList.remove('active');
+      document.getElementById('changePasswordBtn').classList.remove('active');
+
+      if (currentPage === 'dashboard') {
+        document.getElementById('dashboardBtn').classList.add('active');
+      } else if (currentPage === '/service-routing.html') {
+        document.getElementById('routingBtn').classList.add('active');
+      } else if (currentPage === '/admin/chat_analytics.html') {
+        document.getElementById('analyticsBtn').classList.add('active');
+      } else if (currentPage === 'change-password') {
+        document.getElementById('changePasswordBtn').classList.add('active');
+      }
+    }
+
+    function navigateTo(page) {
+      console.log('navigateTo called with:', page);
+      currentPage = page;
+      const frame = document.getElementById('contentFrame');
+      
+      if (page === 'change-password') {
+        // Load change password page
+        frame.src = '/admin/change-password.html';
+      } else {
+        // Map 'dashboard' to the actual dashboard.html file
+        const pageUrl = (page === 'dashboard') ? '/admin/dashboard.html' : page;
+        console.log('Setting iframe src to:', pageUrl);
+        frame.src = pageUrl;
+      }
+      
+      updateActiveButton();
+    }
+
+    // Auth check
+    function checkAuth() {
+      console.log('checkAuth called');
+      const token = localStorage.getItem('adminToken');
+      const email = localStorage.getItem('adminEmail');
+
+      if (!token) {
+        console.log('No token found, redirecting to login');
+        window.location.href = '/admin-login.html';
+        return;
+      }
+
+      // Verify token with backend
+      fetch('/api/admin-auth/verify.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ email })
+      })
+      .then(r => r.json())
+      .then(data => {
+        console.log('Token verification response:', data);
+        if (!data.valid) {
+          console.log('Token invalid, redirecting to login');
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminEmail');
+          window.location.href = '/admin-login.html';
+        } else {
+          console.log('Token valid, setting email and loading dashboard');
+          document.getElementById('adminEmail').textContent = email || 'Admin';
+          navigateTo('dashboard');
+        }
+      })
+      .catch((err) => {
+        console.error('Auth check error:', err);
+        localStorage.removeItem('adminToken');
+        window.location.href = '/admin-login.html';
+      });
+    }
+
+    // Run auth check when page loads
+    window.addEventListener('load', checkAuth);
+  </script>
+</body>
+</html>
