@@ -123,6 +123,17 @@
   - `ADMIN_KEY`: `getmybin-admin-xK9mP2026`
   - `ADMIN_PASSWORD`: `GetMyBinAdmin2026!`
 
+## Admin Panel & Dashboard — UPDATED ✅ (2026-06-19)
+
+### Dashboard Features:
+- **Order graph:** Shows orders by day (bar chart)
+- **Default view:** Next 7 days
+- **Date range picker:** Select custom from/to dates
+- **Statistics:** Total orders, average per day, completed, pending
+- **Data source:** Airtable Bookings table (Date & Status fields)
+- **Library:** Chart.js for interactive charts
+- **Auto-refresh:** Click "Refresh" button to update with new date range
+
 ## Admin Panel Login System — UPDATED ✅ (2026-06-19)
 - **URL:** https://agentrocketman.com/admin-login.html
 - **Admin Email:** support@getmybin.com
