@@ -152,7 +152,8 @@
   - Payment information (Amount, Stripe Payment ID, Stripe Subscription ID)
   - Location info with coordinates
   - **Smart fallback:** If Street View unavailable, shows coordinates + link to open in Google Maps
-  - Related orders from same booking
+  - **Completion photos** (if order is completed) - gallery with employee name + date for each photo
+  - **Related orders** from same booking (clickable - navigate to their order details page)
 - **Actions:** Cancel/Refund button linking to cancellation page
 
 ### Order Cancellation Page (`/admin/cancel-order.html`):
