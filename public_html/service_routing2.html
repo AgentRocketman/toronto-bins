@@ -396,6 +396,14 @@
       font-size: 1rem;
     }
 
+    .info-window-content .order-id {
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -838,7 +846,7 @@
         
         const infoWindow = new google.maps.InfoWindow({
           content: `<div class="info-window-content">
-            <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #64748b;"><strong>Order:</strong> ${stop.orderId || 'N/A'}</p>
+            <p class="order-id"><strong>Order ID:</strong> <code>${stop.orderId || 'N/A'}</code></p>
             <h3><a href="https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" title="Get directions with voice guidance" style="color: #0f766e !important; text-decoration: none !important; font-weight: 700; font-size: 1.1rem; border: none !important;">${stop.address}</a></h3>
             <p><strong>Type:</strong> ${stop.type === 'rollout' ? '📤 Roll Out' : '📥 Roll In'}</p>
             <p><strong>Status:</strong> ${stop.completed ? '✅ Completed' : '⏳ Pending'}</p>
@@ -1328,7 +1336,7 @@
           const bookingId = fields['Booking ID'];
           const serviceType = fields['Service Type'] || 'Roll Out';
           const status = fields['Status'] || 'Pending';
-          const orderId = orderRecord.id; // Use Airtable record ID as order identifier
+          const orderId = fields['Order ID'] || 'N/A'; // Get Order ID from Orders table field
           console.log(`Order record:`, { orderId, bookingId, serviceType, status });
           
           if (!bookingId) {
