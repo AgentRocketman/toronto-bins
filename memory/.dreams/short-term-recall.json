@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-19T21:19:44.370Z",
+  "updatedAt": "2026-06-19T23:16:12.066Z",
   "entries": {
     "memory:memory/2026-06-13.md:34:69": {
       "key": "memory:memory/2026-06-13.md:34:69",
@@ -461,20 +461,22 @@
       "endLine": 221,
       "source": "memory",
       "snippet": "- **SSH deployment:** Unavailable from this environment - **Hostinger API deployment:** ✅ SUCCESS via `hostinger-api__hosting_deployStaticWebsite` - File: `/tmp/service-routing.tar.gz` - Deployed to: agentrocketman.com - Status: Upload accepted, deploy queued ## Service Routing Feature Status - NOT WORKING YET ⚠️ - **Issue:** Deployed file shows \"Service routing initialized with 8 stops\" (hardcoded fallback) - **Root cause:** Subagent-generated HTML contains BOTH dynamic + hardcoded code; falls back to hardcoded when dynamic fails - **Evidence:** No orders actually loaded from Airtable on test - **Blocker:** Dynamic code has bugs; needs proper debugging ## What Works - ✅ Hostinger A",
-      "recallCount": 2,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-15T04:44:12.941Z",
+      "lastRecalledAt": "2026-06-19T23:16:12.066Z",
       "queryHashes": [
         "91f38a5d152b",
-        "e2baa82997b8"
+        "e2baa82997b8",
+        "64a871926ef7"
       ],
       "recallDays": [
         "2026-06-14",
-        "2026-06-15"
+        "2026-06-15",
+        "2026-06-19"
       ],
       "conceptTags": [
         "hostinger-api",
@@ -494,22 +496,24 @@
       "endLine": 43,
       "source": "memory",
       "snippet": "# Session Log: 2026-06-13 (UPDATED) ## CurbIn Backend Deployment — PHP Option (✅ COMPLETE) ### Final Status: FULLY TESTED & PRODUCTION READY 🚀 --- ## Implementation Summary ### PHP Backend Created & Deployed 5 production-ready endpoints on Hostinger: 1. **upload.php** — Image upload (MIME validation, 10MB limit) 2. **save-service.php** — Airtable sync via API 3. **optimize-route.php** — Route optimization (nearest-neighbor) 4. **health.php** — API status & system info 5. **services.php** — Retrieve all service records 6. **.htaccess** — CORS + Apache rewrite rules ### Test Results: ALL PASSED ✅ | Test | Result | Details | |------|--------|---------| | Image Upload | ✅ | 100x100 JPEG",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-17T15:22:44.266Z",
+      "lastRecalledAt": "2026-06-19T23:16:12.066Z",
       "queryHashes": [
         "91f38a5d152b",
         "e4a834cad526",
-        "39fcc196c0f0"
+        "39fcc196c0f0",
+        "64a871926ef7"
       ],
       "recallDays": [
         "2026-06-14",
         "2026-06-15",
-        "2026-06-17"
+        "2026-06-17",
+        "2026-06-19"
       ],
       "conceptTags": [
         "production-ready",
@@ -560,22 +564,24 @@
       "endLine": 178,
       "source": "memory",
       "snippet": "- **Tests Run:** 6 (all passed ✅) - **Airtable Records Synced:** 6 - **Bugs Fixed:** 1 (base ID) - **Documentation Pages:** 2 - **Production Status:** READY 🚀 --- **Final Status:** ✅ PRODUCTION DEPLOYED **Last Update:** 2026-06-13 16:27 UTC **Next Review:** When team starts using with real data # Session Log: 2026-06-13 (UPDATED) ## CurbIn Backend Deployment — PHP Option (✅ COMPLETE) ### Final Status: FULLY TESTED & PRODUCTION READY 🚀 --- ## Implementation Summary ### PHP Backend Created & Deployed 5 production-ready endpoints on Hostinger: 1. **upload.php** — Image upload (MIME validation, 10MB limit) 2. **save-service.php** — Airtable sync via API 3. **optimize-route.php** — R",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-17T15:22:44.266Z",
+      "lastRecalledAt": "2026-06-19T23:16:12.066Z",
       "queryHashes": [
         "91f38a5d152b",
         "e4a834cad526",
-        "39fcc196c0f0"
+        "39fcc196c0f0",
+        "64a871926ef7"
       ],
       "recallDays": [
         "2026-06-14",
         "2026-06-15",
-        "2026-06-17"
+        "2026-06-17",
+        "2026-06-19"
       ],
       "conceptTags": [
         "production-ready",
@@ -595,20 +601,22 @@
       "endLine": 77,
       "source": "memory",
       "snippet": "- **v34-v35:** Attempted stat filtering fixes (cache issues) - **v36:** ✅ Final resolution with cache-buster **Issues Resolved:** 3/3 1. ✅ Stats responsive grid (2 per row mobile) 2. ✅ Stats filtering (dynamic updates) 3. ✅ Browser cache (v36 with fresh reload) **Status:** ✅ PRODUCTION READY # 2026-06-14 Session Notes ## FTP Password Recovery + Deployment Attempt - **FTP password found:** FTPAgentPassword1! - **FTP deployment:** Failed (passive mode timeout during data transfer) - **SSH deployment:** Unavailable from this environment - **Hostinger API deployment:** ✅ SUCCESS via `hostinger-api__hosting_deployStaticWebsite` - File: `/tmp/service-routing.tar.gz` - Deployed to: agentroc",
-      "recallCount": 2,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-15T04:44:12.941Z",
+      "lastRecalledAt": "2026-06-19T23:16:12.066Z",
       "queryHashes": [
         "91f38a5d152b",
-        "e2baa82997b8"
+        "e2baa82997b8",
+        "64a871926ef7"
       ],
       "recallDays": [
         "2026-06-14",
-        "2026-06-15"
+        "2026-06-15",
+        "2026-06-19"
       ],
       "conceptTags": [
         "v34-v35",
@@ -931,6 +939,37 @@
         "endpoint",
         "validates",
         "but"
+      ]
+    },
+    "memory:memory/2026-06-19.md:255:293": {
+      "key": "memory:memory/2026-06-19.md:255:293",
+      "path": "memory/2026-06-19.md",
+      "startLine": 255,
+      "endLine": 293,
+      "source": "memory",
+      "snippet": "- **Service routing auth:** Modified to accept either employee token OR admin token - **Password change:** Frontend validation + server-side verification via Airtable lookup ### Deployment Status: - ✅ All files deployed to agentrocketman.com - ✅ Admin login working - ✅ Dashboard graph showing completed + pending orders - ✅ Date range selection working - ✅ Refresh button loads new date range ### What's NOT Persisted (Demo Mode): - Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Ai",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-19T23:16:12.066Z",
+      "lastRecalledAt": "2026-06-19T23:16:12.066Z",
+      "queryHashes": [
+        "64a871926ef7"
+      ],
+      "recallDays": [
+        "2026-06-19"
+      ],
+      "conceptTags": [
+        "server-side",
+        "agentrocketman.com",
+        "service",
+        "routing",
+        "auth",
+        "modified",
+        "accept",
+        "either"
       ]
     }
   }

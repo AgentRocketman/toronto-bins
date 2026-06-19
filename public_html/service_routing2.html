@@ -834,6 +834,7 @@
 
         const infoWindow = new google.maps.InfoWindow({
           content: `<div class="info-window-content">
+            <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #64748b;"><strong>Order:</strong> ${stop.orderId || 'N/A'}</p>
             <h3><a href="https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lng}" target="_blank" rel="noopener noreferrer" title="Get directions with voice guidance" style="color: #0f766e !important; text-decoration: none !important; font-weight: 700; font-size: 1.1rem; border: none !important;">${stop.address}</a></h3>
             <p><strong>Type:</strong> ${stop.type === 'rollout' ? '📤 Roll Out' : '📥 Roll In'}</p>
             <p><strong>Status:</strong> ${stop.completed ? '✅ Completed' : '⏳ Pending'}</p>
