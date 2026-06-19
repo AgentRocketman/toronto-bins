@@ -165,6 +165,8 @@
 - **Authentication required:** JWT token verification before access
 - **Displays:**
   - Order information (Order ID, Service Date, Type, Frequency, Status)
+    - **Refund This Order button** - cancels just that specific order
+    - **DISABLED if order is Cancelled or Refunded** (grayed out with tooltip "This order has already been cancelled")
   - Booking information (Booking ID, Customer Name, Email, Address, Created At)
     - **Refund Entire Booking button** - cancels all orders in the booking
   - Payment information (Amount, Stripe Payment ID, Stripe Subscription ID)
@@ -173,9 +175,11 @@
   - **Completion photos** (if order is completed) - gallery with employee name + date for each photo
   - **Related orders** from same booking (clickable - navigate to their order details page)
     - **Individual Refund buttons** for each order (🗑️) - cancels just that specific order
+    - **DISABLED for Cancelled/Refunded orders** (grayed out, opacity 0.6, cursor not-allowed)
 - **Refund Logic:**
   - **Booking-level refund:** Cancels entire booking + all future orders, processes Stripe refund
   - **Order-level refund:** Cancels only that specific order, requires manual Stripe refund via dashboard
+  - **Button State:** Both order section and related orders refund buttons are disabled if status is 'Cancelled' or 'Refunded'
 
 ### Order Cancellation Page (`/admin/cancel-order.html`):
 - **Refund Summary Card:**
