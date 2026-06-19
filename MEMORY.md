@@ -44,12 +44,14 @@
 - ✅ Photo attachment inline (no "Show Images" needed)
 - ✅ Hostinger SMTP integration working
 
-## Deployment Method (FINAL)
+## Deployment Method (FINAL - CORRECTED 2026-06-19)
 ✅ **Use Hostinger API, NOT FTP/SSH**
 - ALWAYS deploy from `/data/.openclaw/workspace/public_html/` — the master folder
-- NEVER deploy a partial archive (it wipes other files on the server)
-- To deploy: `cd /data/.openclaw/workspace/public_html && tar -czf /tmp/full-deploy.tar.gz --exclude='./bin-pics' .` then call deployStaticWebsite
-- **EXCLUDE entire `bin-pics/` dir** — Hostinger does a sync-style deploy that DELETES server files not in the archive. Driver-uploaded photos live only on the server, never in the workspace. `upload.php` auto-creates the dir + `.htaccess` on first upload.
+- **CRITICAL:** Hostinger does sync-style deploy = DELETES server files not in archive
+- To deploy: `cd /data/.openclaw/workspace/public_html && tar -czf /tmp/deploy.tar.gz --exclude='./bin-pics/*.jpg' --exclude='./bin-pics/*.png' .` then call deployStaticWebsite
+  - This INCLUDES bin-pics/.gitkeep and bin-pics/.htaccess (preserves directory)
+  - This EXCLUDES actual image files (*.jpg, *.png) — they only live on server
+  - Driver-uploaded photos stay on server, never deleted during deploy
 - Before ANY deploy: copy changed file(s) into public_html/ first, then tar the whole folder
 - Deploy completes in ~15 seconds
 - This is the ONLY reliable method
