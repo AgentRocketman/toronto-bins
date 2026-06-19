@@ -125,6 +125,21 @@
 
 ## Admin Panel & Dashboard — UPDATED ✅ (2026-06-19)
 
+### Mobile Navigation (Responsive Design):
+- **Desktop (≥769px):**
+  - Horizontal navigation bar with all options visible
+  - Desktop-optimized spacing and sizing
+  - Full user email displayed
+
+- **Mobile (≤768px):**
+  - Compact header with hamburger menu (☰) icon
+  - Hamburger menu opens full-width dropdown with all nav options
+  - Touch-friendly buttons (44px minimum height)
+  - Overlay backdrop when menu open
+  - Menu closes automatically when option selected or overlay clicked
+  - Short user info display
+  - All buttons have active state styling
+
 ### Dashboard Features:
 1. **Order graph:** Stacked bar chart showing orders by day
    - Default view: Next 7 days
