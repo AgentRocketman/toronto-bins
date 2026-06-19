@@ -126,13 +126,19 @@
 ## Admin Panel & Dashboard — UPDATED ✅ (2026-06-19)
 
 ### Dashboard Features:
-- **Order graph:** Shows orders by day (bar chart)
+- **Order graph:** Stacked bar chart showing orders by day
 - **Default view:** Next 7 days
 - **Date range picker:** Select custom from/to dates
-- **Statistics:** Total orders, average per day, completed, pending
-- **Data source:** Airtable Bookings table (Date & Status fields)
-- **Library:** Chart.js for interactive charts
+- **Statistics:** Total orders, average per day, new, pending, completed
+- **Data source:** Airtable Orders table (Service Date & Status fields)
+- **Library:** Chart.js for stacked bars
 - **Auto-refresh:** Click "Refresh" button to update with new date range
+
+### Order Status Logic (Date-Based):
+- **New (blue):** Service Date is tomorrow or later, Status != Completed/Cancelled
+- **Pending (orange):** Service Date is today OR past, Status != Completed/Cancelled
+- **Completed (green):** Status = "Completed"
+- **Cancelled:** Excluded from dashboard
 
 ## Admin Panel Login System — UPDATED ✅ (2026-06-19)
 - **URL:** https://agentrocketman.com/admin-login.html
