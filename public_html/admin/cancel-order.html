@@ -67,6 +67,21 @@
         <p><strong>Email:</strong> <span id="emailDisplay">-</span></p>
       </div>
 
+      <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+        <h2 style="color: #166534;">💰 Refund Summary</h2>
+        <div class="field">
+          <div class="field-label">Refund Amount</div>
+          <div class="field-value" style="font-size: 1.8rem; color: #22c55e; font-weight: 700;" id="refundAmountDisplay">-</div>
+        </div>
+        <div class="field" id="refundDetailsLine" style="display: none;">
+          <div class="field-label">Details</div>
+          <div class="field-value" id="refundDetailsDisplay">-</div>
+        </div>
+        <div class="field" id="noRefundLine" style="display: none; background: #fef3c7; padding: 12px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+          <div style="color: #92400e; font-weight: 500;">⏱️ No refund applicable - all dates fall within the 48-hour service window</div>
+        </div>
+      </div>
+
       <div class="card">
         <h2>Cancellation Details</h2>
         
@@ -151,8 +166,46 @@
       document.getElementById('bookingIdDisplay').textContent = bookingId;
       document.getElementById('emailDisplay').textContent = email;
 
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('content').style.display = 'block';
+      // Fetch refund calculation
+      fetchRefundAmount(bookingId, orderId);
+    }
+
+    // Fetch and display refund amount
+    async function fetchRefundAmount(bookingId, orderId) {
+      try {
+        let url = `/api/calculate-refund.php?bookingId=${bookingId}`;
+        if (orderId && orderId !== bookingId) {
+          url += `&orderId=${orderId}`;
+        }
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to calculate refund');
+
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error);
+
+        // Display refund amount
+        document.getElementById('refundAmountDisplay').textContent = '$' + data.refundAmount.toFixed(2) + ' CAD';
+
+        if (data.refundAmount > 0) {
+          let details = `${data.refundDates} out of ${data.totalDates} date` + (data.totalDates > 1 ? 's' : '') + ` beyond 48-hour cutoff`;
+          document.getElementById('refundDetailsDisplay').textContent = details;
+          document.getElementById('refundDetailsLine').style.display = 'block';
+          document.getElementById('noRefundLine').style.display = 'none';
+        } else {
+          document.getElementById('refundDetailsLine').style.display = 'none';
+          document.getElementById('noRefundLine').style.display = 'block';
+          document.getElementById('refundAmountDisplay').textContent = '$0.00 CAD';
+        }
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      } catch (err) {
+        console.error('Error fetching refund amount:', err);
+        document.getElementById('refundAmountDisplay').textContent = 'Error calculating refund';
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+      }
     }
 
     // Handle form submission
