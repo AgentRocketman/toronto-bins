@@ -178,15 +178,23 @@
   - **Order-level refund:** Cancels only that specific order, requires manual Stripe refund via dashboard
 
 ### Order Cancellation Page (`/admin/cancel-order.html`):
+- **Refund Summary Card:**
+  - Displays calculated refund amount in large green text
+  - Shows details: e.g. "2 out of 3 dates beyond 48-hour cutoff"
+  - If no refund applies: shows yellow warning "No refund applicable - all dates fall within 48-hour window"
 - **Form fields:**
   - Reason dropdown (Customer Request, Payment Failed, Service Issue, Duplicate, Other)
   - Additional notes textarea
 - **On submission:**
   - Calls `/api/process-cancellation.php` endpoint
-  - Issues Stripe refund
+  - **Booking-level refund:** Issues Stripe refund automatically + cancels all orders
+  - **Order-level refund:** Cancels specific order only (manual Stripe refund required)
   - Updates Airtable status to Cancelled
   - Sends confirmation emails to customer and support
   - Redirects to admin panel on success
+- **Refund calculation:** `/api/calculate-refund.php`
+  - Proportional refund based on future orders beyond 48-hour cutoff
+  - Formula: (booking amount / total orders) × (orders beyond cutoff)
 
 ### Order Status Logic (Date-Based):
 - **New (blue):** Service Date is in the future AND not completed
