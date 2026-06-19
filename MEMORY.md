@@ -185,6 +185,8 @@
 - **Refund Summary Card:**
   - Displays calculated refund amount in large green text
   - Shows details: e.g. "2 out of 3 dates beyond 48-hour cutoff"
+  - Shows **Already Refunded amount** (if any orders already refunded)
+  - Shows **Max Available Refund** (if booking has partial refunds)
   - If no refund applies: shows yellow warning "No refund applicable - all dates fall within 48-hour window"
 - **Form fields:**
   - Reason dropdown (Customer Request, Payment Failed, Service Issue, Duplicate, Other)
@@ -197,8 +199,11 @@
   - Sends confirmation emails to customer and support
   - Redirects to admin panel on success
 - **Refund calculation:** `/api/calculate-refund.php`
+  - **Max Available Refund Logic (NEW):**
+    - If any order in booking is already Cancelled/Refunded: max refund = (total booking amount - sum of already refunded amounts)
+    - Example: Booking $40, Order 1 refunded $10 → max refund = $30
   - Proportional refund based on future orders beyond 48-hour cutoff
-  - Formula: (booking amount / total orders) × (orders beyond cutoff)
+  - Formula: min((booking amount / total orders) × (orders beyond cutoff), max available refund)
 
 ### Order Status Logic (Date-Based):
 - **New (blue):** Service Date is in the future AND not completed
