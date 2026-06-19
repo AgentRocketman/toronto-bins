@@ -804,6 +804,7 @@
       map = new google.maps.Map(document.getElementById('map'), {
         zoom: 12,
         center: torontoCenter,
+        gestureHandling: 'greedy',
         styles: [
           { featureType: 'water', stylers: [{ color: '#c9d7e9' }] },
           { featureType: 'landscape', stylers: [{ color: '#f5f7fa' }] }
