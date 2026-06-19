@@ -126,13 +126,22 @@
 ## Admin Panel & Dashboard — UPDATED ✅ (2026-06-19)
 
 ### Dashboard Features:
-- **Order graph:** Stacked bar chart showing orders by day
-- **Default view:** Next 7 days
-- **Date range picker:** Select custom from/to dates
-- **Statistics:** Total orders, average per day, new, pending, completed
-- **Data source:** Airtable Orders table (Service Date & Status fields)
-- **Library:** Chart.js for stacked bars
-- **Auto-refresh:** Click "Refresh" button to update with new date range
+1. **Order graph:** Stacked bar chart showing orders by day
+   - Default view: Next 7 days
+   - Date range picker with auto-closing calendars
+   - Stacked bars: Blue (new) + Orange (pending) + Green (completed)
+
+2. **Statistics cards:**
+   - Total orders, Average per day
+   - New, Pending, Completed breakdown
+
+3. **Orders table** (below chart):
+   - **Columns:** Booking ID, Created At, Address, Email, Service Type, Service Date, Status
+   - **Sortable:** Click any column header to sort ascending/descending
+   - **Pagination:** 10 records per page with First/Prev/Next/Last navigation
+   - **Search:** Real-time search by Booking ID, Address, or Email address
+   - **Status badges:** Color-coded (New=blue, Pending=orange, Completed=green, Cancelled=red)
+   - **Data source:** Airtable Orders table + Bookings table for address/email
 
 ### Order Status Logic (Date-Based):
 - **New (blue):** Service Date is in the future AND not completed
