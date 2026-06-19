@@ -135,8 +135,8 @@
 - **Auto-refresh:** Click "Refresh" button to update with new date range
 
 ### Order Status Logic (Date-Based):
-- **New (blue):** Service Date is tomorrow or later, Status != Completed/Cancelled
-- **Pending (orange):** Service Date is today OR past, Status != Completed/Cancelled
+- **New (blue):** Service Date is in the future AND not completed
+- **Pending (orange):** Service Date is today or in the past AND not completed (includes overdue)
 - **Completed (green):** Status = "Completed"
 - **Cancelled:** Excluded from dashboard
 
