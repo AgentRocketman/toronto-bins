@@ -135,6 +135,9 @@
     async function loadOrderInfo() {
       if (!checkAuth()) return;
 
+      // Clear any previous error messages
+      document.getElementById('errorMsg').style.display = 'none';
+
       const orderId = getUrlParam('orderId');
       const bookingId = getUrlParam('bookingId');
       const email = getUrlParam('email');
@@ -183,6 +186,9 @@
 
         const data = await response.json();
         if (!data.success) throw new Error(data.error);
+
+        // Clear any previous error messages
+        document.getElementById('errorMsg').style.display = 'none';
 
         // Display refund amount
         document.getElementById('refundAmountDisplay').textContent = '$' + data.refundAmount.toFixed(2) + ' CAD';
