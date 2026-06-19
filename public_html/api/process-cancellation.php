@@ -99,11 +99,12 @@ if ($isOrderLevelRefund) {
     // Calculate max available refund
     $maxAvailableRefund = max(0, $bookingAmount - $alreadyRefundedAmount);
 
+    // Count all active (non-cancelled/refunded) orders for refund calculation
+    // Note: We allow refunds for orders regardless of 48-hour cutoff
     foreach ($allOrders as $order) {
         $status = $order['fields']['Status'] ?? '';
-        $svcDate = $order['fields']['Service Date'] ?? '';
         // Only count orders that aren't already cancelled/refunded
-        if ($status !== 'Cancelled' && $status !== 'Refunded' && $svcDate > $cutoffDate) {
+        if ($status !== 'Cancelled' && $status !== 'Refunded') {
             $futureOrders[] = $order;
         }
     }
@@ -111,7 +112,8 @@ if ($isOrderLevelRefund) {
     $refundDates = count($futureOrders);
 
     if ($refundDates > 0 && $totalOrders > 0 && $bookingAmount > 0) {
-        // Proportional refund: (future dates / total dates) × total paid
+        // Proportional refund: (active orders / total orders) × total paid
+        // Note: All active orders are eligible for refund, regardless of date
         $perEvent     = $bookingAmount / $totalOrders;
         $refundAmount = round($perEvent * $refundDates, 2);
         // Cap refund at maximum available
@@ -129,8 +131,27 @@ if ($isOrderLevelRefund) {
         } else {
             $stripeError = $refundResult['body']['error']['message'] ?? 'Refund failed';
         }
+    } elseif ($refundDates === 0 && $totalOrders > 0 && $bookingAmount > 0) {
+        // All orders are active but may be old - still process refund
+        $perEvent     = $bookingAmount / $totalOrders;
+        $refundAmount = round($perEvent * $totalOrders, 2); // Full refund for all active orders
+        // Cap refund at maximum available
+        $refundAmount = min($refundAmount, $maxAvailableRefund);
+        $refundCents  = (int)round($refundAmount * 100);
+
+        $refundResult = stripeRequest('POST', '/refunds', [
+            'payment_intent' => $stripePayId,
+            'amount'         => $refundCents,
+            'reason'         => 'requested_by_customer',
+        ]);
+
+        if ($refundResult['code'] < 400) {
+            $stripeAction = 'refund_issued';
+        } else {
+            $stripeError = $refundResult['body']['error']['message'] ?? 'Refund failed';
+        }
     } else {
-        $stripeAction = 'no_refund_due'; // all dates within 48hr window
+        $stripeAction = 'no_refund_possible';
     }
 }
 

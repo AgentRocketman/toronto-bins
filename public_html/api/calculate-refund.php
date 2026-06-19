@@ -74,32 +74,35 @@ $refundAmount = 0;
 $refundDates = 0;
 $totalDates = count($allOrders); // Total orders in booking
 
+// Track if any orders are outside the 48-hour refund window
+$hasOutdatedOrders = false;
+
 if ($orderId && $targetOrder) {
   // ORDER-LEVEL REFUND: Refund just this order's portion
   $serviceDate = $targetOrder['fields']['Service Date'] ?? '';
-  if ($serviceDate > $cutoffDate) {
-    // Only refund if beyond 48-hour cutoff
-    $perEvent = $bookingAmount / $totalDates;
-    $refundAmount = round($perEvent, 2);
-    $refundDates = 1;
-    
-    // Cap refund at maximum available for this booking
-    $refundAmount = min($refundAmount, $maxAvailableRefund);
-  } else {
-    $refundAmount = 0;
-    $refundDates = 0;
+  $perEvent = $bookingAmount / $totalDates;
+  $refundAmount = round($perEvent, 2);
+  $refundDates = 1;
+  
+  // Check if this order is outside 48-hour window
+  if ($serviceDate <= $cutoffDate) {
+    $hasOutdatedOrders = true;
   }
+  
+  // Cap refund at maximum available for this booking
+  $refundAmount = min($refundAmount, $maxAvailableRefund);
 } else {
-  // BOOKING-LEVEL REFUND: Refund proportional to future orders
+  // BOOKING-LEVEL REFUND: Refund proportional to all active orders
   foreach ($allOrders as $order) {
     $status = $order['fields']['Status'] ?? '';
-    // Don't count already cancelled/refunded orders
+    // Count all orders that aren't already cancelled/refunded
     if ($status !== 'Cancelled' && $status !== 'Refunded') {
       $serviceDate = $order['fields']['Service Date'] ?? '';
-      $freq = $order['fields']['Frequency'] ?? '';
+      $refundDates++;
       
-      if ($freq === 'Recurring' || $serviceDate > $cutoffDate) {
-        $refundDates++;
+      // Check if any orders are outside 48-hour window
+      if ($serviceDate <= $cutoffDate) {
+        $hasOutdatedOrders = true;
       }
     }
   }
@@ -125,6 +128,7 @@ echo json_encode([
   'cutoffDate' => $cutoffDate,
   'isOrderLevel' => !empty($orderId),
   'alreadyRefundedAmount' => $alreadyRefundedAmount,
-  'maxAvailableRefund' => $maxAvailableRefund
+  'maxAvailableRefund' => $maxAvailableRefund,
+  'hasOutdatedOrders' => $hasOutdatedOrders
 ]);
 ?>

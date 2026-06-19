@@ -69,6 +69,9 @@
 
       <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
         <h2 style="color: #166534;">💰 Refund Summary</h2>
+        <div class="field" id="outdatedOrderWarning" style="display: none; background: #fef3c7; padding: 12px; border-radius: 6px; border-left: 4px solid #f59e0b; margin-bottom: 16px;">
+          <div style="color: #92400e; font-weight: 500;">⚠️ This booking was placed more than 48 hours ago, but refund will still be processed as requested.</div>
+        </div>
         <div class="field">
           <div class="field-label">Refund Amount</div>
           <div class="field-value" style="font-size: 1.8rem; color: #22c55e; font-weight: 700;" id="refundAmountDisplay">-</div>
@@ -84,9 +87,6 @@
         <div class="field" id="maxRefundLine" style="display: none;">
           <div class="field-label">Max Available Refund</div>
           <div class="field-value" id="maxRefundDisplay">-</div>
-        </div>
-        <div class="field" id="noRefundLine" style="display: none; background: #fef3c7; padding: 12px; border-radius: 6px; border-left: 4px solid #f59e0b;">
-          <div style="color: #92400e; font-weight: 500;">⏱️ No refund applicable - all dates fall within the 48-hour service window</div>
         </div>
       </div>
 
@@ -198,6 +198,13 @@
         // Clear any previous error messages
         document.getElementById('errorMsg').style.display = 'none';
 
+        // Show warning if booking is more than 48 hours old
+        if (data.hasOutdatedOrders) {
+          document.getElementById('outdatedOrderWarning').style.display = 'block';
+        } else {
+          document.getElementById('outdatedOrderWarning').style.display = 'none';
+        }
+
         // Display refund amount
         document.getElementById('refundAmountDisplay').textContent = '$' + data.refundAmount.toFixed(2) + ' CAD';
 
@@ -217,14 +224,10 @@
         }
 
         if (data.refundAmount > 0) {
-          let details = `${data.refundDates} out of ${data.totalDates} date` + (data.totalDates > 1 ? 's' : '') + ` beyond 48-hour cutoff`;
-          document.getElementById('refundDetailsDisplay').textContent = details;
+          document.getElementById('refundDetailsDisplay').textContent = `Refunding ${data.refundDates} out of ${data.totalDates} active order` + (data.totalDates > 1 ? 's' : '');
           document.getElementById('refundDetailsLine').style.display = 'block';
-          document.getElementById('noRefundLine').style.display = 'none';
         } else {
           document.getElementById('refundDetailsLine').style.display = 'none';
-          document.getElementById('noRefundLine').style.display = 'block';
-          document.getElementById('refundAmountDisplay').textContent = '$0.00 CAD';
         }
 
         document.getElementById('loading').style.display = 'none';
