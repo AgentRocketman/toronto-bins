@@ -1322,7 +1322,7 @@
           const bookingId = fields['Booking ID'];
           const serviceType = fields['Service Type'] || 'Roll Out';
           const status = fields['Status'] || 'Pending';
-          const orderId = fields['Order ID'] || 'Unknown';
+          const orderId = orderRecord.id; // Use Airtable record ID as order identifier
           
           if (!bookingId) {
             console.warn(`⚠️ Order ${orderId} missing Booking ID, skipping`);
