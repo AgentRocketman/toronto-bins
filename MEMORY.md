@@ -143,15 +143,20 @@
   - All buttons have active state styling
 
 ### Dashboard Features:
-1. **Order graph:** Stacked bar chart showing orders by day (UPDATED: includes cancelled/refunded + interactive filtering) ✅
-   - Default view: Next 7 days
-   - Date range picker with auto-closing calendars
-   - Stacked bars: Blue (new) + Orange (pending) + Green (completed) + Red (cancelled/refunded)
-   - All order statuses tracked and displayed
-   - **INTERACTIVE: Click any bar section to filter orders** (e.g., click green portion of bar to show only completed orders for that date)
-   - Filter indicator shows active filter with "Clear Filter" button
-   - Search clears chart filter automatically
-   - **Cancelled/Refunded orders excluded from live schedules** (hidden from service routing page)
+1. **Dual Graph Tabs** (UPDATED: Orders + Workload) ✅
+   - **Orders Tab**: Shows orders stacked by **Service Date** (when customer booked)
+     - Stacked bars: Blue (new) + Orange (pending) + Green (completed) + Red (cancelled/refunded)
+     - **INTERACTIVE: Click any bar section to filter orders** by status + date
+   - **Workload Tab**: Shows orders stacked by **actual work date** (when will be performed)
+     - Roll Out orders shift back 1 day (work day before Service Date)
+     - Roll In orders stay on Service Date (work same day)
+     - No cancelled orders shown (excluded from workload planning)
+     - Stacked bars: Blue (new) + Orange (pending) + Green (completed) — only 3 statuses
+   - **Both tabs:**
+     - Default view: Next 7 days
+     - Date range picker with auto-closing calendars
+     - Filter indicator shows active filter with "Clear Filter" button when clicking bars
+     - Search clears chart filter automatically
 
 ### Service Routing (Driver Schedule) — UPDATED ✅
 - **File:** `/service_routing2.html` (driver-facing service schedule)
