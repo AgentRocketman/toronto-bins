@@ -68,6 +68,7 @@ $records = $data['records'] ?? [];
 // Process records - separate by status
 $ordersByDateAndStatus = [];
 $totalOrders = 0;
+$newOrders = 0;
 $completedOrders = 0;
 $pendingOrders = 0;
 
@@ -87,8 +88,9 @@ foreach ($records as $record) {
       // Initialize if not exists
       if (!isset($ordersByDateAndStatus[$dateKey])) {
         $ordersByDateAndStatus[$dateKey] = [
-          'completed' => 0,
-          'pending' => 0
+          'new' => 0,
+          'pending' => 0,
+          'completed' => 0
         ];
       }
       
@@ -97,6 +99,9 @@ foreach ($records as $record) {
       if ($status === 'Completed') {
         $ordersByDateAndStatus[$dateKey]['completed']++;
         $completedOrders++;
+      } else if ($status === 'New') {
+        $ordersByDateAndStatus[$dateKey]['new']++;
+        $newOrders++;
       } else {
         $ordersByDateAndStatus[$dateKey]['pending']++;
         $pendingOrders++;
@@ -107,8 +112,9 @@ foreach ($records as $record) {
 
 // Generate chart data for date range
 $chartDates = [];
-$chartCompletedCounts = [];
+$chartNewCounts = [];
 $chartPendingCounts = [];
+$chartCompletedCounts = [];
 $current = $fromTimestamp;
 
 while ($current <= $toTimestamp) {
@@ -116,11 +122,13 @@ while ($current <= $toTimestamp) {
   $chartDates[] = date('M d', $current);
   
   if (isset($ordersByDateAndStatus[$dateKey])) {
-    $chartCompletedCounts[] = $ordersByDateAndStatus[$dateKey]['completed'];
+    $chartNewCounts[] = $ordersByDateAndStatus[$dateKey]['new'];
     $chartPendingCounts[] = $ordersByDateAndStatus[$dateKey]['pending'];
+    $chartCompletedCounts[] = $ordersByDateAndStatus[$dateKey]['completed'];
   } else {
-    $chartCompletedCounts[] = 0;
+    $chartNewCounts[] = 0;
     $chartPendingCounts[] = 0;
+    $chartCompletedCounts[] = 0;
   }
   
   $current = strtotime('+1 day', $current);
@@ -134,10 +142,12 @@ http_response_code(200);
 echo json_encode([
   'success' => true,
   'chartDates' => $chartDates,
-  'chartCompletedCounts' => $chartCompletedCounts,
+  'chartNewCounts' => $chartNewCounts,
   'chartPendingCounts' => $chartPendingCounts,
+  'chartCompletedCounts' => $chartCompletedCounts,
   'totalOrders' => $totalOrders,
   'avgOrders' => $avgOrders,
+  'newOrders' => $newOrders,
   'completedOrders' => $completedOrders,
   'pendingOrders' => $pendingOrders
 ]);

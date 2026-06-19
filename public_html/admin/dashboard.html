@@ -73,12 +73,16 @@
         <div class="stat-value" id="avgOrders">-</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Completed</div>
-        <div class="stat-value" id="completedOrders">-</div>
+        <div class="stat-label">New</div>
+        <div class="stat-value" id="newOrders">-</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Pending</div>
         <div class="stat-value" id="pendingOrders">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value" id="completedOrders">-</div>
       </div>
     </div>
   </div>
@@ -136,11 +140,12 @@
         // Update stats
         document.getElementById('totalOrders').textContent = data.totalOrders;
         document.getElementById('avgOrders').textContent = data.avgOrders;
+        document.getElementById('newOrders').textContent = data.newOrders;
         document.getElementById('completedOrders').textContent = data.completedOrders;
         document.getElementById('pendingOrders').textContent = data.pendingOrders;
 
-        // Draw chart with completed and pending series
-        drawChart(data.chartDates, data.chartCompletedCounts, data.chartPendingCounts);
+        // Draw chart with new, pending, and completed series
+        drawChart(data.chartDates, data.chartNewCounts, data.chartPendingCounts, data.chartCompletedCounts);
 
         document.getElementById('loading').style.display = 'none';
         document.getElementById('chartWrapper').style.display = 'block';
@@ -155,8 +160,8 @@
       }
     }
 
-    // Draw chart with stacked bars for completed and pending orders
-    function drawChart(dates, completedCounts, pendingCounts) {
+    // Draw chart with stacked bars for new, pending, and completed orders
+    function drawChart(dates, newCounts, pendingCounts, completedCounts) {
       const ctx = document.getElementById('ordersChart').getContext('2d');
       
       if (chart) {
@@ -169,10 +174,10 @@
           labels: dates,
           datasets: [
             {
-              label: '✓ Completed',
-              data: completedCounts,
-              backgroundColor: 'rgba(16, 185, 129, 0.8)',
-              borderColor: '#10b981',
+              label: '+ New',
+              data: newCounts,
+              backgroundColor: 'rgba(59, 130, 246, 0.8)',
+              borderColor: '#3b82f6',
               borderWidth: 1,
               borderRadius: 8
             },
@@ -181,6 +186,14 @@
               data: pendingCounts,
               backgroundColor: 'rgba(252, 211, 77, 0.8)',
               borderColor: '#fcd34d',
+              borderWidth: 1,
+              borderRadius: 8
+            },
+            {
+              label: '✓ Completed',
+              data: completedCounts,
+              backgroundColor: 'rgba(16, 185, 129, 0.8)',
+              borderColor: '#10b981',
               borderWidth: 1,
               borderRadius: 8
             }
