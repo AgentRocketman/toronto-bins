@@ -66,7 +66,8 @@
     .btn-primary { background: linear-gradient(135deg, #71b80c, #5a9409); color: white; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(113, 184, 12, 0.3); }
     .btn-danger { background: #ef4444; color: white; }
-    .btn-danger:hover { background: #dc2626; }
+    .btn-danger:hover:not(:disabled) { background: #dc2626; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -103,6 +104,9 @@
           <div class="field">
             <div class="field-label">Status</div>
             <div id="status">-</div>
+          </div>
+          <div style="margin-top: 16px;">
+            <button class="btn btn-danger" id="refundOrderBtn" onclick="refundCurrentOrder()" style="width: 100%;" disabled>🗑️ Refund This Order</button>
           </div>
         </div>
 
@@ -293,6 +297,21 @@
         document.getElementById('frequency').textContent = order.frequency;
         document.getElementById('status').innerHTML = formatStatus(order.status);
 
+        // Enable/disable refund button based on status
+        const refundBtn = document.getElementById('refundOrderBtn');
+        const isCancelled = order.status === 'Cancelled' || order.status === 'Refunded';
+        if (isCancelled) {
+          refundBtn.disabled = true;
+          refundBtn.title = 'This order has already been cancelled';
+          refundBtn.style.opacity = '0.6';
+          refundBtn.style.cursor = 'not-allowed';
+        } else {
+          refundBtn.disabled = false;
+          refundBtn.title = '';
+          refundBtn.style.opacity = '1';
+          refundBtn.style.cursor = 'pointer';
+        }
+
         // Populate booking info
         document.getElementById('bookingId').textContent = booking.bookingId;
         document.getElementById('customerName').textContent = booking.customerName;
@@ -321,7 +340,9 @@
 
         // Populate related orders - make them clickable with refund buttons
         if (relatedOrders.length > 0) {
-          const relatedHtml = relatedOrders.map(o => `
+          const relatedHtml = relatedOrders.map(o => {
+            const isCancelled = o.status === 'Cancelled' || o.status === 'Refunded';
+            return `
             <div class="order-item" style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
               <div class="order-item-info related-order-link" onclick="goToOrderDetails('${o.airtableId}')" style="flex: 1; cursor: pointer;">
                 <div class="order-item-date" style="color: #0f766e; text-decoration: underline;">${o.orderId}</div>
@@ -329,10 +350,11 @@
               </div>
               <div style="display: flex; gap: 8px; align-items: center;">
                 <span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span>
-                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="refundOrder('${o.airtableId}', '${o.orderId}')">🗑️</button>
+                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 0.85rem;" onclick="refundOrder('${o.airtableId}', '${o.orderId}')" ${isCancelled ? 'disabled title="This order has already been cancelled"' : ''}>🗑️</button>
               </div>
             </div>
-          `).join('');
+          `;
+          }).join('');
           document.getElementById('relatedOrdersContainer').innerHTML = relatedHtml;
         }
 
@@ -369,6 +391,20 @@
       document.getElementById('loading').style.display = 'none';
       document.getElementById('errorMsg').textContent = '❌ ' + msg;
       document.getElementById('errorMsg').style.display = 'block';
+    }
+
+    function refundCurrentOrder() {
+      const orderId = getUrlParam('orderId');
+      const orderName = document.getElementById('orderId').textContent;
+      const bookingId = document.getElementById('bookingId').textContent;
+      const email = document.getElementById('email').textContent;
+
+      if (!orderId) {
+        alert('Order information not available');
+        return;
+      }
+
+      window.location.href = `/admin/cancel-order.html?orderId=${orderId}&bookingId=${bookingId}&email=${encodeURIComponent(email)}&orderName=${encodeURIComponent(orderName)}`;
     }
 
     function refundBooking() {
