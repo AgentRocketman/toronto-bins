@@ -202,14 +202,22 @@
   - **Max Available Refund Logic (NEW):**
     - If any order in booking is already Cancelled/Refunded: max refund = (total booking amount - sum of already refunded amounts)
     - Example: Booking $40, Order 1 refunded $10 → max refund = $30
-  - Proportional refund based on future orders beyond 48-hour cutoff
-  - Formula: min((booking amount / total orders) × (orders beyond cutoff), max available refund)
+  - **No 48-Hour Restriction:** All orders eligible for refund, regardless of age
+    - Shows warning: "⚠️ This booking was placed more than 48 hours ago, but refund will still be processed"
+  - Proportional refund based on all active (non-cancelled) orders
+  - Formula: min((booking amount / total orders) × (active orders), max available refund)
 
 ### Order Status Logic (Date-Based):
 - **New (blue):** Service Date is in the future AND not completed
 - **Pending (orange):** Service Date is today or in the past AND not completed (includes overdue)
 - **Completed (green):** Status = "Completed"
 - **Cancelled:** Excluded from dashboard
+
+### Refund Window (48-Hour Rule) — UPDATED ✅
+- **Previous:** Orders within 48 hours of cutoff could not be refunded
+- **Current:** All orders eligible for refund regardless of age
+- **Warning Display:** If booking/order is >48 hours old, shows: "⚠️ This booking was placed more than 48 hours ago, but refund will still be processed as requested."
+- **Max Refund Cap:** Still respects (total booking amount - already refunded amounts)
 
 ## Admin Panel Login System — UPDATED ✅ (2026-06-19)
 - **URL:** https://agentrocketman.com/admin-login.html
