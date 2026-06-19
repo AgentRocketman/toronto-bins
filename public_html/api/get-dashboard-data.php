@@ -74,8 +74,9 @@ $pendingOrders = 0;
 
 foreach ($records as $record) {
   $fields = $record['fields'] ?? [];
-  $dateStr = $fields['Date'] ?? null;
-  $status = $fields['Status'] ?? 'Pending';
+  // Use "Created At" field instead of "Date"
+  $dateStr = $fields['Created At'] ?? null;
+  $status = $fields['Status'] ?? 'New'; // Default to 'New' if no status
 
   if ($dateStr) {
     // Parse the date from Airtable (it comes as YYYY-MM-DD)
