@@ -799,6 +799,8 @@
 
     // Render markers on map
     function renderMarkers(stops) {
+      console.log(`🗺️ renderMarkers called with ${stops.length} stops`);
+      console.log('First stop:', stops[0]);
       markers.forEach(m => m.setMap(null));
       markers = [];
 
@@ -1319,12 +1321,15 @@
         // For each order, fetch its booking to get address & coordinates
         const stops = [];
         
+        console.log(`Processing ${ordersForDate.length} orders for date ${dateStr}`);
+        
         for (const orderRecord of ordersForDate) {
           const fields = orderRecord.fields;
           const bookingId = fields['Booking ID'];
           const serviceType = fields['Service Type'] || 'Roll Out';
           const status = fields['Status'] || 'Pending';
           const orderId = orderRecord.id; // Use Airtable record ID as order identifier
+          console.log(`Order record:`, { orderId, bookingId, serviceType, status });
           
           if (!bookingId) {
             console.warn(`⚠️ Order ${orderId} missing Booking ID, skipping`);
@@ -1398,6 +1403,7 @@
               hasBinPin:     !!binPlacement?.hasPin
             };
             
+            console.log(`✓ Created stop:`, { address, orderId: stop.orderId, id: stop.id });
             stops.push(stop);
             console.log(`✓ Loaded: ${address} (${type}) - ${orderId}`);
             
