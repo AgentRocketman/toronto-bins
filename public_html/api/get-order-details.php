@@ -138,16 +138,23 @@ if ($orderFields['Status'] === 'Completed') {
     $data = json_decode($stopsResponse, true);
     $records = $data['records'] ?? [];
     
-    // Find ServiceStops for this address and date that have images
+    // Find ServiceStops for this address that have images
+    // Deduplicate by image URL to avoid showing same image multiple times
     $address = $bookingData['Address'] ?? '';
+    $seenUrls = [];
     foreach ($records as $record) {
       $fields = $record['fields'] ?? [];
       if (($fields['Address'] ?? '') === $address && isset($fields['Image URL'])) {
-        $completionImages[] = [
-          'url' => $fields['Image URL'],
-          'date' => $fields['Date'] ?? '-',
-          'worker' => $fields['Worker Name'] ?? 'Driver'
-        ];
+        $imageUrl = $fields['Image URL'];
+        // Only add if we haven't seen this URL before
+        if (!in_array($imageUrl, $seenUrls)) {
+          $completionImages[] = [
+            'url' => $imageUrl,
+            'date' => $fields['Date'] ?? '-',
+            'worker' => $fields['Worker Name'] ?? 'Driver'
+          ];
+          $seenUrls[] = $imageUrl;
+        }
       }
     }
   }
