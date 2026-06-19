@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Order Details - GetMyBin Admin</title>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl5XRKr_nLFZGJa4NU1KVGWfIWqCF9ksw"></script>
+  <script>
+    window.mapsLoadError = function() {
+      console.error('Failed to load Google Maps API');
+      document.getElementById('streetView').innerHTML = '<div style="padding: 20px; text-align: center; color: #dc2626;"><strong>⚠️ Error:</strong> Failed to load Google Maps API. Check your API key.</div>';
+    };
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl5XRKr_nLFZGJa4NU1KVGWfIWqCF9ksw&onerror=mapsLoadError" async defer></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 24px; color: #334155; }
@@ -139,10 +145,17 @@
       <!-- Street View & Map -->
       <div class="card">
         <h2>📍 Location</h2>
-        <div id="streetView" class="street-view"></div>
-        <div class="field">
-          <div class="field-label">Coordinates</div>
-          <div class="field-value" id="coordinates">-</div>
+        <div id="streetViewContainer" style="display: none;">
+          <div id="streetView" class="street-view"></div>
+        </div>
+        <div id="mapFallback" style="background: #f8fafc; padding: 20px; border-radius: 8px; text-align: center;">
+          <div class="field" style="margin-bottom: 0;">
+            <div class="field-label">Coordinates</div>
+            <div class="field-value" id="coordinates">-</div>
+            <div style="margin-top: 16px;">
+              <a id="mapsLink" href="#" target="_blank" class="btn btn-primary" style="display: inline-block; text-decoration: none;">📍 Open in Google Maps</a>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -190,12 +203,22 @@
     // Initialize Street View
     function initStreetView(binPlacementJson) {
       try {
+        console.log('Initializing Street View with:', binPlacementJson);
         const data = JSON.parse(binPlacementJson);
+        console.log('Parsed bin placement:', data);
+        
         const panoId = data.pano;
         const pov = data.pov || {};
 
+        if (!panoId) {
+          throw new Error('No panorama ID found in bin placement data');
+        }
+
+        console.log('Creating Street View with pano:', panoId);
+        const svContainer = document.getElementById('streetView');
+        
         const streetViewPanorama = new google.maps.StreetViewPanorama(
-          document.getElementById('streetView'),
+          svContainer,
           {
             pano: panoId,
             pov: {
@@ -207,9 +230,23 @@
             enableCloseButton: false
           }
         );
+
+        // Listen for errors
+        google.maps.event.addListener(streetViewPanorama, 'error', function(e) {
+          console.error('Street View error:', e);
+          // Show fallback instead of error message
+          document.getElementById('streetViewContainer').style.display = 'none';
+          document.getElementById('mapFallback').style.display = 'block';
+        });
+
+        console.log('Street View initialized successfully');
+        document.getElementById('streetViewContainer').style.display = 'block';
+        document.getElementById('mapFallback').style.display = 'none';
       } catch (err) {
         console.error('Error loading Street View:', err);
-        document.getElementById('streetView').innerHTML = '<div style="padding: 20px; text-align: center; color: #64748b;">Street View not available</div>';
+        // Show fallback on error
+        document.getElementById('streetViewContainer').style.display = 'none';
+        document.getElementById('mapFallback').style.display = 'block';
       }
     }
 
@@ -255,10 +292,16 @@
 
         // Populate coordinates
         document.getElementById('coordinates').textContent = `${order.lat}, ${order.lng}`;
+        document.getElementById('mapsLink').href = `https://www.google.com/maps?q=${order.lat},${order.lng}`;
 
-        // Initialize Street View if bin placement available
-        if (order.binPlacement) {
+        // Initialize Street View if bin placement available AND Google Maps is loaded
+        if (order.binPlacement && typeof google !== 'undefined' && google.maps) {
           initStreetView(order.binPlacement);
+        } else {
+          // Show fallback (coordinates + Google Maps link)
+          console.log('Street View not available, showing fallback');
+          document.getElementById('streetViewContainer').style.display = 'none';
+          document.getElementById('mapFallback').style.display = 'block';
         }
 
         // Populate related orders
