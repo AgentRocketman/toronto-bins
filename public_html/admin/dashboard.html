@@ -121,17 +121,21 @@
 
         const from = formatDate(fromDate);
         const to = formatDate(toDate);
+        console.log('Fetching orders from', from, 'to', to);
 
         // Call PHP proxy endpoint
         const url = `/api/get-dashboard-data.php?from=${from}&to=${to}`;
+        console.log('API URL:', url);
 
         const response = await fetch(url);
+        console.log('Response status:', response.status);
 
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error(`HTTP ${response.status}: Failed to fetch data`);
         }
 
         const data = await response.json();
+        console.log('API Response:', data);
 
         if (!data.success) {
           throw new Error(data.error || 'Unknown error');
@@ -263,10 +267,19 @@
 
     // Auto-load on page load
     window.addEventListener('load', function() {
+      console.log('Dashboard page loaded');
       initializeDates();
       const fromDate = document.getElementById('fromDate').valueAsDate;
       const toDate = document.getElementById('toDate').valueAsDate;
-      fetchOrders(fromDate, toDate);
+      console.log('From:', fromDate, 'To:', toDate);
+      if (fromDate && toDate) {
+        fetchOrders(fromDate, toDate);
+      } else {
+        console.error('Failed to initialize dates');
+        document.getElementById('errorMsg').textContent = '❌ Failed to initialize dates';
+        document.getElementById('errorMsg').style.display = 'block';
+        document.getElementById('loading').style.display = 'none';
+      }
     });
   </script>
 </body>

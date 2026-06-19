@@ -7,7 +7,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 // Airtable credentials
 $AIRTABLE_BASE_ID = 'apptYNRJTXwItvied';
 $AIRTABLE_API_KEY = 'patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd';
-$AIRTABLE_TABLE = 'Bookings';
+$AIRTABLE_TABLE = 'Orders';
 
 // Get date range from query params
 $fromDate = $_GET['from'] ?? null;
@@ -22,6 +22,7 @@ if (!$fromDate || !$toDate) {
 // Parse dates
 $fromTimestamp = strtotime($fromDate . ' 00:00:00');
 $toTimestamp = strtotime($toDate . ' 23:59:59');
+$todayTimestamp = strtotime(date('Y-m-d') . ' 00:00:00');
 
 if (!$fromTimestamp || !$toTimestamp) {
   http_response_code(400);
@@ -29,7 +30,7 @@ if (!$fromTimestamp || !$toTimestamp) {
   exit;
 }
 
-// Fetch all bookings from Airtable (no filter parameters to avoid validation issues)
+// Fetch all orders from Airtable
 $url = "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/$AIRTABLE_TABLE";
 
 $ch = curl_init();
@@ -65,26 +66,25 @@ if (!$data) {
 
 $records = $data['records'] ?? [];
 
-// Process records - separate by status
+// Process records - categorize by order status based on Service Date
 $ordersByDateAndStatus = [];
 $totalOrders = 0;
 $newOrders = 0;
-$completedOrders = 0;
 $pendingOrders = 0;
+$completedOrders = 0;
 
 foreach ($records as $record) {
   $fields = $record['fields'] ?? [];
-  // Use "Created At" field instead of "Date"
-  $dateStr = $fields['Created At'] ?? null;
-  $status = $fields['Status'] ?? 'New'; // Default to 'New' if no status
+  $serviceDateStr = $fields['Service Date'] ?? null;
+  $status = $fields['Status'] ?? null;
 
-  if ($dateStr) {
-    // Parse the date from Airtable (it comes as YYYY-MM-DD)
-    $dateTimestamp = strtotime($dateStr . ' 00:00:00');
+  if ($serviceDateStr) {
+    // Parse the service date
+    $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
     
     // Check if date is within range
-    if ($dateTimestamp >= $fromTimestamp && $dateTimestamp <= $toTimestamp) {
-      $dateKey = date('Y-m-d', $dateTimestamp);
+    if ($serviceDateTimestamp >= $fromTimestamp && $serviceDateTimestamp <= $toTimestamp) {
+      $dateKey = date('Y-m-d', $serviceDateTimestamp);
       
       // Initialize if not exists
       if (!isset($ordersByDateAndStatus[$dateKey])) {
@@ -97,15 +97,29 @@ foreach ($records as $record) {
       
       $totalOrders++;
       
+      // Determine order category based on status and service date
       if ($status === 'Completed') {
         $ordersByDateAndStatus[$dateKey]['completed']++;
         $completedOrders++;
-      } else if ($status === 'New') {
-        $ordersByDateAndStatus[$dateKey]['new']++;
-        $newOrders++;
+      } else if ($status === 'Cancelled') {
+        // Skip cancelled orders
+        $totalOrders--;
       } else {
-        $ordersByDateAndStatus[$dateKey]['pending']++;
-        $pendingOrders++;
+        // Not completed, so check if it's pending (today) or new (future)
+        if ($serviceDateTimestamp == $todayTimestamp) {
+          // Service date is today and not completed = Pending
+          $ordersByDateAndStatus[$dateKey]['pending']++;
+          $pendingOrders++;
+        } else if ($serviceDateTimestamp > $todayTimestamp) {
+          // Service date is in the future = New
+          $ordersByDateAndStatus[$dateKey]['new']++;
+          $newOrders++;
+        }
+        // If service date is in the past and not completed, it's overdue (count as pending)
+        else {
+          $ordersByDateAndStatus[$dateKey]['pending']++;
+          $pendingOrders++;
+        }
       }
     }
   }
