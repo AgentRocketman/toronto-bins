@@ -248,6 +248,14 @@
     }
 
     // Event listeners
+    document.getElementById('fromDate').addEventListener('change', function() {
+      this.blur(); // Close the date picker
+    });
+
+    document.getElementById('toDate').addEventListener('change', function() {
+      this.blur(); // Close the date picker
+    });
+
     document.getElementById('refreshBtn').addEventListener('click', function() {
       const fromDate = document.getElementById('fromDate').valueAsDate;
       const toDate = document.getElementById('toDate').valueAsDate;
