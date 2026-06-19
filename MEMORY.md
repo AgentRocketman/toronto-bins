@@ -166,12 +166,16 @@
 - **Displays:**
   - Order information (Order ID, Service Date, Type, Frequency, Status)
   - Booking information (Booking ID, Customer Name, Email, Address, Created At)
+    - **Refund Entire Booking button** - cancels all orders in the booking
   - Payment information (Amount, Stripe Payment ID, Stripe Subscription ID)
   - Location info with coordinates
   - **Smart fallback:** If Street View unavailable, shows coordinates + link to open in Google Maps
   - **Completion photos** (if order is completed) - gallery with employee name + date for each photo
   - **Related orders** from same booking (clickable - navigate to their order details page)
-- **Actions:** Cancel/Refund button linking to cancellation page
+    - **Individual Refund buttons** for each order (🗑️) - cancels just that specific order
+- **Refund Logic:**
+  - **Booking-level refund:** Cancels entire booking + all future orders, processes Stripe refund
+  - **Order-level refund:** Cancels only that specific order, requires manual Stripe refund via dashboard
 
 ### Order Cancellation Page (`/admin/cancel-order.html`):
 - **Form fields:**
