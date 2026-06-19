@@ -77,6 +77,14 @@
           <div class="field-label">Details</div>
           <div class="field-value" id="refundDetailsDisplay">-</div>
         </div>
+        <div class="field" id="alreadyRefundedLine" style="display: none;">
+          <div class="field-label">Already Refunded</div>
+          <div class="field-value" id="alreadyRefundedDisplay">-</div>
+        </div>
+        <div class="field" id="maxRefundLine" style="display: none;">
+          <div class="field-label">Max Available Refund</div>
+          <div class="field-value" id="maxRefundDisplay">-</div>
+        </div>
         <div class="field" id="noRefundLine" style="display: none; background: #fef3c7; padding: 12px; border-radius: 6px; border-left: 4px solid #f59e0b;">
           <div style="color: #92400e; font-weight: 500;">⏱️ No refund applicable - all dates fall within the 48-hour service window</div>
         </div>
@@ -192,6 +200,21 @@
 
         // Display refund amount
         document.getElementById('refundAmountDisplay').textContent = '$' + data.refundAmount.toFixed(2) + ' CAD';
+
+        // Display already refunded and max available information
+        if (data.alreadyRefundedAmount > 0) {
+          document.getElementById('alreadyRefundedDisplay').textContent = '$' + data.alreadyRefundedAmount.toFixed(2) + ' CAD';
+          document.getElementById('alreadyRefundedLine').style.display = 'block';
+        } else {
+          document.getElementById('alreadyRefundedLine').style.display = 'none';
+        }
+
+        if (data.alreadyRefundedAmount > 0 || data.maxAvailableRefund < data.totalBookingAmount) {
+          document.getElementById('maxRefundDisplay').textContent = '$' + data.maxAvailableRefund.toFixed(2) + ' CAD';
+          document.getElementById('maxRefundLine').style.display = 'block';
+        } else {
+          document.getElementById('maxRefundLine').style.display = 'none';
+        }
 
         if (data.refundAmount > 0) {
           let details = `${data.refundDates} out of ${data.totalDates} date` + (data.totalDates > 1 ? 's' : '') + ` beyond 48-hour cutoff`;

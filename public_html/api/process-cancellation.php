@@ -79,16 +79,31 @@ if ($isOrderLevelRefund) {
     // Ad hoc: count future orders beyond 48hr cutoff to calculate refund
     $ordersResult = airtableRequest('GET', AIRTABLE_ORDERS, [
         'filterByFormula' => "{Booking ID}='" . $escapedBookingId . "'",
-        'fields[]'        => ['Service Date', 'Status', 'Order ID']
+        'fields[]'        => ['Service Date', 'Status', 'Order ID', 'Amount']
     ]);
 
-    $allOrders    = $ordersResult['body']['records'] ?? [];
-    $totalOrders  = count($allOrders);
-    $futureOrders = [];
+    $allOrders           = $ordersResult['body']['records'] ?? [];
+    $totalOrders        = count($allOrders);
+    $alreadyRefundedAmount = 0;
+    $futureOrders       = [];
+
+    // Check if any orders have already been refunded
+    foreach ($allOrders as $order) {
+        $status = $order['fields']['Status'] ?? '';
+        if ($status === 'Cancelled' || $status === 'Refunded') {
+            $orderAmount = (float)($order['fields']['Amount'] ?? 0);
+            $alreadyRefundedAmount += $orderAmount;
+        }
+    }
+
+    // Calculate max available refund
+    $maxAvailableRefund = max(0, $bookingAmount - $alreadyRefundedAmount);
 
     foreach ($allOrders as $order) {
+        $status = $order['fields']['Status'] ?? '';
         $svcDate = $order['fields']['Service Date'] ?? '';
-        if ($svcDate > $cutoffDate) {
+        // Only count orders that aren't already cancelled/refunded
+        if ($status !== 'Cancelled' && $status !== 'Refunded' && $svcDate > $cutoffDate) {
             $futureOrders[] = $order;
         }
     }
@@ -99,6 +114,8 @@ if ($isOrderLevelRefund) {
         // Proportional refund: (future dates / total dates) × total paid
         $perEvent     = $bookingAmount / $totalOrders;
         $refundAmount = round($perEvent * $refundDates, 2);
+        // Cap refund at maximum available
+        $refundAmount = min($refundAmount, $maxAvailableRefund);
         $refundCents  = (int)round($refundAmount * 100);
 
         $refundResult = stripeRequest('POST', '/refunds', [
