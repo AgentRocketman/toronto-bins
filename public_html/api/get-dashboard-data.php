@@ -123,18 +123,76 @@ foreach ($records as $record) {
   }
 }
 
+// Calculate workload dates (for Workload tab)
+// Roll Outs must be done the day before, Roll Ins on the same day
+$workloadByDateAndStatus = [];
+
+foreach ($records as $record) {
+  $fields = $record['fields'] ?? [];
+  $serviceDateStr = $fields['Service Date'] ?? null;
+  $status = $fields['Status'] ?? null;
+  $serviceType = $fields['Service Type'] ?? 'Roll Out';
+  
+  // Skip cancelled/refunded orders for workload
+  if ($status === 'Cancelled' || $status === 'Refunded') {
+    continue;
+  }
+
+  if ($serviceDateStr) {
+    $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
+    
+    // Calculate work date based on service type
+    $workDateTimestamp = $serviceDateTimestamp;
+    if (stripos($serviceType, 'roll out') !== false) {
+      // Roll Out: work the day before
+      $workDateTimestamp = strtotime('-1 day', $serviceDateTimestamp);
+    }
+    // Roll In: work on the same day (no change needed)
+    
+    // Check if work date is within range
+    if ($workDateTimestamp >= $fromTimestamp && $workDateTimestamp <= $toTimestamp) {
+      $workDateKey = date('Y-m-d', $workDateTimestamp);
+      
+      // Initialize if not exists
+      if (!isset($workloadByDateAndStatus[$workDateKey])) {
+        $workloadByDateAndStatus[$workDateKey] = [
+          'new' => 0,
+          'pending' => 0,
+          'completed' => 0
+        ];
+      }
+      
+      // Determine order category based on status
+      if ($status === 'Completed') {
+        $workloadByDateAndStatus[$workDateKey]['completed']++;
+      } else {
+        // Check if this is new or pending based on work date
+        if ($workDateTimestamp > $todayTimestamp) {
+          $workloadByDateAndStatus[$workDateKey]['new']++;
+        } else {
+          $workloadByDateAndStatus[$workDateKey]['pending']++;
+        }
+      }
+    }
+  }
+}
+
 // Generate chart data for date range
 $chartDates = [];
 $chartNewCounts = [];
 $chartPendingCounts = [];
 $chartCompletedCounts = [];
 $chartCancelledCounts = [];
+$workloadNewCounts = [];
+$workloadPendingCounts = [];
+$workloadCompletedCounts = [];
 $current = $fromTimestamp;
 
 while ($current <= $toTimestamp) {
   $dateKey = date('Y-m-d', $current);
   $chartDates[] = date('M d', $current);
   
+  // Orders tab data
   if (isset($ordersByDateAndStatus[$dateKey])) {
     $chartNewCounts[] = $ordersByDateAndStatus[$dateKey]['new'];
     $chartPendingCounts[] = $ordersByDateAndStatus[$dateKey]['pending'];
@@ -145,6 +203,17 @@ while ($current <= $toTimestamp) {
     $chartPendingCounts[] = 0;
     $chartCompletedCounts[] = 0;
     $chartCancelledCounts[] = 0;
+  }
+  
+  // Workload tab data (no cancelled)
+  if (isset($workloadByDateAndStatus[$dateKey])) {
+    $workloadNewCounts[] = $workloadByDateAndStatus[$dateKey]['new'];
+    $workloadPendingCounts[] = $workloadByDateAndStatus[$dateKey]['pending'];
+    $workloadCompletedCounts[] = $workloadByDateAndStatus[$dateKey]['completed'];
+  } else {
+    $workloadNewCounts[] = 0;
+    $workloadPendingCounts[] = 0;
+    $workloadCompletedCounts[] = 0;
   }
   
   $current = strtotime('+1 day', $current);
@@ -162,6 +231,9 @@ echo json_encode([
   'chartPendingCounts' => $chartPendingCounts,
   'chartCompletedCounts' => $chartCompletedCounts,
   'chartCancelledCounts' => $chartCancelledCounts,
+  'workloadNewCounts' => $workloadNewCounts,
+  'workloadPendingCounts' => $workloadPendingCounts,
+  'workloadCompletedCounts' => $workloadCompletedCounts,
   'totalOrders' => $totalOrders,
   'avgOrders' => $avgOrders,
   'newOrders' => $newOrders,
