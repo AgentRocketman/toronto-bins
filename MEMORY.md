@@ -142,6 +142,29 @@
    - **Search:** Real-time search by Booking ID, Address, or Email address
    - **Status badges:** Color-coded (New=blue, Pending=orange, Completed=green, Cancelled=red)
    - **Data source:** Airtable Orders table + Bookings table for address/email
+   - **Clickable rows:** Click any cell to view order details
+
+### Order Details Page (`/admin/order-details.html?orderId=recXXXX`):
+- **Authentication required:** JWT token verification before access
+- **Displays:**
+  - Order information (Order ID, Service Date, Type, Frequency, Status)
+  - Booking information (Booking ID, Customer Name, Email, Address, Created At)
+  - Payment information (Amount, Stripe Payment ID, Stripe Subscription ID)
+  - Location info with coordinates
+  - Street View panorama with bin placement (if available)
+  - Related orders from same booking
+- **Actions:** Cancel/Refund button linking to cancellation page
+
+### Order Cancellation Page (`/admin/cancel-order.html`):
+- **Form fields:**
+  - Reason dropdown (Customer Request, Payment Failed, Service Issue, Duplicate, Other)
+  - Additional notes textarea
+- **On submission:**
+  - Calls `/api/process-cancellation.php` endpoint
+  - Issues Stripe refund
+  - Updates Airtable status to Cancelled
+  - Sends confirmation emails to customer and support
+  - Redirects to admin panel on success
 
 ### Order Status Logic (Date-Based):
 - **New (blue):** Service Date is in the future AND not completed
