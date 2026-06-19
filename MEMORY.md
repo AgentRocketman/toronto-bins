@@ -160,6 +160,10 @@
   - Not shown in listing/schedule
   - Only live/active orders displayed
 - **Implementation:** Filter added at Airtable query level (excludes status = "Cancelled" or "Refunded")
+- **Map Marker Tooltip:** Shows Order ID above address line
+  - Format: "Order: [Order ID]"
+  - Appears at top of info window when marker clicked
+  - Followed by address (clickable for directions) and Type/Status
 
 2. **Statistics cards:**
    - Total orders, Average per day
