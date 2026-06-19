@@ -4,38 +4,295 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - GetMyBin Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 24px; }
+    .container { max-width: 1200px; margin: 0 auto; }
     h1 { color: #0f766e; margin-bottom: 8px; font-size: 1.8rem; }
-    .subtitle { color: #64748b; font-size: 0.95rem; margin-bottom: 20px; }
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-    .card { background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; transition: all 0.2s; }
-    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
-    .card h3 { color: #0f766e; font-size: 1.2rem; margin-bottom: 8px; }
-    .card p { color: #64748b; font-size: 0.95rem; line-height: 1.5; }
+    .subtitle { color: #64748b; font-size: 0.95rem; margin-bottom: 24px; }
+    
+    .controls { display: flex; gap: 16px; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; }
+    .date-group { display: flex; flex-direction: column; }
+    label { font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    input[type="date"] { padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.95rem; }
+    input[type="date"]:focus { outline: none; border-color: #71b80c; box-shadow: 0 0 0 3px rgba(113, 184, 12, 0.1); }
+    
+    .btn-refresh { padding: 10px 24px; background: linear-gradient(135deg, #71b80c, #5a9409); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-refresh:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(113, 184, 12, 0.3); }
+    .btn-refresh:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    
+    .chart-container { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); margin-bottom: 24px; }
+    .chart-wrapper { position: relative; height: 400px; }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 24px; }
+    .stat-card { background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; }
+    .stat-label { font-size: 0.85rem; color: #64748b; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: #0f766e; }
+    
+    .loading { text-align: center; padding: 40px; color: #64748b; }
+    .loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 3px solid #e2e8f0; border-top-color: #71b80c; border-radius: 50%; animation: spin 0.8s linear infinite; margin-left: 10px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .error { background: #fee2e2; color: #dc2626; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
   </style>
 </head>
 <body>
-  <h1>Dashboard</h1>
-  <p class="subtitle">Welcome to the GetMyBin Admin Panel</p>
-  <div class="dashboard-grid">
-    <div class="card">
-      <h3>📍 Service Schedule</h3>
-      <p>View and manage driver service routes, track job completion, and manage photos.</p>
+  <div class="container">
+    <h1>📊 Dashboard</h1>
+    <p class="subtitle">Orders scheduled for processing</p>
+
+    <div class="controls">
+      <div class="date-group">
+        <label for="fromDate">From</label>
+        <input type="date" id="fromDate">
+      </div>
+      <div class="date-group">
+        <label for="toDate">To</label>
+        <input type="date" id="toDate">
+      </div>
+      <button class="btn-refresh" id="refreshBtn">🔄 Refresh</button>
     </div>
-    <div class="card">
-      <h3>💬 Chat Analytics</h3>
-      <p>Monitor customer support conversations and analyze common questions.</p>
+
+    <div id="errorMsg" class="error" style="display: none;"></div>
+
+    <div class="chart-container">
+      <div id="loading" class="loading">Loading data...</div>
+      <div class="chart-wrapper" id="chartWrapper" style="display: none;">
+        <canvas id="ordersChart"></canvas>
+      </div>
     </div>
-    <div class="card">
-      <h3>📊 Quick Stats</h3>
-      <p>System status and key metrics coming soon.</p>
-    </div>
-    <div class="card">
-      <h3>⚙️ Settings</h3>
-      <p>Admin panel settings and configuration coming soon.</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-value" id="totalOrders">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg Per Day</div>
+        <div class="stat-value" id="avgOrders">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value" id="completedOrders">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value" id="pendingOrders">-</div>
+      </div>
     </div>
   </div>
+
+  <script>
+    // Airtable config
+    const AIRTABLE_BASE_ID = 'apptYNRJTXwItvied';
+    const AIRTABLE_API_KEY = 'patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd';
+    const AIRTABLE_TABLE = 'Bookings';
+
+    let chart = null;
+
+    // Initialize date inputs
+    function initializeDates() {
+      const today = new Date();
+      const from = new Date(today);
+      from.setDate(from.getDate() - 0); // Today
+      
+      const to = new Date(today);
+      to.setDate(to.getDate() + 6); // 7 days from today
+
+      document.getElementById('fromDate').valueAsDate = from;
+      document.getElementById('toDate').valueAsDate = to;
+    }
+
+    // Format date for API
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Fetch orders from Airtable
+    async function fetchOrders(fromDate, toDate) {
+      try {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('chartWrapper').style.display = 'none';
+        document.getElementById('errorMsg').style.display = 'none';
+        document.getElementById('refreshBtn').disabled = true;
+
+        const from = formatDate(fromDate);
+        const to = formatDate(toDate);
+
+        // Fetch all bookings (filtering by date range)
+        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE}?maxRecords=10000&fields=Date,Status`;
+
+        const response = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_API_KEY}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch data from Airtable');
+        }
+
+        const data = await response.json();
+        const records = data.records || [];
+
+        // Process records - count by date
+        const ordersByDate = {};
+        let totalOrders = 0;
+        let completedOrders = 0;
+        let pendingOrders = 0;
+
+        records.forEach(record => {
+          const fields = record.fields || {};
+          const dateStr = fields['Date'];
+          const status = fields['Status'] || 'Pending';
+
+          if (dateStr) {
+            const recordDate = new Date(dateStr);
+            
+            // Check if date is within range
+            if (recordDate >= fromDate && recordDate <= toDate) {
+              const dateKey = formatDate(recordDate);
+              ordersByDate[dateKey] = (ordersByDate[dateKey] || 0) + 1;
+              totalOrders++;
+              
+              if (status === 'Completed') {
+                completedOrders++;
+              } else {
+                pendingOrders++;
+              }
+            }
+          }
+        });
+
+        // Generate chart data for date range
+        const chartDates = [];
+        const chartCounts = [];
+        const current = new Date(fromDate);
+
+        while (current <= toDate) {
+          const dateKey = formatDate(current);
+          chartDates.push(current.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+          chartCounts.push(ordersByDate[dateKey] || 0);
+          current.setDate(current.getDate() + 1);
+        }
+
+        // Update stats
+        const avgOrders = Math.ceil(totalOrders / chartDates.length);
+        document.getElementById('totalOrders').textContent = totalOrders;
+        document.getElementById('avgOrders').textContent = avgOrders;
+        document.getElementById('completedOrders').textContent = completedOrders;
+        document.getElementById('pendingOrders').textContent = pendingOrders;
+
+        // Draw chart
+        drawChart(chartDates, chartCounts);
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('chartWrapper').style.display = 'block';
+        document.getElementById('refreshBtn').disabled = false;
+
+      } catch (err) {
+        console.error('Error:', err);
+        document.getElementById('errorMsg').textContent = '❌ ' + err.message;
+        document.getElementById('errorMsg').style.display = 'block';
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('refreshBtn').disabled = false;
+      }
+    }
+
+    // Draw chart
+    function drawChart(dates, counts) {
+      const ctx = document.getElementById('ordersChart').getContext('2d');
+      
+      if (chart) {
+        chart.destroy();
+      }
+
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: dates,
+          datasets: [
+            {
+              label: 'Orders',
+              data: counts,
+              backgroundColor: 'rgba(113, 184, 12, 0.7)',
+              borderColor: '#71b80c',
+              borderWidth: 2,
+              borderRadius: 8,
+              barThickness: 'flex',
+              maxBarThickness: 60
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                font: { size: 14, weight: '600' },
+                color: '#334155',
+                padding: 16
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1,
+                font: { size: 12 },
+                color: '#64748b'
+              },
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              }
+            },
+            x: {
+              ticks: {
+                font: { size: 12 },
+                color: '#64748b'
+              },
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Event listeners
+    document.getElementById('refreshBtn').addEventListener('click', function() {
+      const fromDate = document.getElementById('fromDate').valueAsDate;
+      const toDate = document.getElementById('toDate').valueAsDate;
+      
+      if (!fromDate || !toDate) {
+        alert('Please select both dates');
+        return;
+      }
+
+      if (fromDate > toDate) {
+        alert('From date must be before To date');
+        return;
+      }
+
+      fetchOrders(fromDate, toDate);
+    });
+
+    // Auto-load on page load
+    window.addEventListener('load', function() {
+      initializeDates();
+      const fromDate = document.getElementById('fromDate').valueAsDate;
+      const toDate = document.getElementById('toDate').valueAsDate;
+      fetchOrders(fromDate, toDate);
+    });
+  </script>
 </body>
 </html>
