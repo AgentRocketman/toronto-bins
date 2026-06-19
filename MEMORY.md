@@ -169,6 +169,7 @@
     - **DISABLED if order is Cancelled or Refunded** (grayed out with tooltip "This order has already been cancelled")
   - Booking information (Booking ID, Customer Name, Email, Address, Created At)
     - **Refund Entire Booking button** - cancels all orders in the booking
+    - **DISABLED if ALL orders in booking are already Cancelled/Refunded** (grayed out with tooltip "All orders in this booking have already been cancelled")
   - Payment information (Amount, Stripe Payment ID, Stripe Subscription ID)
   - Location info with coordinates
   - **Smart fallback:** If Street View unavailable, shows coordinates + link to open in Google Maps
@@ -177,9 +178,12 @@
     - **Individual Refund buttons** for each order (🗑️) - cancels just that specific order
     - **DISABLED for Cancelled/Refunded orders** (grayed out, opacity 0.6, cursor not-allowed)
 - **Refund Logic:**
-  - **Booking-level refund:** Cancels entire booking + all future orders, processes Stripe refund
+  - **Booking-level refund:** Cancels entire booking + all future orders, processes Stripe refund (disabled if all orders already refunded)
   - **Order-level refund:** Cancels only that specific order, requires manual Stripe refund via dashboard
-  - **Button State:** Both order section and related orders refund buttons are disabled if status is 'Cancelled' or 'Refunded'
+  - **Button State:** 
+    - Individual order refund button disabled if that order is Cancelled/Refunded
+    - Related orders' refund buttons disabled if those orders are Cancelled/Refunded
+    - Booking refund button disabled if ALL orders in booking are Cancelled/Refunded
 
 ### Order Cancellation Page (`/admin/cancel-order.html`):
 - **Refund Summary Card:**
