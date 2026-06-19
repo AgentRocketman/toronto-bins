@@ -65,8 +65,8 @@ if (!$data) {
 
 $records = $data['records'] ?? [];
 
-// Process records
-$ordersByDate = [];
+// Process records - separate by status
+$ordersByDateAndStatus = [];
 $totalOrders = 0;
 $completedOrders = 0;
 $pendingOrders = 0;
@@ -83,12 +83,22 @@ foreach ($records as $record) {
     // Check if date is within range
     if ($dateTimestamp >= $fromTimestamp && $dateTimestamp <= $toTimestamp) {
       $dateKey = date('Y-m-d', $dateTimestamp);
-      $ordersByDate[$dateKey] = ($ordersByDate[$dateKey] ?? 0) + 1;
+      
+      // Initialize if not exists
+      if (!isset($ordersByDateAndStatus[$dateKey])) {
+        $ordersByDateAndStatus[$dateKey] = [
+          'completed' => 0,
+          'pending' => 0
+        ];
+      }
+      
       $totalOrders++;
       
       if ($status === 'Completed') {
+        $ordersByDateAndStatus[$dateKey]['completed']++;
         $completedOrders++;
       } else {
+        $ordersByDateAndStatus[$dateKey]['pending']++;
         $pendingOrders++;
       }
     }
@@ -97,13 +107,22 @@ foreach ($records as $record) {
 
 // Generate chart data for date range
 $chartDates = [];
-$chartCounts = [];
+$chartCompletedCounts = [];
+$chartPendingCounts = [];
 $current = $fromTimestamp;
 
 while ($current <= $toTimestamp) {
   $dateKey = date('Y-m-d', $current);
   $chartDates[] = date('M d', $current);
-  $chartCounts[] = $ordersByDate[$dateKey] ?? 0;
+  
+  if (isset($ordersByDateAndStatus[$dateKey])) {
+    $chartCompletedCounts[] = $ordersByDateAndStatus[$dateKey]['completed'];
+    $chartPendingCounts[] = $ordersByDateAndStatus[$dateKey]['pending'];
+  } else {
+    $chartCompletedCounts[] = 0;
+    $chartPendingCounts[] = 0;
+  }
+  
   $current = strtotime('+1 day', $current);
 }
 
@@ -115,7 +134,8 @@ http_response_code(200);
 echo json_encode([
   'success' => true,
   'chartDates' => $chartDates,
-  'chartCounts' => $chartCounts,
+  'chartCompletedCounts' => $chartCompletedCounts,
+  'chartPendingCounts' => $chartPendingCounts,
   'totalOrders' => $totalOrders,
   'avgOrders' => $avgOrders,
   'completedOrders' => $completedOrders,
