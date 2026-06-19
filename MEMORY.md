@@ -151,6 +151,15 @@
    - **INTERACTIVE: Click any bar section to filter orders** (e.g., click green portion of bar to show only completed orders for that date)
    - Filter indicator shows active filter with "Clear Filter" button
    - Search clears chart filter automatically
+   - **Cancelled/Refunded orders excluded from live schedules** (hidden from service routing page)
+
+### Service Routing (Driver Schedule) — UPDATED ✅
+- **File:** `/service_routing2.html` (driver-facing service schedule)
+- **Orders Filtering:** Cancelled and Refunded orders are automatically excluded
+  - Not shown in map markers
+  - Not shown in listing/schedule
+  - Only live/active orders displayed
+- **Implementation:** Filter added at Airtable query level (excludes status = "Cancelled" or "Refunded")
 
 2. **Statistics cards:**
    - Total orders, Average per day
