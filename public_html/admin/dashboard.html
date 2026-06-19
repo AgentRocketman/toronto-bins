@@ -117,6 +117,10 @@
         <div class="stat-label">Completed</div>
         <div class="stat-value" id="completedOrders">-</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-label">Cancelled/Refunded</div>
+        <div class="stat-value" id="cancelledOrders">-</div>
+      </div>
     </div>
 
     <!-- Orders Table Section -->
@@ -217,9 +221,10 @@
         document.getElementById('newOrders').textContent = data.newOrders;
         document.getElementById('completedOrders').textContent = data.completedOrders;
         document.getElementById('pendingOrders').textContent = data.pendingOrders;
+        document.getElementById('cancelledOrders').textContent = data.cancelledOrders;
 
-        // Draw chart with new, pending, and completed series
-        drawChart(data.chartDates, data.chartNewCounts, data.chartPendingCounts, data.chartCompletedCounts);
+        // Draw chart with new, pending, completed, and cancelled series
+        drawChart(data.chartDates, data.chartNewCounts, data.chartPendingCounts, data.chartCompletedCounts, data.chartCancelledCounts);
 
         // Fetch and display orders list
         fetchOrdersList(fromDate, toDate);
@@ -406,7 +411,7 @@
     }
 
     // Draw chart with stacked bars for new, pending, and completed orders
-    function drawChart(dates, newCounts, pendingCounts, completedCounts) {
+    function drawChart(dates, newCounts, pendingCounts, completedCounts, cancelledCounts) {
       const ctx = document.getElementById('ordersChart').getContext('2d');
       
       if (chart) {
@@ -439,6 +444,14 @@
               data: completedCounts,
               backgroundColor: 'rgba(16, 185, 129, 0.8)',
               borderColor: '#10b981',
+              borderWidth: 1,
+              borderRadius: 8
+            },
+            {
+              label: '✕ Cancelled/Refunded',
+              data: cancelledCounts,
+              backgroundColor: 'rgba(239, 68, 68, 0.8)',
+              borderColor: '#ef4444',
               borderWidth: 1,
               borderRadius: 8
             }

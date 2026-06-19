@@ -72,6 +72,7 @@ $totalOrders = 0;
 $newOrders = 0;
 $pendingOrders = 0;
 $completedOrders = 0;
+$cancelledOrders = 0;
 
 foreach ($records as $record) {
   $fields = $record['fields'] ?? [];
@@ -91,7 +92,8 @@ foreach ($records as $record) {
         $ordersByDateAndStatus[$dateKey] = [
           'new' => 0,
           'pending' => 0,
-          'completed' => 0
+          'completed' => 0,
+          'cancelled' => 0
         ];
       }
       
@@ -101,9 +103,10 @@ foreach ($records as $record) {
       if ($status === 'Completed') {
         $ordersByDateAndStatus[$dateKey]['completed']++;
         $completedOrders++;
-      } else if ($status === 'Cancelled') {
-        // Skip cancelled orders
-        $totalOrders--;
+      } else if ($status === 'Cancelled' || $status === 'Refunded') {
+        // Count cancelled/refunded orders
+        $ordersByDateAndStatus[$dateKey]['cancelled']++;
+        $cancelledOrders++;
       } else {
         // Not completed, so check if it's pending (today or past) or new (future)
         if ($serviceDateTimestamp > $todayTimestamp) {
@@ -125,6 +128,7 @@ $chartDates = [];
 $chartNewCounts = [];
 $chartPendingCounts = [];
 $chartCompletedCounts = [];
+$chartCancelledCounts = [];
 $current = $fromTimestamp;
 
 while ($current <= $toTimestamp) {
@@ -135,10 +139,12 @@ while ($current <= $toTimestamp) {
     $chartNewCounts[] = $ordersByDateAndStatus[$dateKey]['new'];
     $chartPendingCounts[] = $ordersByDateAndStatus[$dateKey]['pending'];
     $chartCompletedCounts[] = $ordersByDateAndStatus[$dateKey]['completed'];
+    $chartCancelledCounts[] = $ordersByDateAndStatus[$dateKey]['cancelled'];
   } else {
     $chartNewCounts[] = 0;
     $chartPendingCounts[] = 0;
     $chartCompletedCounts[] = 0;
+    $chartCancelledCounts[] = 0;
   }
   
   $current = strtotime('+1 day', $current);
@@ -155,10 +161,12 @@ echo json_encode([
   'chartNewCounts' => $chartNewCounts,
   'chartPendingCounts' => $chartPendingCounts,
   'chartCompletedCounts' => $chartCompletedCounts,
+  'chartCancelledCounts' => $chartCancelledCounts,
   'totalOrders' => $totalOrders,
   'avgOrders' => $avgOrders,
   'newOrders' => $newOrders,
   'completedOrders' => $completedOrders,
-  'pendingOrders' => $pendingOrders
+  'pendingOrders' => $pendingOrders,
+  'cancelledOrders' => $cancelledOrders
 ]);
 ?>
