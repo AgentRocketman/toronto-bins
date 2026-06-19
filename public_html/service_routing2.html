@@ -1300,9 +1300,14 @@
         const ordersData = await ordersResponse.json();
         const allOrders = ordersData.records || [];
         
-        // Filter orders by date
+        // Filter orders by date and exclude cancelled/refunded orders
         const ordersForDate = allOrders.filter(record => {
           const serviceDate = record.fields['Service Date'];
+          const status = record.fields['Status'] || 'Pending';
+          // Skip cancelled or refunded orders
+          if (status === 'Cancelled' || status === 'Refunded') {
+            return false;
+          }
           return serviceDate === dateStr;
         });
         
