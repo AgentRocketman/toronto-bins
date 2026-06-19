@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
   exit;
 }
 
-$bookingId = $_GET['bookingId'] ?? null;
-$orderId = $_GET['orderId'] ?? null;
+$bookingId = trim($_GET['bookingId'] ?? '');
+$orderId = trim($_GET['orderId'] ?? '');
 
 if (!$bookingId) {
   http_response_code(400);
@@ -20,7 +20,9 @@ if (!$bookingId) {
 }
 
 // Fetch booking details using airtableRequest helper
-$formula = "{Booking ID}='" . addslashes($bookingId) . "'";
+// Important: Airtable formulas use double single quotes to escape quotes, not backslashes
+$escapedBookingId = str_replace("'", "''", $bookingId);
+$formula = "{Booking ID}='" . $escapedBookingId . "'";
 $bookingsResult = airtableRequest('GET', AIRTABLE_BOOKINGS, ['filterByFormula' => $formula]);
 
 if ($bookingsResult['code'] >= 400 || empty($bookingsResult['body']['records'])) {
@@ -40,7 +42,7 @@ $cutoff->modify('+48 hours');
 $cutoffDate = $cutoff->format('Y-m-d');
 
 // Fetch all orders for this booking
-$ordersFormula = "{Booking ID}='" . addslashes($bookingId) . "'";
+$ordersFormula = "{Booking ID}='" . $escapedBookingId . "'";
 $ordersResult = airtableRequest('GET', AIRTABLE_ORDERS, [
   'filterByFormula' => $ordersFormula,
   'fields[]' => ['Service Date', 'Frequency', 'Status']

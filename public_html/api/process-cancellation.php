@@ -29,7 +29,10 @@ if (!$bookingId || !$email) {
 $isOrderLevelRefund = !empty($orderId);
 
 // ─── Step 1: Look up booking in Airtable ────────────────────────────────────
-$formula = "AND({Booking ID}='" . addslashes($bookingId) . "',LOWER({Email})='" . addslashes($email) . "')";
+// Important: Airtable formulas use double single quotes to escape quotes, not backslashes
+$escapedBookingId = str_replace("'", "''", $bookingId);
+$escapedEmail = str_replace("'", "''", $email);
+$formula = "AND({Booking ID}='" . $escapedBookingId . "',LOWER({Email})='" . $escapedEmail . "')";
 $lookup  = airtableRequest('GET', AIRTABLE_BOOKINGS, ['filterByFormula' => $formula]);
 
 if ($lookup['code'] >= 400 || empty($lookup['body']['records'])) {
@@ -75,7 +78,7 @@ if ($isOrderLevelRefund) {
 } elseif ($billingType === 'One-Time Charge' && $stripePayId) {
     // Ad hoc: count future orders beyond 48hr cutoff to calculate refund
     $ordersResult = airtableRequest('GET', AIRTABLE_ORDERS, [
-        'filterByFormula' => "{Booking ID}='" . addslashes($bookingId) . "'",
+        'filterByFormula' => "{Booking ID}='" . $escapedBookingId . "'",
         'fields[]'        => ['Service Date', 'Status', 'Order ID']
     ]);
 
@@ -132,7 +135,7 @@ if ($isOrderLevelRefund) {
     // ─── Step 5: Cancel future orders in Airtable ───────────────────────────────
     $ordersToCancel = [];
     $allOrdersResult = airtableRequest('GET', AIRTABLE_ORDERS, [
-        'filterByFormula' => "AND({Booking ID}='" . addslashes($bookingId) . "',{Status}!='Cancelled')",
+        'filterByFormula' => "AND({Booking ID}='" . $escapedBookingId . "',{Status}!='Cancelled')",
         'fields[]'        => ['Service Date', 'Day of Week', 'Frequency', 'Status']
     ]);
 

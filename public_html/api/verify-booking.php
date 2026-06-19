@@ -18,7 +18,10 @@ if (!$bookingId || !$email) {
     echo json_encode(['found' => false, 'error' => 'Missing fields']); exit;
 }
 
-$formula = "AND({Booking ID}='" . addslashes($bookingId) . "',LOWER({Email})='" . addslashes($email) . "')";
+// Important: Airtable formulas use double single quotes to escape quotes, not backslashes
+$escapedBookingId = str_replace("'", "''", $bookingId);
+$escapedEmail = str_replace("'", "''", $email);
+$formula = "AND({Booking ID}='" . $escapedBookingId . "',LOWER({Email})='" . $escapedEmail . "')";
 $result  = airtableRequest('GET', AIRTABLE_BOOKINGS, ['filterByFormula' => $formula, 'maxRecords' => 1]);
 
 $records = $result['body']['records'] ?? [];
