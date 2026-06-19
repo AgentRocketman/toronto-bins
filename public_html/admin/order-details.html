@@ -134,7 +134,7 @@
             <div class="field-value" id="createdAt">-</div>
           </div>
           <div style="margin-top: 16px;">
-            <button class="btn btn-danger" onclick="refundBooking()" style="width: 100%;">🗑️ Refund Entire Booking</button>
+            <button class="btn btn-danger" id="refundBookingBtn" onclick="refundBooking()" style="width: 100%;">🗑️ Refund Entire Booking</button>
           </div>
         </div>
       </div>
@@ -336,6 +336,30 @@
           console.log('Street View not available, showing fallback');
           document.getElementById('streetViewContainer').style.display = 'none';
           document.getElementById('mapFallback').style.display = 'block';
+        }
+
+        // Check if all orders in the booking are refunded/cancelled
+        let allOrdersRefunded = true;
+        const allBookingOrders = [order, ...relatedOrders];
+        for (let o of allBookingOrders) {
+          if (o.status !== 'Cancelled' && o.status !== 'Refunded') {
+            allOrdersRefunded = false;
+            break;
+          }
+        }
+
+        // Disable "Refund Entire Booking" button if all orders are already refunded
+        const refundBookingBtn = document.getElementById('refundBookingBtn');
+        if (allOrdersRefunded && allBookingOrders.length > 0) {
+          refundBookingBtn.disabled = true;
+          refundBookingBtn.title = 'All orders in this booking have already been cancelled';
+          refundBookingBtn.style.opacity = '0.6';
+          refundBookingBtn.style.cursor = 'not-allowed';
+        } else {
+          refundBookingBtn.disabled = false;
+          refundBookingBtn.title = '';
+          refundBookingBtn.style.opacity = '1';
+          refundBookingBtn.style.cursor = 'pointer';
         }
 
         // Populate related orders - make them clickable with refund buttons
