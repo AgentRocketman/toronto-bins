@@ -19,12 +19,24 @@ if (!$fromDate || !$toDate) {
   exit;
 }
 
-// Fetch all bookings from Airtable
-$url = "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/$AIRTABLE_TABLE?maxRecords=10000&fields=Date,Status";
+// Parse dates
+$fromTimestamp = strtotime($fromDate . ' 00:00:00');
+$toTimestamp = strtotime($toDate . ' 23:59:59');
+
+if (!$fromTimestamp || !$toTimestamp) {
+  http_response_code(400);
+  echo json_encode(['error' => 'Invalid date format']);
+  exit;
+}
+
+// Fetch all bookings from Airtable (no filter parameters to avoid validation issues)
+$url = "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/$AIRTABLE_TABLE";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
   'Authorization: Bearer ' . $AIRTABLE_API_KEY
 ]);
@@ -38,12 +50,19 @@ if ($http_code !== 200) {
   http_response_code(500);
   echo json_encode([
     'error' => 'Failed to fetch from Airtable',
-    'details' => $curl_error
+    'http_code' => $http_code,
+    'curl_error' => $curl_error
   ]);
   exit;
 }
 
 $data = json_decode($response, true);
+if (!$data) {
+  http_response_code(500);
+  echo json_encode(['error' => 'Invalid response from Airtable']);
+  exit;
+}
+
 $records = $data['records'] ?? [];
 
 // Process records
@@ -52,16 +71,14 @@ $totalOrders = 0;
 $completedOrders = 0;
 $pendingOrders = 0;
 
-$fromTimestamp = strtotime($fromDate);
-$toTimestamp = strtotime($toDate);
-
 foreach ($records as $record) {
   $fields = $record['fields'] ?? [];
   $dateStr = $fields['Date'] ?? null;
   $status = $fields['Status'] ?? 'Pending';
 
   if ($dateStr) {
-    $dateTimestamp = strtotime($dateStr);
+    // Parse the date from Airtable (it comes as YYYY-MM-DD)
+    $dateTimestamp = strtotime($dateStr . ' 00:00:00');
     
     // Check if date is within range
     if ($dateTimestamp >= $fromTimestamp && $dateTimestamp <= $toTimestamp) {
