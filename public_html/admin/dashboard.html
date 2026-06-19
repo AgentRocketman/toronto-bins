@@ -84,11 +84,6 @@
   </div>
 
   <script>
-    // Airtable config
-    const AIRTABLE_BASE_ID = 'apptYNRJTXwItvied';
-    const AIRTABLE_API_KEY = 'patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd';
-    const AIRTABLE_TABLE = 'Bookings';
-
     let chart = null;
 
     // Initialize date inputs
@@ -112,7 +107,7 @@
       return `${year}-${month}-${day}`;
     }
 
-    // Fetch orders from Airtable
+    // Fetch orders via PHP proxy
     async function fetchOrders(fromDate, toDate) {
       try {
         document.getElementById('loading').style.display = 'block';
@@ -123,72 +118,29 @@
         const from = formatDate(fromDate);
         const to = formatDate(toDate);
 
-        // Fetch all bookings (filtering by date range)
-        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE}?maxRecords=10000&fields=Date,Status`;
+        // Call PHP proxy endpoint
+        const url = `/api/get-dashboard-data.php?from=${from}&to=${to}`;
 
-        const response = await fetch(url, {
-          headers: {
-            'Authorization': `Bearer ${AIRTABLE_API_KEY}`
-          }
-        });
+        const response = await fetch(url);
 
         if (!response.ok) {
-          throw new Error('Failed to fetch data from Airtable');
+          throw new Error('Failed to fetch data');
         }
 
         const data = await response.json();
-        const records = data.records || [];
 
-        // Process records - count by date
-        const ordersByDate = {};
-        let totalOrders = 0;
-        let completedOrders = 0;
-        let pendingOrders = 0;
-
-        records.forEach(record => {
-          const fields = record.fields || {};
-          const dateStr = fields['Date'];
-          const status = fields['Status'] || 'Pending';
-
-          if (dateStr) {
-            const recordDate = new Date(dateStr);
-            
-            // Check if date is within range
-            if (recordDate >= fromDate && recordDate <= toDate) {
-              const dateKey = formatDate(recordDate);
-              ordersByDate[dateKey] = (ordersByDate[dateKey] || 0) + 1;
-              totalOrders++;
-              
-              if (status === 'Completed') {
-                completedOrders++;
-              } else {
-                pendingOrders++;
-              }
-            }
-          }
-        });
-
-        // Generate chart data for date range
-        const chartDates = [];
-        const chartCounts = [];
-        const current = new Date(fromDate);
-
-        while (current <= toDate) {
-          const dateKey = formatDate(current);
-          chartDates.push(current.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-          chartCounts.push(ordersByDate[dateKey] || 0);
-          current.setDate(current.getDate() + 1);
+        if (!data.success) {
+          throw new Error(data.error || 'Unknown error');
         }
 
         // Update stats
-        const avgOrders = Math.ceil(totalOrders / chartDates.length);
-        document.getElementById('totalOrders').textContent = totalOrders;
-        document.getElementById('avgOrders').textContent = avgOrders;
-        document.getElementById('completedOrders').textContent = completedOrders;
-        document.getElementById('pendingOrders').textContent = pendingOrders;
+        document.getElementById('totalOrders').textContent = data.totalOrders;
+        document.getElementById('avgOrders').textContent = data.avgOrders;
+        document.getElementById('completedOrders').textContent = data.completedOrders;
+        document.getElementById('pendingOrders').textContent = data.pendingOrders;
 
         // Draw chart
-        drawChart(chartDates, chartCounts);
+        drawChart(data.chartDates, data.chartCounts);
 
         document.getElementById('loading').style.display = 'none';
         document.getElementById('chartWrapper').style.display = 'block';
