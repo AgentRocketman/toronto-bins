@@ -107,12 +107,48 @@ if ($ordersHttp === 200) {
   foreach ($records as $record) {
     if (($record['fields']['Booking ID'] ?? '') === $bookingId) {
       $relatedOrders[] = [
-        'id' => $record['id'],
+        'airtableId' => $record['id'],
         'orderId' => $record['fields']['Order ID'] ?? '-',
         'serviceDate' => $record['fields']['Service Date'] ?? '-',
         'serviceType' => $record['fields']['Service Type'] ?? '-',
         'status' => $record['fields']['Status'] ?? 'New'
       ];
+    }
+  }
+}
+
+// Fetch completion images from ServiceStops (if order is completed)
+$completionImages = [];
+if ($orderFields['Status'] === 'Completed') {
+  $serviceStopsUrl = "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/ServiceStops";
+  
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $serviceStopsUrl);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $AIRTABLE_API_KEY
+  ]);
+  
+  $stopsResponse = curl_exec($ch);
+  $stopsHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  
+  if ($stopsHttp === 200) {
+    $data = json_decode($stopsResponse, true);
+    $records = $data['records'] ?? [];
+    
+    // Find ServiceStops for this address and date that have images
+    $address = $bookingData['Address'] ?? '';
+    foreach ($records as $record) {
+      $fields = $record['fields'] ?? [];
+      if (($fields['Address'] ?? '') === $address && isset($fields['Image URL'])) {
+        $completionImages[] = [
+          'url' => $fields['Image URL'],
+          'date' => $fields['Date'] ?? '-',
+          'worker' => $fields['Worker Name'] ?? 'Driver'
+        ];
+      }
     }
   }
 }
@@ -141,6 +177,7 @@ echo json_encode([
     'stripePaymentId' => $bookingData['Stripe Payment ID'] ?? '-',
     'stripeSubscriptionId' => $bookingData['Stripe Subscription ID'] ?? '-'
   ],
-  'relatedOrders' => $relatedOrders
+  'relatedOrders' => $relatedOrders,
+  'completionImages' => $completionImages
 ]);
 ?>
