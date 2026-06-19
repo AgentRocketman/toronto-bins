@@ -23,36 +23,86 @@
       height: 100vh;
     }
 
+    /* ========== HEADER ========== */
     .admin-header {
       background: linear-gradient(135deg, #71b80c, #5a9409);
       color: white;
-      padding: 16px 24px;
+      padding: 12px 16px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
       z-index: 1000;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 12px;
     }
 
     .logo {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
+    }
+
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 8px;
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header-right {
       display: flex;
       align-items: center;
+      gap: 12px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+      font-size: 0.85rem;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ========== NAVIGATION MENU ========== */
+    .nav-menu {
+      display: flex;
       gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     .nav-links {
       display: flex;
-      gap: 16px;
+      gap: 8px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -61,12 +111,13 @@
       background: none;
       color: white;
       border: none;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 6px;
       font-weight: 500;
       transition: all 0.2s;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .nav-links button:hover {
@@ -80,39 +131,73 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-left: auto;
+    /* ========== MOBILE MENU (OVERLAY) ========== */
+    .mobile-menu-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
     }
 
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      font-size: 0.9rem;
+    .mobile-menu-overlay.open {
+      display: block;
     }
 
-    .logout-btn {
-      background: rgba(255, 255, 255, 0.2);
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #71b80c, #5a9409);
       color: white;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: 8px 16px;
-      border-radius: 6px;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      z-index: 1001;
+      max-height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    .mobile-menu button {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: none;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-weight: 600;
       cursor: pointer;
-      font-weight: 500;
-      transition: background 0.2s;
-      font-size: 0.9rem;
+      font-size: 1rem;
+      text-align: left;
+      transition: all 0.2s;
     }
 
-    .logout-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
+    .mobile-menu button:active {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(0.98);
     }
 
+    .mobile-menu button.active {
+      background: white;
+      color: #5a9409;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .mobile-menu-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 4px 0;
+    }
+
+    /* ========== CONTENT ========== */
     .content-wrapper {
       flex: 1;
       overflow: hidden;
@@ -125,28 +210,66 @@
       background: white;
     }
 
+    /* ========== RESPONSIVE DESIGN ========== */
     @media (max-width: 768px) {
       .admin-header {
-        flex-direction: column;
-        align-items: flex-start;
+        padding: 10px 12px;
       }
 
-      .header-right {
-        width: 100%;
-        margin-left: 0;
+      .logo {
+        font-size: 1.1rem;
+      }
+
+      .user-info {
+        display: none;
+      }
+
+      .logout-btn {
+        display: none;
+      }
+
+      .hamburger-btn {
+        display: flex;
       }
 
       .nav-links {
-        width: 100%;
+        display: none;
+      }
+
+      .user-info-mobile {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 1rem;
+      }
+
+      .user-info-mobile {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+      }
+
+      .mobile-menu button {
+        padding: 12px 14px;
+        font-size: 0.95rem;
       }
     }
   </style>
 </head>
 <body>
   <div class="admin-container">
+    <!-- HEADER -->
     <div class="admin-header">
       <div class="header-left">
-        <div class="logo">🚀 GetMyBin Admin</div>
+        <div class="logo">🚀 GetMyBin</div>
         <div class="nav-links">
           <button id="dashboardBtn" class="nav-btn" data-page="dashboard">📊 Dashboard</button>
           <button id="routingBtn" class="nav-btn" data-page="/service-routing.html">📍 Service Schedule</button>
@@ -160,10 +283,26 @@
           <span>👤</span>
           <span id="adminEmail">Admin</span>
         </div>
+        <div class="user-info-mobile" id="adminEmailMobile">
+          <span id="adminEmailMobileText">Admin</span>
+        </div>
+        <button class="hamburger-btn" id="hamburgerBtn">☰</button>
         <button class="logout-btn" id="logoutBtn">Sign Out</button>
       </div>
     </div>
 
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu-overlay" id="menuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <button id="dashboardBtnMobile" class="nav-btn" data-page="dashboard">📊 Dashboard</button>
+      <button id="routingBtnMobile" class="nav-btn" data-page="/service-routing.html">📍 Service Schedule</button>
+      <button id="analyticsBtnMobile" class="nav-btn" data-page="/admin/chat_analytics.html">💬 Chat Analytics</button>
+      <button id="changePasswordBtnMobile" class="nav-btn" data-page="change-password">🔐 Change Password</button>
+      <div class="mobile-menu-divider"></div>
+      <button id="logoutBtnMobile" style="background: rgba(239, 68, 68, 0.3); color: white;">Sign Out</button>
+    </div>
+
+    <!-- CONTENT -->
     <div class="content-wrapper">
       <iframe id="contentFrame" class="admin-iframe" title="Admin Content"></iframe>
     </div>
@@ -171,54 +310,79 @@
 
   <script>
     let currentPage = 'dashboard';
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
 
-    // Set up button click handlers
+    // Toggle mobile menu
+    hamburgerBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      menuOverlay.classList.toggle('open');
+    });
+
+    // Close menu when overlay clicked
+    menuOverlay.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      menuOverlay.classList.remove('open');
+    });
+
+    // Set up button click handlers (desktop nav)
     document.querySelectorAll('.nav-btn').forEach(btn => {
       btn.addEventListener('click', function(e) {
         e.preventDefault();
         const page = this.getAttribute('data-page');
-        console.log('Button clicked, navigating to:', page);
         navigateTo(page);
+        mobileMenu.classList.remove('open');
+        menuOverlay.classList.remove('open');
       });
     });
 
-    // Logout button
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-      console.log('Logout clicked');
+    // Logout buttons
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('logoutBtnMobile').addEventListener('click', logout);
+
+    function logout() {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('adminEmail');
       window.location.href = '/admin-login.html';
-    });
+    }
 
     function updateActiveButton() {
+      // Desktop buttons
       document.getElementById('dashboardBtn').classList.remove('active');
       document.getElementById('routingBtn').classList.remove('active');
       document.getElementById('analyticsBtn').classList.remove('active');
       document.getElementById('changePasswordBtn').classList.remove('active');
 
+      // Mobile buttons
+      document.getElementById('dashboardBtnMobile').classList.remove('active');
+      document.getElementById('routingBtnMobile').classList.remove('active');
+      document.getElementById('analyticsBtnMobile').classList.remove('active');
+      document.getElementById('changePasswordBtnMobile').classList.remove('active');
+
       if (currentPage === 'dashboard') {
         document.getElementById('dashboardBtn').classList.add('active');
+        document.getElementById('dashboardBtnMobile').classList.add('active');
       } else if (currentPage === '/service-routing.html') {
         document.getElementById('routingBtn').classList.add('active');
+        document.getElementById('routingBtnMobile').classList.add('active');
       } else if (currentPage === '/admin/chat_analytics.html') {
         document.getElementById('analyticsBtn').classList.add('active');
+        document.getElementById('analyticsBtnMobile').classList.add('active');
       } else if (currentPage === 'change-password') {
         document.getElementById('changePasswordBtn').classList.add('active');
+        document.getElementById('changePasswordBtnMobile').classList.add('active');
       }
     }
 
     function navigateTo(page) {
-      console.log('navigateTo called with:', page);
       currentPage = page;
       const frame = document.getElementById('contentFrame');
       
       if (page === 'change-password') {
-        // Load change password page
         frame.src = '/admin/change-password.html';
       } else {
-        // Map 'dashboard' to the actual dashboard.html file
         const pageUrl = (page === 'dashboard') ? '/admin/dashboard.html' : page;
-        console.log('Setting iframe src to:', pageUrl);
         frame.src = pageUrl;
       }
       
@@ -227,17 +391,14 @@
 
     // Auth check
     function checkAuth() {
-      console.log('checkAuth called');
       const token = localStorage.getItem('adminToken');
       const email = localStorage.getItem('adminEmail');
 
       if (!token) {
-        console.log('No token found, redirecting to login');
         window.location.href = '/admin-login.html';
         return;
       }
 
-      // Verify token with backend
       fetch('/api/admin-auth/verify.php', {
         method: 'POST',
         headers: {
@@ -248,26 +409,22 @@
       })
       .then(r => r.json())
       .then(data => {
-        console.log('Token verification response:', data);
         if (!data.valid) {
-          console.log('Token invalid, redirecting to login');
           localStorage.removeItem('adminToken');
           localStorage.removeItem('adminEmail');
           window.location.href = '/admin-login.html';
         } else {
-          console.log('Token valid, setting email and loading dashboard');
           document.getElementById('adminEmail').textContent = email || 'Admin';
+          document.getElementById('adminEmailMobileText').textContent = email || 'Admin';
           navigateTo('dashboard');
         }
       })
-      .catch((err) => {
-        console.error('Auth check error:', err);
+      .catch(() => {
         localStorage.removeItem('adminToken');
         window.location.href = '/admin-login.html';
       });
     }
 
-    // Run auth check when page loads
     window.addEventListener('load', checkAuth);
   </script>
 </body>
