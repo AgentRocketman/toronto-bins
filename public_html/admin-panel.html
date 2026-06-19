@@ -247,6 +247,47 @@
       }
     }
 
+    /* Landscape orientation on mobile devices */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .admin-header {
+        padding: 8px 12px;
+      }
+
+      .logo {
+        font-size: 1rem;
+      }
+
+      .user-info {
+        display: none;
+      }
+
+      .logout-btn {
+        display: none;
+      }
+
+      .hamburger-btn {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .user-info-mobile {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        font-size: 0.7rem;
+      }
+
+      .mobile-menu {
+        top: 44px;
+      }
+    }
+
     @media (max-width: 480px) {
       .logo {
         font-size: 1rem;
