@@ -143,24 +143,29 @@
   - All buttons have active state styling
 
 ### Dashboard Features:
-1. **Order graph:** Stacked bar chart showing orders by day (UPDATED: includes cancelled/refunded) ✅
+1. **Order graph:** Stacked bar chart showing orders by day (UPDATED: includes cancelled/refunded + interactive filtering) ✅
    - Default view: Next 7 days
    - Date range picker with auto-closing calendars
    - Stacked bars: Blue (new) + Orange (pending) + Green (completed) + Red (cancelled/refunded)
    - All order statuses tracked and displayed
+   - **INTERACTIVE: Click any bar section to filter orders** (e.g., click green portion of bar to show only completed orders for that date)
+   - Filter indicator shows active filter with "Clear Filter" button
+   - Search clears chart filter automatically
 
 2. **Statistics cards:**
    - Total orders, Average per day
    - New, Pending, Completed, Cancelled/Refunded breakdown
 
-3. **Orders table** (below chart):
+3. **Orders table** (below chart, supports chart filtering):
    - **Columns:** Booking ID, Created At, Address, Email, Service Type, Service Date, Status
    - **Sortable:** Click any column header to sort ascending/descending
    - **Pagination:** 10 records per page with First/Prev/Next/Last navigation
-   - **Search:** Real-time search by Booking ID, Address, or Email address
+   - **Search:** Real-time search by Booking ID, Address, or Email address (auto-clears chart filter)
    - **Status badges:** Color-coded (New=blue, Pending=orange, Completed=green, Cancelled=red)
    - **Data source:** Airtable Orders table + Bookings table for address/email
    - **Clickable rows:** Click any cell to view order details
+   - **Chart filter indicator:** Shows active filter (e.g., "Filtered by: Completed orders on Jun 19") with Clear button
+   - **Interactive filtering:** Click any bar section in graph to filter table to show only that status + date
 
 ### Order Details Page (`/admin/order-details.html?orderId=recXXXX`):
 - **Authentication required:** JWT token verification before access
