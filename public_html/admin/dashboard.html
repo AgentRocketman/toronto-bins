@@ -132,6 +132,13 @@
         </div>
       </div>
 
+      <div id="filterIndicator" style="display: none; background: #dbeafe; border-left: 4px solid #3b82f6; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: #1e40af; font-weight: 500;">📊 Filtered by: <span id="filterText">-</span></span>
+          <button onclick="clearChartFilter()" style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 500;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">✕ Clear Filter</button>
+        </div>
+      </div>
+
       <div class="table-container">
         <table id="ordersTable">
           <thead>
@@ -163,6 +170,8 @@
     const recordsPerPage = 10;
     let sortColumn = null;
     let sortDirection = 'asc';
+    let currentChartFilter = null; // Track active chart filter
+    let currentChartFilterDate = null; // Track the date of active chart filter
 
     // Initialize date inputs
     function initializeDates() {
@@ -273,6 +282,13 @@
 
     // Filter orders based on search
     function filterOrders(searchTerm) {
+      // Clear chart filter when user searches
+      if (searchTerm.trim()) {
+        currentChartFilter = null;
+        currentChartFilterDate = null;
+        document.getElementById('filterIndicator').style.display = 'none';
+      }
+      
       if (!searchTerm.trim()) {
         filteredOrders = [...allOrders];
       } else {
@@ -283,6 +299,79 @@
           order.email.toLowerCase().includes(term)
         );
       }
+      currentPage = 1;
+      renderTable();
+      updatePagination();
+    }
+
+    // Filter orders by status and date (from chart click)
+    function filterOrdersByStatusAndDate(status, displayDate) {
+      // Convert display date format ("Jun 19") back to YYYY-MM-DD
+      const today = new Date();
+      const year = today.getFullYear();
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      const [monthStr, dayStr] = displayDate.split(' ');
+      const monthIndex = months.indexOf(monthStr);
+      const day = parseInt(dayStr);
+      
+      // Create date in YYYY-MM-DD format
+      const month = String(monthIndex + 1).padStart(2, '0');
+      const day2 = String(day).padStart(2, '0');
+      const targetDate = `${year}-${month}-${day2}`;
+      
+      // Filter orders by status and date
+      filteredOrders = allOrders.filter(order => {
+        // Check if service date matches
+        if (!order.serviceDate.startsWith(targetDate)) {
+          return false;
+        }
+        
+        // Calculate order status and compare
+        const orderStatus = order.status;
+        const serviceDate = new Date(order.serviceDate);
+        const todayDate = new Date(today);
+        todayDate.setHours(0, 0, 0, 0);
+        
+        let calculatedStatus;
+        if (orderStatus === 'Completed') {
+          calculatedStatus = 'Completed';
+        } else if (orderStatus === 'Cancelled' || orderStatus === 'Refunded') {
+          calculatedStatus = 'Cancelled';
+        } else {
+          // Not completed and not cancelled
+          if (serviceDate > todayDate) {
+            calculatedStatus = 'New';
+          } else {
+            calculatedStatus = 'Pending';
+          }
+        }
+        
+        return calculatedStatus === status;
+      });
+      
+      // Store the active filter
+      currentChartFilter = status;
+      currentChartFilterDate = targetDate;
+      
+      // Show filter indicator
+      const filterIndicator = document.getElementById('filterIndicator');
+      const filterText = document.getElementById('filterText');
+      const displayDateFormatted = new Date(targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      filterText.textContent = `${status} orders on ${displayDateFormatted}`;
+      filterIndicator.style.display = 'block';
+      
+      currentPage = 1;
+      renderTable();
+      updatePagination();
+    }
+
+    // Clear chart filter and show all orders
+    function clearChartFilter() {
+      currentChartFilter = null;
+      currentChartFilterDate = null;
+      filteredOrders = [...allOrders];
+      document.getElementById('filterIndicator').style.display = 'none';
       currentPage = 1;
       renderTable();
       updatePagination();
@@ -461,6 +550,21 @@
           responsive: true,
           maintainAspectRatio: false,
           indexAxis: undefined,
+          onClick: (event, activeElements) => {
+            if (activeElements.length > 0) {
+              const element = activeElements[0];
+              const datasetIndex = element.datasetIndex;
+              const dataIndex = element.index;
+              
+              // Map dataset index to status
+              const statusMap = ['New', 'Pending', 'Completed', 'Cancelled'];
+              const clickedStatus = statusMap[datasetIndex];
+              const clickedDate = chart.data.labels[dataIndex];
+              
+              // Filter orders by status and date
+              filterOrdersByStatusAndDate(clickedStatus, clickedDate);
+            }
+          },
           plugins: {
             legend: {
               display: true,
