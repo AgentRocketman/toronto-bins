@@ -832,6 +832,8 @@
           }
         });
 
+        console.log('Creating infoWindow for stop:', stop.address, 'orderId:', stop.orderId, 'id:', stop.id);
+        
         const infoWindow = new google.maps.InfoWindow({
           content: `<div class="info-window-content">
             <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #64748b;"><strong>Order:</strong> ${stop.orderId || 'N/A'}</p>
@@ -1432,6 +1434,7 @@
 
           currentStops = stops;
           console.log(`🎯 Loaded ${stops.length} stops total`);
+          console.log('First stop object:', stops[0]);
           if (driverLocation) {
             sortAndRender();
           }
