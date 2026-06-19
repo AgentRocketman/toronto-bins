@@ -143,14 +143,15 @@
   - All buttons have active state styling
 
 ### Dashboard Features:
-1. **Order graph:** Stacked bar chart showing orders by day
+1. **Order graph:** Stacked bar chart showing orders by day (UPDATED: includes cancelled/refunded) ✅
    - Default view: Next 7 days
    - Date range picker with auto-closing calendars
-   - Stacked bars: Blue (new) + Orange (pending) + Green (completed)
+   - Stacked bars: Blue (new) + Orange (pending) + Green (completed) + Red (cancelled/refunded)
+   - All order statuses tracked and displayed
 
 2. **Statistics cards:**
    - Total orders, Average per day
-   - New, Pending, Completed breakdown
+   - New, Pending, Completed, Cancelled/Refunded breakdown
 
 3. **Orders table** (below chart):
    - **Columns:** Booking ID, Created At, Address, Email, Service Type, Service Date, Status
