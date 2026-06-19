@@ -76,11 +76,11 @@ foreach ($records as $record) {
     // Check if date is within range
     if ($serviceDateTimestamp >= $fromTimestamp && $serviceDateTimestamp <= $toTimestamp) {
       $orders[] = [
-        'id' => $record['id'],
+        'airtableId' => $record['id'],
         'bookingId' => $fields['Booking ID'] ?? '-',
         'createdAt' => $fields['Created At'] ?? '-',
-        'address' => $fields['Booking ID'] ?? '-', // Note: We'll need to fetch the booking details to get address
-        'email' => '-', // We'll need to fetch booking details
+        'address' => '-', // Will be populated from bookings
+        'email' => '-', // Will be populated from bookings
         'serviceType' => $fields['Service Type'] ?? '-',
         'serviceDate' => $fields['Service Date'] ?? '-',
         'status' => $fields['Status'] ?? 'New'

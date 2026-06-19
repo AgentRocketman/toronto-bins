@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cancel Order - GetMyBin Admin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 24px; color: #334155; }
+    .container { max-width: 600px; margin: 0 auto; }
+    
+    .header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+    .back-btn { background: none; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+    .back-btn:hover { border-color: #71b80c; color: #71b80c; }
+    h1 { color: #c41e3a; font-size: 1.8rem; }
+    
+    .loading { text-align: center; padding: 40px; }
+    .loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 3px solid #e2e8f0; border-top-color: #71b80c; border-radius: 50%; animation: spin 0.8s linear infinite; margin-left: 10px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .error { background: #fee2e2; color: #dc2626; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+    .success { background: #dcfce7; color: #166534; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+    
+    .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); margin-bottom: 24px; }
+    .card h2 { color: #c41e3a; font-size: 1.2rem; margin-bottom: 16px; border-bottom: 2px solid #ef4444; padding-bottom: 12px; }
+    .card p { line-height: 1.6; margin-bottom: 12px; }
+    
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; color: #334155; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.95rem; font-family: inherit; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    
+    .actions { display: flex; gap: 12px; }
+    .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(135deg, #71b80c, #5a9409); color: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(113, 184, 12, 0.3); }
+    .btn-cancel { background: #e5e7eb; color: #334155; }
+    .btn-cancel:hover { background: #d1d5db; }
+    .btn-danger { background: #ef4444; color: white; flex: 1; }
+    .btn-danger:hover:not(:disabled) { background: #dc2626; }
+    .btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
+    
+    .warning-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 6px; margin-bottom: 16px; }
+    .warning-box strong { color: #92400e; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <button class="back-btn" onclick="window.history.back()">← Back</button>
+      <h1>🗑️ Cancel Order</h1>
+    </div>
+
+    <div id="errorMsg" class="error" style="display: none;"></div>
+    <div id="successMsg" class="success" style="display: none;"></div>
+
+    <div id="content" style="display: none;">
+      <div class="warning-box">
+        <strong>⚠️ Warning:</strong> Cancelling this order will refund the customer and remove all services associated with it.
+      </div>
+
+      <div class="card">
+        <h2>Order Information</h2>
+        <p><strong>Order ID:</strong> <span id="orderIdDisplay">-</span></p>
+        <p><strong>Booking ID:</strong> <span id="bookingIdDisplay">-</span></p>
+        <p><strong>Email:</strong> <span id="emailDisplay">-</span></p>
+      </div>
+
+      <div class="card">
+        <h2>Cancellation Details</h2>
+        
+        <form id="cancelForm">
+          <div class="form-group">
+            <label for="reason">Reason for Cancellation *</label>
+            <select id="reason" required>
+              <option value="">-- Select a reason --</option>
+              <option value="customer_request">Customer Request</option>
+              <option value="payment_failed">Payment Failed</option>
+              <option value="service_issue">Service Issue</option>
+              <option value="duplicate_order">Duplicate Order</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Additional Notes</label>
+            <textarea id="message" placeholder="Add any additional details..."></textarea>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-cancel" onclick="window.history.back()">Back</button>
+            <button type="submit" class="btn btn-danger" id="submitBtn">🗑️ Confirm Cancellation</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="loading" class="loading">Loading order information...</div>
+  </div>
+
+  <script>
+    // Check authentication
+    function checkAuth() {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        window.location.href = '/admin-login.html';
+        return false;
+      }
+      return true;
+    }
+
+    // Get URL parameters
+    function getUrlParam(param) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
+    // Load order info and show form
+    async function loadOrderInfo() {
+      if (!checkAuth()) return;
+
+      const orderId = getUrlParam('orderId');
+      const bookingId = getUrlParam('bookingId');
+      const email = getUrlParam('email');
+
+      if (!orderId || !bookingId || !email) {
+        showError('Missing order information');
+        return;
+      }
+
+      document.getElementById('orderIdDisplay').textContent = orderId;
+      document.getElementById('bookingIdDisplay').textContent = bookingId;
+      document.getElementById('emailDisplay').textContent = email;
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    }
+
+    // Handle form submission
+    document.getElementById('cancelForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processing...';
+
+      const bookingId = getUrlParam('bookingId');
+      const email = getUrlParam('email');
+      const reason = document.getElementById('reason').value;
+      const message = document.getElementById('message').value;
+
+      try {
+        const response = await fetch('/api/process-cancellation.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bookingId: bookingId,
+            email: email,
+            reason: reason,
+            message: message
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showSuccess('Order cancelled successfully! Customer has been notified.');
+          document.getElementById('cancelForm').style.display = 'none';
+          setTimeout(() => {
+            window.location.href = '/admin-panel.html';
+          }, 2000);
+        } else {
+          throw new Error(data.error || 'Cancellation failed');
+        }
+      } catch (err) {
+        showError(err.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = '🗑️ Confirm Cancellation';
+      }
+    });
+
+    function showError(msg) {
+      document.getElementById('errorMsg').textContent = '❌ ' + msg;
+      document.getElementById('errorMsg').style.display = 'block';
+    }
+
+    function showSuccess(msg) {
+      document.getElementById('successMsg').textContent = '✅ ' + msg;
+      document.getElementById('successMsg').style.display = 'block';
+    }
+
+    window.addEventListener('load', loadOrderInfo);
+  </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details - GetMyBin Admin</title>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl5XRKr_nLFZGJa4NU1KVGWfIWqCF9ksw"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 24px; color: #334155; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    .header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+    .back-btn { background: none; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+    .back-btn:hover { border-color: #71b80c; color: #71b80c; }
+    h1 { color: #0f766e; font-size: 1.8rem; }
+    
+    .loading { text-align: center; padding: 40px; }
+    .loading::after { content: ''; display: inline-block; width: 20px; height: 20px; border: 3px solid #e2e8f0; border-top-color: #71b80c; border-radius: 50%; animation: spin 0.8s linear infinite; margin-left: 10px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .error { background: #fee2e2; color: #dc2626; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+    
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    @media (max-width: 1024px) { .grid { grid-template-columns: 1fr; } }
+    
+    .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
+    .card h2 { color: #0f766e; font-size: 1.2rem; margin-bottom: 16px; border-bottom: 2px solid #71b80c; padding-bottom: 12px; }
+    
+    .field { margin-bottom: 16px; }
+    .field-label { font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+    .field-value { font-size: 1rem; color: #334155; }
+    
+    .status-badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-top: 4px; }
+    .status-new { background: #dbeafe; color: #1e40af; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-completed { background: #dcfce7; color: #166534; }
+    .status-cancelled { background: #fee2e2; color: #991b1b; }
+    
+    .street-view { width: 100%; height: 400px; border-radius: 8px; margin-bottom: 16px; }
+    
+    .related-orders { margin-top: 24px; }
+    .related-orders h3 { color: #0f766e; font-size: 1.1rem; margin-bottom: 12px; }
+    .order-item { background: #f8fafc; padding: 12px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .order-item-info { flex: 1; }
+    .order-item-date { font-weight: 600; color: #334155; }
+    .order-item-type { font-size: 0.85rem; color: #64748b; }
+    
+    .actions { display: flex; gap: 12px; margin-top: 24px; }
+    .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(135deg, #71b80c, #5a9409); color: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(113, 184, 12, 0.3); }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-danger:hover { background: #dc2626; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <button class="back-btn" onclick="window.history.back()">← Back</button>
+      <h1>📋 Order Details</h1>
+    </div>
+
+    <div id="errorMsg" class="error" style="display: none;"></div>
+    <div id="loading" class="loading">Loading order details...</div>
+
+    <div id="content" style="display: none;">
+      <div class="grid">
+        <!-- Order Details -->
+        <div class="card">
+          <h2>Order Information</h2>
+          <div class="field">
+            <div class="field-label">Order ID</div>
+            <div class="field-value" id="orderId">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Service Date</div>
+            <div class="field-value" id="serviceDate">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Service Type</div>
+            <div class="field-value" id="serviceType">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Frequency</div>
+            <div class="field-value" id="frequency">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Status</div>
+            <div id="status">-</div>
+          </div>
+        </div>
+
+        <!-- Booking Details -->
+        <div class="card">
+          <h2>Booking Information</h2>
+          <div class="field">
+            <div class="field-label">Booking ID</div>
+            <div class="field-value" id="bookingId">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Customer Name</div>
+            <div class="field-value" id="customerName">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Email</div>
+            <div class="field-value" id="email">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Address</div>
+            <div class="field-value" id="address">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Created At</div>
+            <div class="field-value" id="createdAt">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Details -->
+      <div class="card">
+        <h2>💳 Payment Information</h2>
+        <div class="grid">
+          <div class="field">
+            <div class="field-label">Amount</div>
+            <div class="field-value" id="amount">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Stripe Payment ID</div>
+            <div class="field-value" id="stripePaymentId" style="font-size: 0.85rem; font-family: monospace;">-</div>
+          </div>
+          <div class="field">
+            <div class="field-label">Stripe Subscription ID</div>
+            <div class="field-value" id="stripeSubscriptionId" style="font-size: 0.85rem; font-family: monospace;">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Street View & Map -->
+      <div class="card">
+        <h2>📍 Location</h2>
+        <div id="streetView" class="street-view"></div>
+        <div class="field">
+          <div class="field-label">Coordinates</div>
+          <div class="field-value" id="coordinates">-</div>
+        </div>
+      </div>
+
+      <!-- Related Orders -->
+      <div class="card">
+        <h2>🔗 Related Orders</h2>
+        <div class="related-orders" id="relatedOrdersContainer">
+          <p style="color: #64748b;">No related orders</p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="card">
+        <h2>Actions</h2>
+        <div class="actions">
+          <button class="btn btn-danger" onclick="cancelOrder()">🗑️ Cancel / Refund Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check authentication
+    function checkAuth() {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        window.location.href = '/admin-login.html';
+        return false;
+      }
+      return true;
+    }
+
+    // Get URL parameters
+    function getUrlParam(param) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
+    // Format status with badge
+    function formatStatus(status) {
+      const statusClass = `status-${status.toLowerCase()}`;
+      return `<span class="status-badge ${statusClass}">${status}</span>`;
+    }
+
+    // Initialize Street View
+    function initStreetView(binPlacementJson) {
+      try {
+        const data = JSON.parse(binPlacementJson);
+        const panoId = data.pano;
+        const pov = data.pov || {};
+
+        const streetViewPanorama = new google.maps.StreetViewPanorama(
+          document.getElementById('streetView'),
+          {
+            pano: panoId,
+            pov: {
+              heading: pov.heading || 0,
+              pitch: pov.pitch || 0,
+              zoom: pov.zoom || 1
+            },
+            addressControl: false,
+            enableCloseButton: false
+          }
+        );
+      } catch (err) {
+        console.error('Error loading Street View:', err);
+        document.getElementById('streetView').innerHTML = '<div style="padding: 20px; text-align: center; color: #64748b;">Street View not available</div>';
+      }
+    }
+
+    // Load order details
+    async function loadOrderDetails() {
+      if (!checkAuth()) return;
+
+      const orderId = getUrlParam('orderId');
+      if (!orderId) {
+        showError('Missing orderId parameter');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/get-order-details.php?orderId=${orderId}`);
+        if (!response.ok) throw new Error('Failed to load order');
+
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error || 'Unknown error');
+
+        const order = data.order;
+        const booking = data.booking;
+        const relatedOrders = data.relatedOrders || [];
+
+        // Populate order info
+        document.getElementById('orderId').textContent = order.orderId;
+        document.getElementById('serviceDate').textContent = order.serviceDate;
+        document.getElementById('serviceType').textContent = order.serviceType;
+        document.getElementById('frequency').textContent = order.frequency;
+        document.getElementById('status').innerHTML = formatStatus(order.status);
+
+        // Populate booking info
+        document.getElementById('bookingId').textContent = booking.bookingId;
+        document.getElementById('customerName').textContent = booking.customerName;
+        document.getElementById('email').textContent = booking.email;
+        document.getElementById('address').textContent = booking.address;
+        document.getElementById('createdAt').textContent = booking.createdAt;
+
+        // Populate payment info
+        document.getElementById('amount').textContent = booking.amount;
+        document.getElementById('stripePaymentId').textContent = booking.stripePaymentId;
+        document.getElementById('stripeSubscriptionId').textContent = booking.stripeSubscriptionId;
+
+        // Populate coordinates
+        document.getElementById('coordinates').textContent = `${order.lat}, ${order.lng}`;
+
+        // Initialize Street View if bin placement available
+        if (order.binPlacement) {
+          initStreetView(order.binPlacement);
+        }
+
+        // Populate related orders
+        if (relatedOrders.length > 0) {
+          const relatedHtml = relatedOrders.map(o => `
+            <div class="order-item">
+              <div class="order-item-info">
+                <div class="order-item-date">${o.orderId}</div>
+                <div class="order-item-type">${o.serviceType} • ${o.serviceDate}</div>
+              </div>
+              <span class="status-badge status-${o.status.toLowerCase()}">${o.status}</span>
+            </div>
+          `).join('');
+          document.getElementById('relatedOrdersContainer').innerHTML = relatedHtml;
+        }
+
+        // Store order info for cancellation
+        window.currentOrder = { orderId: order.orderId, bookingId: booking.bookingId, email: booking.email };
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    function showError(msg) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('errorMsg').textContent = '❌ ' + msg;
+      document.getElementById('errorMsg').style.display = 'block';
+    }
+
+    function cancelOrder() {
+      const order = window.currentOrder;
+      if (!order) {
+        alert('Order information not available');
+        return;
+      }
+      window.location.href = `/admin/cancel-order.html?orderId=${getUrlParam('orderId')}&bookingId=${order.bookingId}&email=${encodeURIComponent(order.email)}`;
+    }
+
+    // Load on page load
+    window.addEventListener('load', loadOrderDetails);
+  </script>
+</body>
+</html>
