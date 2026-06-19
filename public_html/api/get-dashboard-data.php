@@ -105,18 +105,13 @@ foreach ($records as $record) {
         // Skip cancelled orders
         $totalOrders--;
       } else {
-        // Not completed, so check if it's pending (today) or new (future)
-        if ($serviceDateTimestamp == $todayTimestamp) {
-          // Service date is today and not completed = Pending
-          $ordersByDateAndStatus[$dateKey]['pending']++;
-          $pendingOrders++;
-        } else if ($serviceDateTimestamp > $todayTimestamp) {
+        // Not completed, so check if it's pending (today or past) or new (future)
+        if ($serviceDateTimestamp > $todayTimestamp) {
           // Service date is in the future = New
           $ordersByDateAndStatus[$dateKey]['new']++;
           $newOrders++;
-        }
-        // If service date is in the past and not completed, it's overdue (count as pending)
-        else {
+        } else {
+          // Service date is today or in the past and not completed = Pending
           $ordersByDateAndStatus[$dateKey]['pending']++;
           $pendingOrders++;
         }
