@@ -143,7 +143,7 @@
   - All buttons have active state styling
 
 ### Dashboard Features:
-1. **Dual Graph Tabs** (UPDATED: Orders + Workload) ✅
+1. **Triple Graph Tabs** (UPDATED: Orders + Workload + Bookings) ✅
    - **Orders Tab**: Shows orders stacked by **Service Date** (when customer booked)
      - Stacked bars: Blue (new) + Orange (pending) + Green (completed) + Red (cancelled/refunded)
      - **INTERACTIVE: Click any bar section to filter orders** by status + date
@@ -152,7 +152,12 @@
      - Roll In orders stay on Service Date (work same day)
      - No cancelled orders shown (excluded from workload planning)
      - Stacked bars: Blue (new) + Orange (pending) + Green (completed) — only 3 statuses
-   - **Both tabs:**
+   - **Bookings Tab** (NEW): Shows new bookings by **Created At** date
+     - Single blue bar per day (not stacked)
+     - Counts total bookings created each day
+     - Cancelled bookings excluded
+     - **INTERACTIVE: Click bar to filter orders** by service date
+   - **All tabs:**
      - Default view: Next 7 days
      - Date range picker with auto-closing calendars
      - Filter indicator shows active filter with "Clear Filter" button when clicking bars
