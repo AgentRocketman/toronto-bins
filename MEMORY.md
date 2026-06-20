@@ -143,16 +143,11 @@
   - All buttons have active state styling
 
 ### Dashboard Features:
-1. **Triple Graph Tabs** (UPDATED: Orders + Workload + Bookings) ✅
+1. **Graph Tabs** (UPDATED 2026-06-20: Orders + Bookings + Revenue) ✅
    - **Orders Tab**: Shows orders stacked by **Service Date** (when customer booked)
      - Stacked bars: Orange (pending) + Green (completed) + Red (cancelled/refunded) — no New category
      - **Update (2026-06-20)**: Removed New category, now shows only Pending, Completed, Cancelled
      - **INTERACTIVE: Click any bar section to filter orders** by status + date
-   - **Workload Tab**: Shows orders stacked by **service date** (same as Orders tab)
-     - No date shifting — groups directly by Service Date
-     - No cancelled orders shown (excluded from workload planning)
-     - Stacked bars: Blue (new) + Orange (pending) + Green (completed) — only 3 statuses
-     - **Fix (2026-06-20)**: Changed from work-date grouping to service-date grouping per Chris request
    - **Bookings Tab**: Shows ALL bookings by **Created At** date
      - Single blue bar per day (not stacked)
      - Counts ALL bookings created each day (regardless of status)
