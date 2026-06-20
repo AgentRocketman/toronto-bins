@@ -202,13 +202,8 @@ if ($bookingsHttpCode === 200) {
   foreach ($bookingsRecords as $record) {
     $fields = $record['fields'] ?? [];
     $createdAtStr = $fields['Created At'] ?? null;
-    $status = $fields['Status'] ?? null;
     
-    // Skip cancelled bookings
-    if ($status === 'Cancelled') {
-      continue;
-    }
-    
+    // Include ALL bookings regardless of status
     if ($createdAtStr) {
       // Parse created date (format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS)
       $createdTimestamp = strtotime(substr($createdAtStr, 0, 10) . ' 00:00:00');
