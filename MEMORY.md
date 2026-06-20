@@ -145,7 +145,8 @@
 ### Dashboard Features:
 1. **Triple Graph Tabs** (UPDATED: Orders + Workload + Bookings) ✅
    - **Orders Tab**: Shows orders stacked by **Service Date** (when customer booked)
-     - Stacked bars: Blue (new) + Orange (pending) + Green (completed) + Red (cancelled/refunded)
+     - Stacked bars: Orange (pending) + Green (completed) + Red (cancelled/refunded) — no New category
+     - **Update (2026-06-20)**: Removed New category, now shows only Pending, Completed, Cancelled
      - **INTERACTIVE: Click any bar section to filter orders** by status + date
    - **Workload Tab**: Shows orders stacked by **service date** (same as Orders tab)
      - No date shifting — groups directly by Service Date
