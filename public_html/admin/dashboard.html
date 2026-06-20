@@ -97,6 +97,9 @@
       <button id="workloadTab" class="chart-tab" onclick="switchChartTab('workload')" style="padding: 12px 20px; background: none; border: none; border-bottom: 3px solid transparent; color: #64748b; font-weight: 600; cursor: pointer; font-size: 1rem;">
         💼 Workload
       </button>
+      <button id="bookingsTab" class="chart-tab" onclick="switchChartTab('bookings')" style="padding: 12px 20px; background: none; border: none; border-bottom: 3px solid transparent; color: #64748b; font-weight: 600; cursor: pointer; font-size: 1rem;">
+        📋 Bookings
+      </button>
     </div>
 
     <div class="chart-container">
@@ -196,6 +199,10 @@
         new: [],
         pending: [],
         completed: []
+      },
+      bookings: {
+        dates: [],
+        count: []
       }
     };
 
@@ -227,17 +234,26 @@
       // Update tab button styles
       const ordersBtn = document.getElementById('ordersTab');
       const workloadBtn = document.getElementById('workloadTab');
+      const bookingsBtn = document.getElementById('bookingsTab');
       
+      // Reset all tabs
+      ordersBtn.style.borderBottomColor = 'transparent';
+      ordersBtn.style.color = '#64748b';
+      workloadBtn.style.borderBottomColor = 'transparent';
+      workloadBtn.style.color = '#64748b';
+      bookingsBtn.style.borderBottomColor = 'transparent';
+      bookingsBtn.style.color = '#64748b';
+      
+      // Highlight active tab
       if (tab === 'orders') {
         ordersBtn.style.borderBottomColor = '#3b82f6';
         ordersBtn.style.color = '#3b82f6';
-        workloadBtn.style.borderBottomColor = 'transparent';
-        workloadBtn.style.color = '#64748b';
-      } else {
-        ordersBtn.style.borderBottomColor = 'transparent';
-        ordersBtn.style.color = '#64748b';
+      } else if (tab === 'workload') {
         workloadBtn.style.borderBottomColor = '#3b82f6';
         workloadBtn.style.color = '#3b82f6';
+      } else if (tab === 'bookings') {
+        bookingsBtn.style.borderBottomColor = '#3b82f6';
+        bookingsBtn.style.color = '#3b82f6';
       }
       
       // Redraw chart with new tab data
@@ -263,6 +279,15 @@
           chartData.workload.completed,
           null,
           'workload'
+        );
+      } else if (tab === 'bookings') {
+        drawChart(
+          chartData.bookings.dates,
+          chartData.bookings.count,
+          null,
+          null,
+          null,
+          'bookings'
         );
       }
     }
@@ -318,6 +343,11 @@
           new: data.workloadNewCounts,
           pending: data.workloadPendingCounts,
           completed: data.workloadCompletedCounts
+        };
+        
+        chartData.bookings = {
+          dates: data.chartDates,
+          count: data.bookingCounts
         };
 
         // Draw chart based on current tab
@@ -596,43 +626,62 @@
       }
 
       // Build datasets based on mode
-      let datasets = [
-        {
-          label: '+ New',
-          data: newCounts,
-          backgroundColor: 'rgba(59, 130, 246, 0.8)',
-          borderColor: '#3b82f6',
-          borderWidth: 1,
-          borderRadius: 8
-        },
-        {
-          label: '⏳ Pending',
-          data: pendingCounts,
-          backgroundColor: 'rgba(252, 211, 77, 0.8)',
-          borderColor: '#fcd34d',
-          borderWidth: 1,
-          borderRadius: 8
-        },
-        {
-          label: '✓ Completed',
-          data: completedCounts,
-          backgroundColor: 'rgba(16, 185, 129, 0.8)',
-          borderColor: '#10b981',
-          borderWidth: 1,
-          borderRadius: 8
-        }
-      ];
+      let datasets = [];
+      let isStacked = true;
       
-      // Add cancelled dataset only for Orders mode
-      if (mode === 'orders' && cancelledCounts) {
-        datasets.push({
-          label: '✕ Cancelled/Refunded',
-          data: cancelledCounts,
-          backgroundColor: 'rgba(239, 68, 68, 0.8)',
-          borderColor: '#ef4444',
-          borderWidth: 1,
-          borderRadius: 8
-        });
+      if (mode === 'bookings') {
+        // Bookings: single blue bar, not stacked
+        datasets = [
+          {
+            label: '📖 New Bookings',
+            data: newCounts,
+            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+            borderColor: '#3b82f6',
+            borderWidth: 1,
+            borderRadius: 8
+          }
+        ];
+        isStacked = false;
+      } else {
+        // Orders/Workload: stacked bars
+        datasets = [
+          {
+            label: '+ New',
+            data: newCounts,
+            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+            borderColor: '#3b82f6',
+            borderWidth: 1,
+            borderRadius: 8
+          },
+          {
+            label: '⏳ Pending',
+            data: pendingCounts,
+            backgroundColor: 'rgba(252, 211, 77, 0.8)',
+            borderColor: '#fcd34d',
+            borderWidth: 1,
+            borderRadius: 8
+          },
+          {
+            label: '✓ Completed',
+            data: completedCounts,
+            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+            borderColor: '#10b981',
+            borderWidth: 1,
+            borderRadius: 8
+          }
+        ];
+        
+        // Add cancelled dataset only for Orders mode
+        if (mode === 'orders' && cancelledCounts) {
+          datasets.push({
+            label: '✕ Cancelled/Refunded',
+            data: cancelledCounts,
+            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+            borderColor: '#ef4444',
+            borderWidth: 1,
+            borderRadius: 8
+          });
+        }
       }
 
       chart = new Chart(ctx, {
@@ -646,8 +695,8 @@
           maintainAspectRatio: false,
           indexAxis: undefined,
           onClick: (event, activeElements) => {
-            // Only allow filtering on Orders tab
-            if (currentTab === 'orders' && activeElements.length > 0) {
+            // Allow filtering on Orders and Bookings tabs
+            if ((currentTab === 'orders' || currentTab === 'bookings') && activeElements.length > 0) {
               const element = activeElements[0];
               const datasetIndex = element.datasetIndex;
               const dataIndex = element.index;
@@ -675,7 +724,7 @@
           },
           scales: {
             x: {
-              stacked: true,
+              stacked: isStacked,
               ticks: {
                 font: { size: 12 },
                 color: '#64748b'
@@ -685,7 +734,7 @@
               }
             },
             y: {
-              stacked: true,
+              stacked: isStacked,
               beginAtZero: true,
               ticks: {
                 stepSize: 1,

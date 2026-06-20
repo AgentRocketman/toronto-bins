@@ -177,6 +177,56 @@ foreach ($records as $record) {
   }
 }
 
+// Fetch bookings and count by Created At date
+$bookingsByDate = [];
+$BOOKINGS_TABLE = 'Bookings';
+
+$bookingsUrl = "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/$BOOKINGS_TABLE";
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $bookingsUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+  'Authorization: Bearer ' . $AIRTABLE_API_KEY
+]);
+
+$bookingsResponse = curl_exec($ch);
+$bookingsHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($bookingsHttpCode === 200) {
+  $bookingsData = json_decode($bookingsResponse, true);
+  $bookingsRecords = $bookingsData['records'] ?? [];
+  
+  foreach ($bookingsRecords as $record) {
+    $fields = $record['fields'] ?? [];
+    $createdAtStr = $fields['Created At'] ?? null;
+    $status = $fields['Status'] ?? null;
+    
+    // Skip cancelled bookings
+    if ($status === 'Cancelled') {
+      continue;
+    }
+    
+    if ($createdAtStr) {
+      // Parse created date (format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS)
+      $createdTimestamp = strtotime(substr($createdAtStr, 0, 10) . ' 00:00:00');
+      
+      // Check if created date is within range
+      if ($createdTimestamp >= $fromTimestamp && $createdTimestamp <= $toTimestamp) {
+        $dateKey = date('Y-m-d', $createdTimestamp);
+        
+        if (!isset($bookingsByDate[$dateKey])) {
+          $bookingsByDate[$dateKey] = 0;
+        }
+        
+        $bookingsByDate[$dateKey]++;
+      }
+    }
+  }
+}
+
 // Generate chart data for date range
 $chartDates = [];
 $chartNewCounts = [];
@@ -186,6 +236,7 @@ $chartCancelledCounts = [];
 $workloadNewCounts = [];
 $workloadPendingCounts = [];
 $workloadCompletedCounts = [];
+$bookingCounts = [];
 $current = $fromTimestamp;
 
 while ($current <= $toTimestamp) {
@@ -216,6 +267,13 @@ while ($current <= $toTimestamp) {
     $workloadCompletedCounts[] = 0;
   }
   
+  // Bookings tab data (count by created date)
+  if (isset($bookingsByDate[$dateKey])) {
+    $bookingCounts[] = $bookingsByDate[$dateKey];
+  } else {
+    $bookingCounts[] = 0;
+  }
+  
   $current = strtotime('+1 day', $current);
 }
 
@@ -234,6 +292,7 @@ echo json_encode([
   'workloadNewCounts' => $workloadNewCounts,
   'workloadPendingCounts' => $workloadPendingCounts,
   'workloadCompletedCounts' => $workloadCompletedCounts,
+  'bookingCounts' => $bookingCounts,
   'totalOrders' => $totalOrders,
   'avgOrders' => $avgOrders,
   'newOrders' => $newOrders,
