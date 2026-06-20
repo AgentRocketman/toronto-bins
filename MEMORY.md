@@ -156,7 +156,8 @@
      - Single blue bar per day (not stacked)
      - Counts total bookings created each day
      - Cancelled bookings excluded
-     - **INTERACTIVE: Click bar to show all orders** (all statuses) with that service date
+     - **INTERACTIVE: Click bar to show all orders** (all statuses) from bookings created on that date
+     - Example: Click June 19 → Shows all orders from any booking created on June 19 (regardless of service date)
    - **All tabs:**
      - Default view: Next 7 days
      - Date range picker with auto-closing calendars
