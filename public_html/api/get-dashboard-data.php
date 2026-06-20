@@ -124,14 +124,13 @@ foreach ($records as $record) {
 }
 
 // Calculate workload dates (for Workload tab)
-// Roll Outs must be done the day before, Roll Ins on the same day
+// Group by service date (not work date)
 $workloadByDateAndStatus = [];
 
 foreach ($records as $record) {
   $fields = $record['fields'] ?? [];
   $serviceDateStr = $fields['Service Date'] ?? null;
   $status = $fields['Status'] ?? null;
-  $serviceType = $fields['Service Type'] ?? 'Roll Out';
   
   // Skip cancelled/refunded orders for workload
   if ($status === 'Cancelled' || $status === 'Refunded') {
@@ -141,21 +140,13 @@ foreach ($records as $record) {
   if ($serviceDateStr) {
     $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
     
-    // Calculate work date based on service type
-    $workDateTimestamp = $serviceDateTimestamp;
-    if (stripos($serviceType, 'roll out') !== false) {
-      // Roll Out: work the day before
-      $workDateTimestamp = strtotime('-1 day', $serviceDateTimestamp);
-    }
-    // Roll In: work on the same day (no change needed)
-    
-    // Check if work date is within range
-    if ($workDateTimestamp >= $fromTimestamp && $workDateTimestamp <= $toTimestamp) {
-      $workDateKey = date('Y-m-d', $workDateTimestamp);
+    // Check if service date is within range
+    if ($serviceDateTimestamp >= $fromTimestamp && $serviceDateTimestamp <= $toTimestamp) {
+      $serviceDateKey = date('Y-m-d', $serviceDateTimestamp);
       
       // Initialize if not exists
-      if (!isset($workloadByDateAndStatus[$workDateKey])) {
-        $workloadByDateAndStatus[$workDateKey] = [
+      if (!isset($workloadByDateAndStatus[$serviceDateKey])) {
+        $workloadByDateAndStatus[$serviceDateKey] = [
           'new' => 0,
           'pending' => 0,
           'completed' => 0
@@ -164,13 +155,13 @@ foreach ($records as $record) {
       
       // Determine order category based on status
       if ($status === 'Completed') {
-        $workloadByDateAndStatus[$workDateKey]['completed']++;
+        $workloadByDateAndStatus[$serviceDateKey]['completed']++;
       } else {
-        // Check if this is new or pending based on work date
-        if ($workDateTimestamp > $todayTimestamp) {
-          $workloadByDateAndStatus[$workDateKey]['new']++;
+        // Check if this is new or pending based on service date
+        if ($serviceDateTimestamp > $todayTimestamp) {
+          $workloadByDateAndStatus[$serviceDateKey]['new']++;
         } else {
-          $workloadByDateAndStatus[$workDateKey]['pending']++;
+          $workloadByDateAndStatus[$serviceDateKey]['pending']++;
         }
       }
     }
