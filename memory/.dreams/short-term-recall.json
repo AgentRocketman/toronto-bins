@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-20T04:24:02.650Z",
+  "updatedAt": "2026-06-20T04:28:49.935Z",
   "entries": {
     "memory:memory/2026-06-13.md:34:69": {
       "key": "memory:memory/2026-06-13.md:34:69",
@@ -1063,6 +1063,68 @@
         "api/admin-auth/login.php",
         "api/admin-auth/verify.php",
         "refund"
+      ]
+    },
+    "memory:memory/2026-06-20.md:1:31": {
+      "key": "memory:memory/2026-06-20.md:1:31",
+      "path": "memory/2026-06-20.md",
+      "startLine": 1,
+      "endLine": 31,
+      "source": "memory",
+      "snippet": "# 2026-06-20 - Bookings Tab & \"Both\" Orders Discussion ## Fixed: Bookings Tab Count Mismatch - **Issue:** Bookings chart showed count (e.g., 3) but table showed fewer records - **Root Cause:** Orders list filtered by Service Date only; didn't load orders from bookings created in date range but with service dates outside range - **Fix:** Modified `/api/get-orders-list.php` to include: - Orders with Service Date in range - AND orders from bookings created in range (regardless of service date) - **Result:** Chart count now matches table data ## Decision: Show ALL Bookings (Including Cancelled) - **Changed:** Bookings tab now includes ALL bookings regardless of status - **Previous:** Was e",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-20T04:28:49.935Z",
+      "lastRecalledAt": "2026-06-20T04:28:49.935Z",
+      "queryHashes": [
+        "6e40cb49d8e9"
+      ],
+      "recallDays": [
+        "2026-06-20"
+      ],
+      "conceptTags": [
+        "e.g",
+        "api/get-orders-list.php",
+        "bookings",
+        "tab",
+        "both",
+        "orders",
+        "discussion",
+        "fixed"
+      ]
+    },
+    "memory:memory/2026-06-13.md:592:646": {
+      "key": "memory:memory/2026-06-13.md:592:646",
+      "path": "memory/2026-06-13.md",
+      "startLine": 592,
+      "endLine": 646,
+      "source": "memory",
+      "snippet": "- Reduces visual clutter on sidebar **3. ✅ CLEARER BUTTON TEXT** - \"📷 Bin Photo\" → \"Upload Photo\" - Changes to \"✓ Photo\" when image uploaded --- ## v12: BIGGER TEXT EVERYWHERE + CAR EMOJI (Late Evening) ### 19:12 UTC — Improved Readability for Field Workers **Font Size Increases Across All Elements:** - Sidebar Title: 1.25rem → 1.5rem (+20%) - Stop Address: 0.9rem → 1.1rem (+22%) - Group Titles: 0.85rem → 1rem (+18%) - Status Badges: 0.75rem → 0.9rem (+20%) - Upload Button: 0.75rem → 1rem (+33%) - Map Tooltip Address: 1rem → 1.3rem (+30%) - Map Tooltip Details: 0.9rem → 1rem (+11%) - Map Sequence Numbers: default → 16px bold **Car Icon Update:** - SVG car → 🚗 Car Emoji - Cleaner, ins",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-20T04:28:49.935Z",
+      "lastRecalledAt": "2026-06-20T04:28:49.935Z",
+      "queryHashes": [
+        "6e40cb49d8e9"
+      ],
+      "recallDays": [
+        "2026-06-20"
+      ],
+      "conceptTags": [
+        "1.25rem",
+        "1.5rem",
+        "0.9rem",
+        "1.1rem",
+        "0.85rem",
+        "0.75rem",
+        "1.3rem",
+        "reduces"
       ]
     }
   }

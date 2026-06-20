@@ -575,7 +575,7 @@
       updatePagination();
     }
 
-    // Filter orders by service date (all statuses) - used for Revenue tab
+    // Filter orders by booking creation date (all statuses) - used for Revenue tab
     function filterOrdersByServiceDate(displayDate) {
       // Convert display date format ("Jun 19") back to YYYY-MM-DD
       const today = new Date();
@@ -594,11 +594,13 @@
       console.log(`💰 Revenue filter: displayDate="${displayDate}", targetDate="${targetDate}"`);
       console.log(`💰 allOrders count: ${allOrders.length}`);
       
-      // Filter orders by SERVICE DATE (not creation date)
+      // Filter orders by BOOKING CREATION DATE (not service date)
       filteredOrders = allOrders.filter(order => {
-        const matches = order.serviceDate.startsWith(targetDate);
+        // Use bookingCreatedAt if available, otherwise fall back to serviceDate
+        const dateToCheck = order.bookingCreatedAt || order.serviceDate;
+        const matches = dateToCheck.startsWith(targetDate);
         if (matches) {
-          console.log(`✓ Matched: service date ${order.serviceDate} = ${order.address}`);
+          console.log(`✓ Matched: booking created ${order.bookingCreatedAt} (service ${order.serviceDate}) = ${order.address}`);
         }
         return matches;
       });
@@ -613,7 +615,7 @@
       const filterIndicator = document.getElementById('filterIndicator');
       const filterText = document.getElementById('filterText');
       const displayDateFormatted = new Date(targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      filterText.textContent = `Orders with service date on ${displayDateFormatted}`;
+      filterText.textContent = `Orders from bookings created on ${displayDateFormatted}`;
       filterIndicator.style.display = 'block';
       
       currentPage = 1;

@@ -263,26 +263,29 @@ while ($current <= $toTimestamp) {
   $current = strtotime('+1 day', $current);
 }
 
-// Calculate revenue by service date (include all orders, even cancelled)
+// Calculate revenue by booking creation date (from Bookings table)
 $revenueByDate = [];
 
-foreach ($records as $record) {
-  $fields = $record['fields'] ?? [];
-  $serviceDateStr = $fields['Service Date'] ?? null;
-  $totalPrice = $fields['Total Price'] ?? 0;
-  
-  if ($serviceDateStr) {
-    $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
+if ($bookingsHttpCode === 200) {
+  foreach ($bookingsRecords as $record) {
+    $fields = $record['fields'] ?? [];
+    $createdAtStr = $fields['Created At'] ?? null;
+    $totalPrice = $fields['Amount'] ?? 0;
     
-    // Check if service date is within range
-    if ($serviceDateTimestamp >= $fromTimestamp && $serviceDateTimestamp <= $toTimestamp) {
-      $dateKey = date('Y-m-d', $serviceDateTimestamp);
+    if ($createdAtStr) {
+      // Parse created date (format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS)
+      $createdTimestamp = strtotime(substr($createdAtStr, 0, 10) . ' 00:00:00');
       
-      if (!isset($revenueByDate[$dateKey])) {
-        $revenueByDate[$dateKey] = 0;
+      // Check if created date is within range
+      if ($createdTimestamp >= $fromTimestamp && $createdTimestamp <= $toTimestamp) {
+        $dateKey = date('Y-m-d', $createdTimestamp);
+        
+        if (!isset($revenueByDate[$dateKey])) {
+          $revenueByDate[$dateKey] = 0;
+        }
+        
+        $revenueByDate[$dateKey] += floatval($totalPrice);
       }
-      
-      $revenueByDate[$dateKey] += floatval($totalPrice);
     }
   }
 }
