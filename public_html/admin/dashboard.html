@@ -484,7 +484,7 @@
       updatePagination();
     }
 
-    // Filter orders by date only (all statuses) - used for Bookings tab
+    // Filter orders by booking creation date (all statuses) - used for Bookings tab
     function filterOrdersByDate(displayDate) {
       // Convert display date format ("Jun 19") back to YYYY-MM-DD
       const today = new Date();
@@ -502,13 +502,15 @@
       
       console.log(`📖 Bookings filter: displayDate="${displayDate}", targetDate="${targetDate}"`);
       console.log(`📊 allOrders count: ${allOrders.length}`);
-      console.log('Sample orders:', allOrders.slice(0, 3).map(o => ({ serviceDate: o.serviceDate, address: o.address })));
+      console.log('Sample orders:', allOrders.slice(0, 3).map(o => ({ bookingCreatedAt: o.bookingCreatedAt, serviceDate: o.serviceDate, address: o.address })));
       
-      // Filter orders by date only (all statuses)
+      // Filter orders by BOOKING CREATION DATE (not service date)
       filteredOrders = allOrders.filter(order => {
-        const matches = order.serviceDate.startsWith(targetDate);
+        // Use bookingCreatedAt if available, otherwise fall back to serviceDate
+        const dateToCheck = order.bookingCreatedAt || order.serviceDate;
+        const matches = dateToCheck.startsWith(targetDate);
         if (matches) {
-          console.log(`✓ Matched: ${order.serviceDate} = ${order.address}`);
+          console.log(`✓ Matched: booking created ${order.bookingCreatedAt} (service ${order.serviceDate}) = ${order.address}`);
         }
         return matches;
       });
@@ -523,7 +525,7 @@
       const filterIndicator = document.getElementById('filterIndicator');
       const filterText = document.getElementById('filterText');
       const displayDateFormatted = new Date(targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      filterText.textContent = `Orders on ${displayDateFormatted}`;
+      filterText.textContent = `Orders from bookings created on ${displayDateFormatted}`;
       filterIndicator.style.display = 'block';
       
       currentPage = 1;

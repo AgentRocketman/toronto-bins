@@ -131,6 +131,7 @@ if (!empty($bookingIds)) {
         $booking = $bookingMap[$order['bookingId']];
         $order['address'] = $booking['Address'] ?? '-';
         $order['email'] = $booking['Email'] ?? '-';
+        $order['bookingCreatedAt'] = $booking['Created At'] ?? '-'; // Add booking creation date
       }
     }
   }
