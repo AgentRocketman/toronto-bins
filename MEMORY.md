@@ -147,11 +147,11 @@
    - **Orders Tab**: Shows orders stacked by **Service Date** (when customer booked)
      - Stacked bars: Blue (new) + Orange (pending) + Green (completed) + Red (cancelled/refunded)
      - **INTERACTIVE: Click any bar section to filter orders** by status + date
-   - **Workload Tab**: Shows orders stacked by **actual work date** (when will be performed)
-     - Roll Out orders shift back 1 day (work day before Service Date)
-     - Roll In orders stay on Service Date (work same day)
+   - **Workload Tab**: Shows orders stacked by **service date** (same as Orders tab)
+     - No date shifting — groups directly by Service Date
      - No cancelled orders shown (excluded from workload planning)
      - Stacked bars: Blue (new) + Orange (pending) + Green (completed) — only 3 statuses
+     - **Fix (2026-06-20)**: Changed from work-date grouping to service-date grouping per Chris request
    - **Bookings Tab** (NEW): Shows ALL bookings by **Created At** date
      - Single blue bar per day (not stacked)
      - Counts ALL bookings created each day (regardless of status)
