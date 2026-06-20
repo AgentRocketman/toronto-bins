@@ -484,6 +484,43 @@
       updatePagination();
     }
 
+    // Filter orders by date only (all statuses) - used for Bookings tab
+    function filterOrdersByDate(displayDate) {
+      // Convert display date format ("Jun 19") back to YYYY-MM-DD
+      const today = new Date();
+      const year = today.getFullYear();
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      const [monthStr, dayStr] = displayDate.split(' ');
+      const monthIndex = months.indexOf(monthStr);
+      const day = parseInt(dayStr);
+      
+      // Create date in YYYY-MM-DD format
+      const month = String(monthIndex + 1).padStart(2, '0');
+      const day2 = String(day).padStart(2, '0');
+      const targetDate = `${year}-${month}-${day2}`;
+      
+      // Filter orders by date only (all statuses)
+      filteredOrders = allOrders.filter(order => {
+        return order.serviceDate.startsWith(targetDate);
+      });
+      
+      // Store the active filter
+      currentChartFilter = 'All';
+      currentChartFilterDate = targetDate;
+      
+      // Show filter indicator
+      const filterIndicator = document.getElementById('filterIndicator');
+      const filterText = document.getElementById('filterText');
+      const displayDateFormatted = new Date(targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      filterText.textContent = `Orders on ${displayDateFormatted}`;
+      filterIndicator.style.display = 'block';
+      
+      currentPage = 1;
+      renderTable();
+      updatePagination();
+    }
+
     // Clear chart filter and show all orders
     function clearChartFilter() {
       currentChartFilter = null;
@@ -695,19 +732,20 @@
           maintainAspectRatio: false,
           indexAxis: undefined,
           onClick: (event, activeElements) => {
-            // Allow filtering on Orders and Bookings tabs
-            if ((currentTab === 'orders' || currentTab === 'bookings') && activeElements.length > 0) {
-              const element = activeElements[0];
-              const datasetIndex = element.datasetIndex;
-              const dataIndex = element.index;
-              
-              // Map dataset index to status
-              const statusMap = ['New', 'Pending', 'Completed', 'Cancelled'];
-              const clickedStatus = statusMap[datasetIndex];
+            if (activeElements.length > 0) {
+              const dataIndex = activeElements[0].index;
               const clickedDate = chart.data.labels[dataIndex];
               
-              // Filter orders by status and date
-              filterOrdersByStatusAndDate(clickedStatus, clickedDate);
+              if (currentTab === 'orders') {
+                // Orders tab: filter by status and date
+                const datasetIndex = activeElements[0].datasetIndex;
+                const statusMap = ['New', 'Pending', 'Completed', 'Cancelled'];
+                const clickedStatus = statusMap[datasetIndex];
+                filterOrdersByStatusAndDate(clickedStatus, clickedDate);
+              } else if (currentTab === 'bookings') {
+                // Bookings tab: filter by date only (all statuses)
+                filterOrdersByDate(clickedDate);
+              }
             }
           },
           plugins: {
