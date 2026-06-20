@@ -158,13 +158,13 @@
      - Includes: Active, Pending, Completed, Cancelled bookings
      - **INTERACTIVE: Click bar to show all orders** (all statuses) from ALL bookings created on that date
      - Example: Click June 19 → Shows all orders from any booking created on June 19, including cancelled bookings (regardless of s
-   - **Revenue Tab** (NEW 2026-06-20): Shows daily revenue by **service date**
+   - **Revenue Tab** (NEW 2026-06-20): Shows daily revenue by **booking creation date**
      - Single green bar per day (not stacked)
-     - Sums **Total Price** field from all orders on that service date (includes cancelled orders)
+     - Sums **Amount** field from Bookings table by **Created At** date
      - Y-axis shows dollar amounts ($0.00, $10.00, $20.00, etc.)
      - Tooltips display revenue as "Revenue: $XX.XX"
-     - **INTERACTIVE: Click bar to filter orders by service date** (shows all orders with that service date, all statuses)
-     - Example: Click June 23 → Shows all orders with service date June 23ervice date)
+     - **INTERACTIVE: Click bar to filter orders by booking creation date** (shows all orders from bookings created on that date, all statuses)
+     - Example: Click June 20 → Shows all orders from bookings created on June 20ervice date)
    - **All tabs:**
      - Default view: Next 7 days
      - Date range picker with auto-closing calendars
