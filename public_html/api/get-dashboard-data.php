@@ -114,51 +114,6 @@ foreach ($records as $record) {
   }
 }
 
-// Calculate workload dates (for Workload tab)
-// Group by service date (not work date)
-$workloadByDateAndStatus = [];
-
-foreach ($records as $record) {
-  $fields = $record['fields'] ?? [];
-  $serviceDateStr = $fields['Service Date'] ?? null;
-  $status = $fields['Status'] ?? null;
-  
-  // Skip cancelled/refunded orders for workload
-  if ($status === 'Cancelled' || $status === 'Refunded') {
-    continue;
-  }
-
-  if ($serviceDateStr) {
-    $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
-    
-    // Check if service date is within range
-    if ($serviceDateTimestamp >= $fromTimestamp && $serviceDateTimestamp <= $toTimestamp) {
-      $serviceDateKey = date('Y-m-d', $serviceDateTimestamp);
-      
-      // Initialize if not exists
-      if (!isset($workloadByDateAndStatus[$serviceDateKey])) {
-        $workloadByDateAndStatus[$serviceDateKey] = [
-          'new' => 0,
-          'pending' => 0,
-          'completed' => 0
-        ];
-      }
-      
-      // Determine order category based on status
-      if ($status === 'Completed') {
-        $workloadByDateAndStatus[$serviceDateKey]['completed']++;
-      } else {
-        // Check if this is new or pending based on service date
-        if ($serviceDateTimestamp > $todayTimestamp) {
-          $workloadByDateAndStatus[$serviceDateKey]['new']++;
-        } else {
-          $workloadByDateAndStatus[$serviceDateKey]['pending']++;
-        }
-      }
-    }
-  }
-}
-
 // Fetch bookings and count by Created At date
 $bookingsByDate = [];
 $BOOKINGS_TABLE = 'Bookings';
@@ -209,9 +164,6 @@ $chartDates = [];
 $chartPendingCounts = [];
 $chartCompletedCounts = [];
 $chartCancelledCounts = [];
-$workloadNewCounts = [];
-$workloadPendingCounts = [];
-$workloadCompletedCounts = [];
 $bookingCounts = [];
 $current = $fromTimestamp;
 
@@ -228,17 +180,6 @@ while ($current <= $toTimestamp) {
     $chartPendingCounts[] = 0;
     $chartCompletedCounts[] = 0;
     $chartCancelledCounts[] = 0;
-  }
-  
-  // Workload tab data (no cancelled)
-  if (isset($workloadByDateAndStatus[$dateKey])) {
-    $workloadNewCounts[] = $workloadByDateAndStatus[$dateKey]['new'];
-    $workloadPendingCounts[] = $workloadByDateAndStatus[$dateKey]['pending'];
-    $workloadCompletedCounts[] = $workloadByDateAndStatus[$dateKey]['completed'];
-  } else {
-    $workloadNewCounts[] = 0;
-    $workloadPendingCounts[] = 0;
-    $workloadCompletedCounts[] = 0;
   }
   
   // Bookings tab data (count by created date)
@@ -305,9 +246,6 @@ echo json_encode([
   'chartPendingCounts' => $chartPendingCounts,
   'chartCompletedCounts' => $chartCompletedCounts,
   'chartCancelledCounts' => $chartCancelledCounts,
-  'workloadNewCounts' => $workloadNewCounts,
-  'workloadPendingCounts' => $workloadPendingCounts,
-  'workloadCompletedCounts' => $workloadCompletedCounts,
   'bookingCounts' => $bookingCounts,
   'revenueByDateCounts' => $revenueByDateCounts,
   'totalOrders' => $totalOrders,

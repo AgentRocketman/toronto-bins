@@ -94,9 +94,6 @@
       <button id="ordersTab" class="chart-tab active" onclick="switchChartTab('orders')" style="padding: 12px 20px; background: none; border: none; border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: 600; cursor: pointer; font-size: 1rem;">
         📊 Orders
       </button>
-      <button id="workloadTab" class="chart-tab" onclick="switchChartTab('workload')" style="padding: 12px 20px; background: none; border: none; border-bottom: 3px solid transparent; color: #64748b; font-weight: 600; cursor: pointer; font-size: 1rem;">
-        💼 Workload
-      </button>
       <button id="bookingsTab" class="chart-tab" onclick="switchChartTab('bookings')" style="padding: 12px 20px; background: none; border: none; border-bottom: 3px solid transparent; color: #64748b; font-weight: 600; cursor: pointer; font-size: 1rem;">
         📋 Bookings
       </button>
@@ -193,12 +190,6 @@
         completed: [],
         cancelled: []
       },
-      workload: {
-        dates: [],
-        new: [],
-        pending: [],
-        completed: []
-      },
       bookings: {
         dates: [],
         count: []
@@ -236,15 +227,12 @@
       
       // Update tab button styles
       const ordersBtn = document.getElementById('ordersTab');
-      const workloadBtn = document.getElementById('workloadTab');
       const bookingsBtn = document.getElementById('bookingsTab');
       const revenueBtn = document.getElementById('revenueTab');
       
       // Reset all tabs
       ordersBtn.style.borderBottomColor = 'transparent';
       ordersBtn.style.color = '#64748b';
-      workloadBtn.style.borderBottomColor = 'transparent';
-      workloadBtn.style.color = '#64748b';
       bookingsBtn.style.borderBottomColor = 'transparent';
       bookingsBtn.style.color = '#64748b';
       revenueBtn.style.borderBottomColor = 'transparent';
@@ -254,9 +242,6 @@
       if (tab === 'orders') {
         ordersBtn.style.borderBottomColor = '#3b82f6';
         ordersBtn.style.color = '#3b82f6';
-      } else if (tab === 'workload') {
-        workloadBtn.style.borderBottomColor = '#3b82f6';
-        workloadBtn.style.color = '#3b82f6';
       } else if (tab === 'bookings') {
         bookingsBtn.style.borderBottomColor = '#3b82f6';
         bookingsBtn.style.color = '#3b82f6';
@@ -279,15 +264,6 @@
           chartData.orders.completed,
           chartData.orders.cancelled,
           'orders'
-        );
-      } else if (tab === 'workload') {
-        drawChart(
-          chartData.workload.dates,
-          chartData.workload.new,
-          chartData.workload.pending,
-          chartData.workload.completed,
-          null,
-          'workload'
         );
       } else if (tab === 'bookings') {
         drawChart(
@@ -353,12 +329,6 @@
           pending: data.chartPendingCounts,
           completed: data.chartCompletedCounts,
           cancelled: data.chartCancelledCounts
-        };
-        chartData.workload = {
-          dates: data.chartDates,
-          new: data.workloadNewCounts,
-          pending: data.workloadPendingCounts,
-          completed: data.workloadCompletedCounts
         };
         
         chartData.bookings = {
