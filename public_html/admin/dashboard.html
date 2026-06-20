@@ -122,10 +122,6 @@
         <div class="stat-value" id="avgOrders">-</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">New</div>
-        <div class="stat-value" id="newOrders">-</div>
-      </div>
-      <div class="stat-card">
         <div class="stat-label">Pending</div>
         <div class="stat-value" id="pendingOrders">-</div>
       </div>
@@ -278,7 +274,7 @@
       if (tab === 'orders') {
         drawChart(
           chartData.orders.dates,
-          chartData.orders.new,
+          null,
           chartData.orders.pending,
           chartData.orders.completed,
           chartData.orders.cancelled,
@@ -347,7 +343,6 @@
         // Update stats
         document.getElementById('totalOrders').textContent = data.totalOrders;
         document.getElementById('avgOrders').textContent = data.avgOrders;
-        document.getElementById('newOrders').textContent = data.newOrders;
         document.getElementById('completedOrders').textContent = data.completedOrders;
         document.getElementById('pendingOrders').textContent = data.pendingOrders;
         document.getElementById('cancelledOrders').textContent = data.cancelledOrders;
@@ -355,7 +350,6 @@
         // Store both orders and workload data
         chartData.orders = {
           dates: data.chartDates,
-          new: data.chartNewCounts,
           pending: data.chartPendingCounts,
           completed: data.chartCompletedCounts,
           cancelled: data.chartCancelledCounts
@@ -488,12 +482,8 @@
         } else if (orderStatus === 'Cancelled' || orderStatus === 'Refunded') {
           calculatedStatus = 'Cancelled';
         } else {
-          // Not completed and not cancelled
-          if (serviceDate > todayDate) {
-            calculatedStatus = 'New';
-          } else {
-            calculatedStatus = 'Pending';
-          }
+          // Everything else is Pending (no New category)
+          calculatedStatus = 'Pending';
         }
         
         return calculatedStatus === status;
@@ -783,8 +773,36 @@
           }
         ];
         isStacked = false;
+      } else if (mode === 'orders') {
+        // Orders: Pending, Completed, Cancelled (no New)
+        datasets = [
+          {
+            label: '⏳ Pending',
+            data: pendingCounts,
+            backgroundColor: 'rgba(252, 211, 77, 0.8)',
+            borderColor: '#fcd34d',
+            borderWidth: 1,
+            borderRadius: 8
+          },
+          {
+            label: '✓ Completed',
+            data: completedCounts,
+            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+            borderColor: '#10b981',
+            borderWidth: 1,
+            borderRadius: 8
+          },
+          {
+            label: '✕ Cancelled/Refunded',
+            data: cancelledCounts,
+            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+            borderColor: '#ef4444',
+            borderWidth: 1,
+            borderRadius: 8
+          }
+        ];
       } else {
-        // Orders/Workload: stacked bars
+        // Workload: New, Pending, Completed (no Cancelled)
         datasets = [
           {
             label: '+ New',
@@ -811,18 +829,6 @@
             borderRadius: 8
           }
         ];
-        
-        // Add cancelled dataset only for Orders mode
-        if (mode === 'orders' && cancelledCounts) {
-          datasets.push({
-            label: '✕ Cancelled/Refunded',
-            data: cancelledCounts,
-            backgroundColor: 'rgba(239, 68, 68, 0.8)',
-            borderColor: '#ef4444',
-            borderWidth: 1,
-            borderRadius: 8
-          });
-        }
       }
 
       chart = new Chart(ctx, {
@@ -841,9 +847,9 @@
               const clickedDate = chart.data.labels[dataIndex];
               
               if (currentTab === 'orders') {
-                // Orders tab: filter by status and date
+                // Orders tab: filter by status and date (Pending, Completed, Cancelled)
                 const datasetIndex = activeElements[0].datasetIndex;
-                const statusMap = ['New', 'Pending', 'Completed', 'Cancelled'];
+                const statusMap = ['Pending', 'Completed', 'Cancelled'];
                 const clickedStatus = statusMap[datasetIndex];
                 filterOrdersByStatusAndDate(clickedStatus, clickedDate);
               } else if (currentTab === 'bookings') {

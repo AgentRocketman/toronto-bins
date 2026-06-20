@@ -69,7 +69,6 @@ $records = $data['records'] ?? [];
 // Process records - categorize by order status based on Service Date
 $ordersByDateAndStatus = [];
 $totalOrders = 0;
-$newOrders = 0;
 $pendingOrders = 0;
 $completedOrders = 0;
 $cancelledOrders = 0;
@@ -90,7 +89,6 @@ foreach ($records as $record) {
       // Initialize if not exists
       if (!isset($ordersByDateAndStatus[$dateKey])) {
         $ordersByDateAndStatus[$dateKey] = [
-          'new' => 0,
           'pending' => 0,
           'completed' => 0,
           'cancelled' => 0
@@ -99,7 +97,7 @@ foreach ($records as $record) {
       
       $totalOrders++;
       
-      // Determine order category based on status and service date
+      // Determine order category: Completed, Cancelled, or Pending
       if ($status === 'Completed') {
         $ordersByDateAndStatus[$dateKey]['completed']++;
         $completedOrders++;
@@ -108,16 +106,9 @@ foreach ($records as $record) {
         $ordersByDateAndStatus[$dateKey]['cancelled']++;
         $cancelledOrders++;
       } else {
-        // Not completed, so check if it's pending (today or past) or new (future)
-        if ($serviceDateTimestamp > $todayTimestamp) {
-          // Service date is in the future = New
-          $ordersByDateAndStatus[$dateKey]['new']++;
-          $newOrders++;
-        } else {
-          // Service date is today or in the past and not completed = Pending
-          $ordersByDateAndStatus[$dateKey]['pending']++;
-          $pendingOrders++;
-        }
+        // Everything else = Pending
+        $ordersByDateAndStatus[$dateKey]['pending']++;
+        $pendingOrders++;
       }
     }
   }
@@ -215,7 +206,6 @@ if ($bookingsHttpCode === 200) {
 
 // Generate chart data for date range
 $chartDates = [];
-$chartNewCounts = [];
 $chartPendingCounts = [];
 $chartCompletedCounts = [];
 $chartCancelledCounts = [];
@@ -229,14 +219,12 @@ while ($current <= $toTimestamp) {
   $dateKey = date('Y-m-d', $current);
   $chartDates[] = date('M d', $current);
   
-  // Orders tab data
+  // Orders tab data (Pending, Completed, Cancelled only - no New)
   if (isset($ordersByDateAndStatus[$dateKey])) {
-    $chartNewCounts[] = $ordersByDateAndStatus[$dateKey]['new'];
     $chartPendingCounts[] = $ordersByDateAndStatus[$dateKey]['pending'];
     $chartCompletedCounts[] = $ordersByDateAndStatus[$dateKey]['completed'];
     $chartCancelledCounts[] = $ordersByDateAndStatus[$dateKey]['cancelled'];
   } else {
-    $chartNewCounts[] = 0;
     $chartPendingCounts[] = 0;
     $chartCompletedCounts[] = 0;
     $chartCancelledCounts[] = 0;
@@ -314,7 +302,6 @@ http_response_code(200);
 echo json_encode([
   'success' => true,
   'chartDates' => $chartDates,
-  'chartNewCounts' => $chartNewCounts,
   'chartPendingCounts' => $chartPendingCounts,
   'chartCompletedCounts' => $chartCompletedCounts,
   'chartCancelledCounts' => $chartCancelledCounts,
@@ -325,7 +312,6 @@ echo json_encode([
   'revenueByDateCounts' => $revenueByDateCounts,
   'totalOrders' => $totalOrders,
   'avgOrders' => $avgOrders,
-  'newOrders' => $newOrders,
   'completedOrders' => $completedOrders,
   'pendingOrders' => $pendingOrders,
   'cancelledOrders' => $cancelledOrders
