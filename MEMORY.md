@@ -152,12 +152,12 @@
      - Roll In orders stay on Service Date (work same day)
      - No cancelled orders shown (excluded from workload planning)
      - Stacked bars: Blue (new) + Orange (pending) + Green (completed) — only 3 statuses
-   - **Bookings Tab** (NEW): Shows new bookings by **Created At** date
+   - **Bookings Tab** (NEW): Shows ALL bookings by **Created At** date
      - Single blue bar per day (not stacked)
-     - Counts total bookings created each day
-     - Cancelled bookings excluded
-     - **INTERACTIVE: Click bar to show all orders** (all statuses) from bookings created on that date
-     - Example: Click June 19 → Shows all orders from any booking created on June 19 (regardless of service date)
+     - Counts ALL bookings created each day (regardless of status)
+     - Includes: Active, Pending, Completed, Cancelled bookings
+     - **INTERACTIVE: Click bar to show all orders** (all statuses) from ALL bookings created on that date
+     - Example: Click June 19 → Shows all orders from any booking created on June 19, including cancelled bookings (regardless of service date)
    - **All tabs:**
      - Default view: Next 7 days
      - Date range picker with auto-closing calendars
