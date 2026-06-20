@@ -500,10 +500,20 @@
       const day2 = String(day).padStart(2, '0');
       const targetDate = `${year}-${month}-${day2}`;
       
+      console.log(`📖 Bookings filter: displayDate="${displayDate}", targetDate="${targetDate}"`);
+      console.log(`📊 allOrders count: ${allOrders.length}`);
+      console.log('Sample orders:', allOrders.slice(0, 3).map(o => ({ serviceDate: o.serviceDate, address: o.address })));
+      
       // Filter orders by date only (all statuses)
       filteredOrders = allOrders.filter(order => {
-        return order.serviceDate.startsWith(targetDate);
+        const matches = order.serviceDate.startsWith(targetDate);
+        if (matches) {
+          console.log(`✓ Matched: ${order.serviceDate} = ${order.address}`);
+        }
+        return matches;
       });
+      
+      console.log(`🎯 Filtered results: ${filteredOrders.length} orders found`);
       
       // Store the active filter
       currentChartFilter = 'All';
