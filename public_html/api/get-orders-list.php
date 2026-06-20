@@ -64,20 +64,77 @@ if (!$data) {
 
 $records = $data['records'] ?? [];
 $orders = [];
+$bookingIdsFromOrders = [];
 
-// Process records - filter by date range
+// First pass: collect booking IDs from orders with service dates in range
 foreach ($records as $record) {
   $fields = $record['fields'] ?? [];
   $serviceDateStr = $fields['Service Date'] ?? null;
+  $bookingId = $fields['Booking ID'] ?? null;
 
-  if ($serviceDateStr) {
+  if ($serviceDateStr && $bookingId) {
     $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
     
     // Check if date is within range
     if ($serviceDateTimestamp >= $fromTimestamp && $serviceDateTimestamp <= $toTimestamp) {
+      $bookingIdsFromOrders[$bookingId] = true;
+    }
+  }
+}
+
+// Fetch bookings to find ones created in date range
+$bookingsToInclude = [];
+$bookingUrl = "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/Bookings";
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $bookingUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+  'Authorization: Bearer ' . $AIRTABLE_API_KEY
+]);
+
+$bookingResponse = curl_exec($ch);
+$bookingHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($bookingHttp === 200) {
+  $bookingData = json_decode($bookingResponse, true);
+  $bookingRecords = $bookingData['records'] ?? [];
+  
+  // Find bookings created in date range
+  foreach ($bookingRecords as $booking) {
+    $bookingFields = $booking['fields'] ?? [];
+    $createdAtStr = $bookingFields['Created At'] ?? null;
+    $bookingId = $bookingFields['Booking ID'] ?? null;
+    
+    if ($createdAtStr && $bookingId) {
+      $createdTimestamp = strtotime(substr($createdAtStr, 0, 10) . ' 00:00:00');
+      
+      // If booking was created in date range, include its ID
+      if ($createdTimestamp >= $fromTimestamp && $createdTimestamp <= $toTimestamp) {
+        $bookingsToInclude[$bookingId] = true;
+      }
+    }
+  }
+}
+
+// Process records - filter by service date OR booking creation date
+foreach ($records as $record) {
+  $fields = $record['fields'] ?? [];
+  $serviceDateStr = $fields['Service Date'] ?? null;
+  $bookingId = $fields['Booking ID'] ?? '-';
+
+  if ($serviceDateStr) {
+    $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
+    
+    // Include if: service date in range OR booking was created in range
+    $serviceInRange = $serviceDateTimestamp >= $fromTimestamp && $serviceDateTimestamp <= $toTimestamp;
+    $bookingInRange = isset($bookingsToInclude[$bookingId]);
+    
+    if ($serviceInRange || $bookingInRange) {
       $orders[] = [
         'airtableId' => $record['id'],
-        'bookingId' => $fields['Booking ID'] ?? '-',
+        'bookingId' => $bookingId,
         'createdAt' => $fields['Created At'] ?? '-',
         'address' => '-', // Will be populated from bookings
         'email' => '-', // Will be populated from bookings

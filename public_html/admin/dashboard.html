@@ -388,6 +388,10 @@
 
         allOrders = data.orders || [];
         filteredOrders = [...allOrders];
+        console.log(`📋 Loaded ${allOrders.length} orders (service dates ${from} to ${to})`);
+        if (allOrders.length > 0) {
+          console.log('Sample orders:', allOrders.slice(0, 3).map(o => ({ bookingId: o.bookingId, bookingCreatedAt: o.bookingCreatedAt, serviceDate: o.serviceDate })));
+        }
         currentPage = 1;
         renderTable();
         updatePagination();
