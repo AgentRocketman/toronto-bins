@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-19T23:16:12.066Z",
+  "updatedAt": "2026-06-20T04:24:02.650Z",
   "entries": {
     "memory:memory/2026-06-13.md:34:69": {
       "key": "memory:memory/2026-06-13.md:34:69",
@@ -970,6 +970,99 @@
         "modified",
         "accept",
         "either"
+      ]
+    },
+    "memory:memory/2026-06-19.md:339:375": {
+      "key": "memory:memory/2026-06-19.md:339:375",
+      "path": "memory/2026-06-19.md",
+      "startLine": 339,
+      "endLine": 375,
+      "source": "memory",
+      "snippet": "- Added \"Cancelled/Refunded\" card showing total count - **Color scheme:** - Blue: New orders - Orange: Pending orders - Green: Completed orders - Red: Cancelled/Refunded orders (NEW) ### 9. Interactive Chart Filtering ✅ (NEW THIS TURN) - **Click any bar section to filter table:** - Click blue (New) → shows only New orders for that date - Click orange (Pending) → shows only Pending orders for that date - Click green (Completed) → shows only Completed orders for that date - Click red (Cancelled) → shows only Cancelled/Refunded orders for that date - **Filter indicator display:** - Shows: \"🔍 Filtered by: [Status] orders on [Date]\" - Includes \"Clear Filter\" button to rese",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-20T04:24:02.650Z",
+      "lastRecalledAt": "2026-06-20T04:24:02.650Z",
+      "queryHashes": [
+        "d2bbcfcb6333"
+      ],
+      "recallDays": [
+        "2026-06-20"
+      ],
+      "conceptTags": [
+        "cancelled/refunded",
+        "added",
+        "cancelled",
+        "refunded",
+        "card",
+        "showing",
+        "total",
+        "count"
+      ]
+    },
+    "memory:memory/2026-06-19.md:1:34": {
+      "key": "memory:memory/2026-06-19.md:1:34",
+      "path": "memory/2026-06-19.md",
+      "startLine": 1,
+      "endLine": 34,
+      "source": "memory",
+      "snippet": "# Session Memory - 2026-06-19 ## Admin Panel System - COMPLETE ✅ ### Files Created: - `/admin-login.html` — Admin login form (email + password) - `/admin-panel.html` — Main admin panel with iframe navigation - `/admin/dashboard.html` — Orders dashboard with Chart.js graph - `/admin/change-password.html` — Password change form with strength indicator - `/api/admin-auth/login.php` — Login endpoint (Airtable) - `/api/admin-auth/verify.php` — Token verification - `/api/admin-auth/change-password.php` — Password update endpoint - `/api/admin-auth/setup-admins-table.php` — Setup script (run once) - `/api/admin-auth/create-admin.php` — Create new admin endpoint - `/api/get-dashboard-data.php` — D",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-20T04:24:02.650Z",
+      "lastRecalledAt": "2026-06-20T04:24:02.650Z",
+      "queryHashes": [
+        "d2bbcfcb6333"
+      ],
+      "recallDays": [
+        "2026-06-20"
+      ],
+      "conceptTags": [
+        "admin-login.html",
+        "admin-panel.html",
+        "admin/dashboard.html",
+        "chart.js",
+        "admin/change-password.html",
+        "api/admin-auth/login.php",
+        "api/admin-auth/verify.php",
+        "api/admin-auth/create-admin.php"
+      ]
+    },
+    "memory:memory/2026-06-19.md:205:237": {
+      "key": "memory:memory/2026-06-19.md:205:237",
+      "path": "memory/2026-06-19.md",
+      "startLine": 205,
+      "endLine": 237,
+      "source": "memory",
+      "snippet": "- Refund process now fully flexible - allows refunds regardless of date with warnings # Session Memory - 2026-06-19 ## Admin Panel System - COMPLETE ✅ ### Files Created: - `/admin-login.html` — Admin login form (email + password) - `/admin-panel.html` — Main admin panel with iframe navigation - `/admin/dashboard.html` — Orders dashboard with Chart.js graph (stacked bar) - `/admin/change-password.html` — Password change form with strength indicator - `/api/admin-auth/login.php` — Login endpoint (Airtable) - `/api/admin-auth/verify.php` — Token verification - `/api/admin-auth/change-password.php` — Password update endpoint - `/api/admin-auth/setup-admins-table.php` — Setup script (run once)",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-20T04:24:02.650Z",
+      "lastRecalledAt": "2026-06-20T04:24:02.650Z",
+      "queryHashes": [
+        "d2bbcfcb6333"
+      ],
+      "recallDays": [
+        "2026-06-20"
+      ],
+      "conceptTags": [
+        "admin-login.html",
+        "admin-panel.html",
+        "admin/dashboard.html",
+        "chart.js",
+        "admin/change-password.html",
+        "api/admin-auth/login.php",
+        "api/admin-auth/verify.php",
+        "refund"
       ]
     }
   }

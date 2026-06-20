@@ -100,6 +100,9 @@
       <button id="bookingsTab" class="chart-tab" onclick="switchChartTab('bookings')" style="padding: 12px 20px; background: none; border: none; border-bottom: 3px solid transparent; color: #64748b; font-weight: 600; cursor: pointer; font-size: 1rem;">
         📋 Bookings
       </button>
+      <button id="revenueTab" class="chart-tab" onclick="switchChartTab('revenue')" style="padding: 12px 20px; background: none; border: none; border-bottom: 3px solid transparent; color: #64748b; font-weight: 600; cursor: pointer; font-size: 1rem;">
+        💰 Revenue
+      </button>
     </div>
 
     <div class="chart-container">
@@ -203,6 +206,10 @@
       bookings: {
         dates: [],
         count: []
+      },
+      revenue: {
+        dates: [],
+        amount: []
       }
     };
 
@@ -235,6 +242,7 @@
       const ordersBtn = document.getElementById('ordersTab');
       const workloadBtn = document.getElementById('workloadTab');
       const bookingsBtn = document.getElementById('bookingsTab');
+      const revenueBtn = document.getElementById('revenueTab');
       
       // Reset all tabs
       ordersBtn.style.borderBottomColor = 'transparent';
@@ -243,6 +251,8 @@
       workloadBtn.style.color = '#64748b';
       bookingsBtn.style.borderBottomColor = 'transparent';
       bookingsBtn.style.color = '#64748b';
+      revenueBtn.style.borderBottomColor = 'transparent';
+      revenueBtn.style.color = '#64748b';
       
       // Highlight active tab
       if (tab === 'orders') {
@@ -254,6 +264,9 @@
       } else if (tab === 'bookings') {
         bookingsBtn.style.borderBottomColor = '#3b82f6';
         bookingsBtn.style.color = '#3b82f6';
+      } else if (tab === 'revenue') {
+        revenueBtn.style.borderBottomColor = '#3b82f6';
+        revenueBtn.style.color = '#3b82f6';
       }
       
       // Redraw chart with new tab data
@@ -288,6 +301,15 @@
           null,
           null,
           'bookings'
+        );
+      } else if (tab === 'revenue') {
+        drawChart(
+          chartData.revenue.dates,
+          chartData.revenue.amount,
+          null,
+          null,
+          null,
+          'revenue'
         );
       }
     }
@@ -348,6 +370,11 @@
         chartData.bookings = {
           dates: data.chartDates,
           count: data.bookingCounts
+        };
+        
+        chartData.revenue = {
+          dates: data.chartDates,
+          amount: data.revenueByDateCounts
         };
 
         // Draw chart based on current tab
@@ -548,6 +575,52 @@
       updatePagination();
     }
 
+    // Filter orders by service date (all statuses) - used for Revenue tab
+    function filterOrdersByServiceDate(displayDate) {
+      // Convert display date format ("Jun 19") back to YYYY-MM-DD
+      const today = new Date();
+      const year = today.getFullYear();
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      const [monthStr, dayStr] = displayDate.split(' ');
+      const monthIndex = months.indexOf(monthStr);
+      const day = parseInt(dayStr);
+      
+      // Create date in YYYY-MM-DD format
+      const month = String(monthIndex + 1).padStart(2, '0');
+      const day2 = String(day).padStart(2, '0');
+      const targetDate = `${year}-${month}-${day2}`;
+      
+      console.log(`💰 Revenue filter: displayDate="${displayDate}", targetDate="${targetDate}"`);
+      console.log(`💰 allOrders count: ${allOrders.length}`);
+      
+      // Filter orders by SERVICE DATE (not creation date)
+      filteredOrders = allOrders.filter(order => {
+        const matches = order.serviceDate.startsWith(targetDate);
+        if (matches) {
+          console.log(`✓ Matched: service date ${order.serviceDate} = ${order.address}`);
+        }
+        return matches;
+      });
+      
+      console.log(`🎯 Filtered results: ${filteredOrders.length} orders found`);
+      
+      // Store the active filter
+      currentChartFilter = 'All';
+      currentChartFilterDate = targetDate;
+      
+      // Show filter indicator
+      const filterIndicator = document.getElementById('filterIndicator');
+      const filterText = document.getElementById('filterText');
+      const displayDateFormatted = new Date(targetDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      filterText.textContent = `Orders with service date on ${displayDateFormatted}`;
+      filterIndicator.style.display = 'block';
+      
+      currentPage = 1;
+      renderTable();
+      updatePagination();
+    }
+
     // Sort orders
     function sortOrders(column) {
       if (sortColumn === column) {
@@ -695,6 +768,19 @@
           }
         ];
         isStacked = false;
+      } else if (mode === 'revenue') {
+        // Revenue: single green bar, not stacked
+        datasets = [
+          {
+            label: '💰 Daily Revenue',
+            data: newCounts,
+            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+            borderColor: '#10b981',
+            borderWidth: 1,
+            borderRadius: 8
+          }
+        ];
+        isStacked = false;
       } else {
         // Orders/Workload: stacked bars
         datasets = [
@@ -761,6 +847,9 @@
               } else if (currentTab === 'bookings') {
                 // Bookings tab: filter by date only (all statuses)
                 filterOrdersByDate(clickedDate);
+              } else if (currentTab === 'revenue') {
+                // Revenue tab: filter by service date (all statuses)
+                filterOrdersByServiceDate(clickedDate);
               }
             }
           },
@@ -773,6 +862,13 @@
                 color: '#334155',
                 padding: 16,
                 usePointStyle: true
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: mode === 'revenue' ? function(context) {
+                  return 'Revenue: $' + context.parsed.y.toFixed(2);
+                } : undefined
               }
             }
           },
@@ -791,9 +887,12 @@
               stacked: isStacked,
               beginAtZero: true,
               ticks: {
-                stepSize: 1,
+                stepSize: mode === 'revenue' ? undefined : 1,
                 font: { size: 12 },
-                color: '#64748b'
+                color: '#64748b',
+                callback: mode === 'revenue' ? function(value) {
+                  return '$' + value.toFixed(2);
+                } : undefined
               },
               grid: {
                 color: 'rgba(0, 0, 0, 0.05)'

@@ -263,6 +263,46 @@ while ($current <= $toTimestamp) {
   $current = strtotime('+1 day', $current);
 }
 
+// Calculate revenue by service date (include all orders, even cancelled)
+$revenueByDate = [];
+
+foreach ($records as $record) {
+  $fields = $record['fields'] ?? [];
+  $serviceDateStr = $fields['Service Date'] ?? null;
+  $totalPrice = $fields['Total Price'] ?? 0;
+  
+  if ($serviceDateStr) {
+    $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
+    
+    // Check if service date is within range
+    if ($serviceDateTimestamp >= $fromTimestamp && $serviceDateTimestamp <= $toTimestamp) {
+      $dateKey = date('Y-m-d', $serviceDateTimestamp);
+      
+      if (!isset($revenueByDate[$dateKey])) {
+        $revenueByDate[$dateKey] = 0;
+      }
+      
+      $revenueByDate[$dateKey] += floatval($totalPrice);
+    }
+  }
+}
+
+// Build revenue counts for chart
+$revenueByDateCounts = [];
+$current = $fromTimestamp;
+
+while ($current <= $toTimestamp) {
+  $dateKey = date('Y-m-d', $current);
+  
+  if (isset($revenueByDate[$dateKey])) {
+    $revenueByDateCounts[] = round($revenueByDate[$dateKey], 2);
+  } else {
+    $revenueByDateCounts[] = 0;
+  }
+  
+  $current = strtotime('+1 day', $current);
+}
+
 // Calculate average
 $daysCount = count($chartDates);
 $avgOrders = $daysCount > 0 ? ceil($totalOrders / $daysCount) : 0;
@@ -279,6 +319,7 @@ echo json_encode([
   'workloadPendingCounts' => $workloadPendingCounts,
   'workloadCompletedCounts' => $workloadCompletedCounts,
   'bookingCounts' => $bookingCounts,
+  'revenueByDateCounts' => $revenueByDateCounts,
   'totalOrders' => $totalOrders,
   'avgOrders' => $avgOrders,
   'newOrders' => $newOrders,
