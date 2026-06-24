@@ -50,9 +50,18 @@
 
 ## Airtable Credentials
 - **Base ID:** apptYNRJTXwItvied
-- **API Key:** patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd
+- **API Key:** patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd (has schema.bases:write — can create columns)
 - **Bookings Table:** tblKMhGnYjsH0z7Lj
-- **ServiceStops Table:** (to be confirmed)
+- **Orders Table:** tblGhNRi3ENwVpNty
+- **ServiceStops Table:** tbl7r5OBk0L7Epnro
+- **Employees Table:** tbldH1el7qM0VNEje
+- **ChatLogs Table:** tblatXRj8Ka7hyGyZ
+- **Admins Table:** tblrtL9HiI6Axhs2j
+
+### Schema write API
+Can add fields directly via:
+`POST https://api.airtable.com/v0/meta/bases/{baseId}/tables/{tableId}/fields`
+with `{"name":"...","type":"singleLineText|multilineText|number|..."}` payload.
 
 ## CurbIn Email System - COMPLETE ✅
 - ✅ Completion emails working (inline photo embedding)
