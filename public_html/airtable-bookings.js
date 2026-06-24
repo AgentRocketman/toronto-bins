@@ -82,15 +82,16 @@ async function saveBookingToAirtable(bookingData) {
     return ['g','b','r','y','c'].filter(k => obj && obj[k]).map(k => BIN_LABELS[k]);
   }
   const binsByDate = bookingData.binsByDate || null;
-  const binsRecurring = bookingData.binsRecurring || null;
+  const calendarName = bookingData.calendarName || '';
 
-  // Booking-level summary across all dates.
+  // Booking-level fields. Bins are now computed automatically from Toronto's
+  // schedule per pickup date, so we no longer store a customer-chosen recurring set.
+  // - Recurring: save only the Calendar Name; the per-Order rows carry the actual
+  //   bins for their specific date (computed below).
+  // - Ad-hoc: save the per-date "Bins To Roll" summary + "Bins JSON" map as before.
   const bookingBinFields = {};
-  if (bookingData.frequency === 'recurring' && binsRecurring) {
-    const labels = binsToLabels(binsRecurring);
-    if (labels.length) bookingBinFields['Bins To Roll'] = labels.join(', ') + ' (weekly)';
-    bookingBinFields['Bins JSON'] = JSON.stringify(binsRecurring);
-  } else if (binsByDate && Object.keys(binsByDate).length) {
+  if (calendarName) bookingBinFields['Calendar Name'] = calendarName;
+  if (bookingData.frequency !== 'recurring' && binsByDate && Object.keys(binsByDate).length) {
     const dates = Object.keys(binsByDate).sort();
     bookingBinFields['Bins To Roll'] = dates.length === 1
       ? binsToLabels(binsByDate[dates[0]]).join(', ')
@@ -107,6 +108,20 @@ async function saveBookingToAirtable(bookingData) {
     if (labels.length) out['Bins To Roll'] = labels.join(', ') + (weekly ? ' (weekly)' : '');
     out['Bins JSON'] = JSON.stringify(obj);
     return out;
+  }
+
+  // Given a calendar name like "Tuesday1", return the bins {g,b,r,y,c} for the
+  // FIRST upcoming pickup date (today onward) from the city schedule. To avoid
+  // hauling the full CSV_DATA into this JS file, we read it from window.CSV_DATA
+  // if present (it's defined in index.html). If absent, leave Bins To Roll /
+  // Bins JSON empty on the order.
+  function binsForFutureRecurringDate(calendarName) {
+    const csv = (typeof window !== 'undefined' && window.CSV_DATA) ? window.CSV_DATA : null;
+    if (!csv || !calendarName || !csv[calendarName]) return null;
+    const today = new Date().toISOString().split('T')[0];
+    const upcoming = csv[calendarName].find(w => w.w >= today);
+    if (!upcoming) return null;
+    return { g: !!upcoming.g, b: !!upcoming.b, r: !!upcoming.r, y: !!upcoming.y, c: !!upcoming.c };
   }
 
   // 1. Save Booking record
@@ -206,8 +221,11 @@ async function saveBookingToAirtable(bookingData) {
     async function saveOrder(fields) {
       // Add bin placement + geocoded lat/lng onto every Order row so the driver
       // page can both pin the bin location and map the marker at the correct
-      // address without needing to look up the Booking record.
-      const fullFields = Object.assign({}, fields, geoFields, binFields);
+      // address without needing to look up the Booking record. Also stamp the
+      // Calendar Name on every order so the dashboard can compute bins for any
+      // date itself (the field is gracefully dropped by the retry if missing).
+      const calendarFields = bookingData.calendarName ? { 'Calendar Name': bookingData.calendarName } : {};
+      const fullFields = Object.assign({}, fields, geoFields, binFields, calendarFields);
       // Schema-tolerant retry: strip any UNKNOWN_FIELD_NAME and re-POST.
       function extractUnknownField(msg) {
         const m = msg && msg.match(/Unknown field name:\s*["']?([^"']+)["']?/i);
@@ -247,6 +265,9 @@ async function saveBookingToAirtable(bookingData) {
 
     if (bookingData.frequency === 'recurring') {
       const pickupDay = bookingData.dayOfWeek || 'Tuesday';
+      // Compute bins for the next upcoming pickup from the customer's calendar zone,
+      // and apply the same set to every order (RO and/or RI).
+      const upcomingBins = binsForFutureRecurringDate(bookingData.calendarName);
 
       for (const job of serviceJobs) {
         const suffix = job === 'Roll Out' ? 'RO' : 'RI';
@@ -261,7 +282,7 @@ async function saveBookingToAirtable(bookingData) {
           'Day of Week': workDay,
           'Status': 'Active',
           'Created At': todayISO
-        }, orderBinFields(binsRecurring, true)));
+        }, orderBinFields(upcomingBins, true)));
       }
 
     } else if (bookingData.selectedDates && bookingData.selectedDates.length > 0) {
