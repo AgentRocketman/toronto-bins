@@ -151,6 +151,27 @@
       width: 100%;
     }
 
+    /* Bin chips — which bins to physically roll out for this stop */
+    .stop-bin-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      width: 100%;
+      margin: 0 0 8px;
+    }
+    .bin-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #fff;
+      padding: 3px 9px;
+      border-radius: 999px;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
     /* Street View thumbnail (far left on bottom row) */
     .sv-thumb {
       flex-shrink: 0;
@@ -971,6 +992,76 @@
       rollins.forEach(stop => renderStopItem(stop, rollinContainer));
     }
 
+    // ===== Bin chips (which bins to physically roll out) =====
+    const BIN_CHIPS = [
+      { key:'g', label:'Green',     emoji:'🟢', color:'#38a169' },
+      { key:'b', label:'Garbage',   emoji:'⚫', color:'#4a5568' },
+      { key:'r', label:'Recycling', emoji:'🔵', color:'#3182ce' },
+      { key:'y', label:'Yard',      emoji:'🟡', color:'#d69e2e' },
+      { key:'c', label:'Tree',      emoji:'🎄', color:'#e53e3e' },
+    ];
+
+    function isFlatBinObject(o) {
+      return o && typeof o === 'object' && !Array.isArray(o) && ['g','b','r','y','c'].some(k => k in o);
+    }
+    function dateShift(dateStr, days) {
+      const d = new Date(dateStr + 'T12:00:00');
+      d.setDate(d.getDate() + days);
+      return d.toISOString().split('T')[0];
+    }
+
+    // Parse a "Bins JSON" value into a flat {g,b,r,y,c} object for this stop.
+    // The Order carries its own flat object (or recurring object), so that's the
+    // common case. If we get a date-keyed map (e.g. from the Booking fallback), pick
+    // the entry for this stop's date. The Order's Service Date is the work date —
+    // day before pickup for day-zone roll-outs — so try the date, then the day after.
+    function parseStopBins(raw, serviceDate) {
+      if (!raw) return null;
+      let o;
+      try { o = typeof raw === 'string' ? JSON.parse(raw) : raw; }
+      catch (e) { return null; }
+      if (!o || typeof o !== 'object') return null;
+      if (isFlatBinObject(o)) return o;
+      const keys = Object.keys(o);
+      if (keys.length === 1) return o[keys[0]];
+      if (serviceDate) {
+        if (o[serviceDate]) return o[serviceDate];
+        const after = dateShift(serviceDate, 1);
+        if (o[after]) return o[after];
+      }
+      return null;
+    }
+
+    // Fallback: derive bins from the human-readable "Bins To Roll" string.
+    function parseBinsToRollString(str, serviceDate) {
+      if (!str) return null;
+      let seg = str;
+      if (str.includes('|')) {
+        const after = serviceDate ? dateShift(serviceDate, 1) : '';
+        const segs = str.split('|').map(s => s.trim());
+        seg = segs.find(s => (serviceDate && s.startsWith(serviceDate)) || (after && s.startsWith(after))) || '';
+      }
+      if (!seg) return null;
+      const labelPart = seg.includes(':') ? seg.slice(seg.indexOf(':') + 1) : seg;
+      const lower = labelPart.toLowerCase();
+      const o = {
+        g: lower.includes('green'),
+        b: lower.includes('garbage'),
+        r: lower.includes('recycl'),
+        y: lower.includes('yard'),
+        c: lower.includes('christmas') || lower.includes('tree'),
+      };
+      return ['g','b','r','y','c'].some(k => o[k]) ? o : null;
+    }
+
+    function renderBinChips(bins) {
+      if (!bins) return '';
+      const chips = BIN_CHIPS.filter(c => bins[c.key]).map(c =>
+        `<span class="bin-chip" style="background:${c.color}">${c.emoji} ${c.label}</span>`
+      ).join('');
+      return chips ? `<div class="stop-bin-chips">${chips}</div>` : '';
+    }
+
     // Render individual stop item
     function renderStopItem(stop, container) {
       const item = document.createElement('div');
@@ -1009,6 +1100,7 @@
             ${stop.completed ? '✓ Done' : '⏳ Pending'}
           </span>
         </div>
+        ${renderBinChips(stop.binsForThisStop)}
         <div class="stop-header-bottom">
           ${svThumbHTML}
           ${stop.imageUrl ? `<img src="${stop.imageUrl}" class="stop-thumbnail" alt="Bin photo" />` : '<div style="flex: 0 0 120px; height: 120px;"></div>'}
@@ -1488,6 +1580,19 @@
               lat = 43.6629; lng = -79.3957;
             }
             
+            // Which bins to physically roll out for this stop. Prefer the Order's own
+            // per-date copy, fall back to the Booking's. Try the JSON blob first, then
+            // the human-readable summary string.
+            const stopServiceDate = fields['Service Date'] || '';
+            let binsForThisStop = parseStopBins(
+              fields['Bins JSON'] || bookingFields['Bins JSON'] || '', stopServiceDate
+            );
+            if (!binsForThisStop) {
+              binsForThisStop = parseBinsToRollString(
+                fields['Bins To Roll'] || bookingFields['Bins To Roll'] || '', stopServiceDate
+              );
+            }
+
             // Convert service type to our internal type (rollin/rollout)
             const type = serviceType.toLowerCase().includes('roll in') ? 'rollin' : 'rollout';
             const completed = status.toLowerCase().includes('completed');
@@ -1511,7 +1616,8 @@
               binPovHeading: binPlacement?.pov?.heading ?? null,
               binPovPitch:   binPlacement?.pov?.pitch ?? null,
               binPovZoom:    binPlacement?.pov?.zoom ?? null,
-              hasBinPin:     !!binPlacement?.hasPin
+              hasBinPin:     !!binPlacement?.hasPin,
+              binsForThisStop: binsForThisStop  // {g,b,r,y,c} booleans, or null
             };
             
             stops.push(stop);

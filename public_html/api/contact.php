@@ -1,7 +1,7 @@
 <?php
 /**
  * GetMyBin — Contact Form
- * Forwards contact form submissions to support@agentrocketman.com
+ * Forwards contact form submissions to support@getmybin.com
  */
 require_once __DIR__ . '/config.php';
 corsHeaders();
@@ -77,7 +77,7 @@ $autoReplyHtml = <<<HTML
         <div><strong>Subject:</strong> $subject</div>
         <div style="margin-top:10px;"><strong>Your message:</strong><br>$message</div>
       </div>
-      <p style="color:#64748b;font-size:14px;line-height:1.6;">In the meantime, you can also reach us directly at <a href="mailto:support@agentrocketman.com" style="color:#0d9488;">support@agentrocketman.com</a>.</p>
+      <p style="color:#64748b;font-size:14px;line-height:1.6;">In the meantime, you can also reach us directly at <a href="mailto:support@getmybin.com" style="color:#0d9488;">support@getmybin.com</a>.</p>
     </div>
     <div style="background:#f9f9f9;padding:16px 20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
       <p style="margin:0;">&copy; 2026 GetMyBin &middot; Toronto Bin Collection Service</p>

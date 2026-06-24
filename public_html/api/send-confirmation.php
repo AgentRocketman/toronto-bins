@@ -34,7 +34,7 @@ if (!$toEmail) { echo json_encode(['success'=>false,'error'=>'No customer email'
 // SMTP config
 $SMTP_HOST = 'smtp.hostinger.com';
 $SMTP_PORT = 465;
-$SMTP_USER = 'support@agentrocketman.com';
+$SMTP_USER = 'support@getmybin.com';
 $SMTP_PASS = 'AgentEmail1!';
 
 // Format service type
@@ -121,7 +121,7 @@ $html .= <<<HTML
         <p style="color:#065f46;font-weight:600;margin:0;font-size:15px;">✅ You're all set!</p>
         <p style="color:#059669;margin:6px 0 0;font-size:13px;"><?php echo $isNightZone ? 'Your area has overnight collection. We\'ll roll your bins to the curb early evening on your collection day. No action needed from you.' : 'We\'ll roll your bins out the evening before collection and return them the same afternoon. No action needed from you.'; ?></p>
       </div>
-      <p style="color:#555;line-height:1.6;">If you have any questions, just reply to this email or contact us at <a href="mailto:support@agentrocketman.com" style="color:#3b82f6;">support@agentrocketman.com</a></p>
+      <p style="color:#555;line-height:1.6;">If you have any questions, just reply to this email or contact us at <a href="mailto:support@getmybin.com" style="color:#3b82f6;">support@getmybin.com</a></p>
     </div>
     <div style="background:#f9f9f9;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
       <p style="margin:0;">© 2026 GetMyBin · Toronto Bin Collection Service</p>

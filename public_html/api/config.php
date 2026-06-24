@@ -51,9 +51,9 @@ define('ADMIN_PASSWORD', 'GetMyBinAdmin2026!');
 // ============================================================
 define('SMTP_HOST',     'smtp.hostinger.com');
 define('SMTP_PORT',     465);
-define('SMTP_USER',     'support@agentrocketman.com');
+define('SMTP_USER',     'support@getmybin.com');
 define('SMTP_PASS',     'AgentEmail1!');
-define('SUPPORT_EMAIL', 'support@agentrocketman.com');
+define('SUPPORT_EMAIL', 'support@getmybin.com');
 
 // ============================================================
 // CORS / SECURITY HEADERS

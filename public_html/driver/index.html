@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Portal - GetMyBin</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    // Check if logged in as employee, redirect to routing or login
+    const token = localStorage.getItem('getmybin_emp_token');
+    if (!token) {
+      window.location.href = '/employee-login.html';
+    } else {
+      window.location.href = '/service-routing.html';
+    }
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>

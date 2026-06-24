@@ -89,7 +89,7 @@
       <button class="btn btn-primary" onclick="goStep2()">Continue &rarr;</button>
     </div>
     <p style="text-align:center;font-size:.82rem;color:var(--slate-light);margin-top:1rem">
-      Need help? Email us at <a href="mailto:support@agentrocketman.com" style="color:var(#71b80c)">support@agentrocketman.com</a>
+      Need help? Email us at <a href="mailto:support@getmybin.com" style="color:var(#71b80c)">support@getmybin.com</a>
     </p>
   </div>
 
@@ -131,7 +131,7 @@
       <p>
         ✅ <strong>Your recurring rate of $5.95/week is locked in.</strong><br>
         Cancel now and you lose it — standard rate applies if you come back.<br><br>
-        📧 <strong>Have a concern?</strong> Reply to any of our emails or write to <a href="mailto:support@agentrocketman.com" style="color:#166534;font-weight:600;">support@agentrocketman.com</a> — we'll make it right.
+        📧 <strong>Have a concern?</strong> Reply to any of our emails or write to <a href="mailto:support@getmybin.com" style="color:#166534;font-weight:600;">support@getmybin.com</a> — we'll make it right.
       </p>
     </div>
 
@@ -278,7 +278,7 @@
       const data = await res.json();
 
       if (!data.success) {
-        err.textContent = data.error || 'Something went wrong. Please email support@agentrocketman.com directly.';
+        err.textContent = data.error || 'Something went wrong. Please email support@getmybin.com directly.';
         err.style.display = 'block';
         btn.disabled = false;
         btn.textContent = 'Yes, cancel my service';
@@ -298,7 +298,7 @@
       showStep('step-success');
 
     } catch (e) {
-      err.textContent = 'Network error. Please try again or email support@agentrocketman.com.';
+      err.textContent = 'Network error. Please try again or email support@getmybin.com.';
       err.style.display = 'block';
       btn.disabled = false;
       btn.textContent = 'Yes, cancel my service';

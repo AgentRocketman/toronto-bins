@@ -40,7 +40,7 @@ $BOOKINGS_TABLE    = 'tblKMhGnYjsH0z7Lj';
 // ── SMTP config ──────────────────────────────────────────────────────────────
 $SMTP_HOST = 'smtp.hostinger.com';
 $SMTP_PORT = 465;
-$SMTP_USER = 'support@agentrocketman.com';
+$SMTP_USER = 'support@getmybin.com';
 $SMTP_PASS = 'AgentEmail1!';
 
 // ── Look up customer by address in Airtable ──────────────────────────────────

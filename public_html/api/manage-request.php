@@ -111,7 +111,7 @@ $customerHtml = <<<HTML
         <strong>Booking ID:</strong> $bookingId<br>
         <strong>Request processed:</strong> $timestamp
       </div>
-      <p style="margin-top:24px;color:#64748b;font-size:14px;line-height:1.6;">Questions? Reply to this email or contact us at <a href="mailto:support@agentrocketman.com" style="color:#0d9488;">support@agentrocketman.com</a></p>
+      <p style="margin-top:24px;color:#64748b;font-size:14px;line-height:1.6;">Questions? Reply to this email or contact us at <a href="mailto:support@getmybin.com" style="color:#0d9488;">support@getmybin.com</a></p>
     </div>
     <div style="background:#f9f9f9;padding:16px 20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
       <p style="margin:0;">&copy; 2026 GetMyBin &middot; Toronto Bin Collection Service</p>
@@ -125,10 +125,10 @@ HTML;
 // SMTP helper
 $SMTP_HOST = 'smtp.hostinger.com';
 $SMTP_PORT = 465;
-$SMTP_USER = 'support@agentrocketman.com';
+$SMTP_USER = 'support@getmybin.com';
 $SMTP_PASS = 'AgentEmail1!';
-$FROM      = 'support@agentrocketman.com';
-$TO        = 'support@agentrocketman.com';
+$FROM      = 'support@getmybin.com';
+$TO        = 'support@getmybin.com';
 
 function sendEmail($host, $port, $user, $pass, $from, $to, $toName, $subject, $html) {
     $context = stream_context_create(['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]]);
@@ -157,7 +157,7 @@ function sendEmail($host, $port, $user, $pass, $from, $to, $toName, $subject, $h
 }
 
 // Send internal notification to support
-$sent = sendEmail($SMTP_HOST, $SMTP_PORT, $SMTP_USER, $SMTP_PASS, $FROM, 'support@agentrocketman.com', 'GetMyBin Support', $subject, $html);
+$sent = sendEmail($SMTP_HOST, $SMTP_PORT, $SMTP_USER, $SMTP_PASS, $FROM, 'support@getmybin.com', 'GetMyBin Support', $subject, $html);
 if (!$sent) {
     echo json_encode(['success' => false, 'error' => 'Mail server unavailable']);
     exit;

@@ -3,216 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GetMyBin Admin Login</title>
+  <title>Admin Login — GetMyBin</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #71b80c, #5a9409);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .login-container {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      padding: 40px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .login-header h1 {
-      font-size: 2rem;
-      color: #0f766e;
-      margin-bottom: 8px;
-    }
-
-    .login-header p {
-      color: #64748b;
-      font-size: 0.9rem;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #334155;
-      margin-bottom: 8px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      font-size: 1rem;
-      transition: border-color 0.2s;
-      font-family: inherit;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #71b80c;
-      box-shadow: 0 0 0 3px rgba(113, 184, 12, 0.1);
-    }
-
-    .login-button {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #71b80c, #5a9409);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      margin-top: 8px;
-    }
-
-    .login-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(113, 184, 12, 0.3);
-    }
-
-    .login-button:active {
-      transform: translateY(0);
-    }
-
-    .login-button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .error-message {
-      color: #dc2626;
-      font-size: 0.9rem;
-      margin-top: 12px;
-      padding: 10px;
-      background: #fee2e2;
-      border-radius: 6px;
-      display: none;
-    }
-
-    .error-message.show {
-      display: block;
-    }
-
-    .success-message {
-      color: #059669;
-      font-size: 0.9rem;
-      margin-top: 12px;
-      padding: 10px;
-      background: #d1fae5;
-      border-radius: 6px;
-      display: none;
-    }
-
-    .success-message.show {
-      display: block;
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--teal:#0d9488;--teal-dark:#0f766e;--teal-xlight:#f0fdf9;--slate:#334155;--slate-light:#64748b}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#0a5c56 0%,#0d9488 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+    .login-card{background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);padding:2.5rem 2rem;width:100%;max-width:420px}
+    .login-logo{text-align:center;margin-bottom:1.8rem}
+    .login-logo img{height:40px}
+    .login-title{font-size:1.3rem;font-weight:900;color:#0f172a;text-align:center;margin-bottom:.3rem}
+    .login-sub{font-size:.88rem;color:var(--slate-light);text-align:center;margin-bottom:1.8rem}
+    .field{margin-bottom:1rem}
+    .field label{display:block;font-size:.82rem;font-weight:700;color:var(--slate);margin-bottom:.35rem}
+    .field input{width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;color:#0f172a;transition:border .2s}
+    .field input:focus{outline:none;border-color:var(--teal)}
+    .btn{display:block;width:100%;padding:13px;border-radius:12px;font-size:1rem;font-weight:800;border:none;cursor:pointer;transition:all .15s;text-align:center;margin-top:1.2rem}
+    .btn-primary{background:var(--teal);color:#fff}
+    .btn-primary:hover{background:var(--teal-dark)}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed}
+    .error-msg{background:#fef2f2;border:1px solid #fca5a5;color:#dc2626;font-size:.85rem;padding:10px 14px;border-radius:8px;margin-top:.8rem;display:none}
+    .spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="login-header">
-      <h1>🚀 GetMyBin</h1>
-      <p>Admin Panel</p>
-    </div>
+<div class="login-card">
+  <div class="login-logo"><img src="/img/getmybin-icon.png" alt="GetMyBin"></div>
+  <div class="login-title">Admin Dashboard</div>
+  <div class="login-sub">Sign in to manage orders and analytics</div>
 
-    <form id="adminLoginForm">
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-      </div>
-
-      <button type="submit" class="login-button" id="loginBtn">Sign In</button>
-
-      <div class="error-message" id="errorMessage"></div>
-      <div class="success-message" id="successMessage"></div>
-    </form>
+  <div class="field">
+    <label>Email address</label>
+    <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
   </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+  </div>
+  <div class="error-msg" id="error-msg"></div>
+  <button class="btn btn-primary" id="login-btn" onclick="doLogin()">Sign In</button>
+</div>
 
-  <script>
-    const form = document.getElementById('adminLoginForm');
-    const loginBtn = document.getElementById('loginBtn');
-    const errorMsg = document.getElementById('errorMessage');
-    const successMsg = document.getElementById('successMessage');
+<script>
+  // Redirect if already logged in
+  const token = localStorage.getItem('adminToken');
+  if (token) {
+    window.location.href = '/admin-panel.html';
+  }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  async function doLogin() {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const err      = document.getElementById('error-msg');
+    const btn      = document.getElementById('login-btn');
+    err.style.display = 'none';
+    if (!email || !password) { err.textContent = 'Please enter your email and password.'; err.style.display = 'block'; return; }
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Signing in…';
+    try {
+      const res  = await fetch('/api/auth/login.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password}) });
+      const data = await res.json();
+      if (!data.success) { err.textContent = data.error || 'Login failed.'; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Sign In'; return; }
+      localStorage.setItem('adminToken', data.token);
+      localStorage.setItem('adminEmail', email);
+      window.location.href = '/admin-panel.html';
+    } catch(e) {
+      err.textContent = 'Network error. Please try again.'; err.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Sign In';
+    }
+  }
 
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-
-      errorMsg.classList.remove('show');
-      successMsg.classList.remove('show');
-
-      loginBtn.disabled = true;
-      loginBtn.textContent = 'Signing in...';
-
-      try {
-        const response = await fetch('/api/admin-auth/login.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Login failed');
-        }
-
-        successMsg.textContent = 'Login successful! Redirecting...';
-        successMsg.classList.add('show');
-
-        localStorage.setItem('adminToken', data.token);
-        localStorage.setItem('adminEmail', email);
-
-        setTimeout(() => {
-          window.location.href = '/admin-panel.html';
-        }, 1000);
-      } catch (err) {
-        console.error('Login error:', err);
-        errorMsg.textContent = err.message;
-        errorMsg.classList.add('show');
-        loginBtn.disabled = false;
-        loginBtn.textContent = 'Sign In';
-      }
-    });
-
-    // Check if already logged in
-    window.addEventListener('load', () => {
-      const token = localStorage.getItem('adminToken');
-      if (token) {
-        window.location.href = '/admin-panel.html';
-      }
-    });
-  </script>
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
 </body>
 </html>

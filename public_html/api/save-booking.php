@@ -77,6 +77,41 @@ if ($bp && is_array($bp)) {
     $fields['Has Bin Pin'] = !empty($bp['hasPin']);
 }
 
+// Which bins to physically roll out (schedule auto-detect + customer override).
+// Optional "rich" fields — if the columns don't exist yet the fallback below drops
+// them (they're intentionally NOT in the legacy whitelist) so the booking still saves.
+$binsByDate    = $body['binsByDate']    ?? null;
+$binsRecurring = $body['binsRecurring'] ?? null;
+
+function binsRollSummary($binsByDate, $binsRecurring) {
+    $L = ['g'=>'Green','b'=>'Garbage','r'=>'Recycling','y'=>'Yard','c'=>'Christmas Tree'];
+    $labels = function ($obj) use ($L) {
+        $out = [];
+        foreach (['g','b','r','y','c'] as $k) { if (!empty($obj[$k])) $out[] = $L[$k]; }
+        return $out;
+    };
+    if (is_array($binsRecurring)) {
+        $l = $labels($binsRecurring);
+        return $l ? implode(', ', $l) . ' (weekly)' : '';
+    }
+    if (is_array($binsByDate) && count($binsByDate)) {
+        $dates = array_keys($binsByDate);
+        sort($dates);
+        if (count($dates) === 1) return implode(', ', $labels($binsByDate[$dates[0]]));
+        $parts = [];
+        foreach ($dates as $d) { $parts[] = $d . ': ' . implode(', ', $labels($binsByDate[$d])); }
+        return implode(' | ', $parts);
+    }
+    return '';
+}
+
+$binsToRoll = binsRollSummary($binsByDate, $binsRecurring);
+if ($binsToRoll !== '') $fields['Bins To Roll'] = $binsToRoll;
+$binsJSON = is_array($binsRecurring)
+    ? json_encode($binsRecurring)
+    : ((is_array($binsByDate) && count($binsByDate)) ? json_encode($binsByDate) : '');
+if ($binsJSON !== '') $fields['Bins JSON'] = $binsJSON;
+
 function airtableCreate($baseId, $tableId, $token, $fields) {
     $url = "https://api.airtable.com/v0/$baseId/$tableId";
     $ch = curl_init($url);

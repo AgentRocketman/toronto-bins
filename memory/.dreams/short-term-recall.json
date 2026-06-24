@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-20T04:28:49.935Z",
+  "updatedAt": "2026-06-24T01:55:38.257Z",
   "entries": {
     "memory:memory/2026-06-13.md:34:69": {
       "key": "memory:memory/2026-06-13.md:34:69",
@@ -1072,18 +1072,20 @@
       "endLine": 31,
       "source": "memory",
       "snippet": "# 2026-06-20 - Bookings Tab & \"Both\" Orders Discussion ## Fixed: Bookings Tab Count Mismatch - **Issue:** Bookings chart showed count (e.g., 3) but table showed fewer records - **Root Cause:** Orders list filtered by Service Date only; didn't load orders from bookings created in date range but with service dates outside range - **Fix:** Modified `/api/get-orders-list.php` to include: - Orders with Service Date in range - AND orders from bookings created in range (regardless of service date) - **Result:** Chart count now matches table data ## Decision: Show ALL Bookings (Including Cancelled) - **Changed:** Bookings tab now includes ALL bookings regardless of status - **Previous:** Was e",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-20T04:28:49.935Z",
-      "lastRecalledAt": "2026-06-20T04:28:49.935Z",
+      "lastRecalledAt": "2026-06-24T01:55:38.257Z",
       "queryHashes": [
-        "6e40cb49d8e9"
+        "6e40cb49d8e9",
+        "8e606b98f773"
       ],
       "recallDays": [
-        "2026-06-20"
+        "2026-06-20",
+        "2026-06-24"
       ],
       "conceptTags": [
         "e.g",
@@ -1125,6 +1127,68 @@
         "0.75rem",
         "1.3rem",
         "reduces"
+      ]
+    },
+    "memory:memory/2026-06-18.md:1:38": {
+      "key": "memory:memory/2026-06-18.md:1:38",
+      "path": "memory/2026-06-18.md",
+      "startLine": 1,
+      "endLine": 38,
+      "source": "memory",
+      "snippet": "# Session Notes — 2026-06-18 ## Chat Analytics System — COMPLETE ✅ Built **comprehensive chat logging & analytics dashboard** for GetMyBin: ### **Backend Infrastructure** - `/api/config.php` — Centralized config (Airtable keys, OpenAI key, helpers) - `/api/log-chat.php` — Logs Q&A to Airtable ChatLogs table - `/api/summarize-chats.php` — Queries Airtable, summarizes via OpenAI server-side - `/api/chat.php` — **NEW** Handles chat messages securely (no exposed API key) ### **Frontend** - `/chat-logger.js` — Captures sessionId, timestamps, IP, browser, device - `/admin/chat_analytics.html` → **RENAMED TO** `/admin/chat_analytics.html` - Features: - Date range pickers (top) - Top 5 issue",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-24T01:55:38.257Z",
+      "lastRecalledAt": "2026-06-24T01:55:38.257Z",
+      "queryHashes": [
+        "8e606b98f773"
+      ],
+      "recallDays": [
+        "2026-06-24"
+      ],
+      "conceptTags": [
+        "openai",
+        "api/config.php",
+        "api/log-chat.php",
+        "api/summarize-chats.php",
+        "server-side",
+        "api/chat.php",
+        "chat-logger.js",
+        "admin/chat-analytics.html"
+      ]
+    },
+    "memory:memory/2026-06-19.md:96:127": {
+      "key": "memory:memory/2026-06-19.md:96:127",
+      "path": "memory/2026-06-19.md",
+      "startLine": 96,
+      "endLine": 127,
+      "source": "memory",
+      "snippet": "4. **Content area** — Full-height iframe below header that loads selected pages 5. **Active button styling** — White button with green text when selected ### Dashboard API (`/api/get-dashboard-data.php`): - Fetches all Bookings from Airtable - Returns `chartCompletedCounts` and `chartPendingCounts` arrays - Separates orders by status (Completed vs Pending) - Filters by date range (From/To) - Returns stats: totalOrders, completedOrders, pendingOrders, avgOrders ### Key Implementation Details: - **Auth flow:** Login → JWT token stored in localStorage → Token verified on page load - **Iframe loading:** Uses `frame.src` consistently (removed srcdoc to avoid iframe \"locking\") - **Dashboard data",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-24T01:55:38.257Z",
+      "lastRecalledAt": "2026-06-24T01:55:38.257Z",
+      "queryHashes": [
+        "8e606b98f773"
+      ],
+      "recallDays": [
+        "2026-06-24"
+      ],
+      "conceptTags": [
+        "full-height",
+        "api/get-dashboard-data.php",
+        "from/to",
+        "frame.src",
+        "content",
+        "area",
+        "full",
+        "height"
       ]
     }
   }

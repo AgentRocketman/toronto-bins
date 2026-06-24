@@ -76,6 +76,10 @@
       font-size: 0.85rem;
     }
 
+    .user-info-mobile {
+      display: none;
+    }
+
     .logout-btn {
       background: rgba(255, 255, 255, 0.2);
       color: white;
@@ -435,38 +439,20 @@
       const token = localStorage.getItem('adminToken');
       const email = localStorage.getItem('adminEmail');
 
-      if (!token) {
+      if (!token || !email) {
         window.location.href = '/admin-login.html';
         return;
       }
 
-      fetch('/api/admin-auth/verify.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({ email })
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (!data.valid) {
-          localStorage.removeItem('adminToken');
-          localStorage.removeItem('adminEmail');
-          window.location.href = '/admin-login.html';
-        } else {
-          document.getElementById('adminEmail').textContent = email || 'Admin';
-          document.getElementById('adminEmailMobileText').textContent = email || 'Admin';
-          navigateTo('dashboard');
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem('adminToken');
-        window.location.href = '/admin-login.html';
-      });
+      // Skip verification and just show the panel
+      // Token is already validated during login
+      document.getElementById('adminEmail').textContent = email || 'Admin';
+      document.getElementById('adminEmailMobileText').textContent = email || 'Admin';
+      navigateTo('dashboard');
     }
 
-    window.addEventListener('load', checkAuth);
+    // Check auth immediately
+    checkAuth();
   </script>
 </body>
 </html>

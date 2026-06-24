@@ -240,7 +240,7 @@ $customerHtml = <<<HTML
       <p style="color:#64748b;font-size:14px;line-height:1.7;margin-top:12px;">
         We're sorry to see you go. If you'd like to return in the future, you're always welcome — just book again at <a href="https://agentrocketman.com" style="color:#0d9488;">agentrocketman.com</a>.
       </p>
-      <p style="color:#64748b;font-size:14px;margin-top:20px;">Questions? Reply to this email or reach us at <a href="mailto:support@agentrocketman.com" style="color:#0d9488;">support@agentrocketman.com</a></p>
+      <p style="color:#64748b;font-size:14px;margin-top:20px;">Questions? Reply to this email or reach us at <a href="mailto:support@getmybin.com" style="color:#0d9488;">support@getmybin.com</a></p>
     </div>
     <div style="background:#f9f9f9;padding:16px 20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
       <p style="margin:0;">© 2026 GetMyBin · Toronto Bin Collection Service</p>

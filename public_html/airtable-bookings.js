@@ -73,6 +73,42 @@ async function saveBookingToAirtable(bookingData) {
     geoFields['Lng'] = addressLatLng.lng;
   }
 
+  // Which bins to physically roll out (Option 3: schedule auto-detect + customer
+  // override). Stored two ways: a driver-readable "Bins To Roll" summary string and
+  // a "Bins JSON" blob the driver dashboard parses precisely. Both are optional —
+  // the schema-tolerant retry below drops them if the columns don't exist yet.
+  const BIN_LABELS = { g:'Green', b:'Garbage', r:'Recycling', y:'Yard', c:'Christmas Tree' };
+  function binsToLabels(obj) {
+    return ['g','b','r','y','c'].filter(k => obj && obj[k]).map(k => BIN_LABELS[k]);
+  }
+  const binsByDate = bookingData.binsByDate || null;
+  const binsRecurring = bookingData.binsRecurring || null;
+
+  // Booking-level summary across all dates.
+  const bookingBinFields = {};
+  if (bookingData.frequency === 'recurring' && binsRecurring) {
+    const labels = binsToLabels(binsRecurring);
+    if (labels.length) bookingBinFields['Bins To Roll'] = labels.join(', ') + ' (weekly)';
+    bookingBinFields['Bins JSON'] = JSON.stringify(binsRecurring);
+  } else if (binsByDate && Object.keys(binsByDate).length) {
+    const dates = Object.keys(binsByDate).sort();
+    bookingBinFields['Bins To Roll'] = dates.length === 1
+      ? binsToLabels(binsByDate[dates[0]]).join(', ')
+      : dates.map(d => d + ': ' + binsToLabels(binsByDate[d]).join(', ')).join(' | ');
+    bookingBinFields['Bins JSON'] = JSON.stringify(binsByDate);
+  }
+
+  // Build the per-order bin fields for a single date's bin object (flat {g,b,r,y,c}).
+  // Each Order carries just its own date so the driver page needs no date matching.
+  function orderBinFields(obj, weekly) {
+    const out = {};
+    if (!obj) return out;
+    const labels = binsToLabels(obj);
+    if (labels.length) out['Bins To Roll'] = labels.join(', ') + (weekly ? ' (weekly)' : '');
+    out['Bins JSON'] = JSON.stringify(obj);
+    return out;
+  }
+
   // 1. Save Booking record
   const bookingRecord = {
     fields: Object.assign({
@@ -88,7 +124,7 @@ async function saveBookingToAirtable(bookingData) {
       'Stripe Customer ID': bookingData.stripeCustomerId || '',
       'Billing Type': bookingData.frequency === 'recurring' ? 'Recurring Subscription' : 'One-Time Charge',
       'Created At': todayISO
-    }, geoFields, binFields),
+    }, geoFields, binFields, bookingBinFields),
     typecast: true
   };
 
@@ -217,7 +253,7 @@ async function saveBookingToAirtable(bookingData) {
         // Night zone: Roll Out happens same evening as collection (not day before)
         const workDay = (job === 'Roll Out' && !isNightZone) ? dayOfWeekBefore(pickupDay) : pickupDay;
 
-        await saveOrder({
+        await saveOrder(Object.assign({
           'Order ID': bookingId + '-' + suffix,
           'Booking ID': bookingId,
           'Service Type': job,
@@ -225,7 +261,7 @@ async function saveBookingToAirtable(bookingData) {
           'Day of Week': workDay,
           'Status': 'Active',
           'Created At': todayISO
-        });
+        }, orderBinFields(binsRecurring, true)));
       }
 
     } else if (bookingData.selectedDates && bookingData.selectedDates.length > 0) {
@@ -237,7 +273,7 @@ async function saveBookingToAirtable(bookingData) {
           const workDate = (job === 'Roll Out' && !isNightZone) ? dayBefore(pickupDate) : pickupDate;
           const dateTag = workDate.replace(/-/g, '').slice(4); // MMDD
 
-          await saveOrder({
+          await saveOrder(Object.assign({
             'Order ID': bookingId + '-' + dateTag + suffix,
             'Booking ID': bookingId,
             'Service Date': workDate,
@@ -245,7 +281,7 @@ async function saveBookingToAirtable(bookingData) {
             'Frequency': 'Ad Hoc',
             'Status': 'Pending',
             'Created At': todayISO
-          });
+          }, orderBinFields(binsByDate ? binsByDate[pickupDate] : null, false)));
         }
       }
     }

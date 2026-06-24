@@ -24,11 +24,29 @@
 - **Details:** See PROJECT_LOG.md
 
 ### Infrastructure
-- **Domain:** agentrocketman.com (Hostinger Business)
-- **Email:** support@agentrocketman.com (AgentEmail1!)
-- **IMAP:** imap.hostinger.com:993 | SMTP: 465
 - **Order ID:** 1009510349 | Datacenter: Boston
-- **Status:** DNS live, website provisioning, email pending IMAP activation
+- **Status:** DNS live, websites deployed, email provisioning
+
+**Server Setup (2026-06-23):**
+- **DEVELOPMENT:** https://agentrocketman.com
+  - Root: `/home/u686706869/domains/agentrocketman.com/public_html`
+  - Email: support@agentrocketman.com (working)
+  - Purpose: Testing & development
+  - Password: AgentEmail1!
+
+- **PRODUCTION:** https://getmybin.com (LIVE 2026-06-23)
+  - Root: `/home/u686706869/domains/getmybin.com/public_html`
+  - Email: support@getmybin.com (IMAP ✅ | SMTP ❌ pending DNS)
+  - Password: MyPass2026!!!
+  - App password: d133-xzus-dhae-h2au
+  - IMAP working: 16 emails in inbox
+  - Status: Fully deployed, awaiting DNS propagation for email
+  - Nameservers: ns1-4.hostinger.com (updated 2026-06-23 20:31 UTC)
+
+**Deployment Workflow:**
+1. Make changes in `/data/.openclaw/workspace/public_html/`
+2. Test on agentrocketman.com (dev)
+3. Deploy to getmybin.com (production)
 
 ## Airtable Credentials
 - **Base ID:** apptYNRJTXwItvied
@@ -351,10 +369,11 @@
   - $1 promo details
   - HST tax info (13%)
   - Service area: **Toronto + districts (Old Toronto, North York, Scarborough, Etobicoke, East York, York) — NOT GTA (Mississauga, Brampton, etc.)**
-  - Contact support@agentrocketman.com
+  - Contact support@getmybin.com
+  - **Bin rollout timing (2026-06-23):** Evening before pickup → rolls bins to curb/street. Collection day afternoon → rolls bins back to property after city pickup.
 - **Tone:** Short, concise responses (1-3 sentences max)
-- **Status:** ✅ Live at https://agentrocketman.com (Opus-optimized, works great on mobile & desktop)
-- **Files:** `/getmybin-chat.js` (complete widget)
+- **Status:** ✅ Live at https://agentrocketman.com (Dev) & https://getmybin.com (Prod)
+- **Files:** `/getmybin-chat.js` (complete widget) — deployed to both dev & prod
 
 ## Chat Logging & Analytics System — COMPLETE ✅ (2026-06-18)
 - **Architecture:** All Q&As logged to Airtable, analyzed server-side
