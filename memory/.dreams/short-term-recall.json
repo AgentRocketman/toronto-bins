@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-24T01:55:38.257Z",
+  "updatedAt": "2026-06-24T04:25:43.415Z",
   "entries": {
     "memory:memory/2026-06-13.md:34:69": {
       "key": "memory:memory/2026-06-13.md:34:69",
@@ -461,22 +461,24 @@
       "endLine": 221,
       "source": "memory",
       "snippet": "- **SSH deployment:** Unavailable from this environment - **Hostinger API deployment:** ✅ SUCCESS via `hostinger-api__hosting_deployStaticWebsite` - File: `/tmp/service-routing.tar.gz` - Deployed to: agentrocketman.com - Status: Upload accepted, deploy queued ## Service Routing Feature Status - NOT WORKING YET ⚠️ - **Issue:** Deployed file shows \"Service routing initialized with 8 stops\" (hardcoded fallback) - **Root cause:** Subagent-generated HTML contains BOTH dynamic + hardcoded code; falls back to hardcoded when dynamic fails - **Evidence:** No orders actually loaded from Airtable on test - **Blocker:** Dynamic code has bugs; needs proper debugging ## What Works - ✅ Hostinger A",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-19T23:16:12.066Z",
+      "lastRecalledAt": "2026-06-24T04:25:43.415Z",
       "queryHashes": [
         "91f38a5d152b",
         "e2baa82997b8",
-        "64a871926ef7"
+        "64a871926ef7",
+        "9db0c1bddb44"
       ],
       "recallDays": [
         "2026-06-14",
         "2026-06-15",
-        "2026-06-19"
+        "2026-06-19",
+        "2026-06-24"
       ],
       "conceptTags": [
         "hostinger-api",
@@ -601,22 +603,24 @@
       "endLine": 77,
       "source": "memory",
       "snippet": "- **v34-v35:** Attempted stat filtering fixes (cache issues) - **v36:** ✅ Final resolution with cache-buster **Issues Resolved:** 3/3 1. ✅ Stats responsive grid (2 per row mobile) 2. ✅ Stats filtering (dynamic updates) 3. ✅ Browser cache (v36 with fresh reload) **Status:** ✅ PRODUCTION READY # 2026-06-14 Session Notes ## FTP Password Recovery + Deployment Attempt - **FTP password found:** FTPAgentPassword1! - **FTP deployment:** Failed (passive mode timeout during data transfer) - **SSH deployment:** Unavailable from this environment - **Hostinger API deployment:** ✅ SUCCESS via `hostinger-api__hosting_deployStaticWebsite` - File: `/tmp/service-routing.tar.gz` - Deployed to: agentroc",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-06-14T21:15:32.197Z",
-      "lastRecalledAt": "2026-06-19T23:16:12.066Z",
+      "lastRecalledAt": "2026-06-24T04:25:43.415Z",
       "queryHashes": [
         "91f38a5d152b",
         "e2baa82997b8",
-        "64a871926ef7"
+        "64a871926ef7",
+        "9db0c1bddb44"
       ],
       "recallDays": [
         "2026-06-14",
         "2026-06-15",
-        "2026-06-19"
+        "2026-06-19",
+        "2026-06-24"
       ],
       "conceptTags": [
         "v34-v35",
@@ -1189,6 +1193,68 @@
         "area",
         "full",
         "height"
+      ]
+    },
+    "memory:memory/2026-06-14.md:152:197": {
+      "key": "memory:memory/2026-06-14.md:152:197",
+      "path": "memory/2026-06-14.md",
+      "startLine": 152,
+      "endLine": 197,
+      "source": "memory",
+      "snippet": "✅ **Worker Filter:** \"Driver\" selected - Completed: 56 → 8 ✅ - Pending: 44 → 1 ✅ - With Photos: 64 → 0 ✅ - Workers: 3 → 1 ✅ **All Filter Types Now Working:** - ✅ Status (Completed/Pending) → Stats update - ✅ Worker (Adam/Driver/John Smith) → Stats update - ✅ Service Type (Roll In/Roll Out) → Stats update - ✅ Date Range (From/To) → Stats update - ✅ Address Search → Stats update - ✅ Records Per Page → Stats update **Live URL:** https://agentrocketman.com/admin.html?cachebust=36 **Status:** ✅ FULLY RESOLVED - All filters now update stats dynamically --- ## Session Summary (v22–v36) **Timeline:** - **v22-v23:** Initial filters + responsive design - **v28-v33:** Pagination fixes + timestamp",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-24T04:25:43.415Z",
+      "lastRecalledAt": "2026-06-24T04:25:43.415Z",
+      "queryHashes": [
+        "9db0c1bddb44"
+      ],
+      "recallDays": [
+        "2026-06-24"
+      ],
+      "conceptTags": [
+        "completed/pending",
+        "adam/driver/john",
+        "in/roll",
+        "from/to",
+        "agentrocketman.com/admin.html",
+        "v22-v23",
+        "v28-v33",
+        "worker"
+      ]
+    },
+    "memory:memory/2026-06-14.md:298:324": {
+      "key": "memory:memory/2026-06-14.md:298:324",
+      "path": "memory/2026-06-14.md",
+      "startLine": 298,
+      "endLine": 324,
+      "source": "memory",
+      "snippet": "1. **Badge placement clarification needed** — User wants position adjusted but current CSS positioning wasn't changed in recent work; need specific feedback on: - Should badge be positioned OUTSIDE button (to the right) vs current position? - Different vertical alignment needed? - Size adjustment required? - Example reference from previous version? 2. **Service Routing** — Still pending Airtable dynamic loading (date picker integration) 3. **Version Archive System** — VERSION_HISTORY.md established for quick rollbacks without rebuilding ### Key Files & Credentials - **Live homepage:** https://agentrocketman.com/index.html (curbin-v2-final.html) - **Live service routing:** http",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-24T04:25:43.415Z",
+      "lastRecalledAt": "2026-06-24T04:25:43.415Z",
+      "queryHashes": [
+        "9db0c1bddb44"
+      ],
+      "recallDays": [
+        "2026-06-24"
+      ],
+      "conceptTags": [
+        "version-history.md",
+        "agentrocketman.com/index.html",
+        "curbin-v2-final.html",
+        "badge",
+        "placement",
+        "clarification",
+        "needed",
+        "wants"
       ]
     }
   }
