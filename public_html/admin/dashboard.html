@@ -111,8 +111,16 @@
 
     <div class="stats-grid">
       <div class="stat-card">
+        <div class="stat-label">Bookings</div>
+        <div class="stat-value" id="totalBookings">-</div>
+      </div>
+      <div class="stat-card">
         <div class="stat-label">Total Orders</div>
         <div class="stat-value" id="totalOrders">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Revenue</div>
+        <div class="stat-value" id="totalRevenue">-</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Avg Per Day</div>
@@ -322,6 +330,14 @@
         document.getElementById('completedOrders').textContent = data.completedOrders;
         document.getElementById('pendingOrders').textContent = data.pendingOrders;
         document.getElementById('cancelledOrders').textContent = data.cancelledOrders;
+        
+        // Calculate total revenue
+        const totalRevenue = (data.revenueByDateCounts || []).reduce((sum, amount) => sum + amount, 0);
+        document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+        
+        // Calculate total bookings
+        const totalBookings = (data.bookingCounts || []).reduce((sum, count) => sum + count, 0);
+        document.getElementById('totalBookings').textContent = totalBookings;
 
         // Store both orders and workload data
         chartData.orders = {

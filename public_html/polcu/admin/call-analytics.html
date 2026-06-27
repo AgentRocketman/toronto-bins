@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call Analytics — POLCU</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #213c92;
+      --navy-dark: #182b68;
+      --slate: #334155;
+      --slate-light: #64748b;
+      --slate-xlight: #f1f5f9;
+      --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--slate-xlight); color: var(--slate); line-height: 1.6; padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { font-size: 2rem; font-weight: 900; margin-bottom: 10px; color: #0f172a; }
+    .subtitle { color: var(--slate-light); margin-bottom: 30px; }
+
+    .controls-row {
+      display: flex; gap: 16px; align-items: flex-end;
+      background: #fff; padding: 20px; border-radius: 14px;
+      box-shadow: var(--shadow-md); margin-bottom: 30px; flex-wrap: wrap;
+    }
+    .date-input-group { display: flex; flex-direction: column; gap: 6px; }
+    .date-input-group label { font-weight: 600; font-size: 0.9rem; color: var(--slate); }
+    .date-input-group input {
+      padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px;
+      font-size: 1rem; font-family: inherit;
+    }
+    .date-input-group input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(33,60,146,.1); }
+    .btn {
+      background: var(--navy); color: #fff; border: none;
+      padding: 10px 24px; border-radius: 8px; font-weight: 700;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn:hover { background: var(--navy-dark); }
+    .btn:disabled { background: #cbd5e0; cursor: not-allowed; }
+
+    .loading { text-align: center; padding: 40px; color: var(--slate-light); }
+    .spinner {
+      display: inline-block; width: 32px; height: 32px;
+      border: 3px solid rgba(33,60,146,.2); border-top-color: var(--navy);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px; margin-bottom: 30px;
+    }
+    .stat-box {
+      background: #fff; padding: 16px; border-radius: 10px;
+      box-shadow: var(--shadow-md); text-align: center;
+    }
+    .stat-value { font-size: 2rem; font-weight: 900; color: var(--navy); margin-bottom: 4px; }
+    .stat-label {
+      font-size: 0.85rem; color: var(--slate-light); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    .calls-container {
+      background: #fff; border-radius: 14px;
+      box-shadow: var(--shadow-md); overflow: hidden;
+    }
+    .calls-header {
+      padding: 20px; background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+      color: #fff; font-weight: 700; font-size: 1.1rem;
+    }
+    .calls-list { display: flex; flex-direction: column; max-height: 900px; overflow-y: auto; }
+
+    .call-item { border-bottom: 1px solid #e2e8f0; transition: background 0.15s; }
+    .call-item:last-child { border-bottom: none; }
+    .call-item:hover { background: #f8fafc; }
+
+    .call-header {
+      padding: 14px 18px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .call-info { flex: 1; min-width: 0; }
+    .call-time { font-size: 0.85rem; color: var(--slate-light); margin-bottom: 2px; }
+    .call-summary { font-weight: 600; color: var(--slate); line-height: 1.4; }
+    .call-meta-row { display: flex; gap: 12px; margin-top: 4px; }
+    .call-badge {
+      font-size: 0.75rem; padding: 2px 8px; border-radius: 10px;
+      font-weight: 600; display: inline-block;
+    }
+    .call-badge.duration { background: #e8f0f8; color: var(--navy); }
+    .call-badge.type { background: #f0fdf4; color: #166534; }
+    .call-chevron {
+      color: var(--navy); font-weight: 700; flex-shrink: 0;
+      transition: transform 0.2s; font-size: 1.2rem;
+    }
+    .call-item.open .call-chevron { transform: rotate(180deg); }
+
+    .call-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: #f8fafc; }
+    .call-item.open .call-detail { max-height: 600px; overflow-y: auto; }
+    .call-detail-inner { padding: 16px 18px; border-top: 1px solid #e2e8f0; }
+
+    .transcript { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .transcript-msg { display: flex; padding: 10px; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; }
+    .transcript-msg.user-msg { background: #f3f4f6; justify-content: flex-end; }
+    .transcript-msg.bot-msg { background: #e8f0f8; justify-content: flex-start; }
+    .transcript-msg-text { max-width: 85%; word-wrap: break-word; }
+    .transcript-role {
+      font-weight: 600; color: var(--slate-light); font-size: 0.8rem; margin-bottom: 4px;
+    }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--slate-light); }
+    .empty-state-icon { font-size: 3rem; margin-bottom: 16px; }
+    .error-box {
+      background: #fef2f2; border: 1px solid #fca5a5;
+      padding: 16px; border-radius: 8px; color: #dc2626; margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📞 POLCU Call Analytics</h1>
+    <p class="subtitle">Voice assistant call transcripts and insights</p>
+
+    <div class="controls-row">
+      <div class="date-input-group">
+        <label for="fromDate">From Date</label>
+        <input type="date" id="fromDate">
+      </div>
+      <div class="date-input-group">
+        <label for="toDate">To Date</label>
+        <input type="date" id="toDate">
+      </div>
+      <button class="btn" id="loadBtn">Load Calls</button>
+    </div>
+
+    <div id="errorBox" class="error-box" style="display: none;"></div>
+
+    <div id="loadingState" style="display: none;">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 12px;">Fetching call data...</p>
+      </div>
+    </div>
+
+    <div id="contentArea" style="display: none;">
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-value" id="callCount">0</div>
+          <div class="stat-label">Total Calls</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="totalMinutes">0</div>
+          <div class="stat-label">Total Minutes</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="avgDuration">0</div>
+          <div class="stat-label">Avg Duration (s)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="answeredCalls">0</div>
+          <div class="stat-label">Answered</div>
+        </div>
+      </div>
+
+      <div class="calls-container">
+        <div class="calls-header">📋 Call Transcripts</div>
+        <div class="calls-list" id="callsList"></div>
+      </div>
+    </div>
+
+    <div id="emptyState" style="display: none;">
+      <div class="empty-state">
+        <div class="empty-state-icon">📞</div>
+        <h2 style="font-size: 1.2rem; margin-bottom: 8px;">No calls found</h2>
+        <p>Select a date range and click "Load Calls" to see call transcripts.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const VAPI_KEY = atob('NzE0MzIyN2UtYTU2My00ZjYzLTlkMmItMTViZThjMWQyMzUy');
+    const ASSISTANT_ID = 'f0f0e8ce-87c7-48a8-b38f-6cdead2608d4';
+
+    function initDates() {
+      const today = new Date();
+      const thirtyDaysAgo = new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000); // Vapi free plan: 14 days retention
+      document.getElementById('toDate').valueAsDate = today;
+      document.getElementById('fromDate').valueAsDate = thirtyDaysAgo;
+    }
+    initDates();
+
+    document.getElementById('loadBtn').addEventListener('click', async function () {
+      const from = document.getElementById('fromDate').value;
+      const to = document.getElementById('toDate').value;
+      if (!from || !to) { showError('Please select both dates.'); return; }
+      await loadCalls(from, to);
+    });
+
+    async function loadCalls(fromDate, toDate) {
+      showLoading(true); hideError();
+      try {
+        // Vapi free plan: 14 days retention — clamp start date
+        const minDate = new Date(Date.now() - 13 * 24 * 60 * 60 * 1000);
+        let fromDt = new Date(fromDate + 'T00:00:00Z');
+        if (fromDt < minDate) fromDt = minDate;
+        const fromISO = fromDt.toISOString();
+        const toISO = new Date(toDate + 'T23:59:59Z').toISOString();
+
+        const res = await fetch(
+          `https://api.vapi.ai/call?assistantId=${ASSISTANT_ID}&limit=100&createdAtGe=${fromISO}&createdAtLe=${toISO}`,
+          { headers: { 'Authorization': `Bearer ${VAPI_KEY}` } }
+        );
+        if (!res.ok) throw new Error('Failed to fetch calls: ' + res.status);
+        const calls = await res.json();
+
+        // Filter to only ended calls with transcripts
+        const validCalls = calls.filter(c => c.status === 'ended' && c.transcript && c.transcript.length > 10);
+        renderCalls(validCalls);
+      } catch (err) {
+        showError('Error: ' + err.message);
+        showLoading(false);
+      }
+    }
+
+    function renderCalls(calls) {
+      showLoading(false);
+
+      if (calls.length === 0) {
+        document.getElementById('contentArea').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+        return;
+      }
+
+      // Stats
+      let totalDuration = 0;
+      let answered = 0;
+      calls.forEach(c => {
+        if (c.startedAt && c.endedAt) {
+          const dur = (new Date(c.endedAt) - new Date(c.startedAt)) / 1000;
+          totalDuration += dur;
+          if (dur > 15) answered++;
+        }
+      });
+
+      document.getElementById('callCount').textContent = calls.length;
+      document.getElementById('totalMinutes').textContent = Math.round(totalDuration / 60);
+      document.getElementById('avgDuration').textContent = Math.round(totalDuration / calls.length);
+      document.getElementById('answeredCalls').textContent = answered;
+
+      // Sort by date (newest first)
+      calls.sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt));
+
+      const callsList = document.getElementById('callsList');
+      callsList.innerHTML = '';
+
+      calls.forEach(call => {
+        const duration = call.startedAt && call.endedAt
+          ? Math.round((new Date(call.endedAt) - new Date(call.startedAt)) / 1000)
+          : 0;
+        const durationStr = duration >= 60
+          ? Math.floor(duration / 60) + 'm ' + (duration % 60) + 's'
+          : duration + 's';
+
+        // Generate summary from first user message
+        const messages = call.messages || [];
+        const firstUserMsg = messages.find(m => m.role === 'user');
+        const firstUserText = (firstUserMsg && (firstUserMsg.content || firstUserMsg.message)) || '';
+        const transcriptText = call.transcript || '';
+        const summarySource = firstUserText || transcriptText;
+        const summary = summarySource.substring(0, 120) + (summarySource.length > 120 ? '...' : '');
+
+        const callType = call.type === 'inboundPhoneCall' ? '📞 Phone' : '🌐 Web';
+
+        const callEl = document.createElement('div');
+        callEl.className = 'call-item';
+
+        const header = document.createElement('div');
+        header.className = 'call-header';
+        header.innerHTML = `
+          <div class="call-info">
+            <div class="call-time">${new Date(call.startedAt).toLocaleString()}</div>
+            <div class="call-summary">${escapeHtml(summary)}</div>
+            <div class="call-meta-row">
+              <span class="call-badge duration">⏱ ${durationStr}</span>
+              <span class="call-badge type">${callType}</span>
+            </div>
+          </div>
+          <div class="call-chevron">▼</div>
+        `;
+
+        const detail = document.createElement('div');
+        detail.className = 'call-detail';
+
+        // Build transcript HTML
+        let transcriptHTML = '<div class="transcript">';
+        const chatMessages = messages.filter(m => m.role === 'user' || m.role === 'bot' || m.role === 'assistant');
+        if (chatMessages.length > 0) {
+          chatMessages.forEach(msg => {
+            const isUser = msg.role === 'user';
+            const cssClass = isUser ? 'user-msg' : 'bot-msg';
+            const label = isUser ? '👤 Caller' : '🤖 Anna';
+            const content = msg.content || msg.message || '';
+            transcriptHTML += `
+              <div class="transcript-msg ${cssClass}">
+                <div>
+                  <div class="transcript-role">${label}</div>
+                  <div class="transcript-msg-text">${escapeHtml(content)}</div>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          // Fallback to raw transcript
+          transcriptHTML += `<div style="white-space: pre-wrap; font-size: 0.9rem; color: var(--slate);">${escapeHtml(call.transcript)}</div>`;
+        }
+        transcriptHTML += '</div>';
+
+        detail.innerHTML = `
+          <div class="call-detail-inner">
+            <strong style="font-size: 0.85rem;">Full Transcript:</strong>
+            ${transcriptHTML}
+          </div>
+        `;
+
+        callEl.appendChild(header);
+        callEl.appendChild(detail);
+
+        header.addEventListener('click', () => {
+          if (!callEl.classList.contains('open')) {
+            document.querySelectorAll('.call-item.open').forEach(item => {
+              if (item !== callEl) item.classList.remove('open');
+            });
+          }
+          callEl.classList.toggle('open');
+        });
+
+        callsList.appendChild(callEl);
+      });
+
+      document.getElementById('contentArea').style.display = 'block';
+      document.getElementById('emptyState').style.display = 'none';
+    }
+
+    function showLoading(show) { document.getElementById('loadingState').style.display = show ? 'block' : 'none'; }
+    function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.style.display = 'block'; }
+    function hideError() { document.getElementById('errorBox').style.display = 'none'; }
+    function escapeHtml(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+  </script>
+</body>
+</html>

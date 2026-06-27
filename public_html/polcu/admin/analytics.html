@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Analytics — POLCU</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #213c92;
+      --navy-dark: #182b68;
+      --navy-light: #3a5cb8;
+      --slate: #334155;
+      --slate-light: #64748b;
+      --slate-xlight: #f1f5f9;
+      --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--slate-xlight);
+      color: var(--slate);
+      line-height: 1.6;
+      padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { font-size: 2rem; font-weight: 900; margin-bottom: 10px; color: #0f172a; }
+    .subtitle { color: var(--slate-light); margin-bottom: 30px; }
+
+    .date-picker-row {
+      display: flex; gap: 16px; align-items: flex-end;
+      background: #fff; padding: 20px; border-radius: 14px;
+      box-shadow: var(--shadow-md); margin-bottom: 30px; flex-wrap: wrap;
+    }
+    .date-input-group { display: flex; flex-direction: column; gap: 6px; }
+    .date-input-group label { font-weight: 600; font-size: 0.9rem; color: var(--slate); }
+    .date-input-group input {
+      padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px;
+      font-size: 1rem; font-family: inherit;
+    }
+    .date-input-group input:focus {
+      outline: none; border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(27, 58, 92, 0.1);
+    }
+    .btn-refresh {
+      background: var(--navy); color: #fff; border: none;
+      padding: 10px 24px; border-radius: 8px; font-weight: 700;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-refresh:hover { background: var(--navy-dark); }
+    .btn-refresh:disabled { background: #cbd5e0; cursor: not-allowed; }
+
+    .loading { text-align: center; padding: 40px; color: var(--slate-light); }
+    .spinner {
+      display: inline-block; width: 32px; height: 32px;
+      border: 3px solid rgba(27, 58, 92, 0.2); border-top-color: var(--navy);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .summary-card {
+      background: #fff; padding: 24px; border-radius: 14px;
+      box-shadow: var(--shadow-md); margin-bottom: 30px;
+    }
+    .summary-card h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; color: var(--navy); }
+    .summary-text { color: var(--slate); line-height: 1.8; margin-bottom: 16px; }
+    .issues-list {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px; margin-top: 16px;
+    }
+    .issue-item {
+      background: linear-gradient(135deg, #e8f0f8, #f0f5fa);
+      border-left: 4px solid var(--navy); padding: 12px 16px;
+      border-radius: 6px; font-size: 0.95rem; color: var(--slate); font-weight: 500;
+    }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px; margin-bottom: 30px;
+    }
+    .stat-box {
+      background: #fff; padding: 16px; border-radius: 10px;
+      box-shadow: var(--shadow-md); text-align: center;
+    }
+    .stat-value { font-size: 2rem; font-weight: 900; color: var(--navy); margin-bottom: 4px; }
+    .stat-label {
+      font-size: 0.85rem; color: var(--slate-light); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    .sessions-container {
+      background: #fff; border-radius: 14px;
+      box-shadow: var(--shadow-md); overflow: hidden;
+    }
+    .sessions-header {
+      padding: 20px; background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+      color: #fff; font-weight: 700; font-size: 1.1rem;
+    }
+    .sessions-list { display: flex; flex-direction: column; max-height: 800px; overflow-y: auto; }
+    .session-item { border-bottom: 1px solid #e2e8f0; transition: background 0.15s; }
+    .session-item:last-child { border-bottom: none; }
+    .session-item:hover { background: #f8fafc; }
+    .session-header {
+      padding: 14px 18px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .session-header:active { background: #f1f5f9; }
+    .session-info { flex: 1; min-width: 0; }
+    .session-time { font-size: 0.85rem; color: var(--slate-light); margin-bottom: 2px; }
+    .session-summary {
+      font-weight: 600; color: var(--slate);
+      word-wrap: break-word; white-space: normal; line-height: 1.4;
+    }
+    .session-count { font-size: 0.8rem; color: #94a3b8; }
+    .session-chevron {
+      color: var(--navy); font-weight: 700; flex-shrink: 0;
+      transition: transform 0.2s; font-size: 1.2rem;
+    }
+    .session-item.open .session-chevron { transform: rotate(180deg); }
+    .session-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: #f8fafc; }
+    .session-item.open .session-detail { max-height: 400px; overflow-y: auto; }
+    .session-detail-inner { padding: 16px 18px; border-top: 1px solid #e2e8f0; }
+
+    .chat-messages { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .chat-msg { display: flex; padding: 10px; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; }
+    .chat-msg.question { background: #f3f4f6; justify-content: flex-end; }
+    .chat-msg.answer { background: #e8f0f8; justify-content: flex-start; }
+    .chat-msg-text { max-width: 80%; word-wrap: break-word; }
+    .chat-msg-time { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--slate-light); }
+    .empty-state-icon { font-size: 3rem; margin-bottom: 16px; }
+    .error-box {
+      background: #fef2f2; border: 1px solid #fca5a5;
+      padding: 16px; border-radius: 8px; color: #dc2626; margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🏦 POLCU Chat Analytics</h1>
+    <p class="subtitle">Track customer support conversations and identify top issues</p>
+
+    <div class="date-picker-row">
+      <div class="date-input-group">
+        <label for="fromDate">From Date</label>
+        <input type="date" id="fromDate">
+      </div>
+      <div class="date-input-group">
+        <label for="toDate">To Date</label>
+        <input type="date" id="toDate">
+      </div>
+      <button class="btn-refresh" id="loadBtn">Load Analytics</button>
+    </div>
+
+    <div id="errorBox" class="error-box" style="display: none;"></div>
+
+    <div id="loadingState" style="display: none;">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 12px;">Analyzing chats...</p>
+      </div>
+    </div>
+
+    <div id="contentArea" style="display: none;">
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-value" id="sessionCount">0</div>
+          <div class="stat-label">Sessions</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="messageCount">0</div>
+          <div class="stat-label">Messages</div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <h2>📊 Top Issues Summary</h2>
+        <div class="summary-text" id="summaryText">Loading...</div>
+        <div class="issues-list" id="issuesList"></div>
+      </div>
+
+      <div class="sessions-container">
+        <div class="sessions-header">📋 Sessions</div>
+        <div class="sessions-list" id="sessionsList"></div>
+      </div>
+    </div>
+
+    <div id="emptyState" style="display: none;">
+      <div class="empty-state">
+        <div class="empty-state-icon">🔍</div>
+        <h2 style="font-size: 1.2rem; margin-bottom: 8px;">No data yet</h2>
+        <p>Select a date range and click "Load Analytics" to see chat insights.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function initDates() {
+      const today = new Date();
+      const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      document.getElementById('toDate').valueAsDate = today;
+      document.getElementById('fromDate').valueAsDate = sevenDaysAgo;
+    }
+    initDates();
+
+    document.getElementById('loadBtn').addEventListener('click', async function () {
+      const fromDate = document.getElementById('fromDate').value;
+      const toDate = document.getElementById('toDate').value;
+      if (!fromDate || !toDate) { showError('Please select both dates.'); return; }
+      if (fromDate > toDate) { showError('Start date must be before end date.'); return; }
+      await loadAnalytics(fromDate, toDate);
+    });
+
+    async function loadAnalytics(fromDate, toDate) {
+      showLoading(true);
+      hideError();
+      try {
+        const response = await fetch(`/polcu/api/summarize-chats.php?fromDate=${fromDate}&toDate=${toDate}`);
+        const data = await response.json();
+        if (!response.ok || data.error) throw new Error(data.error || 'Failed to load analytics');
+        renderAnalytics(data);
+      } catch (err) {
+        showError('Error: ' + err.message);
+        showLoading(false);
+      }
+    }
+
+    function renderAnalytics(data) {
+      showLoading(false);
+      if (data.sessionCount === 0) {
+        document.getElementById('contentArea').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+        return;
+      }
+      document.getElementById('sessionCount').textContent = data.sessionCount;
+      document.getElementById('messageCount').textContent = data.messageCount;
+
+      let summaryText = data.summary || 'No summary available.';
+      summaryText = summaryText.replace(/```[a-z]*\s*\n?([\s\S]*?)```/g, '$1').replace(/^\n+|\n+$/g, '').trim();
+      if (summaryText.startsWith('[')) {
+        try {
+          const issues = JSON.parse(summaryText);
+          summaryText = 'Top customer concerns include: ' + issues.slice(0, 3).join(', ') + '.';
+        } catch (e) { summaryText = 'Top issues detected. See list below.'; }
+      }
+      document.getElementById('summaryText').textContent = summaryText;
+
+      const issuesList = document.getElementById('issuesList');
+      issuesList.innerHTML = '';
+      if (data.topIssues && data.topIssues.length > 0) {
+        data.topIssues.forEach((issue, idx) => {
+          const item = document.createElement('div');
+          item.className = 'issue-item';
+          item.textContent = (idx + 1) + '. ' + issue;
+          issuesList.appendChild(item);
+        });
+      }
+
+      const sessionsList = document.getElementById('sessionsList');
+      sessionsList.innerHTML = '';
+      if (data.sessions && data.sessions.length > 0) {
+        const sortedSessions = [...data.sessions].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        sortedSessions.forEach(session => {
+          const sessionEl = document.createElement('div');
+          sessionEl.className = 'session-item';
+
+          const header = document.createElement('div');
+          header.className = 'session-header';
+          header.innerHTML = `
+            <div class="session-info">
+              <div class="session-time">${new Date(session.timestamp).toLocaleString()}</div>
+              <div class="session-summary">${session.summary || session.preview || 'No title'}</div>
+              <div class="session-count">${session.messageCount} messages</div>
+            </div>
+            <div class="session-chevron">▼</div>
+          `;
+
+          const detail = document.createElement('div');
+          detail.className = 'session-detail';
+          let chatHTML = '<div class="chat-messages">';
+          if (session.messages && session.messages.length > 0) {
+            session.messages.forEach(msg => {
+              const msgClass = msg.type === 'question' ? 'question' : 'answer';
+              const msgLabel = msg.type === 'question' ? '👤 Customer' : '🤖 Assistant';
+              const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+              chatHTML += `
+                <div class="chat-msg ${msgClass}">
+                  <div>
+                    <div style="font-weight: 600; color: var(--slate-light); font-size: 0.8rem; margin-bottom: 4px;">${msgLabel}</div>
+                    <div class="chat-msg-text">${escapeHtml(msg.content)}</div>
+                    <div class="chat-msg-time">${time}</div>
+                  </div>
+                </div>
+              `;
+            });
+          }
+          chatHTML += '</div>';
+          detail.innerHTML = `<div class="session-detail-inner"><div style="border-top: 1px solid #e2e8f0; padding-top: 12px;"><strong style="font-size: 0.85rem;">Chat History / ${session.messageCount} messages:</strong>${chatHTML}</div></div>`;
+
+          sessionEl.appendChild(header);
+          sessionEl.appendChild(detail);
+          header.addEventListener('click', () => {
+            if (!sessionEl.classList.contains('open')) {
+              document.querySelectorAll('.session-item.open').forEach(item => { if (item !== sessionEl) item.classList.remove('open'); });
+            }
+            sessionEl.classList.toggle('open');
+          });
+          sessionsList.appendChild(sessionEl);
+        });
+      }
+      document.getElementById('contentArea').style.display = 'block';
+      document.getElementById('emptyState').style.display = 'none';
+    }
+
+    function showLoading(show) { document.getElementById('loadingState').style.display = show ? 'block' : 'none'; }
+    function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = msg; b.style.display = 'block'; }
+    function hideError() { document.getElementById('errorBox').style.display = 'none'; }
+    function escapeHtml(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+  </script>
+</body>
+</html>

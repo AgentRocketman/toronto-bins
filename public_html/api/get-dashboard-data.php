@@ -66,56 +66,8 @@ if (!$data) {
 
 $records = $data['records'] ?? [];
 
-// Process records - categorize by order status based on Service Date
-$ordersByDateAndStatus = [];
-$totalOrders = 0;
-$pendingOrders = 0;
-$completedOrders = 0;
-$cancelledOrders = 0;
-
-foreach ($records as $record) {
-  $fields = $record['fields'] ?? [];
-  $serviceDateStr = $fields['Service Date'] ?? null;
-  $status = $fields['Status'] ?? null;
-
-  if ($serviceDateStr) {
-    // Parse the service date
-    $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
-    
-    // Check if date is within range
-    if ($serviceDateTimestamp >= $fromTimestamp && $serviceDateTimestamp <= $toTimestamp) {
-      $dateKey = date('Y-m-d', $serviceDateTimestamp);
-      
-      // Initialize if not exists
-      if (!isset($ordersByDateAndStatus[$dateKey])) {
-        $ordersByDateAndStatus[$dateKey] = [
-          'pending' => 0,
-          'completed' => 0,
-          'cancelled' => 0
-        ];
-      }
-      
-      $totalOrders++;
-      
-      // Determine order category: Completed, Cancelled, or Pending
-      if ($status === 'Completed') {
-        $ordersByDateAndStatus[$dateKey]['completed']++;
-        $completedOrders++;
-      } else if ($status === 'Cancelled' || $status === 'Refunded') {
-        // Count cancelled/refunded orders
-        $ordersByDateAndStatus[$dateKey]['cancelled']++;
-        $cancelledOrders++;
-      } else {
-        // Everything else = Pending
-        $ordersByDateAndStatus[$dateKey]['pending']++;
-        $pendingOrders++;
-      }
-    }
-  }
-}
-
-// Fetch bookings and count by Created At date
-$bookingsByDate = [];
+// Step 1: Get all bookings created in the date range
+$bookingsCreatedInRange = [];
 $BOOKINGS_TABLE = 'Bookings';
 
 $bookingsUrl = "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/$BOOKINGS_TABLE";
@@ -136,6 +88,70 @@ if ($bookingsHttpCode === 200) {
   $bookingsData = json_decode($bookingsResponse, true);
   $bookingsRecords = $bookingsData['records'] ?? [];
   
+  foreach ($bookingsRecords as $record) {
+    $fields = $record['fields'] ?? [];
+    $createdAtStr = $fields['Created At'] ?? null;
+    $bookingId = $fields['Booking ID'] ?? null;
+    
+    if ($createdAtStr && $bookingId) {
+      $createdTimestamp = strtotime(substr($createdAtStr, 0, 10) . ' 00:00:00');
+      
+      // Check if created date is within range
+      if ($createdTimestamp >= $fromTimestamp && $createdTimestamp <= $toTimestamp) {
+        $bookingsCreatedInRange[$bookingId] = true;
+      }
+    }
+  }
+}
+
+// Step 2: Count ALL orders linked to those bookings (regardless of service date)
+$ordersByDateAndStatus = [];
+$totalOrders = 0;
+$pendingOrders = 0;
+$completedOrders = 0;
+$cancelledOrders = 0;
+
+foreach ($records as $record) {
+  $fields = $record['fields'] ?? [];
+  $bookingId = $fields['Booking ID'] ?? null;
+  $serviceDateStr = $fields['Service Date'] ?? null;
+  $status = $fields['Status'] ?? null;
+
+  // Only count orders linked to bookings created in the date range
+  if ($bookingId && isset($bookingsCreatedInRange[$bookingId]) && $serviceDateStr) {
+    // Parse the service date for charting
+    $serviceDateTimestamp = strtotime($serviceDateStr . ' 00:00:00');
+    $dateKey = date('Y-m-d', $serviceDateTimestamp);
+    
+    // Initialize if not exists
+    if (!isset($ordersByDateAndStatus[$dateKey])) {
+      $ordersByDateAndStatus[$dateKey] = [
+        'pending' => 0,
+        'completed' => 0,
+        'cancelled' => 0
+      ];
+    }
+    
+    $totalOrders++;
+    
+    // Determine order category: Completed, Cancelled, or Pending
+    if ($status === 'Completed') {
+      $ordersByDateAndStatus[$dateKey]['completed']++;
+      $completedOrders++;
+    } else if ($status === 'Cancelled' || $status === 'Refunded') {
+      $ordersByDateAndStatus[$dateKey]['cancelled']++;
+      $cancelledOrders++;
+    } else {
+      $ordersByDateAndStatus[$dateKey]['pending']++;
+      $pendingOrders++;
+    }
+  }
+}
+
+// Count bookings by Created At date (reuse bookingsRecords from earlier fetch)
+$bookingsByDate = [];
+
+if ($bookingsHttpCode === 200) {
   foreach ($bookingsRecords as $record) {
     $fields = $record['fields'] ?? [];
     $createdAtStr = $fields['Created At'] ?? null;
