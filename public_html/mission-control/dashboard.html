@@ -2068,11 +2068,7 @@
             state.statuses = statusesData.statuses || [];
             renderProjects();
             var total = state.projects.length;
-            var deployed = state.projects.filter(function(p) {
-                return (p.fields || {}).deploy_status === 'deployed';
-            }).length;
             $('statProjects').textContent = total;
-            $('statDeployed').textContent = deployed;
         }).catch(function(e) {
             // Transient API errors (Airtable hiccups, rate limits, brief 5xx)
             // should NOT wipe the screen — the existing data is still good and
