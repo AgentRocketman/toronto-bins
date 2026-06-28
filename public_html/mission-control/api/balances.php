@@ -31,15 +31,18 @@ if (defined('MC_OPENROUTER_KEY') && MC_OPENROUTER_KEY) {
         $data = json_decode($result, true);
         $response['_debug_full_response'] = $data; // Log entire response for debugging
         
-        // Check standard location
-        if (isset($data['data']['balance'])) {
-            $response['balances']['kimi'] = floatval($data['data']['balance']);
-        } elseif (isset($data['balance'])) {
-            $response['balances']['kimi'] = floatval($data['balance']);
-        } elseif (is_array($data['data']) && isset($data['data']['balance'])) {
-            $response['balances']['kimi'] = floatval($data['data']['balance']);
+        // data field exists, check what's inside
+        if (isset($data['data']) && is_array($data['data'])) {
+            $response['_debug_data_keys'] = array_keys($data['data']);
+            
+            // Check for balance in data field
+            if (isset($data['data']['balance'])) {
+                $response['balances']['kimi'] = floatval($data['data']['balance']);
+            } else {
+                $response['balances']['errors'][] = 'OpenRouter: data keys: ' . implode(', ', array_keys($data['data']));
+            }
         } else {
-            $response['balances']['errors'][] = 'OpenRouter: Structure: ' . implode(', ', array_keys($data ?? []));
+            $response['balances']['errors'][] = 'OpenRouter: data is not array';
         }
     } else {
         $response['balances']['errors'][] = 'OpenRouter: Failed to fetch';
