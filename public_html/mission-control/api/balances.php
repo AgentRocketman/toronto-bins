@@ -29,10 +29,12 @@ try {
         $ch = curl_init('https://openrouter.ai/api/v1/auth/key');
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Authorization: Bearer ' . $openrouter_key,
-            'Content-Type: application/json'
+            'Content-Type: application/json',
+            'User-Agent: Mission-Control/1.0'
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $response = curl_exec($ch);
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
@@ -51,32 +53,9 @@ try {
         $balances['errors'][] = 'OpenRouter key not configured';
     }
 
-    // Fetch Anthropic balance
-    if (defined('MC_ANTHROPIC_KEY') && MC_ANTHROPIC_KEY) {
-        $ch = curl_init('https://api.anthropic.com/v1/credits');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'x-api-key: ' . MC_ANTHROPIC_KEY,
-            'Content-Type: application/json'
-        ]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        $response = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($http_code === 200) {
-            $data = json_decode($response, true);
-            if (isset($data['balance'])) {
-                $balances['anthropic'] = floatval($data['balance']);
-            } else {
-                $balances['errors'][] = 'Anthropic: No balance in response: ' . json_encode($data);
-            }
-        } else {
-            $balances['errors'][] = 'Anthropic: HTTP ' . $http_code . ' - ' . substr($response, 0, 100);
-        }
-    } else {
-        $balances['errors'][] = 'Anthropic key not configured';
-    }
+    // Anthropic doesn't have a public API endpoint for balance info
+    // The balance is only available in the web console at console.anthropic.com
+    $balances['anthropic'] = 'N/A (web console only)';
 
     echo json_encode([
         'success' => true,
