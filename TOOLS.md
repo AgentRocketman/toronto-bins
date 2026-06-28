@@ -83,9 +83,10 @@ bash /data/.openclaw/workspace/deploy-final.sh getmybin.com
 ### Claude Code CLI
 - Binary: `claude` (globally installed)
 - API key: `~/.anthropic_key` (auto-loaded via `~/.bashrc`)
-- Usage: `export ANTHROPIC_API_KEY=$(cat ~/.anthropic_key) && claude -p "<task>" --allowedTools "Bash(command)" "Write(file_path, content)" "Read(file_path)"`
+- Usage: `export ANTHROPIC_API_KEY=$(cat ~/.anthropic_key) && claude -p "<task>" --model claude-sonnet-4-6 --allowedTools "Bash(command)" "Write(file_path, content)" "Read(file_path)"`
 - Run in the project directory so Claude Code has file context
 - For big tasks, use `claude -p` with detailed specs
+- **Default model: `claude-sonnet-4-6`** unless Chris asks for something else.
 
 ### Background: ALL DISABLED
 - Heartbeat: off (`every: "0"`)

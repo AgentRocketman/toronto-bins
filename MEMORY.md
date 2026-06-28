@@ -1,5 +1,56 @@
 # MEMORY.md - Long-Term Memory
 
+## 🔥 ACTIVE MODEL: Kimi K2.7 Code (via OpenRouter) — 2026-06-27
+
+**Default chat model has been switched from Anthropic Sonnet to Kimi K2.7 Code.**
+
+- Model id: `openrouter/moonshotai/kimi-k2.7-code`
+- Provider: OpenRouter (built-in plugin, NOT manual config)
+- API key location: `env.OPENROUTER_API_KEY` in `/data/.openclaw/openclaw.json`
+- Pricing: ~$0.50/M input, $2.00/M output (~6× cheaper than Sonnet)
+- Activity dashboard: https://openrouter.ai/activity
+
+### Why
+Chris wanted to cut Anthropic costs. Mission Control build costs are already tiny (Builder = ~$0.05/QF); the real bleed was me (chat) running on Sonnet all day. Kimi K2.7 Code is the closest paid substitute that's also strong at agentic/tool-use work.
+
+### Flip back to Anthropic when needed
+- `/model anthropic/claude-haiku-4-5` — cheap fallback
+- `/model anthropic/claude-sonnet-4-6` — for hard reasoning sessions
+- `/model anthropic/claude-opus-4-7` — for the heaviest work
+
+### Other OpenRouter models registered (require credits)
+- `openrouter/deepseek/deepseek-chat-v3.1` (paid, similar pricing)
+- Note: most `:free` slugs on OpenRouter are now defunct (returning "use paid version")
+
+### Config pattern that WORKED (don't manually configure providers)
+The built-in `openrouter` plugin auto-resolves models dynamically. Just need:
+1. `env.OPENROUTER_API_KEY` set in openclaw.json
+2. `plugins.allow` includes `"openrouter"`
+3. `plugins.entries.openrouter.enabled = true`
+4. Restart gateway via `openclaw gateway restart`
+
+**Do NOT manually add an openrouter provider to `models.providers` or to the agent's `models.json`** — it conflicts with the plugin's dynamic resolver. We tried that path; it failed with "Model is not allowed".
+
+## 🆘 Gateway Recovery Playbook — **FOR CHRIS** (Chris-tested, 2026-06-27)
+
+> _This section is for you, Chris — when the agent is hung, it can't read its own memory to recover itself. Only you can run these steps when I'm offline._
+
+If the agent goes silent for >2 min and the gateway appears stuck:
+
+1. Open Hostinger panel → container shell
+2. Run: `openclaw doctor` (diagnoses)
+3. Run: `openclaw gateway restart` (or `openclaw gateway stop && openclaw gateway start` if SIGUSR1 doesn't take)
+4. Send a test message in Telegram to confirm the agent is back
+
+**What likely causes the hang:** several rapid SIGUSR1 reloads in a row, especially when the telegram channel is in its auto-restart backoff loop. We did several restarts during the OpenRouter wiring today and one got stuck.
+
+## 📝 Notes for Future-Me (the agent) — prevent the hang
+
+- **Avoid back-to-back config restarts.** Validate JSON + run `gateway config.get` first, then restart once.
+- **Telegram channel auto-restart backoff is exponential** (5s, 11s, 22s, 42s, 84s, 171s...). If logs show this, gateway is stressed — don't pile on more restarts.
+- **`gateway restart` returns `ok:true` even when it hangs.** Don't trust the response; verify with `session_status` within ~10s. If no reply, the gateway hung — alert Chris immediately so he can run the recovery playbook above.
+- **If multiple config changes are needed**, batch them into ONE edit + ONE restart, not many edits with many restarts.
+
 ## Work Scope Rule (CRITICAL)
 **ONLY work on features explicitly requested by Chris.**
 - Do NOT refactor unrelated code
@@ -11,8 +62,13 @@
 ## Token Optimization Strategy (ACTIVE)
 - **Planning/design:** Nexos (Opus) — keep brief
 - **Coding:** Claude Code CLI (`claude -p "..."`) — Anthropic billing
+  - **Default model for Claude Code: Claude Sonnet 4.6**.
+  - Use `--model claude-sonnet-4-6` on every `claude -p` invocation unless Chris explicitly asks for a different model.
 - **Deploy/git:** Direct — minimal cost
 - **Background:** DISABLED (heartbeat off, no cron, no auto-updates)
+
+## Coding Assistant Default Model Rule
+When routing coding work through the Claude Code CLI, **always default to Sonnet** (currently `claude-sonnet-4-6`) unless Chris tells me otherwise. Do not let the CLI fall back to its own default (currently Opus 4.8).
 
 ## Current Projects
 
@@ -57,6 +113,9 @@
 - **Employees Table:** tbldH1el7qM0VNEje
 - **ChatLogs Table:** tblatXRj8Ka7hyGyZ
 - **Admins Table:** tblrtL9HiI6Axhs2j
+- **MissionControl_Projects:** tblZDjRO5OSIqzmEY (created 2026-06-27)
+- **MissionControl_AgentStatus:** tblwlhJRTnuHzivlb (created 2026-06-27)
+- **MissionControl_Approvals:** tblr4Wex6GwRwz4WE (created 2026-06-27)
 
 ### Schema write API
 Can add fields directly via:
