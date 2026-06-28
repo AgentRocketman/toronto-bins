@@ -19,7 +19,7 @@ try {
     ];
 
     // Fetch OpenRouter (Kimi) balance
-    $openrouter_key = getenv('OPENROUTER_API_KEY');
+    $openrouter_key = defined('MC_OPENROUTER_KEY') ? MC_OPENROUTER_KEY : null;
     if ($openrouter_key) {
         $ch = curl_init('https://openrouter.ai/api/v1/auth/key');
         curl_setopt($ch, CURLOPT_HTTPHEADER, [

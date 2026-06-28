@@ -4,8 +4,9 @@
  * Stores the API key in this file (server-side only) and provides a callAnthropic() helper.
  */
 
-// API key stored ONLY here, never exposed to clients.
+// API keys stored ONLY here, never exposed to clients.
 define('MC_ANTHROPIC_KEY', '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');
+define('MC_OPENROUTER_KEY', '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');
 
 /**
  * Make a single completion call to Anthropic Messages API.
