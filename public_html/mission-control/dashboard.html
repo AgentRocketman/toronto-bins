@@ -2108,15 +2108,19 @@
 
     function loadBalances() {
         return api('/balances.php').then(function(data) {
+            if (data.balances.errors && data.balances.errors.length > 0) {
+                log('Balance API errors:', data.balances.errors);
+            }
             if (data.balances.kimi !== null) {
                 $('statKimi').textContent = '$' + data.balances.kimi.toFixed(2);
             } else {
-                $('statKimi').textContent = 'Error';
+                $('statKimi').textContent = (data.balances.errors && data.balances.errors.length > 0) ? data.balances.errors[0] : 'Error';
             }
             if (data.balances.anthropic !== null) {
                 $('statAnthropic').textContent = '$' + data.balances.anthropic.toFixed(2);
             } else {
-                $('statAnthropic').textContent = 'Error';
+                var antErr = (data.balances.errors || []).find(function(e) { return e.indexOf('Anthropic') !== -1; });
+                $('statAnthropic').textContent = antErr || 'Error';
             }
         }).catch(function(e) { 
             log('loadBalances failed', e.message);

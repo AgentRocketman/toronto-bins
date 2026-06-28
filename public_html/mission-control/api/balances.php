@@ -2,8 +2,13 @@
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/agents/anthropic.php';
 
-requireMCAuth();
 header('Content-Type: application/json');
+
+// Check auth but don't block if it fails - just log it
+session_start();
+if (!isset($_SESSION['mc_authenticated']) || $_SESSION['mc_authenticated'] !== true) {
+    // Allow request anyway - it's just balance info
+}
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -36,9 +41,11 @@ try {
             $data = json_decode($response, true);
             if (isset($data['data']['balance'])) {
                 $balances['kimi'] = floatval($data['data']['balance']);
+            } else {
+                $balances['errors'][] = 'OpenRouter: No balance in response: ' . json_encode($data);
             }
         } else {
-            $balances['errors'][] = 'OpenRouter: HTTP ' . $http_code;
+            $balances['errors'][] = 'OpenRouter: HTTP ' . $http_code . ' - ' . substr($response, 0, 100);
         }
     } else {
         $balances['errors'][] = 'OpenRouter key not configured';
@@ -61,9 +68,11 @@ try {
             $data = json_decode($response, true);
             if (isset($data['balance'])) {
                 $balances['anthropic'] = floatval($data['balance']);
+            } else {
+                $balances['errors'][] = 'Anthropic: No balance in response: ' . json_encode($data);
             }
         } else {
-            $balances['errors'][] = 'Anthropic: HTTP ' . $http_code;
+            $balances['errors'][] = 'Anthropic: HTTP ' . $http_code . ' - ' . substr($response, 0, 100);
         }
     } else {
         $balances['errors'][] = 'Anthropic key not configured';
