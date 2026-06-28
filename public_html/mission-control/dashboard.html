@@ -2108,33 +2108,35 @@
 
     function loadBalances() {
         return fetch(API + '/balances.php', { credentials: 'same-origin' })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                console.log('Balance API response:', data);
-                if (data.balances.errors && data.balances.errors.length > 0) {
-                    log('Balance API errors:', data.balances.errors);
+            .then(function(r) {
+                console.log('Balance API HTTP status:', r.status);
+                if (!r.ok) {
+                    throw new Error('HTTP ' + r.status);
                 }
+                return r.json();
+            })
+            .then(function(data) {
+                console.log('Balance API response:', JSON.stringify(data));
                 
                 // Kimi balance
-                if (data.balances.kimi !== null && typeof data.balances.kimi === 'number') {
+                if (data.balances && data.balances.kimi && typeof data.balances.kimi === 'number') {
                     $('statKimi').textContent = '$' + data.balances.kimi.toFixed(2);
+                } else if (data.balances && data.balances.errors && data.balances.errors.length > 0) {
+                    $('statKimi').textContent = data.balances.errors[0].substring(0, 20);
                 } else {
-                    $('statKimi').textContent = (data.balances.errors && data.balances.errors.length > 0) ? data.balances.errors[0] : 'Error';
+                    $('statKimi').textContent = 'API error';
                 }
                 
                 // Anthropic balance
-                if (typeof data.balances.anthropic === 'string') {
-                    $('statAnthropic').textContent = data.balances.anthropic;
-                } else if (data.balances.anthropic !== null && typeof data.balances.anthropic === 'number') {
-                    $('statAnthropic').textContent = '$' + data.balances.anthropic.toFixed(2);
+                if (data.balances && data.balances.anthropic) {
+                    $('statAnthropic').textContent = String(data.balances.anthropic).substring(0, 15);
                 } else {
-                    $('statAnthropic').textContent = 'Error';
+                    $('statAnthropic').textContent = 'N/A';
                 }
             }).catch(function(e) { 
-                console.error('loadBalances fetch failed:', e);
-                log('loadBalances failed', e.message);
-                $('statKimi').textContent = '—';
-                $('statAnthropic').textContent = '—';
+                console.error('loadBalances failed:', e.message);
+                $('statKimi').textContent = 'Error: ' + e.message;
+                $('statAnthropic').textContent = 'N/A';
             });
     }
 
