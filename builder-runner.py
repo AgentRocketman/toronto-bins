@@ -34,7 +34,6 @@ BUILDS_DIR = Path("/data/.openclaw/workspace/builds")
 PUBLIC_HTML = Path("/data/.openclaw/workspace/public_html")
 HEARTBEAT_FILE = Path("/data/.openclaw/workspace/builder-runner-heartbeat.json")
 LOG_FILE = Path("/data/.openclaw/workspace/builder-runner.log")
-QUEUE_STATE_FILE = Path("/data/.openclaw/workspace/mc-queue-runner-state.json")
 ANTHROPIC_KEY_FILE = Path.home() / ".anthropic_key"
 CLAUDE_CLI = "claude"  # must be in PATH
 MAX_BUILD_TIME_SECONDS = 600  # 10 min cap per build
@@ -831,10 +830,13 @@ def process_job(project, cookie):
 
 # ─── Queue runner (server-side auto-start) ──────────────────────────────────────
 def read_queue_active():
-    """Read the server-side queue-runner on/off switch. Defaults to False."""
+    """Read the server-side queue-runner on/off switch via HTTP. Defaults to False."""
     try:
-        data = json.loads(QUEUE_STATE_FILE.read_text())
-        return bool(data.get("active"))
+        url = f"{MC_BASE_URL}/api/queue-runner.php?secret={RUNNER_SECRET}"
+        req = urllib.request.Request(url, method="GET")
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read())
+            return bool(data.get("active"))
     except Exception:
         return False
 
