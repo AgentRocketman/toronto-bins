@@ -794,7 +794,7 @@
             <div class="stat-value" id="statApprovals">0</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Kimi Balance</div>
+            <div class="stat-label">Kimi Remaining</div>
             <div class="stat-value" id="statKimi">—</div>
         </div>
         <div class="stat-card">
@@ -2120,14 +2120,18 @@
                 return r.json();
             })
             .then(function(data) {
-                // Kimi balance
-                if (data.balances && data.balances.kimi && typeof data.balances.kimi === 'number') {
+                // Kimi remaining balance (credits - usage)
+                if (data.balances && data.balances.kimi && typeof data.balances.kimi === 'number' && 
+                    data.balances.kimi_usage && typeof data.balances.kimi_usage === 'number') {
+                    var remaining = data.balances.kimi - data.balances.kimi_usage;
+                    $('statKimi').textContent = '$' + remaining.toFixed(2);
+                } else if (data.balances && data.balances.kimi && typeof data.balances.kimi === 'number') {
                     $('statKimi').textContent = '$' + data.balances.kimi.toFixed(2);
                 } else {
                     $('statKimi').textContent = 'N/A';
                 }
                 
-                // Kimi usage
+                // Kimi usage (total spent)
                 if (data.balances && data.balances.kimi_usage && typeof data.balances.kimi_usage === 'number') {
                     $('statKimiUsage').textContent = '$' + data.balances.kimi_usage.toFixed(2);
                 } else {
