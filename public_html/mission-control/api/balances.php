@@ -1,19 +1,14 @@
 <?php
-require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/agents/anthropic.php';
 
 header('Content-Type: application/json');
-
-// Check auth but don't block if it fails - just log it
-session_start();
-if (!isset($_SESSION['mc_authenticated']) || $_SESSION['mc_authenticated'] !== true) {
-    // Allow request anyway - it's just balance info
-}
+// No auth required for balance info - it's internal use only
 
 $balances = [
     'kimi' => null,
-    'anthropic' => null,
-    'errors' => []
+    'anthropic' => 'N/A',
+    'errors' => [],
+    '_debug' => 'API called at ' . date('Y-m-d H:i:s')
 ];
 
 try {
