@@ -30,19 +30,15 @@ if (defined('MC_OPENROUTER_KEY') && MC_OPENROUTER_KEY) {
     if ($result !== false) {
         $data = json_decode($result, true);
         
-        // Log what's in data
+        // OpenRouter returns total_credits and total_usage
         if (isset($data['data']) && is_array($data['data'])) {
-            $inner_keys = array_keys($data['data']);
-            $response['_debug_or'] = ['data keys: ' . implode(', ', $inner_keys), 'full data: ' . substr(json_encode($data['data']), 0, 200)];
-            
-            // Check for balance
-            if (isset($data['data']['balance'])) {
-                $response['balances']['kimi'] = floatval($data['data']['balance']);
+            if (isset($data['data']['total_credits'])) {
+                $response['balances']['kimi'] = floatval($data['data']['total_credits']);
             } else {
-                $response['balances']['errors'][] = 'Data keys: ' . implode(', ', $inner_keys);
+                $response['balances']['errors'][] = 'Missing total_credits';
             }
         } else {
-            $response['balances']['errors'][] = 'Top keys: ' . implode(', ', array_keys($data ?? []));
+            $response['balances']['errors'][] = 'Invalid response';
         }
     } else {
         $response['balances']['errors'][] = 'Request failed';
