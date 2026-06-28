@@ -5,6 +5,7 @@ $response = [
     'success' => true,
     'balances' => [
         'kimi' => null,
+        'kimi_usage' => null,
         'anthropic' => 'N/A',
         'errors' => []
     ]
@@ -34,7 +35,11 @@ if (defined('MC_OPENROUTER_KEY') && MC_OPENROUTER_KEY) {
         if (isset($data['data']) && is_array($data['data'])) {
             if (isset($data['data']['total_credits'])) {
                 $response['balances']['kimi'] = floatval($data['data']['total_credits']);
-            } else {
+            }
+            if (isset($data['data']['total_usage'])) {
+                $response['balances']['kimi_usage'] = floatval($data['data']['total_usage']);
+            }
+            if (!isset($data['data']['total_credits'])) {
                 $response['balances']['errors'][] = 'Missing total_credits';
             }
         } else {
