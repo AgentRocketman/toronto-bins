@@ -1,5 +1,10 @@
 # MEMORY.md - Long-Term Memory
 
+## Deployment Rule (CRITICAL) — 2026-06-28
+**ONLY deploy to dev (agentrocketman.com) unless Chris explicitly says "deploy to prod".**
+- Dev: `agentrocketman.com` — test all changes here first
+- Prod: `getmybin.com` — only when Chris asks
+
 ## 🔥 ACTIVE MODEL: Kimi K2.7 Code (via OpenRouter) — 2026-06-27
 
 **Default chat model has been switched from Anthropic Sonnet to Kimi K2.7 Code.**
