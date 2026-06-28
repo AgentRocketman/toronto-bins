@@ -799,7 +799,7 @@
         </div>
         <div class="stat-card">
             <div class="stat-label">Anthropic Balance</div>
-            <div class="stat-value" id="statAnthropic">—</div>
+            <div class="stat-value" id="statAnthropic" style="font-size: 0.75rem; line-height: 1.3;">N/A (console only)</div>
         </div>
     </div>
 
@@ -2116,30 +2116,18 @@
                 return r.json();
             })
             .then(function(data) {
-                console.log('Balance API response:', data);
-                if (data._debug_full_response) {
-                    console.log('Full OpenRouter response:', data._debug_full_response);
-                }
-                
                 // Kimi balance
                 if (data.balances && data.balances.kimi && typeof data.balances.kimi === 'number') {
                     $('statKimi').textContent = '$' + data.balances.kimi.toFixed(2);
-                } else if (data.balances && data.balances.errors && data.balances.errors.length > 0) {
-                    $('statKimi').textContent = data.balances.errors[0].substring(0, 50);
                 } else {
-                    $('statKimi').textContent = 'API error';
+                    $('statKimi').textContent = 'N/A';
                 }
                 
                 // Anthropic balance
-                if (data.balances && data.balances.anthropic) {
-                    $('statAnthropic').textContent = String(data.balances.anthropic).substring(0, 15);
-                } else {
-                    $('statAnthropic').textContent = 'N/A';
-                }
+                $('statAnthropic').textContent = 'Check console';
             }).catch(function(e) { 
-                console.error('loadBalances failed:', e.message);
-                $('statKimi').textContent = 'Error: ' + e.message;
-                $('statAnthropic').textContent = 'N/A';
+                $('statKimi').textContent = 'Error';
+                $('statAnthropic').textContent = 'Check console';
             });
     }
 
