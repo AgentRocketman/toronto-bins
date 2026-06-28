@@ -29,17 +29,20 @@ if (defined('MC_OPENROUTER_KEY') && MC_OPENROUTER_KEY) {
     
     if ($result !== false) {
         $data = json_decode($result, true);
-        $response['_debug_or'] = [$result, array_keys($data ?? [])];
         
-        // Check for balance in response - try multiple paths
-        if (isset($data['data']['balance'])) {
-            $response['balances']['kimi'] = floatval($data['data']['balance']);
-        } elseif (isset($data['balance'])) {
-            $response['balances']['kimi'] = floatval($data['balance']);
-        } elseif (is_array($data) && count($data) > 0) {
-            $response['balances']['errors'][] = 'Keys: ' . implode(', ', array_keys($data));
+        // Log what's in data
+        if (isset($data['data']) && is_array($data['data'])) {
+            $inner_keys = array_keys($data['data']);
+            $response['_debug_or'] = ['data keys: ' . implode(', ', $inner_keys), 'full data: ' . substr(json_encode($data['data']), 0, 200)];
+            
+            // Check for balance
+            if (isset($data['data']['balance'])) {
+                $response['balances']['kimi'] = floatval($data['data']['balance']);
+            } else {
+                $response['balances']['errors'][] = 'Data keys: ' . implode(', ', $inner_keys);
+            }
         } else {
-            $response['balances']['errors'][] = 'No balance in response';
+            $response['balances']['errors'][] = 'Top keys: ' . implode(', ', array_keys($data ?? []));
         }
     } else {
         $response['balances']['errors'][] = 'Request failed';
