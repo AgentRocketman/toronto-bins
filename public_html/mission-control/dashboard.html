@@ -2116,9 +2116,12 @@
                 return r.json();
             })
             .then(function(data) {
+                console.log('Balance response:', data);
                 // Kimi balance
                 if (data.balances && data.balances.kimi && typeof data.balances.kimi === 'number') {
                     $('statKimi').textContent = '$' + data.balances.kimi.toFixed(2);
+                } else if (data.balances && data.balances.errors && data.balances.errors.length > 0) {
+                    $('statKimi').textContent = data.balances.errors[0];
                 } else {
                     $('statKimi').textContent = 'N/A';
                 }
