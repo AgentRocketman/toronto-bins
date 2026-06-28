@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Mission Control — Dashboard</title>
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f2e;
+            --bg-card: #1f2937;
+            --border: #374151;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-green: #71b80c;
+            --accent-blue: #3b82f6;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-brand { font-size: 1.25rem; font-weight: 700; color: var(--accent-green); }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-weight: 500;
+        }
+        .nav-links a.active, .nav-links a:hover { color: var(--text-primary); }
+        .runner-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .runner-pill .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #6b7280;
+        }
+        .runner-pill.online { color: var(--accent-green); border-color: var(--accent-green); }
+        .runner-pill.online .dot { background: var(--accent-green); animation: pulse-dot 1.5s ease-in-out infinite; }
+        .runner-pill.building { color: var(--accent-blue); border-color: var(--accent-blue); }
+        .runner-pill.building .dot { background: var(--accent-blue); animation: pulse-dot 0.8s ease-in-out infinite; }
+        .runner-pill.error { color: var(--red); border-color: var(--red); }
+        .runner-pill.error .dot { background: var(--red); }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        .stat-label { color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--accent-green); }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .section-header h2 { font-size: 1.5rem; }
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9375rem;
+            transition: opacity 0.15s;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--accent-blue); color: #fff; }
+        .btn-success { background: var(--accent-green); color: #000; }
+        .btn-secondary { background: var(--border); color: var(--text-primary); }
+        .btn-danger { background: var(--red); color: #fff; }
+        .btn-small { padding: 0.375rem 0.75rem; font-size: 0.8125rem; }
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1rem;
+        }
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .project-card:hover { border-color: var(--accent-green); }
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            gap: 0.5rem;
+        }
+        .project-name { font-weight: 700; font-size: 1.0625rem; margin-bottom: 0.25rem; }
+        .project-agent { color: var(--text-secondary); font-size: 0.8125rem; }
+        .status-badge {
+            padding: 0.25rem 0.625rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .status-draft { background: #4b5563; color: #fff; }
+        .status-scout { background: #3b82f6; color: #fff; }
+        .status-architect { background: #ec4899; color: #fff; }
+        .status-designer { background: #d946ef; color: #fff; }
+        .status-tester { background: #8b5cf6; color: #fff; }
+        .status-reviewer { background: #f59e0b; color: #000; }
+        .status-builder { background: #06b6d4; color: #fff; }
+        .status-code_reviewer { background: #14b8a6; color: #000; }
+        .status-code_auditor { background: #14b8a6; color: #000; }
+        .status-smoke_test { background: #22d3ee; color: #000; }
+        .status-security_auditor { background: #ef4444; color: #fff; }
+        .status-performance_auditor { background: #eab308; color: #000; }
+        .status-deployed { background: #71b80c; color: #000; }
+        .status-complete { background: #71b80c; color: #000; }
+        .status-paused { background: #6b7280; color: #fff; }
+        .status-failed { background: #ef4444; color: #fff; }
+        /* Legacy */
+        .status-innovator { background: #f97316; color: #fff; }
+        .progress-bar {
+            background: var(--border);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0 0.25rem;
+            position: relative;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent-green), #a3e635);
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+        .progress-fill.complete { background: linear-gradient(90deg, #22c55e, #4ade80); }
+        .progress-fill.failed   { background: linear-gradient(90deg, #dc2626, #ef4444); }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .progress-label strong { color: rgba(255,255,255,0.92); font-weight: 600; }
+        .progress-label .pct-num { color: var(--accent-green); font-weight: 700; font-size: 0.8rem; }
+        .budget-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        .budget-bar { background: var(--border); height: 4px; border-radius: 2px; overflow: hidden; }
+        .budget-fill { background: var(--accent-green); height: 100%; }
+        .budget-fill.warning { background: var(--yellow); }
+        .budget-fill.danger { background: var(--red); }
+        .card-flags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+        .flag {
+            font-size: 0.65rem;
+            padding: 0.125rem 0.4rem;
+            border-radius: 3px;
+            background: rgba(113,184,12,0.15);
+            color: var(--accent-green);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            white-space: nowrap;
+        }
+        /* Stage state colors */
+        .flag.stage-pending { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); }
+        .flag.stage-running { background: rgba(56,189,248,0.15); color: #38bdf8; animation: pulse 1.4s ease-in-out infinite; }
+        .flag.stage-waiting { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .flag.stage-complete { background: rgba(113,184,12,0.18); color: var(--accent-green); }
+        .flag.stage-failed   { background: rgba(220,38,38,0.18); color: #f87171; }
+        .flag .stage-icon { font-size: 0.75rem; line-height: 1; }
+        .flag .stage-time { opacity: 0.7; font-weight: 500; text-transform: none; font-size: 0.6rem; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+        .total-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.4rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .total-time strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+        /* Auto-approve toggle row at bottom of cards */
+        .card-auto-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .card-auto-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-weight: 600;
+            margin-right: 0.25rem;
+        }
+        .mini-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .mini-toggle:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+        .mini-toggle.on {
+            background: var(--accent-green);
+            color: #000;
+            border-color: var(--accent-green);
+        }
+        .mini-toggle:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .mini-toggle.deploy {
+            margin-left: auto;
+            width: auto;
+            padding: 0 0.6rem;
+            font-size: 0.7rem;
+        }
+        .deploy-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: var(--accent-blue);
+            font-size: 0.8125rem;
+            text-decoration: none;
+        }
+        .deploy-link:hover { text-decoration: underline; }
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        .empty-state h3 { color: var(--text-primary); margin-bottom: 0.5rem; }
+
+        /* Modal */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-backdrop.active { display: flex; }
+        .modal-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 640px;
+            width: 92%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-head h2 { font-size: 1.5rem; }
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.75rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        .form-group .hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-left: 0.5rem;
+        }
+        .form-group input[type="text"], .form-group input[type="number"], .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            font-family: inherit;
+        }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+        .toggle-section {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .toggle-section-title {
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .toggle-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        .toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            user-select: none;
+        }
+        .toggle input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--accent-green);
+        }
+        .toggle.checked { border-color: var(--accent-green); background: rgba(113,184,12,0.08); }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        .error-banner {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid var(--red);
+            color: var(--red);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.875rem;
+        }
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-green);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            min-width: 280px;
+            z-index: 2000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .toast.error { border-left-color: var(--red); }
+        .detail-row { margin-bottom: 0.875rem; line-height: 1.5; }
+        .detail-row strong { display: inline-block; min-width: 110px; color: var(--text-secondary); font-weight: 500; }
+
+        /* Agent contribution timeline */
+        .timeline-section {
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+        .timeline-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+        .timeline-empty {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-style: italic;
+            padding: 0.5rem 0;
+        }
+        .timeline-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        .timeline-head {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 0.875rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .timeline-head:hover { background: rgba(255,255,255,0.02); }
+        .timeline-stage {
+            font-weight: 700;
+            font-size: 0.8125rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            min-width: 110px;
+        }
+        .timeline-agent {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            flex: 1;
+        }
+        .timeline-status {
+            font-size: 0.7rem;
+            padding: 0.125rem 0.45rem;
+            border-radius: 3px;
+            background: var(--border);
+            color: var(--text-primary);
+        }
+        .timeline-status.complete, .timeline-status.waiting_approval { background: var(--accent-green); color: #000; }
+        .timeline-status.running { background: var(--accent-blue); color: #fff; }
+        .timeline-status.failed { background: var(--red); color: #fff; }
+        .timeline-cost {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .timeline-toggle {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            transition: transform 0.15s;
+        }
+        .timeline-item.open .timeline-toggle { transform: rotate(90deg); }
+        .timeline-body {
+            display: none;
+            padding: 0.75rem 0.875rem 0.875rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8125rem;
+            white-space: pre-wrap;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            max-height: 320px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+        .timeline-item.open .timeline-body { display: block; }
+        .timeline-summary {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+        /* Inline approve/reject actions inside timeline item */
+        .timeline-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 0.875rem;
+            background: rgba(245, 158, 11, 0.08);
+            border-top: 1px solid var(--border);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .timeline-actions .actions-label {
+            font-size: 0.75rem;
+            color: var(--yellow);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-right: 0.25rem;
+        }
+        .timeline-actions input[type="text"] {
+            flex: 1;
+            min-width: 150px;
+            padding: 0.375rem 0.625rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 0.8125rem;
+            font-family: inherit;
+        }
+        .timeline-btn {
+            padding: 0.4rem 0.875rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .timeline-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .timeline-btn.approve { background: var(--accent-green); color: #000; }
+        .timeline-btn.reject { background: var(--red); color: #fff; }
+        .timeline-item.pending {
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.2);
+        }
+        /* Patch buttons on deployed cards */
+        .patch-row {
+            display: flex;
+            gap: 0.35rem;
+            margin-top: 0.6rem;
+        }
+        .patch-btn {
+            flex: 1;
+            padding: 0.45rem 0.5rem;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-radius: 5px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: center;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .patch-btn:hover {
+            border-color: var(--accent-green);
+            background: rgba(113, 184, 12, 0.1);
+        }
+        .patch-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* Iteration badge */
+        .iteration-badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+            border-radius: 3px;
+            margin-left: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .patch-mode-quick_fix { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .patch-mode-bug_fix { background: rgba(245, 158, 11, 0.15); color: var(--yellow); }
+        .patch-mode-add_feature { background: rgba(113, 184, 12, 0.15); color: var(--accent-green); }
+        /* Versions list in detail modal */
+        .versions-section {
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+        .version-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+        }
+        .version-item .v-label {
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 60px;
+        }
+        .version-item .v-mode {
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .version-item .v-name { flex: 1; color: var(--text-secondary); }
+        .version-item .v-cost { color: var(--text-secondary); font-size: 0.75rem; }
+        /* Delete button */
+        .delete-btn {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: var(--red);
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            font-size: 1rem;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.15s, background 0.15s;
+            font-weight: 700;
+            font-family: inherit;
+        }
+        .project-card:hover .delete-btn { opacity: 1; }
+        .delete-btn:hover {
+            background: var(--red);
+            color: #fff;
+            border-color: var(--red);
+        }
+        .project-card { position: relative; }
+        /* Patches count badge */
+        .patches-count-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 0.7rem;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-top: 0.5rem;
+        }
+        .patches-count-badge:hover {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: var(--accent-blue);
+        }
+        /* Inline patches list (accordion inside card) */
+        .inline-patches-list {
+            display: none;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            gap: 0.5rem;
+            flex-direction: column;
+        }
+        .inline-patches-list.open {
+            display: flex;
+        }
+        .inline-patch-mini {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .inline-patch-mini:hover {
+            border-color: var(--accent-green);
+        }
+        .inline-patch-mini .patch-mini-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+        }
+        .inline-patch-mini .patch-mini-name {
+            font-weight: 700;
+            font-size: 0.875rem;
+            flex: 1;
+        }
+        .inline-patch-mini .patch-mini-info {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        /* Patches modal */
+        .patches-modal-list {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .patch-card-mini {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .patch-card-mini:hover { border-color: var(--accent-green); }
+        .patch-card-mini .patch-mini-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .patch-card-mini .patch-mini-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+        .patch-card-mini .patch-mini-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-brand">Mission Control <span class="runner-pill" id="runnerPill"><span class="dot"></span>runner: …</span></div>
+    <div class="nav-links">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="pipeline.html">Pipeline</a>
+        <a href="#" id="logoutLink">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-label">Active Projects</div>
+            <div class="stat-value" id="statActive">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Pending Approvals</div>
+            <div class="stat-value" id="statApprovals">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Deployed</div>
+            <div class="stat-value" id="statDeployed">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Spent</div>
+            <div class="stat-value" id="statSpent">$0.00</div>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2>Projects</h2>
+        <button class="btn btn-primary" id="btnOpenCreate" type="button">+ Create New Project</button>
+    </div>
+
+    <div class="projects-grid" id="projectsGrid">
+        <div class="empty-state">
+            <h3>Loading…</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Create Project Modal -->
+<div class="modal-backdrop" id="createModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h2>Create New Project</h2>
+            <button type="button" class="modal-close" data-close-create>&times;</button>
+        </div>
+        <div class="error-banner" id="createError"></div>
+        <div class="form-group">
+            <label for="fName">Project Name</label>
+            <input type="text" id="fName" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="fReq">Requirements</label>
+            <textarea id="fReq"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="fBudget">Budget Cap ($)</label>
+            <input type="number" id="fBudget" value="10.00" step="0.01" min="0.01">
+        </div>
+        <div class="form-group">
+            <label for="fDeployPath">Deploy Path <span class="hint">e.g. /agent-kb/ (optional)</span></label>
+            <input type="text" id="fDeployPath" placeholder="/my-tool/">
+        </div>
+        <div class="toggle-section">
+            <div class="toggle-section-title">
+                <span>Enable Optional Agents</span>
+                <span class="hint">All OFF — skips agents not needed</span>
+            </div>
+            <div class="toggle-grid">
+                <label class="toggle"><input type="checkbox" data-flag="enable_designer"> 🎨 Designer</label>
+                <label class="toggle"><input type="checkbox" data-flag="enable_security"> 🔒 Security Auditor</label>
+                <label class="toggle"><input type="checkbox" data-flag="enable_performance"> ⚡ Performance Auditor</label>
+            </div>
+        </div>
+        <div class="toggle-section">
+            <div class="toggle-section-title">
+                <span>Auto-Approve Stages</span>
+                <span class="hint">All OFF — manual approval per stage</span>
+            </div>
+            <div class="toggle-grid">
+                <label class="toggle"><input type="checkbox" data-flag="auto_scout"> 🔍 Scout</label>
+                <label class="toggle"><input type="checkbox" data-flag="auto_architect"> 🏗️ Architect</label>
+                <label class="toggle"><input type="checkbox" data-flag="auto_designer"> 🎨 Designer</label>
+                <label class="toggle"><input type="checkbox" data-flag="auto_tester"> 🧪 Tester</label>
+                <label class="toggle"><input type="checkbox" data-flag="auto_reviewer"> 🔎 Reviewer</label>
+                <label class="toggle"><input type="checkbox" data-flag="auto_builder"> 🛠️ Builder</label>
+                <label class="toggle"><input type="checkbox" data-flag="auto_code_auditor"> 👀 Code Reviewer</label>
+                <label class="toggle"><input type="checkbox" data-flag="auto_smoke_test"> 💨 Smoke Test</label>
+                <label class="toggle"><input type="checkbox" data-flag="auto_security"> 🔒 Security</label>
+                <label class="toggle"><input type="checkbox" data-flag="auto_performance"> ⚡ Performance</label>
+            </div>
+        </div>
+        <div class="toggle-section">
+            <div class="toggle-section-title">
+                <span>Auto-Deploy</span>
+                <span class="hint">After last audit stage completes</span>
+            </div>
+            <label class="toggle"><input type="checkbox" data-flag="auto_deploy"> Auto-deploy to Deploy Path</label>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close-create>Cancel</button>
+            <button type="button" class="btn btn-success" id="btnSubmitCreate">Create Project</button>
+        </div>
+    </div>
+</div>
+
+<!-- Project Detail / Settings Modal -->
+<div class="modal-backdrop" id="detailModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h2 id="detailTitle">Project</h2>
+            <button type="button" class="modal-close" data-close-detail>&times;</button>
+        </div>
+        <div class="error-banner" id="detailError"></div>
+        <div id="detailBody"></div>
+
+        <!-- Optional agents + auto-approve flags are hidden for Quick Fix patches
+             (Quick Fix has a fixed pipeline + everything auto-approved by design). -->
+        <div id="detailOptionalAgents" class="toggle-section" style="margin-top:1.5rem;">
+            <div class="toggle-section-title"><span>Enable Optional Agents</span></div>
+            <div class="toggle-grid">
+                <label class="toggle"><input type="checkbox" data-edit-flag="enable_designer"> 🎨 Designer</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="enable_security"> 🔒 Security Auditor</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="enable_performance"> ⚡ Performance Auditor</label>
+            </div>
+        </div>
+
+        <div id="detailAutoApproveSection" class="toggle-section">
+            <div class="toggle-section-title"><span>Auto-Approve Stages</span></div>
+            <div class="toggle-grid">
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_scout"> 🔍 Scout</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_architect"> 🏗️ Architect</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_designer"> 🎨 Designer</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_tester"> 🧪 Tester</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_reviewer"> 🔎 Reviewer</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_builder"> 🛠️ Builder</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_code_auditor"> 👀 Code Reviewer</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_smoke_test"> 💨 Smoke Test</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_security"> 🔒 Security</label>
+                <label class="toggle"><input type="checkbox" data-edit-flag="auto_performance"> ⚡ Performance</label>
+            </div>
+        </div>
+
+        <div class="toggle-section">
+            <div class="toggle-section-title"><span>Deploy Settings</span></div>
+            <div class="form-group">
+                <label for="editDeployPath">Deploy Path</label>
+                <input type="text" id="editDeployPath" placeholder="/my-tool/">
+            </div>
+            <label class="toggle"><input type="checkbox" data-edit-flag="auto_deploy"> Auto-deploy to Deploy Path</label>
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close-detail>Close</button>
+            <button type="button" class="btn btn-success" id="btnSaveDetail">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Patch / Iterate Modal -->
+<div class="modal-backdrop" id="patchModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h2 id="patchTitle">Patch Project</h2>
+            <button type="button" class="modal-close" data-close-patch>&times;</button>
+        </div>
+        <div class="error-banner" id="patchError"></div>
+        <div id="patchSubtitle" style="color:var(--text-secondary);font-size:0.875rem;margin-bottom:1rem;"></div>
+        <div class="form-group">
+            <label for="patchRequest" id="patchRequestLabel">Change Request</label>
+            <textarea id="patchRequest" placeholder="Describe what should change..." style="min-height:120px;"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="patchBudget">Budget Cap ($)</label>
+            <input type="number" id="patchBudget" value="3.00" step="0.01" min="0.01">
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" data-close-patch>Cancel</button>
+            <button type="button" class="btn btn-secondary" id="btnQueuePatch">Queue Patch</button>
+            <button type="button" class="btn btn-success" id="btnSubmitPatch">Start Patch</button>
+        </div>
+    </div>
+</div>
+
+<!-- Patches List Modal (hidden — inline expansion is now used instead) -->
+<div class="modal-backdrop" id="patchesListModal" style="display:none;">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h2 id="patchesListTitle">Patches</h2>
+            <button type="button" class="modal-close" data-close-patches-list>&times;</button>
+        </div>
+        <div id="patchesListBody" class="patches-modal-list">
+            <div class="timeline-empty">No patches found.</div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    var API = '/mission-control/api';
+    var STAGES = { draft:0, scout:8, architect:16, designer:24, tester:32, reviewer:40, builder:55, code_reviewer:65, code_auditor:65, smoke_test:75, security_auditor:85, performance_auditor:92, deployed:100, complete:100, paused:0, failed:0, innovator:40 };
+    var AUTO_FLAGS = ['auto_scout','auto_architect','auto_designer','auto_tester','auto_reviewer','auto_builder','auto_code_auditor','auto_smoke_test','auto_security','auto_performance','auto_deploy'];
+    var ENABLE_FLAGS = ['enable_designer','enable_security','enable_performance'];
+
+    var state = { projects: [], statuses: [], currentDetailId: null, currentPatchParent: null, currentPatchMode: null, expandedPatches: {} };
+
+    var PATCH_MODE_LABELS = {
+        quick_fix: { title: '🔧 Quick Fix', placeholder: 'Move the deploy button to the right side. / The modal doesn\'t close on iOS Safari. / Change the primary color to #3b82f6.', budget: '1.50', subtitle: 'Surgical change — Builder edits existing code, Code Reviewer + Smoke Test verify. ~$0.50–$2.' },
+        bug_fix: { title: '🩹 Bug Fix', placeholder: 'The save endpoint returns 500 on files over 10MB. / Login session expires after 30 seconds instead of 1 hour.', budget: '3.00', subtitle: 'Functional bug — Builder fixes, Code Reviewer audits, Smoke Test verifies. ~$2–$4.' },
+        add_feature: { title: '✨ Add Feature', placeholder: 'Add a search bar across all uploaded docs. / Let users tag files with categories.', budget: '5.00', subtitle: 'New functionality — Scout scopes, Architect designs, Builder ships. ~$4–$7.' }
+    };
+
+    function $(id) { return document.getElementById(id); }
+    function $$(sel) { return document.querySelectorAll(sel); }
+    function log() { try { console.log.apply(console, ['[MC]'].concat([].slice.call(arguments))); } catch(e) {} }
+
+    function toast(msg, isError) {
+        var t = document.createElement('div');
+        t.className = 'toast' + (isError ? ' error' : '');
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(function() { t.parentNode && t.parentNode.removeChild(t); }, 3500);
+    }
+
+    function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+        });
+    }
+
+    function fmtMoney(n) { return '$' + (parseFloat(n) || 0).toFixed(2); }
+
+    function api(path, opts) {
+        opts = opts || {};
+        opts.credentials = 'same-origin';
+        opts.headers = opts.headers || {};
+        if (opts.body && !opts.headers['Content-Type']) {
+            opts.headers['Content-Type'] = 'application/json';
+        }
+        return fetch(API + path, opts).then(function(r) {
+            // Always read as text first so non-JSON responses don't blow up JSON.parse
+            return r.text().then(function(txt) {
+                // Auth check first (works even if body is HTML/empty)
+                if (r.status === 401 || r.status === 403) {
+                    window.location.href = '/mission-control/';
+                    throw new Error('Not authenticated');
+                }
+                var data = {};
+                try { data = txt ? JSON.parse(txt) : {}; } catch (e) {
+                    throw new Error('Server returned non-JSON (HTTP ' + r.status + '). Try refreshing.');
+                }
+                if (!r.ok) {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        throw new Error('Not authenticated');
+                    }
+                    throw new Error(data.error || ('HTTP ' + r.status));
+                }
+                return data;
+            });
+        });
+    }
+
+    function openCreate() {
+        $('createError').style.display = 'none';
+        $('createError').textContent = '';
+        // Reset form
+        $('fName').value = '';
+        $('fReq').value = '';
+        $('fBudget').value = '10.00';
+        $('fDeployPath').value = '';
+        $$('#createModal input[type="checkbox"]').forEach(function(cb) {
+            cb.checked = false;
+            cb.parentElement.classList.remove('checked');
+        });
+        $('createModal').classList.add('active');
+        setTimeout(function() { $('fName').focus(); }, 50);
+    }
+
+    function closeCreate() { $('createModal').classList.remove('active'); }
+    function closeDetail() { $('detailModal').classList.remove('active'); state.currentDetailId = null; }
+    function closePatchesList() { $('patchesListModal').classList.remove('active'); }
+
+    function submitCreate() {
+        var name = $('fName').value.trim();
+        var req = $('fReq').value.trim();
+        var budget = parseFloat($('fBudget').value);
+        var deployPath = $('fDeployPath').value.trim();
+
+        var err = $('createError');
+        err.style.display = 'none';
+
+        if (!name) { err.textContent = 'Project name is required'; err.style.display = 'block'; return; }
+        if (!req) { err.textContent = 'Requirements are required'; err.style.display = 'block'; return; }
+        if (!budget || budget <= 0) { err.textContent = 'Budget must be greater than 0'; err.style.display = 'block'; return; }
+
+        var payload = { name: name, requirements: req, budget_cap: budget, deploy_path: deployPath };
+        AUTO_FLAGS.concat(ENABLE_FLAGS).forEach(function(f) {
+            var el = document.querySelector('#createModal input[data-flag="' + f + '"]');
+            payload[f] = el && el.checked;
+        });
+
+        var btn = $('btnSubmitCreate');
+        btn.disabled = true;
+        var orig = btn.textContent;
+        btn.textContent = 'Creating…';
+
+        api('/projects/create.php', { method: 'POST', body: JSON.stringify(payload) })
+            .then(function() {
+                toast('Project "' + name + '" created');
+                closeCreate();
+                loadProjects();
+            })
+            .catch(function(e) { err.textContent = 'Error: ' + e.message; err.style.display = 'block'; })
+            .then(function() { btn.disabled = false; btn.textContent = orig; });
+    }
+
+    function openDetail(project) {
+        state.currentDetailId = project.id;
+        var f = project.fields || {};
+
+        $('detailTitle').textContent = f.name || 'Project';
+        $('detailError').style.display = 'none';
+
+        var deployBlock = '';
+        if (f.deploy_status === 'deployed' && f.deploy_url) {
+            deployBlock = '<div class="detail-row"><strong>Deployed at:</strong> <a class="deploy-link" href="' + escapeHtml(f.deploy_url) + '" target="_blank">' + escapeHtml(f.deploy_url) + ' ↗</a></div>';
+        }
+
+        // Iteration badge inline in title row if patch
+        var iterRow = '';
+        if (f.iteration_label && f.patch_mode && f.patch_mode !== 'full') {
+            iterRow = '<div class="detail-row"><strong>Iteration:</strong> <span class="iteration-badge patch-mode-' + f.patch_mode + '">' + escapeHtml(f.iteration_label) + ' · ' + f.patch_mode.replace('_', ' ') + '</span></div>';
+        }
+        if (f.parent_project_id) {
+            var parentName = '?';
+            var pp = state.projects.find(function(x) { return x.id === f.parent_project_id; });
+            if (pp) parentName = (pp.fields || {}).name || '?';
+            iterRow += '<div class="detail-row"><strong>Parent:</strong> ' + escapeHtml(parentName) + '</div>';
+        }
+
+        $('detailBody').innerHTML =
+            '<div class="detail-row"><strong>Status:</strong> <span class="status-badge status-' + (f.current_stage || f.status || 'draft') + '">' + (f.current_stage || f.status || 'draft') + '</span></div>' +
+            '<div class="detail-row"><strong>Current Agent:</strong> ' + escapeHtml(f.current_agent || 'None') + '</div>' +
+            '<div class="detail-row"><strong>Budget:</strong> ' + fmtMoney(f.budget_spent) + ' / ' + fmtMoney(f.budget_cap) + '</div>' +
+            iterRow +
+            deployBlock +
+            '<div class="detail-row"><strong>My Prompt / Requirements:</strong></div>' +
+            '<div style="background:var(--bg-primary);padding:0.875rem;border-radius:6px;white-space:pre-wrap;font-size:0.875rem;max-height:200px;overflow-y:auto;">' + escapeHtml(f.requirements || 'N/A') + '</div>' +
+            renderVersionsSection(project) +
+            '<div class="timeline-section">' +
+                '<div class="timeline-title">🔗 Agent Contributions</div>' +
+                '<div class="timeline-summary">Click any agent to expand their full output.</div>' +
+                '<div id="timelineList"><div class="timeline-empty">Loading agent history...</div></div>' +
+            '</div>';
+
+        // Fetch agent contributions for this project
+        loadTimeline(f.name);
+
+        // Hide the optional-agents + auto-approve sections for Quick Fix patches.
+        // Quick Fix has a locked pipeline (Builder → Smoke Test → Deploy) with everything
+        // auto-approved by design. Showing toggles for Scout/Architect/etc just adds noise.
+        var isQuickFix = (f.patch_mode === 'quick_fix');
+        var optEl = $('detailOptionalAgents');
+        var autoEl = $('detailAutoApproveSection');
+        if (optEl)  optEl.style.display  = isQuickFix ? 'none' : '';
+        if (autoEl) autoEl.style.display = isQuickFix ? 'none' : '';
+
+        // Set toggle states
+        $$('#detailModal input[data-edit-flag]').forEach(function(cb) {
+            var flag = cb.getAttribute('data-edit-flag');
+            cb.checked = !!f[flag];
+            cb.parentElement.classList.toggle('checked', cb.checked);
+        });
+        $('editDeployPath').value = f.deploy_path || '';
+
+        $('detailModal').classList.add('active');
+    }
+
+    function renderVersionsSection(project) {
+        // Walk children: find all projects whose parent_project_id == this project's id
+        var pid = project.id;
+        var children = state.projects.filter(function(p) {
+            return (p.fields || {}).parent_project_id === pid;
+        });
+        if (children.length === 0) return '';
+
+        // Sort children by iteration label (alphanumeric sort works for v1.1, v1.2)
+        children.sort(function(a, b) {
+            var la = (a.fields || {}).iteration_label || '';
+            var lb = (b.fields || {}).iteration_label || '';
+            return la.localeCompare(lb);
+        });
+
+        var html = '<div class="versions-section">' +
+            '<div class="timeline-title">🌿 Iterations (' + children.length + ')</div>';
+        children.forEach(function(c) {
+            var cf = c.fields || {};
+            var mode = cf.patch_mode || 'full';
+            var label = cf.iteration_label || '?';
+            var name = cf.name || '?';
+            var stage = cf.current_stage || cf.status || 'draft';
+            var spent = parseFloat(cf.budget_spent) || 0;
+            var deployed = cf.deploy_status === 'deployed';
+            html += '<div class="version-item">' +
+                '<span class="v-label">' + escapeHtml(label) + '</span>' +
+                '<span class="v-mode patch-mode-' + mode + '">' + mode.replace('_', ' ') + '</span>' +
+                '<span class="v-name">' + escapeHtml(name) + '</span>' +
+                '<span class="status-badge status-' + stage + '" style="font-size:0.65rem;">' + (deployed ? 'live' : stage) + '</span>' +
+                '<span class="v-cost">' + fmtMoney(spent) + '</span>' +
+            '</div>';
+        });
+        html += '</div>';
+        return html;
+    }
+
+    function loadTimeline(projectName) {
+        var list = $('timelineList');
+        if (!list) return;
+
+        // Load BOTH agent statuses AND approvals in parallel so we can match them
+        Promise.all([
+            api('/agent-status/list.php'),
+            api('/approvals/list.php')
+        ]).then(function(results) {
+            var statusesData = results[0];
+            var approvalsData = results[1];
+
+            // Filter events to this project
+            var events = (statusesData.statuses || []).filter(function(s) {
+                return (s.fields || {}).project_name === projectName;
+            });
+
+            // Collapse to ONE row per stage (the most meaningful event for that stage).
+            // Priority: failed > waiting_approval > complete > running > idle.
+            // Also keep the running event's timestamp for duration display.
+            var stagePriority = { failed: 5, waiting_approval: 4, complete: 3, running: 2, idle: 1 };
+            var byStage = {};
+            events.forEach(function(e) {
+                var ef = e.fields || {};
+                var stage = ef.stage || '';
+                if (!stage) return;
+                var p = stagePriority[ef.status] || 0;
+                var existing = byStage[stage];
+                if (!existing || p > existing._prio) {
+                    var clone = JSON.parse(JSON.stringify(e));
+                    clone._prio = p;
+                    byStage[stage] = clone;
+                }
+                // Track the running start time for duration calc
+                if (ef.status === 'running') {
+                    var existing2 = byStage[stage];
+                    if (existing2) existing2._runStart = e.createdTime;
+                }
+            });
+            events = Object.values(byStage);
+
+            // Build a lookup of pending approvals by stage
+            var pendingByStage = {};
+            (approvalsData.approvals || []).forEach(function(a) {
+                var af = a.fields || {};
+                if (af.project_name === projectName && af.decision === 'pending') {
+                    pendingByStage[af.stage] = af.approval_id;
+                }
+            });
+
+            if (events.length === 0) {
+                list.innerHTML = '<div class="timeline-empty">No agents have run yet. Click ▶️ Start Pipeline to begin.</div>';
+                return;
+            }
+
+            var stageOrder = ['scout', 'architect', 'designer', 'tester', 'reviewer', 'builder', 'code_reviewer', 'smoke_test', 'security_auditor', 'performance_auditor'];
+            events.sort(function(a, b) {
+                var sa = (a.fields || {}).stage || '';
+                var sb = (b.fields || {}).stage || '';
+                return stageOrder.indexOf(sa) - stageOrder.indexOf(sb);
+            });
+
+            var stageNames = {
+                scout: '🔍 Scout',
+                architect: '🏗️ Architect',
+                designer: '🎨 Designer',
+                tester: '🧪 Tester',
+                reviewer: '🔎 Reviewer',
+                builder: '🛠️ Builder',
+                code_reviewer: '👀 Code Reviewer',
+                code_auditor: '👀 Code Reviewer',
+                smoke_test: '💨 Smoke Test',
+                security_auditor: '🔒 Security',
+                performance_auditor: '⚡ Performance'
+            };
+
+            list.innerHTML = events.map(function(e) {
+                var ef = e.fields || {};
+                var stage = ef.stage || '?';
+                var displayName = stageNames[stage] || stage;
+                var cost = parseFloat(ef.cost) || 0;
+                var tokens = parseInt(ef.tokens_used) || 0;
+                var output = ef.output || '(no output)';
+                var status = ef.status || 'idle';
+                var pendingApprovalId = pendingByStage[stage];
+
+                // Friendly label for the status pill (the pill doubles as a "click to view" hint)
+                var statusLabel;
+                if (status === 'waiting_approval' || status === 'complete') statusLabel = 'View';
+                else if (status === 'running') statusLabel = 'Running…';
+                else if (status === 'failed') statusLabel = 'Failed';
+                else statusLabel = status.replace('_', ' ');
+
+                var actionsHtml = '';
+                if (pendingApprovalId) {
+                    actionsHtml =
+                        '<div class="timeline-actions">' +
+                            '<span class="actions-label">⚠️ Pending</span>' +
+                            '<input type="text" placeholder="Describe what to fix (required to auto-iterate)" data-approval-comments="' + escapeHtml(pendingApprovalId) + '">' +
+                            '<button type="button" class="timeline-btn reject" data-approval-action="rejected" data-approval-id="' + escapeHtml(pendingApprovalId) + '">Reject</button>' +
+                            '<button type="button" class="timeline-btn approve" data-approval-action="approved" data-approval-id="' + escapeHtml(pendingApprovalId) + '">Approve</button>' +
+                        '</div>';
+                }
+
+                var itemClasses = ['timeline-item'];
+                if (pendingApprovalId) itemClasses.push('pending', 'open');  // auto-expand pending items
+
+                return '<div class="' + itemClasses.join(' ') + '">' +
+                    '<div class="timeline-head">' +
+                        '<span class="timeline-toggle">▶</span>' +
+                        '<span class="timeline-stage">' + displayName + '</span>' +
+                        '<span class="timeline-agent">' + escapeHtml(ef.agent_name || '') + '</span>' +
+                        '<span class="timeline-status ' + status + '">' + statusLabel + '</span>' +
+                        '<span class="timeline-cost">' + fmtMoney(cost) + ' · ' + tokens + ' tok</span>' +
+                    '</div>' +
+                    '<div class="timeline-body">' + escapeHtml(output) + '</div>' +
+                    actionsHtml +
+                '</div>';
+            }).join('');
+
+            // Wire accordion toggles (skip clicks on action buttons/inputs)
+            list.querySelectorAll('.timeline-head').forEach(function(head) {
+                head.addEventListener('click', function() {
+                    head.parentElement.classList.toggle('open');
+                });
+            });
+
+            // Wire approve/reject buttons
+            list.querySelectorAll('[data-approval-action]').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    decideApproval(
+                        btn.getAttribute('data-approval-id'),
+                        btn.getAttribute('data-approval-action'),
+                        btn,
+                        projectName
+                    );
+                });
+            });
+
+            // Stop click-bubbling on comment inputs and actions row
+            list.querySelectorAll('.timeline-actions').forEach(function(row) {
+                row.addEventListener('click', function(e) { e.stopPropagation(); });
+            });
+        }).catch(function(e) {
+            list.innerHTML = '<div class="timeline-empty">Failed to load history: ' + escapeHtml(e.message) + '</div>';
+        });
+    }
+
+    function decideApproval(approvalId, decision, btnEl, projectName) {
+        if (!approvalId) return;
+        var actionsRow = btnEl.parentElement;
+        var commentInput = actionsRow.querySelector('input[type="text"]');
+        var comments = commentInput ? commentInput.value : '';
+
+        // Disable both buttons in the row
+        actionsRow.querySelectorAll('button').forEach(function(b) { b.disabled = true; });
+        var orig = btnEl.textContent;
+        btnEl.textContent = decision === 'approved' ? 'Approving…' : 'Rejecting…';
+
+        api('/approvals/decide.php', {
+            method: 'POST',
+            body: JSON.stringify({
+                approval_id: approvalId,
+                decision: decision,
+                comments: comments
+            })
+        }).then(function(data) {
+            var msg = decision === 'approved' ? '✅ Approved' : '❌ Rejected';
+            if (data.iteration_created && data.iteration_label) {
+                msg = '❌ Rejected → created ' + data.iteration_label + ' — ' + (data.first_stage || 'first stage') + ' running';
+            } else if (data.next_stage) {
+                msg += ' — ' + data.next_stage + ' triggered';
+            }
+            toast(msg);
+            // Refresh timeline and projects immediately
+            loadTimeline(projectName);
+            loadProjects();
+            loadApprovals();
+            // Rapid follow-up polls to catch cascade hops fast (every 1s for 10s)
+            var burst = 0;
+            var burstId = setInterval(function() {
+                burst++;
+                loadTimeline(projectName);
+                loadProjects();
+                loadApprovals();
+                if (burst >= 10) clearInterval(burstId);
+            }, 1000);
+        }).catch(function(e) {
+            toast('Failed: ' + e.message, true);
+            actionsRow.querySelectorAll('button').forEach(function(b) { b.disabled = false; });
+            btnEl.textContent = orig;
+        });
+    }
+
+    function openPatchModal(parentId, parentName, mode) {
+        state.currentPatchParent = parentId;
+        state.currentPatchMode = mode;
+        var cfg = PATCH_MODE_LABELS[mode] || PATCH_MODE_LABELS.quick_fix;
+        $('patchTitle').textContent = cfg.title + ' — ' + parentName;
+        $('patchSubtitle').textContent = cfg.subtitle;
+        $('patchRequest').placeholder = cfg.placeholder;
+        $('patchBudget').value = cfg.budget;
+        $('patchRequest').value = '';
+        $('patchError').style.display = 'none';
+        $('patchError').textContent = '';
+        $('patchModal').classList.add('active');
+        setTimeout(function() { $('patchRequest').focus(); }, 50);
+    }
+
+    function closePatch() {
+        $('patchModal').classList.remove('active');
+        state.currentPatchParent = null;
+        state.currentPatchMode = null;
+    }
+
+    function deleteProject(projectId, projectName, btn) {
+        if (!confirm('Delete "' + projectName + '"? This cannot be undone.')) return;
+
+        btn.disabled = true;
+        var orig = btn.textContent;
+        btn.textContent = '…';
+
+        api('/projects/delete.php', {
+            method: 'POST',
+            body: JSON.stringify({ project_id: projectId })
+        }).then(function() {
+            toast('Project deleted');
+            loadProjects();
+        }).catch(function(e) {
+            toast('Delete failed: ' + e.message, true);
+            btn.disabled = false;
+            btn.textContent = orig;
+        });
+    }
+
+    function openPatchesList(parentId, parentName) {
+        var patches = state.projects.filter(function(p) {
+            var f = p.fields || {};
+            return f.parent_project_id === parentId;
+        });
+
+        if (patches.length === 0) {
+            toast('No patches found for this project', true);
+            return;
+        }
+
+        // Sort by iteration label
+        patches.sort(function(a, b) {
+            var la = (a.fields || {}).iteration_label || '';
+            var lb = (b.fields || {}).iteration_label || '';
+            return la.localeCompare(lb);
+        });
+
+        $('patchesListTitle').textContent = 'Patches — ' + parentName + ' (' + patches.length + ')';
+        var body = $('patchesListBody');
+        body.innerHTML = patches.map(function(p) {
+            var f = p.fields || {};
+            var status = f.current_stage || f.status || 'draft';
+            if (f.deploy_status === 'deployed') status = 'deployed';
+            var spent = parseFloat(f.budget_spent) || 0;
+            var cap = parseFloat(f.budget_cap) || 10;
+            var pct = cap > 0 ? Math.min(100, (spent / cap) * 100) : 0;
+            var mode = f.patch_mode || 'full';
+            var iterLabel = f.iteration_label || '?';
+
+            return '<div class="patch-card-mini" data-patch-id="' + p.id + '">' +
+                '<div class="patch-mini-header">' +
+                    '<div>' +
+                        '<div class="patch-mini-name">' + escapeHtml(f.name || 'Untitled') + '</div>' +
+                        '<div class="patch-mini-info">' +
+                            '<span class="iteration-badge patch-mode-' + mode + '" style="margin:0;">' + escapeHtml(iterLabel) + ' · ' + mode.replace('_', ' ') + '</span>' +
+                            '<span class="status-badge status-' + status + '" style="font-size:0.65rem;">' + status + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="budget-info" style="margin-top:0.5rem;">' +
+                    '<span>' + fmtMoney(spent) + ' / ' + fmtMoney(cap) + '</span>' +
+                    '<span>' + Math.round(pct) + '%</span>' +
+                '</div>' +
+                '<div class="budget-bar"><div class="budget-fill" style="width:' + pct + '%"></div></div>' +
+            '</div>';
+        }).join('');
+
+        // Wire click to open detail
+        body.querySelectorAll('.patch-card-mini').forEach(function(card) {
+            card.addEventListener('click', function() {
+                var pid = card.getAttribute('data-patch-id');
+                var project = state.projects.find(function(p) { return p.id === pid; });
+                if (project) {
+                    closePatchesList();
+                    openDetail(project);
+                }
+            });
+        });
+
+        $('patchesListModal').classList.add('active');
+    }
+
+    function submitPatch(startNow) {
+        if (startNow === undefined) startNow = true;
+        var request = $('patchRequest').value.trim();
+        var budget = parseFloat($('patchBudget').value);
+        var err = $('patchError');
+        err.style.display = 'none';
+
+        if (!request) { err.textContent = 'Change request is required'; err.style.display = 'block'; return; }
+        if (!budget || budget <= 0) { err.textContent = 'Budget must be greater than 0'; err.style.display = 'block'; return; }
+        if (!state.currentPatchParent || !state.currentPatchMode) {
+            err.textContent = 'Internal error — parent or mode missing'; err.style.display = 'block'; return;
+        }
+
+        var startBtn = $('btnSubmitPatch');
+        var queueBtn = $('btnQueuePatch');
+        var clickedBtn = startNow ? startBtn : queueBtn;
+        var origStart = startBtn.textContent;
+        var origQueue = queueBtn.textContent;
+        startBtn.disabled = true;
+        queueBtn.disabled = true;
+        clickedBtn.textContent = startNow ? 'Creating patch…' : 'Queueing…';
+
+        var payload = {
+            parent_project_id: state.currentPatchParent,
+            mode: state.currentPatchMode,
+            request: request,
+            budget_cap: budget
+        };
+        if (!startNow) payload.queue = true;
+
+        api('/projects/patch.php', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        }).then(function(data) {
+            if (startNow) {
+                toast('🚀 ' + (data.iteration_label || 'patch') + ' created — ' + (data.first_stage || 'first agent') + ' running');
+            } else {
+                toast('📥 patch queued — find it in Pipeline');
+            }
+            closePatch();
+            loadProjects();
+        }).catch(function(e) {
+            err.textContent = 'Error: ' + e.message;
+            err.style.display = 'block';
+        }).then(function() {
+            startBtn.disabled = false;
+            queueBtn.disabled = false;
+            startBtn.textContent = origStart;
+            queueBtn.textContent = origQueue;
+        });
+    }
+
+    function startPipeline(projectId, btn) {
+        if (!projectId) return;
+        if (!confirm('Start the agent pipeline for this project? Scout will run first (~$0.05).')) return;
+
+        btn.disabled = true;
+        var orig = btn.textContent;
+        btn.textContent = 'Starting Scout...';
+
+        api('/agents/start.php', {
+            method: 'POST',
+            body: JSON.stringify({ project_id: projectId })
+        }).then(function(data) {
+            if (data.started) {
+                toast('▶️ Scout-1 running in background. Refresh in ~45s.');
+            } else {
+                toast('Start failed', true);
+            }
+            loadProjects();
+        }).catch(function(e) {
+            toast('Start failed: ' + e.message, true);
+        }).then(function() {
+            btn.disabled = false;
+            btn.textContent = orig;
+        });
+    }
+
+    function toggleFlag(btn) {
+        var flag = btn.getAttribute('data-toggle-flag');
+        var projectId = btn.getAttribute('data-project-id');
+        if (!flag || !projectId) return;
+
+        var currentlyOn = btn.classList.contains('on');
+        var newValue = !currentlyOn;
+
+        // Optimistic UI update
+        btn.classList.toggle('on', newValue);
+        btn.disabled = true;
+
+        var payload = { id: projectId };
+        payload[flag] = newValue;
+
+        api('/projects/update.php', { method: 'POST', body: JSON.stringify(payload) })
+            .then(function() {
+                btn.disabled = false;
+                // Update local state so we don't have to refetch
+                var project = state.projects.find(function(p) { return p.id === projectId; });
+                if (project && project.fields) project.fields[flag] = newValue;
+            })
+            .catch(function(e) {
+                // Revert on failure
+                btn.classList.toggle('on', currentlyOn);
+                btn.disabled = false;
+                toast('Failed: ' + e.message, true);
+            });
+    }
+
+    function saveDetail() {
+        if (!state.currentDetailId) return;
+
+        var payload = { id: state.currentDetailId, deploy_path: $('editDeployPath').value.trim() };
+        AUTO_FLAGS.concat(ENABLE_FLAGS).forEach(function(f) {
+            var el = document.querySelector('#detailModal input[data-edit-flag="' + f + '"]');
+            payload[f] = el && el.checked;
+        });
+
+        var btn = $('btnSaveDetail');
+        btn.disabled = true;
+        var orig = btn.textContent;
+        btn.textContent = 'Saving…';
+
+        api('/projects/update.php', { method: 'POST', body: JSON.stringify(payload) })
+            .then(function() {
+                toast('Settings saved');
+                closeDetail();
+                loadProjects();
+            })
+            .catch(function(e) {
+                $('detailError').textContent = 'Error: ' + e.message;
+                $('detailError').style.display = 'block';
+            })
+            .then(function() { btn.disabled = false; btn.textContent = orig; });
+    }
+
+    // Compute per-stage info: state + duration + total time for a project.
+    // Looks at state.statuses (filtered to this project) and the project's enabled pipeline.
+    function getProjectPipeline(f) {
+        var mode = f.patch_mode || (f.parent_project_id ? 'quick_fix' : 'full');
+        if (mode === 'quick_fix') return ['builder','smoke_test','deploy'];
+        if (mode === 'bug_fix')   return ['builder','code_reviewer','smoke_test','deploy'];
+        if (mode === 'add_feature') return ['scout','builder','code_reviewer','smoke_test','deploy'];
+        // full mode
+        var stages = ['scout','architect'];
+        if (f.enable_designer) stages.push('designer');
+        stages.push('tester','reviewer','builder','code_reviewer','smoke_test');
+        if (f.enable_security) stages.push('security_auditor');
+        if (f.enable_performance) stages.push('performance_auditor');
+        stages.push('deploy');
+        return stages;
+    }
+
+    function fmtDuration(ms) {
+        if (ms < 1000) return Math.round(ms) + 'ms';
+        var s = ms / 1000;
+        if (s < 60) return s.toFixed(1) + 's';
+        var m = Math.floor(s / 60);
+        var rem = Math.round(s % 60);
+        return m + 'm' + (rem ? ' ' + rem + 's' : '');
+    }
+
+    function computeStageInfo(projectFields) {
+        // Returns { stages: [{name, state, durationMs, label}], totalMs }
+        var name = projectFields.name;
+        var events = state.statuses
+            .filter(function(s) { return (s.fields || {}).project_name === name; })
+            .map(function(s) {
+                return {
+                    stage: (s.fields || {}).stage_v2 || (s.fields || {}).stage || '',
+                    status: (s.fields || {}).status || '',
+                    agent: (s.fields || {}).agent_name || '',
+                    t: new Date(s.createdTime).getTime()
+                };
+            })
+            .sort(function(a, b) { return a.t - b.t; });
+
+        var pipeline = getProjectPipeline(projectFields);
+        var byStage = {};
+        events.forEach(function(e) {
+            if (!byStage[e.stage]) byStage[e.stage] = [];
+            byStage[e.stage].push(e);
+        });
+
+        var stages = pipeline.map(function(stageName) {
+            var info = { name: stageName, state: 'pending', durationMs: 0 };
+            if (stageName === 'deploy') {
+                // Deploy is special — use deploy_status
+                if (projectFields.deploy_status === 'deployed') {
+                    info.state = 'complete';
+                    // Try to find Deploy-Bot event for duration
+                    var depEv = events.filter(function(e) { return (e.agent || '').toLowerCase().indexOf('deploy') !== -1; });
+                    if (depEv.length > 0) info.endTime = depEv[depEv.length-1].t;
+                } else if (projectFields.deploy_status === 'deploying') {
+                    info.state = 'running';
+                }
+                return info;
+            }
+            var evs = byStage[stageName];
+            if (!evs || evs.length === 0) return info;
+            var firstRunning = evs.find(function(e) { return e.status === 'running'; });
+            var waiting = evs.find(function(e) { return e.status === 'waiting_approval'; });
+            var complete = evs.find(function(e) { return e.status === 'complete'; });
+            var failed = evs.find(function(e) { return e.status === 'failed'; });
+            if (failed) info.state = 'failed';
+            else if (complete || waiting) info.state = 'complete';
+            else if (firstRunning) info.state = 'running';
+            if (firstRunning) {
+                var endT = (complete || waiting || failed || { t: Date.now() }).t;
+                info.durationMs = Math.max(0, endT - firstRunning.t);
+                info.startTime = firstRunning.t;
+                info.endTime = endT;
+            }
+            return info;
+        });
+
+        // Total time = earliest start → latest end among real events; for deployed use deploy event
+        var allTimes = events.map(function(e) { return e.t; });
+        var totalMs = 0;
+        if (allTimes.length > 0) {
+            var start = Math.min.apply(null, allTimes);
+            var end = Math.max.apply(null, allTimes);
+            // If still mid-pipeline, total = now - start
+            var anyRunning = stages.some(function(s) { return s.state === 'running'; });
+            if (anyRunning) end = Date.now();
+            totalMs = end - start;
+        }
+        return { stages: stages, totalMs: totalMs };
+    }
+
+    function renderProjects() {
+        var grid = $('projectsGrid');
+        if (state.projects.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><h3>No projects yet</h3><p>Click "+ Create New Project" to start</p></div>';
+            return;
+        }
+
+        // Group root projects with their active patches.
+        // Root projects always show. Active patch projects are pinned right under their parent.
+        // Finished/terminal patches are archived inline under their parent.
+        var roots = [];
+        var activePatches = [];
+        state.projects.forEach(function(p) {
+            var f = p.fields || {};
+            var mode = f.patch_mode || 'full';
+            if (mode === 'full' || !f.parent_project_id) {
+                roots.push(p);
+            } else {
+                var status = f.status || 'draft';
+                var deployed = f.deploy_status === 'deployed';
+                var terminal = status === 'complete' || status === 'failed' || status === 'paused' || deployed;
+                if (!terminal) activePatches.push(p);
+            }
+        });
+
+        if (roots.length === 0 && activePatches.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><h3>No root projects</h3><p>Create a new project to get started.</p></div>';
+            return;
+        }
+
+        roots.sort(function(a, b) {
+            return (b.createdTime || '').localeCompare(a.createdTime || '');
+        });
+        activePatches.sort(function(a, b) {
+            return (b.createdTime || '').localeCompare(a.createdTime || '');
+        });
+
+        // Order: root, then its active patches, then any orphaned active patches
+        var ordered = [];
+        var usedPatchIds = {};
+        roots.forEach(function(root) {
+            ordered.push(root);
+            activePatches.filter(function(p) {
+                return (p.fields || {}).parent_project_id === root.id;
+            }).forEach(function(p) {
+                ordered.push(p);
+                usedPatchIds[p.id] = true;
+            });
+        });
+        activePatches.forEach(function(p) {
+            if (!usedPatchIds[p.id]) ordered.push(p);
+        });
+
+        grid.innerHTML = '';
+        ordered.forEach(function(p) {
+            var f = p.fields || {};
+            var status = f.current_stage || f.status || 'draft';
+            // If deployed, show that as the visible status
+            if (f.deploy_status === 'deployed') status = 'deployed';
+
+            var progress = STAGES[status] || 0;
+            var spent = parseFloat(f.budget_spent) || 0;
+            var cap = parseFloat(f.budget_cap) || 10;
+            var pct = cap > 0 ? Math.min(100, (spent / cap) * 100) : 0;
+            var budgetClass = pct >= 100 ? 'danger' : (pct >= 90 ? 'warning' : '');
+
+            var deployLink = '';
+            if (f.deploy_status === 'deployed' && f.deploy_url) {
+                deployLink = '<a class="deploy-link" href="' + escapeHtml(f.deploy_url) + '" target="_blank" onclick="event.stopPropagation();">🚀 ' + escapeHtml(f.deploy_url) + '</a>';
+            }
+
+            // Pipeline stage badges with state + duration
+            var pipeInfo = computeStageInfo(f);
+            // Compute real pipeline completion % from stage states
+            var pipeTotal = pipeInfo.stages.length;
+            var pipeDone = pipeInfo.stages.filter(function(s) { return s.state === 'complete'; }).length;
+            var pipeRunning = pipeInfo.stages.filter(function(s) { return s.state === 'running'; }).length;
+            var pipePct = pipeTotal > 0 ? Math.round(((pipeDone + (pipeRunning * 0.5)) / pipeTotal) * 100) : 0;
+            if (f.deploy_status === 'deployed') pipePct = 100;
+            var pipeFailed = pipeInfo.stages.some(function(s) { return s.state === 'failed'; });
+            var progressClass = pipeFailed ? 'failed' : (pipePct >= 100 ? 'complete' : '');
+            // Stage-step label, e.g. "Builder — step 1 of 4"
+            var currentStageObj = pipeInfo.stages.find(function(s) { return s.state === 'running'; }) ||
+                                  pipeInfo.stages.slice().reverse().find(function(s) { return s.state === 'complete'; });
+            var stageStepLabel = '';
+            if (currentStageObj) {
+                var idx = pipeInfo.stages.indexOf(currentStageObj) + 1;
+                var label = currentStageObj.name === 'code_reviewer' ? 'Code Reviewer' :
+                            currentStageObj.name.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+                stageStepLabel = label + ' — step ' + idx + ' of ' + pipeTotal;
+            } else if (pipeTotal > 0) {
+                stageStepLabel = 'Waiting to start — 0 of ' + pipeTotal;
+            }
+            var stageIcons = { pending: '⚡', running: '⏳', complete: '✅', failed: '❌', waiting: '⏸️' };
+            var flagsHtml = '';
+            if (pipeInfo.stages.length > 0) {
+                flagsHtml = '<div class="card-flags">' +
+                    pipeInfo.stages.map(function(s) {
+                        var icon = stageIcons[s.state] || '⚡';
+                        var label = s.name === 'code_reviewer' ? 'CODE_AUDITOR' : s.name.toUpperCase();
+                        var dur = s.durationMs > 0 ? '<span class="stage-time">' + fmtDuration(s.durationMs) + '</span>' : '';
+                        return '<span class="flag stage-' + s.state + '"><span class="stage-icon">' + icon + '</span>' + label + dur + '</span>';
+                    }).join('') + '</div>';
+            }
+            // Total elapsed/time for pipeline run
+            var totalTimeHtml = '';
+            if (pipeInfo.totalMs > 0) {
+                var anyRunning = pipeInfo.stages.some(function(s) { return s.state === 'running'; });
+                var label = anyRunning ? 'Elapsed' : 'Total';
+                totalTimeHtml = '<div class="total-time">⏱ ' + label + ': <strong>' + fmtDuration(pipeInfo.totalMs) + '</strong></div>';
+            }
+
+            // Start button only for draft projects
+            var startBtn = '';
+            if (status === 'draft') {
+                startBtn = '<button type="button" class="btn btn-success start-btn" data-start-id="' + p.id + '" style="margin-top:0.6rem;width:100%;">▶️ Start Pipeline (Scout first)</button>';
+            }
+
+            // Count patches for this project
+            var patchCount = state.projects.filter(function(x) {
+                return (x.fields || {}).parent_project_id === p.id;
+            }).length;
+
+            // Patch buttons + patches count badge for deployed projects
+            var patchRow = '';
+            if (f.deploy_status === 'deployed') {
+                patchRow = '<div class="patch-row">' +
+                    '<button type="button" class="patch-btn" data-patch-mode="quick_fix" data-parent-id="' + p.id + '" data-parent-name="' + escapeHtml(f.name || '') + '">🔧 Quick Fix</button>' +
+                    '<button type="button" class="patch-btn" data-patch-mode="bug_fix" data-parent-id="' + p.id + '" data-parent-name="' + escapeHtml(f.name || '') + '">🩹 Bug Fix</button>' +
+                    '<button type="button" class="patch-btn" data-patch-mode="add_feature" data-parent-id="' + p.id + '" data-parent-name="' + escapeHtml(f.name || '') + '">✨ Add Feature</button>' +
+                '</div>';
+            }
+
+            // Patches count badge and inline list
+            var patchesCountBadge = '';
+            var inlinePatchesList = '';
+            if (patchCount > 0) {
+                // Find patches for this project
+                var patches = state.projects.filter(function(x) {
+                    return (x.fields || {}).parent_project_id === p.id;
+                });
+                // Sort by creation time descending (latest patch first)
+                patches.sort(function(a, b) {
+                    return (b.createdTime || '').localeCompare(a.createdTime || '');
+                });
+
+                patchesCountBadge = '<div class="patches-count-badge" data-parent-id="' + p.id + '">' +
+                    '🌿 Patches (' + patchCount + ')' +
+                '</div>';
+
+                // Build inline patches list (hidden by default)
+                inlinePatchesList = '<div class="inline-patches-list" data-patches-for="' + p.id + '">' +
+                    patches.map(function(patch) {
+                        var pf = patch.fields || {};
+                        var status = pf.current_stage || pf.status || 'draft';
+                        if (pf.deploy_status === 'deployed') status = 'deployed';
+                        var spent = parseFloat(pf.budget_spent) || 0;
+                        var cap = parseFloat(pf.budget_cap) || 10;
+                        var pct = cap > 0 ? Math.min(100, (spent / cap) * 100) : 0;
+                        var budgetClass = pct >= 100 ? 'danger' : (pct >= 90 ? 'warning' : '');
+                        var mode = pf.patch_mode || 'full';
+                        var iterLabel = pf.iteration_label || '?';
+
+                        return '<div class="inline-patch-mini" data-patch-id="' + patch.id + '">' +
+                            '<div class="patch-mini-header">' +
+                                '<div class="patch-mini-name">' + escapeHtml(pf.name || 'Untitled') + '</div>' +
+                            '</div>' +
+                            '<div class="patch-mini-info">' +
+                                '<span class="iteration-badge patch-mode-' + mode + '" style="margin:0;">' + escapeHtml(iterLabel) + ' · ' + mode.replace('_', ' ') + '</span>' +
+                                '<span class="status-badge status-' + status + '" style="font-size:0.65rem;">' + status + '</span>' +
+                            '</div>' +
+                            '<div class="budget-info" style="margin-top:0.4rem;font-size:0.75rem;">' +
+                                '<span>' + fmtMoney(spent) + ' / ' + fmtMoney(cap) + '</span>' +
+                                '<span>' + Math.round(pct) + '%</span>' +
+                            '</div>' +
+                            '<div class="budget-bar"><div class="budget-fill ' + budgetClass + '" style="width:' + pct + '%"></div></div>' +
+                        '</div>';
+                    }).join('') +
+                '</div>';
+            }
+
+            // Iteration badge if this is a patch project
+            var iterBadge = '';
+            if (f.iteration_label && f.patch_mode && f.patch_mode !== 'full') {
+                iterBadge = '<span class="iteration-badge patch-mode-' + f.patch_mode + '">' + escapeHtml(f.iteration_label) + ' · ' + f.patch_mode.replace('_', ' ') + '</span>';
+            }
+
+            var card = document.createElement('div');
+            card.className = 'project-card';
+            card.innerHTML =
+                '<button type="button" class="delete-btn" data-delete-id="' + p.id + '" data-delete-name="' + escapeHtml(f.name || 'Untitled') + '">&times;</button>' +
+                '<div class="project-header">' +
+                    '<div style="min-width:0;flex:1;">' +
+                        '<div class="project-name">' + escapeHtml(f.name || 'Untitled') + iterBadge + '</div>' +
+                        '<div class="project-agent">' + escapeHtml(f.current_agent || 'No agent assigned') + '</div>' +
+                    '</div>' +
+                    '<span class="status-badge status-' + status + '">' + status + '</span>' +
+                '</div>' +
+                (pipeTotal > 0 ? '<div class="progress-label"><span>' + escapeHtml(stageStepLabel) + '</span><span class="pct-num">' + pipePct + '%</span></div>' : '') +
+                '<div class="progress-bar"><div class="progress-fill ' + progressClass + '" style="width:' + pipePct + '%"></div></div>' +
+                '<div class="budget-info"><span>' + fmtMoney(spent) + ' / ' + fmtMoney(cap) + '</span><span>' + Math.round(pct) + '%</span></div>' +
+                '<div class="budget-bar"><div class="budget-fill ' + budgetClass + '" style="width:' + pct + '%"></div></div>' +
+                flagsHtml +
+                totalTimeHtml +
+                deployLink +
+                startBtn +
+                patchRow +
+                patchesCountBadge +
+                inlinePatchesList;
+
+            (function(proj) {
+                card.addEventListener('click', function(e) {
+                    // Don't open detail if Start/Patch/Delete/PatchesCount buttons or inline patches were clicked
+                    var el = e.target;
+                    while (el && el !== card) {
+                        if (el.classList && (el.classList.contains('start-btn') || el.classList.contains('patch-btn') || el.classList.contains('delete-btn') || el.classList.contains('patches-count-badge') || el.classList.contains('inline-patches-list') || el.classList.contains('inline-patch-mini'))) return;
+                        el = el.parentElement;
+                    }
+                    openDetail(proj);
+                });
+            })(p);
+
+            // Wire Delete button
+            var dBtn = card.querySelector('.delete-btn');
+            if (dBtn) {
+                dBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    deleteProject(
+                        dBtn.getAttribute('data-delete-id'),
+                        dBtn.getAttribute('data-delete-name'),
+                        dBtn
+                    );
+                });
+            }
+
+            // Wire Start button
+            var sBtn = card.querySelector('.start-btn');
+            if (sBtn) {
+                sBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    startPipeline(sBtn.getAttribute('data-start-id'), sBtn);
+                });
+            }
+
+            // Wire Patch buttons
+            card.querySelectorAll('.patch-btn').forEach(function(pBtn) {
+                pBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openPatchModal(
+                        pBtn.getAttribute('data-parent-id'),
+                        pBtn.getAttribute('data-parent-name'),
+                        pBtn.getAttribute('data-patch-mode')
+                    );
+                });
+            });
+
+            // Wire Patches count badge to toggle inline list
+            var pcBadge = card.querySelector('.patches-count-badge');
+            if (pcBadge) {
+                pcBadge.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var parentId = pcBadge.getAttribute('data-parent-id');
+                    var patchesList = card.querySelector('.inline-patches-list[data-patches-for="' + parentId + '"]');
+                    if (patchesList) {
+                        var isOpen = patchesList.classList.toggle('open');
+                        state.expandedPatches[parentId] = isOpen;
+                    }
+                });
+            }
+
+            // Preserve open accordion across auto-refresh
+            if (state.expandedPatches[p.id]) {
+                var patchesList = card.querySelector('.inline-patches-list[data-patches-for="' + p.id + '"]');
+                if (patchesList) patchesList.classList.add('open');
+            }
+
+            // Wire inline patch mini-cards to open their detail modal
+            card.querySelectorAll('.inline-patch-mini').forEach(function(miniCard) {
+                miniCard.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var patchId = miniCard.getAttribute('data-patch-id');
+                    var patch = state.projects.find(function(p) { return p.id === patchId; });
+                    if (patch) {
+                        openDetail(patch);
+                    }
+                });
+            });
+
+            grid.appendChild(card);
+        });
+    }
+
+    function loadProjects() {
+        return Promise.all([
+            api('/projects/list.php'),
+            api('/agent-status/list.php').catch(function() { return { statuses: [] }; })
+        ]).then(function(results) {
+            var data = results[0];
+            var statusesData = results[1];
+            state.projects = data.projects || [];
+            state.statuses = statusesData.statuses || [];
+            renderProjects();
+            var active = state.projects.filter(function(p) {
+                var s = (p.fields || {}).status;
+                var ds = (p.fields || {}).deploy_status;
+                return s !== 'complete' && s !== 'failed' && s !== 'paused' && ds !== 'deployed';
+            }).length;
+            var deployed = state.projects.filter(function(p) {
+                return (p.fields || {}).deploy_status === 'deployed';
+            }).length;
+            var spent = state.projects.reduce(function(sum, p) {
+                return sum + (parseFloat((p.fields || {}).budget_spent) || 0);
+            }, 0);
+            $('statActive').textContent = active;
+            $('statDeployed').textContent = deployed;
+            $('statSpent').textContent = fmtMoney(spent);
+        }).catch(function(e) {
+            // Transient API errors (Airtable hiccups, rate limits, brief 5xx)
+            // should NOT wipe the screen — the existing data is still good and
+            // the next 2s poll will recover. Just log and show a subtle banner.
+            log('loadProjects failed', e.message);
+            var grid = $('projectsGrid');
+            // Only show full-screen error if we never successfully loaded
+            if (!state.projects || !state.projects.length) {
+                grid.innerHTML = '<div class="empty-state"><h3>Failed to load</h3><p>' + escapeHtml(e.message) + '</p><p style="margin-top:12px;font-size:13px;opacity:0.7;">Retrying every 2s...</p></div>';
+            } else {
+                // Show a small toast/banner without destroying the grid
+                showStaleBanner(e.message);
+            }
+        });
+    }
+
+    function showStaleBanner(msg) {
+        var existing = document.getElementById('staleBanner');
+        if (existing) return; // already showing
+        var banner = document.createElement('div');
+        banner.id = 'staleBanner';
+        banner.style.cssText = 'position:fixed;top:12px;right:12px;background:#f59e0b;color:#000;padding:8px 14px;border-radius:8px;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:9999;font-weight:500;';
+        banner.innerHTML = '⚠️ Data stale (retry pending) <span style="opacity:0.6;font-size:11px;margin-left:6px;">' + escapeHtml(msg).substring(0, 40) + '</span>';
+        document.body.appendChild(banner);
+        // Auto-remove after 3s; if errors keep happening, the banner re-appears
+        setTimeout(function() {
+            var b = document.getElementById('staleBanner');
+            if (b) b.remove();
+        }, 3000);
+    }
+
+    function loadApprovals() {
+        return api('/approvals/list.php').then(function(data) {
+            $('statApprovals').textContent = (data.approvals || []).length;
+        }).catch(function(e) { log('loadApprovals failed', e.message); });
+    }
+
+    function loadRunnerStatus() {
+        var pill = $('runnerPill');
+        if (!pill) return;
+        fetch(API + '/runner-status.php', { credentials: 'same-origin' })
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                var label, cls = '';
+                if (!d.online) {
+                    label = 'runner: offline';
+                    cls = 'error';
+                } else if (d.state === 'building') {
+                    label = 'runner: 🛠️ ' + (d.last_job ? d.last_job.substring(0, 20) : 'building');
+                    cls = 'building';
+                } else if (d.state === 'idle') {
+                    label = 'runner: ✅ idle';
+                    cls = 'online';
+                } else if (d.state === 'error') {
+                    label = 'runner: ⚠️ ' + (d.last_error || 'error');
+                    cls = 'error';
+                } else {
+                    label = 'runner: ' + d.state;
+                    cls = 'online';
+                }
+                pill.className = 'runner-pill ' + cls;
+                pill.innerHTML = '<span class="dot"></span>' + label;
+            })
+            .catch(function() {
+                pill.className = 'runner-pill error';
+                pill.innerHTML = '<span class="dot"></span>runner: unreachable';
+            });
+    }
+
+    function logout() {
+        api('/auth.php', { method: 'DELETE' }).then(function() {
+            window.location.href = '/mission-control/';
+        }).catch(function() {
+            window.location.href = '/mission-control/';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        log('Wiring handlers');
+
+        $('btnOpenCreate').addEventListener('click', openCreate);
+        $('btnSubmitCreate').addEventListener('click', submitCreate);
+        $('btnSaveDetail').addEventListener('click', saveDetail);
+        $('logoutLink').addEventListener('click', function(e) { e.preventDefault(); logout(); });
+
+        // Close buttons (multiple per modal)
+        $$('[data-close-create]').forEach(function(el) { el.addEventListener('click', closeCreate); });
+        $$('[data-close-detail]').forEach(function(el) { el.addEventListener('click', closeDetail); });
+        $$('[data-close-patch]').forEach(function(el) { el.addEventListener('click', closePatch); });
+        $$('[data-close-patches-list]').forEach(function(el) { el.addEventListener('click', closePatchesList); });
+        $('btnSubmitPatch').addEventListener('click', function() { submitPatch(true); });
+        $('btnQueuePatch').addEventListener('click', function() { submitPatch(false); });
+        $('patchModal').addEventListener('click', function(e) { if (e.target === $('patchModal')) closePatch(); });
+        $('patchesListModal').addEventListener('click', function(e) { if (e.target === $('patchesListModal')) closePatchesList(); });
+
+        // Backdrop click closes
+        $('createModal').addEventListener('click', function(e) { if (e.target === $('createModal')) closeCreate(); });
+        $('detailModal').addEventListener('click', function(e) { if (e.target === $('detailModal')) closeDetail(); });
+
+        // Toggle visual feedback (both modals)
+        $$('.toggle input[type="checkbox"]').forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                cb.parentElement.classList.toggle('checked', cb.checked);
+            });
+        });
+
+        // ESC closes modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { closeCreate(); closeDetail(); closePatch(); closePatchesList(); }
+        });
+
+        // Enter in create form submits
+        $('fName').addEventListener('keydown', function(e) { if (e.key === 'Enter') submitCreate(); });
+
+        loadProjects();
+        loadApprovals();
+        loadRunnerStatus();
+        setInterval(function() { loadProjects(); loadApprovals(); loadRunnerStatus(); }, 2000);
+    });
+})();
+</script>
+</body>
+</html>

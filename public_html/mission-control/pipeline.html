@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Mission Control — Pipeline</title>
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f2e;
+            --bg-card: #1f2937;
+            --border: #374151;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-green: #71b80c;
+            --accent-blue: #3b82f6;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-brand { font-size: 1.25rem; font-weight: 700; color: var(--accent-green); }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-weight: 500;
+        }
+        .nav-links a.active, .nav-links a:hover { color: var(--text-primary); }
+
+        .container { max-width: 1800px; margin: 0 auto; padding: 1.5rem; }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .page-header h1 { font-size: 1.5rem; }
+        .refresh-indicator { color: var(--text-secondary); font-size: 0.8125rem; }
+
+        .board {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        .board .column {
+            flex: 0 0 220px;
+        }
+        @media (max-width: 700px) {
+            .board .column { flex: 0 0 200px; }
+        }
+        .column {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            min-height: 400px;
+        }
+        .column-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .column-title-wrap { display: flex; align-items: center; gap: 0.4rem; }
+        .column-title {
+            font-weight: 700;
+            font-size: 0.8125rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: background 0.15s, color 0.15s;
+        }
+        .info-icon:hover {
+            background: var(--accent-blue);
+            color: #fff;
+        }
+        .column-count {
+            background: var(--border);
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .column-stage-scout .column-title { color: #3b82f6; }
+        .column-stage-architect .column-title { color: #ec4899; }
+        .column-stage-designer .column-title { color: #d946ef; }
+        .column-stage-tester .column-title { color: #8b5cf6; }
+        .column-stage-reviewer .column-title { color: #f59e0b; }
+        .column-stage-builder .column-title { color: #06b6d4; }
+        .column-stage-code_reviewer .column-title { color: #14b8a6; }
+        .column-stage-smoke_test .column-title { color: #22d3ee; }
+        .column-stage-security_auditor .column-title { color: #ef4444; }
+        .column-stage-performance_auditor .column-title { color: #eab308; }
+        .column-stage-queued .column-title { color: #9ca3af; }
+        #btnRunQueue {
+            padding: 0.45rem 0.9rem;
+            border: 1px solid var(--accent-green);
+            background: var(--bg-card);
+            color: var(--accent-green);
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        #btnRunQueue:hover { background: rgba(113,184,12,0.1); }
+        #btnRunQueue.active {
+            border-color: var(--red);
+            color: var(--red);
+        }
+        #btnRunQueue.active:hover { background: rgba(239,68,68,0.1); }
+        .column.optional { opacity: 0.85; border-style: dashed; }
+        .column.optional .column-title::after {
+            content: ' (optional)';
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .card:hover { border-color: var(--accent-green); }
+        .card.pending {
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.15);
+            animation: pulse 2s infinite;
+        }
+        .card.ready-to-deploy {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 2px rgba(113, 184, 12, 0.2);
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.15); }
+            50% { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3); }
+        }
+        .card-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .card-agent { color: var(--text-secondary); font-size: 0.7rem; margin-bottom: 0.4rem; }
+        .card-status { display: flex; align-items: center; gap: 0.375rem; font-size: 0.7rem; }
+        .status-icon { display: inline-block; }
+        .spinner { display: inline-block; animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .card-deploy-btn {
+            display: block;
+            width: 100%;
+            margin-top: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            background: var(--accent-green);
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .card-deploy-btn:hover { opacity: 0.9; }
+        .card-deploy-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .card-run-btn {
+            display: block;
+            width: 100%;
+            margin-top: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            background: var(--accent-blue);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .card-run-btn:hover { opacity: 0.9; }
+        .card-run-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        /* Inline approve/reject on pipeline cards */
+        .card-action-row {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+        }
+        .card-action-btn {
+            flex: 1;
+            padding: 0.35rem 0.4rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-family: inherit;
+        }
+        .card-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .card-action-btn.approve { background: var(--accent-green); color: #000; }
+        .card-action-btn.reject { background: var(--red); color: #fff; }
+        .card-action-btn:hover { opacity: 0.9; }
+
+        .card-flags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.2rem;
+            margin-top: 0.4rem;
+        }
+        .flag {
+            font-size: 0.6rem;
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+            background: rgba(113,184,12,0.15);
+            color: var(--accent-green);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        /* iOS-style toggle slider for auto-approve */
+        .card-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-top: 0.6rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border);
+        }
+        .card-toggle-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--border);
+            transition: 0.2s;
+            border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #fff;
+            transition: 0.2s;
+            border-radius: 50%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .switch input:checked + .slider {
+            background-color: var(--accent-green);
+        }
+        .switch input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+        .switch input:disabled + .slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-col {
+            text-align: center;
+            padding: 1rem 0;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-style: italic;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-backdrop.active { display: flex; }
+        .modal-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 720px;
+            width: 92%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-head h2 { font-size: 1.375rem; }
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.75rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .detail-row { margin-bottom: 0.875rem; }
+        .detail-row strong { display: inline-block; min-width: 110px; color: var(--text-secondary); font-weight: 500; }
+        .output-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.875rem;
+            margin-top: 0.5rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.8125rem;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+        .form-group { margin: 1rem 0; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+            font-family: inherit;
+            min-height: 70px;
+            resize: vertical;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9375rem;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-success { background: var(--accent-green); color: #000; }
+        .btn-danger { background: var(--red); color: #fff; }
+        .btn-secondary { background: var(--border); color: var(--text-primary); }
+        .error-banner {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid var(--red);
+            color: var(--red);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.875rem;
+        }
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-green);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            min-width: 280px;
+            z-index: 2000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .toast.error { border-left-color: var(--red); }
+        .deploy-link {
+            display: inline-block;
+            margin-top: 0.4rem;
+            color: var(--accent-blue);
+            font-size: 0.75rem;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .deploy-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-brand">Mission Control</div>
+    <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="pipeline.html" class="active">Pipeline</a>
+        <a href="#" id="logoutLink">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Agent Pipeline</h1>
+        <div style="display:flex;align-items:center;gap:1rem;">
+            <button type="button" id="btnRunQueue">▶ Run Queued Jobs</button>
+            <div class="refresh-indicator" id="refreshIndicator">Auto-refreshing every 5 seconds…</div>
+        </div>
+    </div>
+
+    <div class="board" id="board">
+        <div class="column column-stage-queued">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">📥 Queue</span></div><span class="column-count" id="count-queued">0</span></div>
+            <div id="stage-queued"></div>
+        </div>
+        <div class="column column-stage-scout">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">🔍 Scout</span><button type="button" class="info-icon" data-agent-info="scout" title="What does Scout do?">i</button></div><span class="column-count" id="count-scout">0</span></div>
+            <div id="stage-scout"></div>
+        </div>
+        <div class="column column-stage-architect">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">🏗️ Architect</span><button type="button" class="info-icon" data-agent-info="architect" title="What does Architect do?">i</button></div><span class="column-count" id="count-architect">0</span></div>
+            <div id="stage-architect"></div>
+        </div>
+        <div class="column column-stage-designer optional">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">🎨 Designer</span><button type="button" class="info-icon" data-agent-info="designer" title="What does Designer do?">i</button></div><span class="column-count" id="count-designer">0</span></div>
+            <div id="stage-designer"></div>
+        </div>
+        <div class="column column-stage-tester">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">🧪 Tester</span><button type="button" class="info-icon" data-agent-info="tester" title="What does Tester do?">i</button></div><span class="column-count" id="count-tester">0</span></div>
+            <div id="stage-tester"></div>
+        </div>
+        <div class="column column-stage-reviewer">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">🔎 Reviewer</span><button type="button" class="info-icon" data-agent-info="reviewer" title="What does Reviewer do?">i</button></div><span class="column-count" id="count-reviewer">0</span></div>
+            <div id="stage-reviewer"></div>
+        </div>
+        <div class="column column-stage-builder">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">🛠️ Builder</span><button type="button" class="info-icon" data-agent-info="builder" title="What does Builder do?">i</button></div><span class="column-count" id="count-builder">0</span></div>
+            <div id="stage-builder"></div>
+        </div>
+        <div class="column column-stage-code_reviewer">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">👀 Code Reviewer</span><button type="button" class="info-icon" data-agent-info="code_reviewer" title="What does Code Reviewer do?">i</button></div><span class="column-count" id="count-code_reviewer">0</span></div>
+            <div id="stage-code_reviewer"></div>
+        </div>
+        <div class="column column-stage-smoke_test">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">💨 Smoke Test</span><button type="button" class="info-icon" data-agent-info="smoke_test" title="What does Smoke Test do?">i</button></div><span class="column-count" id="count-smoke_test">0</span></div>
+            <div id="stage-smoke_test"></div>
+        </div>
+        <div class="column column-stage-security_auditor optional">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">🔒 Security</span><button type="button" class="info-icon" data-agent-info="security_auditor" title="What does Security Auditor do?">i</button></div><span class="column-count" id="count-security_auditor">0</span></div>
+            <div id="stage-security_auditor"></div>
+        </div>
+        <div class="column column-stage-performance_auditor optional">
+            <div class="column-head"><div class="column-title-wrap"><span class="column-title">⚡ Performance</span><button type="button" class="info-icon" data-agent-info="performance_auditor" title="What does Performance Auditor do?">i</button></div><span class="column-count" id="count-performance_auditor">0</span></div>
+            <div id="stage-performance_auditor"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Detail / Approval Modal -->
+<div class="modal-backdrop" id="detailModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h2 id="modalTitle">Project Details</h2>
+            <button type="button" class="modal-close" id="btnCloseModal">&times;</button>
+        </div>
+        <div class="error-banner" id="modalError"></div>
+        <div id="modalBody"></div>
+        <div id="approvalSection" style="display:none;">
+            <div class="form-group">
+                <label for="approvalComments">Comments (required to auto-iterate on rejection)</label>
+                <textarea id="approvalComments" placeholder="Describe what to fix (required to auto-iterate)"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="btnCancelApproval">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btnReject">Reject</button>
+                <button type="button" class="btn btn-success" id="btnApprove">Approve</button>
+            </div>
+        </div>
+        <div id="deploySection" style="display:none;">
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="btnCloseModal2">Close</button>
+                <button type="button" class="btn btn-success" id="btnDeployModal">🚀 Deploy Now</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    var API = '/mission-control/api';
+    // Pipeline order (left to right)
+    var STAGES = ['queued', 'scout', 'architect', 'designer', 'tester', 'reviewer', 'builder', 'code_reviewer', 'smoke_test', 'security_auditor', 'performance_auditor'];
+    var AUTO_FLAGS = ['auto_scout','auto_architect','auto_designer','auto_tester','auto_reviewer','auto_builder','auto_code_auditor','auto_smoke_test','auto_security','auto_performance','auto_deploy'];
+
+    var AGENT_INFO = {
+        scout: {
+            title: '🔍 Scout',
+            tagline: 'First analyzer — figures out what to build before anyone writes code',
+            does: [
+                'Reads project requirements end-to-end',
+                'Identifies core scope + suggests features you forgot to mention',
+                'Flags risks and unknowns (without picking tech stack — that\'s Architect\'s job)',
+                'Estimates rough cost breakdown for downstream agents'
+            ],
+            model: 'Claude Sonnet',
+            outputs: 'Scope document + features list + risk register',
+            handoff: 'Passes scope to Architect'
+        },
+        architect: {
+            title: '🏗️ Architect',
+            tagline: 'Designs the system before anyone writes tests or code',
+            does: [
+                'Resolves Scout\'s flagged risks (verifies dependencies, libs, hosting)',
+                'Picks tech stack that fits existing infrastructure',
+                'Designs file structure, schemas, and critical flows',
+                'Documents security and performance constraints',
+                'Produces deterministic spec for Tester + Builder'
+            ],
+            model: 'Claude Sonnet',
+            outputs: 'Technical design document + final tech stack',
+            handoff: 'Passes design to Designer (if enabled) or Tester'
+        },
+        designer: {
+            title: '🎨 Designer (optional)',
+            tagline: 'Adds UX/visual polish for projects with a UI',
+            does: [
+                'Defines color palette, typography, spacing',
+                'Designs key screens and user flows',
+                'Documents UI component patterns',
+                'Specifies images/icons needed for Builder',
+                'Future: integrates Higgsfield MCP for generated visuals'
+            ],
+            model: 'Claude Sonnet (+ Higgsfield MCP in future)',
+            outputs: 'Design system + screen mockups + asset list',
+            handoff: 'Passes design system to Tester'
+        },
+        tester: {
+            title: '🧪 Tester',
+            tagline: 'Writes meaningful tests against the actual design',
+            does: [
+                'Reads Architect\'s design (and Designer\'s if enabled)',
+                'Drafts 20–40 test cases for the real architecture',
+                'Covers happy paths, edge cases, error handling',
+                'Sets acceptance criteria the Builder must hit',
+                'Plans the test execution order'
+            ],
+            model: 'Claude Sonnet',
+            outputs: 'Test plan with acceptance criteria',
+            handoff: 'Passes plan to Reviewer'
+        },
+        reviewer: {
+            title: '🔎 Reviewer',
+            tagline: 'Last cheap check before Builder runs (expensive)',
+            does: [
+                'Cross-checks Scout + Architect + Tester for coherence',
+                'Catches conflicting assumptions across agents',
+                'Flags missing requirements coverage',
+                'Pushes back on optimistic estimates',
+                'Final gate before Builder spend'
+            ],
+            model: 'Claude Sonnet',
+            outputs: 'Validation report + final spec for Builder',
+            handoff: 'Approves Builder to start'
+        },
+        builder: {
+            title: '🛠️ Builder',
+            tagline: 'Writes code AND runs the test suite — must be green before handoff',
+            does: [
+                'Runs Claude Code CLI with the final spec from Reviewer',
+                'Generates real code in the project directory',
+                'Writes test files matching Tester\'s plan',
+                'EXECUTES the test suite (npm test / pytest / phpunit) — must pass before complete',
+                'Iterates on failures within budget cap'
+            ],
+            model: 'Claude Code CLI (sonnet, billed to your Anthropic key)',
+            outputs: 'Working code + passing test suite + iteration log',
+            handoff: 'Hands artifact to Code Reviewer'
+        },
+        code_reviewer: {
+            title: '👀 Code Reviewer',
+            tagline: 'Reads the code for quality, security, and maintainability issues',
+            does: [
+                'Reviews Builder\'s code (NOT a test runner — honest naming)',
+                'Flags code smells, missing error handling, hardcoded values',
+                'Verifies test coverage matches the test plan',
+                'Checks that Builder\'s self-reported tests actually exist in the code',
+                'Reports issues for Builder to fix or accept'
+            ],
+            model: 'Claude Sonnet',
+            outputs: 'Code review report with severity-ranked issues',
+            handoff: 'Passes to Smoke Test'
+        },
+        smoke_test: {
+            title: '💨 Smoke Test',
+            tagline: 'Actually runs the deployed app and clicks buttons (real execution, no LLM)',
+            does: [
+                'Deploys to a staging URL (/preview/ subpath)',
+                'Hits key endpoints with real HTTP requests (curl/fetch)',
+                'Runs Playwright against the live UI for critical flows',
+                'Verifies HTTP 200s, expected JSON shapes, no console errors',
+                'Takes screenshots of key pages for visual diff'
+            ],
+            model: 'Headless browser + curl (deterministic checks, no LLM)',
+            outputs: 'Pass/fail report per check + screenshots',
+            handoff: 'Passes to Security / Performance / Deploy'
+        },
+        security_auditor: {
+            title: '🔒 Security Auditor (optional)',
+            tagline: 'Catches vulnerabilities before they reach production',
+            does: [
+                'Audits auth, session, and credential handling',
+                'Checks for injection (SQL, command, XSS) vulnerabilities',
+                'Reviews input sanitization and output encoding',
+                'Validates secrets management (no keys in code)',
+                'Flags any sensitive data exposure risks'
+            ],
+            model: 'Claude Sonnet',
+            outputs: 'Security report ranked by severity (critical/high/med/low)',
+            handoff: 'Passes to Performance Auditor or Deploy'
+        },
+        performance_auditor: {
+            title: '⚡ Performance Auditor (optional)',
+            tagline: 'Makes sure it\'s fast before users notice',
+            does: [
+                'Identifies slow database queries or N+1 patterns',
+                'Checks asset sizes (images, JS bundles)',
+                'Reviews caching strategy',
+                'Flags blocking API calls or sync I/O',
+                'Estimates load characteristics'
+            ],
+            model: 'Claude Sonnet',
+            outputs: 'Performance report + optimization suggestions',
+            handoff: 'Passes to Deploy'
+        }
+    };
+
+    var state = {
+        projects: [],
+        statuses: [],
+        approvals: [],
+        currentApprovalId: null,
+        currentProjectId: null,
+        isLoading: false,
+        queueRunnerActive: false,
+        queueRunnerBusy: false,
+        queueRunnerCurrentProjectId: null
+    };
+
+    function $(id) { return document.getElementById(id); }
+    function log() { try { console.log.apply(console, ['[MC-Pipeline]'].concat([].slice.call(arguments))); } catch(e) {} }
+
+    function toast(msg, isError) {
+        var t = document.createElement('div');
+        t.className = 'toast' + (isError ? ' error' : '');
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(function() { t.parentNode && t.parentNode.removeChild(t); }, 3500);
+    }
+
+    function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+        });
+    }
+
+    function fmtMoney(n) { return '$' + (parseFloat(n) || 0).toFixed(2); }
+
+    function api(path, opts) {
+        opts = opts || {};
+        opts.credentials = 'same-origin';
+        opts.headers = opts.headers || {};
+        if (opts.body && !opts.headers['Content-Type']) {
+            opts.headers['Content-Type'] = 'application/json';
+        }
+        return fetch(API + path, opts).then(function(r) {
+            return r.text().then(function(txt) {
+                if (r.status === 401 || r.status === 403) {
+                    window.location.href = '/mission-control/';
+                    throw new Error('Not authenticated');
+                }
+                var data = {};
+                try { data = txt ? JSON.parse(txt) : {}; } catch (e) {
+                    throw new Error('Server returned non-JSON (HTTP ' + r.status + '). Try refreshing.');
+                }
+                if (!r.ok) {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        throw new Error('Not authenticated');
+                    }
+                    throw new Error(data.error || ('HTTP ' + r.status));
+                }
+                return data;
+            });
+        });
+    }
+
+    function openModal() { $('detailModal').classList.add('active'); }
+    function closeModal() {
+        $('detailModal').classList.remove('active');
+        $('approvalSection').style.display = 'none';
+        $('deploySection').style.display = 'none';
+        $('modalError').style.display = 'none';
+        state.currentApprovalId = null;
+        state.currentProjectId = null;
+    }
+
+    function showAgentInfo(agentKey) {
+        var info = AGENT_INFO[agentKey];
+        if (!info) return;
+
+        $('modalTitle').textContent = info.title;
+
+        var doesHtml = info.does.map(function(d) {
+            return '<li style="margin-bottom:0.4rem;">' + escapeHtml(d) + '</li>';
+        }).join('');
+
+        $('modalBody').innerHTML =
+            '<div style="color:var(--text-secondary);font-size:0.95rem;margin-bottom:1.25rem;font-style:italic;">' + escapeHtml(info.tagline) + '</div>' +
+            '<div class="detail-row"><strong>What it does:</strong></div>' +
+            '<ul style="margin:0.5rem 0 1.25rem 1.25rem;font-size:0.9rem;">' + doesHtml + '</ul>' +
+            '<div class="detail-row"><strong>Model:</strong> ' + escapeHtml(info.model) + '</div>' +
+            '<div class="detail-row"><strong>Outputs:</strong> ' + escapeHtml(info.outputs) + '</div>' +
+            '<div class="detail-row"><strong>Handoff:</strong> ' + escapeHtml(info.handoff) + '</div>';
+
+        $('approvalSection').style.display = 'none';
+        $('deploySection').style.display = 'none';
+        openModal();
+    }
+
+    function showProjectDetail(project) {
+        state.currentProjectId = project.id;
+        var f = project.fields || {};
+        var name = f.name || 'Untitled';
+        var stage = f.status || 'draft';
+        var status = state.statuses.find(function(s) {
+            return (s.fields || {}).project_name === name && (s.fields || {}).stage === stage;
+        });
+        var sf = status ? (status.fields || {}) : {};
+
+        $('modalTitle').textContent = name;
+
+        var deployRow = '';
+        if (f.deploy_status === 'deployed' && f.deploy_url) {
+            deployRow = '<div class="detail-row"><strong>Live URL:</strong> <a class="deploy-link" href="' + escapeHtml(f.deploy_url) + '" target="_blank">' + escapeHtml(f.deploy_url) + ' ↗</a></div>';
+        } else if (f.deploy_path) {
+            deployRow = '<div class="detail-row"><strong>Deploy target:</strong> ' + escapeHtml(f.deploy_path) + '</div>';
+        }
+
+        var html =
+            '<div class="detail-row"><strong>Stage:</strong> ' + escapeHtml(stage) + '</div>' +
+            '<div class="detail-row"><strong>Agent:</strong> ' + escapeHtml(sf.agent_name || f.current_agent || 'Unassigned') + '</div>' +
+            '<div class="detail-row"><strong>Status:</strong> ' + escapeHtml(sf.status || 'idle') + '</div>' +
+            '<div class="detail-row"><strong>Tokens:</strong> ' + (sf.tokens_used || 0) + '</div>' +
+            '<div class="detail-row"><strong>Cost:</strong> ' + fmtMoney(sf.cost) + '</div>' +
+            '<div class="detail-row"><strong>Budget:</strong> ' + fmtMoney(f.budget_spent) + ' / ' + fmtMoney(f.budget_cap) + '</div>' +
+            deployRow +
+            '<div class="detail-row"><strong>Requirements:</strong></div>' +
+            '<div class="output-block">' + escapeHtml(f.requirements || 'N/A') + '</div>';
+
+        if (sf.output) {
+            html += '<div class="detail-row" style="margin-top:1rem;"><strong>Latest Output:</strong></div>' +
+                    '<div class="output-block">' + escapeHtml(sf.output) + '</div>';
+        }
+
+        $('modalBody').innerHTML = html;
+        $('approvalSection').style.display = 'none';
+
+        // Show Deploy section if Builder is complete and not yet deployed
+        var isBuilderComplete = sf.stage === 'builder' && sf.status === 'complete';
+        var notYetDeployed = f.deploy_status !== 'deployed';
+        if (isBuilderComplete && notYetDeployed) {
+            $('deploySection').style.display = 'block';
+        } else {
+            $('deploySection').style.display = 'none';
+        }
+
+        openModal();
+    }
+
+    function showApproval(approval) {
+        var f = approval.fields || {};
+        state.currentApprovalId = f.approval_id || approval.id;
+
+        $('modalTitle').textContent = '⚠️ Approval Required';
+
+        var html =
+            '<div class="detail-row"><strong>Project:</strong> ' + escapeHtml(f.project_name) + '</div>' +
+            '<div class="detail-row"><strong>Stage:</strong> ' + escapeHtml(f.stage) + '</div>' +
+            '<div class="detail-row" style="margin-top:1rem;"><strong>Agent Output:</strong></div>' +
+            '<div class="output-block">' + escapeHtml(f.agent_output || 'No output provided') + '</div>';
+
+        $('modalBody').innerHTML = html;
+        $('approvalComments').value = '';
+        $('approvalSection').style.display = 'block';
+        $('deploySection').style.display = 'none';
+        openModal();
+    }
+
+    function decide(decision) {
+        if (!state.currentApprovalId) return;
+        var comments = $('approvalComments').value;
+        var err = $('modalError');
+        err.style.display = 'none';
+        $('btnApprove').disabled = true;
+        $('btnReject').disabled = true;
+
+        api('/approvals/decide.php', {
+            method: 'POST',
+            body: JSON.stringify({
+                approval_id: state.currentApprovalId,
+                decision: decision,
+                comments: comments
+            })
+        }).then(function(data) {
+            var msg = 'Decision: ' + decision;
+            if (data.iteration_created && data.iteration_label) {
+                msg = 'Rejected → created ' + data.iteration_label + ' — ' + (data.first_stage || 'first stage') + ' running';
+            } else if (data.next_stage) {
+                msg += ' — ' + data.next_stage + ' triggered';
+            }
+            toast(msg);
+            closeModal();
+            loadAll();
+            // Burst poll for 10s after click to catch cascade hops
+            var burst = 0;
+            var burstId = setInterval(function() {
+                burst++;
+                loadAll();
+                if (burst >= 10) clearInterval(burstId);
+            }, 1000);
+        }).catch(function(e) {
+            err.textContent = 'Error: ' + e.message;
+            err.style.display = 'block';
+        }).then(function() {
+            $('btnApprove').disabled = false;
+            $('btnReject').disabled = false;
+        });
+    }
+
+    function toggleAutoFlag(inputEl) {
+        var flag = inputEl.getAttribute('data-toggle-flag');
+        var projectId = inputEl.getAttribute('data-project-id');
+        if (!flag || !projectId) return;
+
+        var newValue = inputEl.checked;
+        inputEl.disabled = true;
+
+        var payload = { id: projectId };
+        payload[flag] = newValue;
+
+        api('/projects/update.php', { method: 'POST', body: JSON.stringify(payload) })
+            .then(function() {
+                inputEl.disabled = false;
+                var project = state.projects.find(function(p) { return p.id === projectId; });
+                if (project && project.fields) project.fields[flag] = newValue;
+                toast('Auto-approve ' + flag.replace('auto_', '') + ': ' + (newValue ? 'ON' : 'OFF'));
+            })
+            .catch(function(e) {
+                // Revert on failure
+                inputEl.checked = !newValue;
+                inputEl.disabled = false;
+                toast('Failed: ' + e.message, true);
+            });
+    }
+
+    function decideFromCard(approvalId, decision, btnEl) {
+        if (!approvalId) return;
+        var row = btnEl.parentElement;
+        row.querySelectorAll('button').forEach(function(b) { b.disabled = true; });
+        var orig = btnEl.textContent;
+        btnEl.textContent = decision === 'approved' ? 'Approving…' : 'Rejecting…';
+
+        api('/approvals/decide.php', {
+            method: 'POST',
+            body: JSON.stringify({
+                approval_id: approvalId,
+                decision: decision,
+                comments: ''
+            })
+        }).then(function(data) {
+            var msg = decision === 'approved' ? '✅ Approved' : '❌ Rejected';
+            if (data.iteration_created && data.iteration_label) {
+                msg = '❌ Rejected → created ' + data.iteration_label + ' — ' + (data.first_stage || 'first stage') + ' running';
+            } else if (data.next_stage) {
+                msg += ' — ' + data.next_stage + ' triggered';
+            }
+            toast(msg);
+            loadAll();
+            // Burst poll for 10s
+            var burst = 0;
+            var burstId = setInterval(function() {
+                burst++;
+                loadAll();
+                if (burst >= 10) clearInterval(burstId);
+            }, 1000);
+        }).catch(function(e) {
+            toast('Failed: ' + e.message, true);
+            row.querySelectorAll('button').forEach(function(b) { b.disabled = false; });
+            btnEl.textContent = orig;
+        });
+    }
+
+    function deployFromModal() {
+        if (!state.currentProjectId) return;
+        var btn = $('btnDeployModal');
+        btn.disabled = true;
+        var orig = btn.textContent;
+        btn.textContent = 'Deploying…';
+
+        api('/projects/deploy.php', {
+            method: 'POST',
+            body: JSON.stringify({ project_id: state.currentProjectId })
+        }).then(function(data) {
+            toast('Deployed to ' + data.deploy_url);
+            closeModal();
+            return loadAll();
+        }).catch(function(e) {
+            $('modalError').textContent = 'Deploy failed: ' + e.message;
+            $('modalError').style.display = 'block';
+        }).then(function() {
+            btn.disabled = false;
+            btn.textContent = orig;
+        });
+    }
+
+    function deployFromCard(projectId, projectName, btnEl) {
+        if (!projectId) return;
+        btnEl.disabled = true;
+        var orig = btnEl.textContent;
+        btnEl.textContent = 'Deploying…';
+
+        api('/projects/deploy.php', {
+            method: 'POST',
+            body: JSON.stringify({ project_id: projectId })
+        }).then(function(data) {
+            toast(projectName + ' → ' + data.deploy_url);
+            return loadAll();
+        }).catch(function(e) {
+            toast('Deploy failed: ' + e.message, true);
+            btnEl.disabled = false;
+            btnEl.textContent = orig;
+        });
+    }
+
+    // ---- Queue / job runner -------------------------------------------------
+
+    // POST to start.php to begin a specific job (moves it out of the Queue column).
+    function startJob(projectId, btn) {
+        if (!projectId) return Promise.resolve();
+        var orig;
+        if (btn) { btn.disabled = true; orig = btn.textContent; btn.textContent = 'Starting…'; }
+
+        return api('/agents/start.php', {
+            method: 'POST',
+            body: JSON.stringify({ project_id: projectId })
+        }).then(function(data) {
+            toast('▶ Job started — ' + (data.stage || 'first stage'));
+            return loadAll();
+        }).catch(function(e) {
+            toast('Start failed: ' + e.message, true);
+            if (btn) { btn.disabled = false; btn.textContent = orig; }
+            throw e;
+        });
+    }
+
+    // A project is "terminal" once it's deployed or has stopped (failed/paused).
+    function isProjectTerminal(f) {
+        return f.deploy_status === 'deployed' || f.status === 'failed' || f.status === 'paused';
+    }
+
+    function updateQueueRunnerBtn() {
+        var btn = $('btnRunQueue');
+        if (!btn) return;
+        btn.textContent = state.queueRunnerActive ? '⏸ Stop Queue Runner' : '▶ Run Queued Jobs';
+        btn.classList.toggle('active', state.queueRunnerActive);
+    }
+
+    function setQueueRunner(active) {
+        state.queueRunnerActive = active;
+        try { localStorage.setItem('mcQueueRunnerActive', active ? '1' : '0'); } catch (e) {}
+        if (active) state.queueRunnerCurrentProjectId = null;
+        updateQueueRunnerBtn();
+    }
+
+    function toggleQueueRunner() {
+        setQueueRunner(!state.queueRunnerActive);
+        if (state.queueRunnerActive) maybeContinueQueue();
+        else toast('Queue runner stopped');
+    }
+
+    // Start the oldest remaining queued job. If none remain, stop the runner.
+    function runNextQueued() {
+        var queued = state.projects.filter(function(p) {
+            return (p.fields || {}).current_stage === 'queued';
+        });
+        if (queued.length === 0) {
+            setQueueRunner(false);
+            toast('All queued jobs done');
+            return;
+        }
+        queued.sort(function(a, b) {
+            return (a.createdTime || '').localeCompare(b.createdTime || '');
+        });
+        var next = queued[0];
+        state.queueRunnerBusy = true;
+        startJob(next.id, null).then(function() {
+            state.queueRunnerBusy = false;
+        }).catch(function() {
+            state.queueRunnerBusy = false;
+        });
+    }
+
+    // Called after each loadAll() render. Advances the queue when the runner is on.
+    function maybeContinueQueue() {
+        if (!state.queueRunnerActive || state.queueRunnerBusy) return;
+
+        function isActiveJob(p) {
+            var f = p.fields || {};
+            if ((f.current_stage || f.status) === 'queued') return false;
+            if (isProjectTerminal(f)) return false;
+            return true;
+        }
+
+        var hasActive = state.projects.some(isActiveJob);
+        if (hasActive) return;
+
+        runNextQueued();
+    }
+
+    function renderCard(project, status, pendingApproval, opts) {
+        opts = opts || {};
+        var f = project.fields || {};
+        var sf = status ? (status.fields || {}) : {};
+        var agentName = sf.agent_name || f.current_agent || 'Unassigned';
+        var agentStatus = sf.status || 'idle';
+        var isReadyToDeploy = opts.readyToDeploy && f.deploy_path;
+
+        var icon, text;
+        if (opts.isQueued) {
+            icon = '📥'; text = 'Queued';
+        } else if (pendingApproval) {
+            icon = '⚠️'; text = 'Awaiting approval';
+        } else if (isReadyToDeploy) {
+            icon = '🟢'; text = 'Ready to deploy';
+        } else if (agentStatus === 'running') {
+            icon = '<span class="spinner">⟳</span>'; text = 'Running';
+        } else if (agentStatus === 'complete') {
+            icon = '✅'; text = 'Complete';
+        } else if (agentStatus === 'failed') {
+            icon = '❌'; text = 'Failed';
+        } else if (agentStatus === 'waiting_approval') {
+            icon = '⚠️'; text = 'Waiting approval';
+        } else {
+            icon = '○'; text = 'Idle';
+        }
+
+        var deployBtnHtml = '';
+        var deployLinkHtml = '';
+        var approveBtnHtml = '';
+        var runBtnHtml = '';
+        // Queued cards get a manual "Run This Job" button and skip approve/reject/deploy.
+        if (opts.isQueued) {
+            runBtnHtml = '<button class="card-run-btn" type="button" data-run-id="' + project.id + '">▶ Run This Job</button>';
+        }
+        if (!opts.isQueued && isReadyToDeploy) {
+            deployBtnHtml = '<button class="card-deploy-btn" type="button" data-deploy-id="' + project.id + '" data-deploy-name="' + escapeHtml(f.name) + '">🚀 Deploy to ' + escapeHtml(f.deploy_path) + '</button>';
+        }
+        if (!opts.isQueued && pendingApproval) {
+            var apId = (pendingApproval.fields || {}).approval_id || '';
+            approveBtnHtml =
+                '<div class="card-action-row">' +
+                    '<button type="button" class="card-action-btn reject" data-card-decision="rejected" data-card-approval="' + escapeHtml(apId) + '">Reject</button>' +
+                    '<button type="button" class="card-action-btn approve" data-card-decision="approved" data-card-approval="' + escapeHtml(apId) + '">Approve</button>' +
+                '</div>';
+        }
+
+        // Show ALL preset auto-approve flags as read-only badges (set them in Create/Detail modals)
+        var activeFlags = AUTO_FLAGS.filter(function(flag) { return !!f[flag]; });
+        var togglesHtml = '';
+        if (activeFlags.length > 0) {
+            togglesHtml = '<div class="card-flags">' +
+                activeFlags.map(function(flag) {
+                    return '<span class="flag">⚡ ' + flag.replace('auto_', '') + '</span>';
+                }).join('') + '</div>';
+        }
+
+        var card = document.createElement('div');
+        var classes = ['card'];
+        if (pendingApproval) classes.push('pending');
+        if (isReadyToDeploy) classes.push('ready-to-deploy');
+        card.className = classes.join(' ');
+        card.innerHTML =
+            '<div class="card-title">' + escapeHtml(f.name || 'Untitled') + '</div>' +
+            '<div class="card-agent">' + escapeHtml(agentName) + '</div>' +
+            '<div class="card-status"><span class="status-icon">' + icon + '</span><span>' + text + '</span></div>' +
+            deployLinkHtml +
+            runBtnHtml +
+            deployBtnHtml +
+            approveBtnHtml +
+            togglesHtml;
+
+        card.addEventListener('click', function(e) {
+            // Don't open modal if clicking deploy button or action buttons
+            var el = e.target;
+            while (el && el !== card) {
+                if (el.classList && (el.classList.contains('card-deploy-btn') || el.classList.contains('card-action-btn') || el.classList.contains('card-run-btn'))) return;
+                el = el.parentElement;
+            }
+            if (pendingApproval) showApproval(pendingApproval);
+            else showProjectDetail(project);
+        });
+
+        // Wire manual "Run This Job" button on queued cards
+        var runBtn = card.querySelector('.card-run-btn');
+        if (runBtn) {
+            runBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                startJob(runBtn.getAttribute('data-run-id'), runBtn);
+            });
+        }
+
+        // Wire deploy button
+        var deployBtn = card.querySelector('.card-deploy-btn');
+        if (deployBtn) {
+            deployBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                deployFromCard(deployBtn.getAttribute('data-deploy-id'), deployBtn.getAttribute('data-deploy-name'), deployBtn);
+            });
+        }
+
+        // Wire inline approve/reject buttons on card
+        card.querySelectorAll('.card-action-btn').forEach(function(b) {
+            b.addEventListener('click', function(e) {
+                e.stopPropagation();
+                decideFromCard(b.getAttribute('data-card-approval'), b.getAttribute('data-card-decision'), b);
+            });
+        });
+
+        return card;
+    }
+
+    function render() {
+        STAGES.forEach(function(stage) {
+            var container = $('stage-' + stage);
+            container.innerHTML = '';
+
+            var isQueueColumn = stage === 'queued';
+
+            var projectsAtStage = state.projects.filter(function(p) {
+                var f = p.fields || {};
+                var projStage = f.current_stage || f.status;
+                if (isQueueColumn) {
+                    return projStage === 'queued';
+                }
+                // Non-queue stages: skip deployed and queued projects
+                if (f.deploy_status === 'deployed') return false;
+                return (projStage === stage);
+            });
+
+            $('count-' + stage).textContent = projectsAtStage.length;
+
+            if (projectsAtStage.length === 0) {
+                container.innerHTML = '<div class="empty-col">' + (isQueueColumn ? 'No queued jobs' : 'No projects') + '</div>';
+                return;
+            }
+
+            projectsAtStage.forEach(function(project) {
+                if (isQueueColumn) {
+                    container.appendChild(renderCard(project, null, null, { isQueued: true, stage: 'queued' }));
+                    return;
+                }
+
+                var name = (project.fields || {}).name;
+                var status = state.statuses.find(function(s) {
+                    var sf = s.fields || {};
+                    return sf.project_name === name && sf.stage === stage;
+                });
+                var pending = state.approvals.find(function(a) {
+                    var af = a.fields || {};
+                    return af.project_name === name && af.stage === stage && (af.decision === 'pending' || !af.decision);
+                });
+
+                // Check if this is Builder column AND status is complete → ready to deploy
+                var sf = status ? (status.fields || {}) : {};
+                var readyToDeploy = stage === 'builder' && sf.status === 'complete' && !pending;
+
+                container.appendChild(renderCard(project, status, pending, { readyToDeploy: readyToDeploy, stage: stage }));
+            });
+        });
+    }
+
+    function loadAll() {
+        if (state.isLoading) return Promise.resolve();
+        state.isLoading = true;
+        $('refreshIndicator').textContent = 'Refreshing…';
+
+        return Promise.all([
+            api('/projects/list.php').then(function(d) { state.projects = d.projects || []; }).catch(function(e) { log('projects failed', e.message); }),
+            api('/agent-status/list.php').then(function(d) { state.statuses = d.statuses || []; }).catch(function(e) { log('statuses failed', e.message); }),
+            api('/approvals/list.php').then(function(d) { state.approvals = d.approvals || []; }).catch(function(e) { log('approvals failed', e.message); })
+        ]).then(function() {
+            render();
+            $('refreshIndicator').textContent = 'Auto-refreshing every 5 seconds · last updated ' + new Date().toLocaleTimeString();
+        }).then(function() {
+            state.isLoading = false;
+            maybeContinueQueue();
+        });
+    }
+
+    function logout() {
+        api('/auth.php', { method: 'DELETE' }).then(function() {
+            window.location.href = '/mission-control/';
+        }).catch(function() {
+            window.location.href = '/mission-control/';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        log('DOMContentLoaded — wiring handlers');
+
+        $('btnCloseModal').addEventListener('click', closeModal);
+        $('btnCloseModal2').addEventListener('click', closeModal);
+        $('btnCancelApproval').addEventListener('click', closeModal);
+        $('btnApprove').addEventListener('click', function() { decide('approved'); });
+        $('btnReject').addEventListener('click', function() { decide('rejected'); });
+        $('btnDeployModal').addEventListener('click', deployFromModal);
+        $('logoutLink').addEventListener('click', function(e) { e.preventDefault(); logout(); });
+
+        // Queue runner — restore persisted on/off state, then wire the toggle button.
+        var storedRunner = false;
+        try { storedRunner = localStorage.getItem('mcQueueRunnerActive') === '1'; } catch (e) {}
+        state.queueRunnerActive = storedRunner;
+        updateQueueRunnerBtn();
+        $('btnRunQueue').addEventListener('click', toggleQueueRunner);
+
+        $('detailModal').addEventListener('click', function(e) {
+            if (e.target === $('detailModal')) closeModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Wire info icons on column headers
+        document.querySelectorAll('[data-agent-info]').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                showAgentInfo(btn.getAttribute('data-agent-info'));
+            });
+        });
+
+        loadAll();
+        setInterval(loadAll, 2000);
+    });
+})();
+</script>
+</body>
+</html>
