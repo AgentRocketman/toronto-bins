@@ -1653,6 +1653,44 @@
         return m + 'm' + (rem ? ' ' + rem + 's' : '');
     }
 
+    function formatDuration(ms) {
+        if (!(ms > 0) || ms < 1000) return '0s';
+        var totalSec = Math.round(ms / 1000);
+        var h = Math.floor(totalSec / 3600);
+        var m = Math.floor((totalSec % 3600) / 60);
+        var s = totalSec % 60;
+        if (h > 0) return h + 'h' + (m ? ' ' + m + 'm' : '');
+        if (m > 0) return m + 'm' + (s ? ' ' + s + 's' : '');
+        return s + 's';
+    }
+
+    // For a terminal patch, compute elapsed time from its creation to the latest
+    // terminal agent-status event (complete/failed/deployed/paused). Returns null
+    // if the patch is not terminal. Falls back to now() if no terminal event found.
+    function computePatchDurationMs(patch) {
+        var pf = patch.fields || {};
+        var stage = pf.current_stage || pf.status || '';
+        var patchTerminal = { deployed: 1, failed: 1, paused: 1 };
+        var isTerminal = !!patchTerminal[stage] || pf.deploy_status === 'deployed';
+        if (!isTerminal) return null;
+
+        var startMs = patch.createdTime ? new Date(patch.createdTime).getTime() : 0;
+        if (!startMs) return null;
+
+        // Latest terminal agent-status event for this patch.
+        var eventTerminal = { complete: 1, failed: 1, deployed: 1, paused: 1 };
+        var endMs = 0;
+        state.statuses.forEach(function(s) {
+            var sf = s.fields || {};
+            if (sf.project_name !== pf.name) return;
+            if (!eventTerminal[sf.status]) return;
+            var t = new Date(s.createdTime).getTime();
+            if (t > endMs) endMs = t;
+        });
+        if (!endMs) endMs = Date.now();
+        return endMs - startMs;
+    }
+
     function computeStageInfo(projectFields) {
         // Returns { stages: [{name, state, durationMs, label}], totalMs }
         var name = projectFields.name;
@@ -1884,6 +1922,11 @@
                         var mode = pf.patch_mode || 'full';
                         var iterLabel = pf.iteration_label || '?';
 
+                        var durMs = computePatchDurationMs(patch);
+                        var durationLine = durMs != null
+                            ? '<div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.3rem;">⏱ took ' + formatDuration(durMs) + '</div>'
+                            : '';
+
                         return '<div class="inline-patch-mini" data-patch-id="' + patch.id + '">' +
                             '<div class="patch-mini-header">' +
                                 '<div class="patch-mini-name">' + escapeHtml(pf.name || 'Untitled') + '</div>' +
@@ -1897,6 +1940,7 @@
                                 '<span>' + Math.round(pct) + '%</span>' +
                             '</div>' +
                             '<div class="budget-bar"><div class="budget-fill ' + budgetClass + '" style="width:' + pct + '%"></div></div>' +
+                            durationLine +
                         '</div>';
                     }).join('') +
                 '</div>';

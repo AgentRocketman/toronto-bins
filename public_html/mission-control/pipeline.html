@@ -56,7 +56,8 @@
             margin-bottom: 1.5rem;
         }
         .page-header h1 { font-size: 1.5rem; }
-        .refresh-indicator { color: var(--text-secondary); font-size: 0.8125rem; }
+        .refresh-indicator { color: var(--text-secondary); font-size: 0.8125rem; white-space: nowrap; }
+        .tab-nums { font-variant-numeric: tabular-nums; display: inline-block; min-width: 7ch; text-align: left; }
 
         .board {
             display: flex;
@@ -459,7 +460,7 @@
         <h1>Agent Pipeline</h1>
         <div style="display:flex;align-items:center;gap:1rem;">
             <button type="button" id="btnRunQueue">▶ Run Queued Jobs</button>
-            <div class="refresh-indicator" id="refreshIndicator">Auto-refreshing every 5 seconds…</div>
+            <div class="refresh-indicator" id="refreshIndicator" title="">Live · <span id="refreshClock" class="tab-nums">--:--:--</span></div>
         </div>
     </div>
 
@@ -1031,56 +1032,30 @@
         btn.classList.toggle('active', state.queueRunnerActive);
     }
 
+    // Read the server-side queue runner on/off switch and reflect it in the button.
+    function loadQueueRunnerState() {
+        return api('/queue-runner.php').then(function(data) {
+            state.queueRunnerActive = !!(data && data.active);
+            updateQueueRunnerBtn();
+        }).catch(function(e) { log('queue-runner state failed', e.message); });
+    }
+
+    // Flip the server-side queue runner on/off, then refresh the button from the server.
     function setQueueRunner(active) {
-        state.queueRunnerActive = active;
-        try { localStorage.setItem('mcQueueRunnerActive', active ? '1' : '0'); } catch (e) {}
-        if (active) state.queueRunnerCurrentProjectId = null;
-        updateQueueRunnerBtn();
+        return api('/queue-runner.php', {
+            method: 'POST',
+            body: JSON.stringify({ active: active })
+        }).then(function() {
+            return loadQueueRunnerState();
+        }).catch(function(e) {
+            toast('Queue runner update failed: ' + e.message, true);
+        });
     }
 
     function toggleQueueRunner() {
-        setQueueRunner(!state.queueRunnerActive);
-        if (state.queueRunnerActive) maybeContinueQueue();
-        else toast('Queue runner stopped');
-    }
-
-    // Start the oldest remaining queued job. If none remain, stop the runner.
-    function runNextQueued() {
-        var queued = state.projects.filter(function(p) {
-            return (p.fields || {}).current_stage === 'queued';
-        });
-        if (queued.length === 0) {
-            setQueueRunner(false);
-            toast('All queued jobs done');
-            return;
-        }
-        queued.sort(function(a, b) {
-            return (a.createdTime || '').localeCompare(b.createdTime || '');
-        });
-        var next = queued[0];
-        state.queueRunnerBusy = true;
-        startJob(next.id, null).then(function() {
-            state.queueRunnerBusy = false;
-        }).catch(function() {
-            state.queueRunnerBusy = false;
-        });
-    }
-
-    // Called after each loadAll() render. Advances the queue when the runner is on.
-    function maybeContinueQueue() {
-        if (!state.queueRunnerActive || state.queueRunnerBusy) return;
-
-        function isActiveJob(p) {
-            var f = p.fields || {};
-            if ((f.current_stage || f.status) === 'queued') return false;
-            if (isProjectTerminal(f)) return false;
-            return true;
-        }
-
-        var hasActive = state.projects.some(isActiveJob);
-        if (hasActive) return;
-
-        runNextQueued();
+        var next = !state.queueRunnerActive;
+        toast(next ? 'Queue runner started' : 'Queue runner stopped');
+        setQueueRunner(next);
     }
 
     function renderCard(project, status, pendingApproval, opts) {
@@ -1248,7 +1223,8 @@
     function loadAll() {
         if (state.isLoading) return Promise.resolve();
         state.isLoading = true;
-        $('refreshIndicator').textContent = 'Refreshing…';
+        $('refreshIndicator').title = 'Refreshing…';
+        $('refreshClock').textContent = '…';
 
         return Promise.all([
             api('/projects/list.php').then(function(d) { state.projects = d.projects || []; }).catch(function(e) { log('projects failed', e.message); }),
@@ -1256,10 +1232,11 @@
             api('/approvals/list.php').then(function(d) { state.approvals = d.approvals || []; }).catch(function(e) { log('approvals failed', e.message); })
         ]).then(function() {
             render();
-            $('refreshIndicator').textContent = 'Auto-refreshing every 5 seconds · last updated ' + new Date().toLocaleTimeString();
+            var t = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            $('refreshClock').textContent = t;
+            $('refreshIndicator').title = 'Updated ' + t;
         }).then(function() {
             state.isLoading = false;
-            maybeContinueQueue();
         });
     }
 
@@ -1282,11 +1259,10 @@
         $('btnDeployModal').addEventListener('click', deployFromModal);
         $('logoutLink').addEventListener('click', function(e) { e.preventDefault(); logout(); });
 
-        // Queue runner — restore persisted on/off state, then wire the toggle button.
-        var storedRunner = false;
-        try { storedRunner = localStorage.getItem('mcQueueRunnerActive') === '1'; } catch (e) {}
-        state.queueRunnerActive = storedRunner;
+        // Queue runner — state lives server-side. Load it, wire the toggle button,
+        // and poll so the button reflects changes made from other tabs/clients.
         updateQueueRunnerBtn();
+        loadQueueRunnerState();
         $('btnRunQueue').addEventListener('click', toggleQueueRunner);
 
         $('detailModal').addEventListener('click', function(e) {
@@ -1306,6 +1282,8 @@
 
         loadAll();
         setInterval(loadAll, 2000);
+        // Reflect server-side queue runner state from other tabs/clients
+        setInterval(loadQueueRunnerState, 5000);
     });
 })();
 </script>
