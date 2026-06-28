@@ -1,0 +1,47 @@
+# My Little Shorter .htaccess Configuration
+
+# Enable URL Rewriting
+RewriteEngine On
+
+# HTTPS Redirect (uncomment for production with SSL)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirect short codes to redirect.php
+# Skip if requesting actual files or directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# Skip API, assets, and HTML files
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond %{REQUEST_URI} !^/assets/
+RewriteCond %{REQUEST_URI} !\.html$
+# Capture short code and pass to redirect.php
+RewriteRule ^([a-zA-Z0-9]+)$ redirect.php?code=$1 [L,QSA]
+
+# Deny access to data directory
+<IfModule mod_authz_core.c>
+    <Directory "data">
+        Require all denied
+    </Directory>
+</IfModule>
+
+# Legacy Apache 2.2
+<IfModule !mod_authz_core.c>
+    <Directory "data">
+        Order deny,allow
+        Deny from all
+    </Directory>
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Disable directory listing
+Options -Indexes
+
+# Custom error pages
+ErrorDocument 404 /error.html

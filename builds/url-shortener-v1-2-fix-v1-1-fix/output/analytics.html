@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - My URL Shorter</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>URL Analytics</h1>
+            <p class="subtitle">Track your shortened URLs and click statistics</p>
+        </header>
+
+        <main>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Loading analytics...</p>
+            </div>
+
+            <div id="error" class="error-message hidden">
+                <p id="errorText"></p>
+            </div>
+
+            <div id="emptyState" class="empty-state hidden">
+                <p>No URLs yet. <a href="index.html">Create your first short URL</a></p>
+            </div>
+
+            <div id="analyticsTable" class="analytics-container hidden">
+                <div class="table-controls">
+                    <p class="total-count">Total URLs: <span id="totalCount">0</span></p>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="analytics-table">
+                        <thead>
+                            <tr>
+                                <th>Short Code</th>
+                                <th>Original URL</th>
+                                <th class="text-center">Clicks</th>
+                                <th>Created</th>
+                                <th>Last Access</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="analyticsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <nav>
+                <a href="index.html">Back to Home</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script src="assets/js/analytics.js"></script>
+</body>
+</html>

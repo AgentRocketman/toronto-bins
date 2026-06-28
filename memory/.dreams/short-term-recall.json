@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-24T04:25:43.415Z",
+  "updatedAt": "2026-06-28T03:01:09.245Z",
   "entries": {
     "memory:memory/2026-06-13.md:34:69": {
       "key": "memory:memory/2026-06-13.md:34:69",
@@ -1255,6 +1255,567 @@
         "clarification",
         "needed",
         "wants"
+      ]
+    },
+    "memory:memory/2026-06-26.md:1:30": {
+      "key": "memory:memory/2026-06-26.md:1:30",
+      "path": "memory/2026-06-26.md",
+      "startLine": 1,
+      "endLine": 30,
+      "source": "memory",
+      "snippet": "# 2026-06-26 — Session Notes ## Polcu Project — COMPLETE ✅ Built full AI customer service chatbot for POLCU (St. Stanislaus - St. Casimir's Polish Parishes Credit Union). ### What was built: - **polcu.html** — Landing page with hero image + chat widget - **polcu-chat.js** — AI chatbot (self-contained widget, POLCU brand blue #213c92) - **polcu-chat-logger.js** — Session logging to Airtable - **api/chat.php** — OpenAI GPT-3.5-turbo backend with full knowledge base - **api/log-chat.php** — Chat logging endpoint - **api/config.php** — Shared config (Airtable + OpenAI keys) - **api/summarize-chats.php** — Analytics backend with AI summaries - **admin/analytics.html** — Chat analytics dashboard",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-27T04:25:35.408Z",
+      "lastRecalledAt": "2026-06-27T04:25:35.408Z",
+      "queryHashes": [
+        "11b1f12ff396"
+      ],
+      "recallDays": [
+        "2026-06-27"
+      ],
+      "conceptTags": [
+        "gpt",
+        "openai",
+        "polcu.html",
+        "polcu-chat.js",
+        "self-contained",
+        "polcu-chat-logger.js",
+        "api/chat.php",
+        "gpt-3.5-turbo"
+      ]
+    },
+    "memory:memory/2026-06-27.md:61:84": {
+      "key": "memory:memory/2026-06-27.md:61:84",
+      "path": "memory/2026-06-27.md",
+      "startLine": 61,
+      "endLine": 84,
+      "source": "memory",
+      "snippet": "2. **Wire real Telegram approval pings** — currently placeholder `REPLACE_WITH_TELEGRAM_BOT_TOKEN` in `mission-control/api/config.php`. Chat ID `8714809782`. 3. **Battle-test Quick Fix patch flow** end-to-end after recovery. 4. **Proper Iterate flow** — currently loop-back on Reject is manual. Should automate Builder re-trigger with rejection feedback. 5. **Auto-deploy after LAST enabled audit stage** — verify firing logic, not just after Builder. ## Credentials (operational, not secret-level) - MC password: `MissionControl2026!` - Auth: POST `/api/auth.php` `{\"password\":\"...\"}` → PHPSESSID cookie - Runner heartbeat secret: `mc-runner-heartbeat-2026` - Airtable token + Anthropic key: see ME",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "e414e8ba09a1",
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "replace-with-telegram-bot-token",
+        "mission-control/api/config.php",
+        "battle-test",
+        "end-to-end",
+        "loop-back",
+        "re-trigger",
+        "auto-deploy",
+        "secret-level"
+      ]
+    },
+    "memory:memory/2026-06-27.md:1:19": {
+      "key": "memory:memory/2026-06-27.md:1:19",
+      "path": "memory/2026-06-27.md",
+      "startLine": 1,
+      "endLine": 19,
+      "source": "memory",
+      "snippet": "# 2026-06-27 — Mission Control Build Day ## TL;DR Built and shipped **Mission Control** multi-agent orchestration system at https://agentrocketman.com/mission-control/ (password `MissionControl2026!`). Completed first real autonomous build end-to-end (URL Shortener) for ~$4.30. Debugged stalled cascade on Quick Fix patch flow. ## What Mission Control Is Multi-agent pipeline for autonomous code generation, phone-first workflow: **Scout → Architect → Designer* → Tester → Reviewer → Builder → Code Reviewer → Smoke Test → Security* → Performance* → Deployed** Stages with `*` are optional toggles. 8 planning agents are pure Sonnet API calls in PHP. Builder runs Claude Code CLI via container-si",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "e414e8ba09a1",
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "multi-agent",
+        "end-to-end",
+        "4.30",
+        "phone-first",
+        "container-si",
+        "mission",
+        "control",
+        "day"
+      ]
+    },
+    "memory:memory/2026-06-27.md:79:94": {
+      "key": "memory:memory/2026-06-27.md:79:94",
+      "path": "memory/2026-06-27.md",
+      "startLine": 79,
+      "endLine": 94,
+      "source": "memory",
+      "snippet": "Built and shipped **Mission Control** multi-agent orchestration system at https://agentrocketman.com/mission-control/ (password `MissionControl2026!`). Completed first real autonomous build end-to-end (URL Shortener) for ~$4.30. Debugged stalled cascade on Quick Fix patch flow. ## What Mission Control Is Multi-agent pipeline for autonomous code generation, phone-first workflow: **Scout → Architect → Designer* → Tester → Reviewer → Builder → Code Reviewer → Smoke Test → Security* → Performance* → Deployed** Stages with `*` are optional toggles. 8 planning agents are pure Sonnet API calls in PHP. Builder runs Claude Code CLI via container-side daemon. ## Key Architecture Decisions - **Conta",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "e414e8ba09a1",
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "multi-agent",
+        "end-to-end",
+        "4.30",
+        "phone-first",
+        "container-side",
+        "built",
+        "shipped",
+        "mission"
+      ]
+    },
+    "memory:memory/2026-06-27.md:15:38": {
+      "key": "memory:memory/2026-06-27.md:15:38",
+      "path": "memory/2026-06-27.md",
+      "startLine": 15,
+      "endLine": 38,
+      "source": "memory",
+      "snippet": "- **Airtable as DB** — base `apptYNRJTXwItvied`. Tables: - MissionControl_Projects: `tblZDjRO5OSIqzmEY` - MissionControl_AgentStatus: `tblwlhJRTnuHzivlb` - MissionControl_Approvals: `tblr4Wex6GwRwz4WE` - **Stage tracking via `current_stage` text field** — legacy `status` singleSelect couldn't be extended via API. New text field accepts any stage string. - **Auto-approve toggles preset upfront** (Create/Detail modals), NOT per-card. Per-stage flags: `auto_scout`, `auto_code_auditor` (legacy name for code_reviewer), `auto_smoke_test`, `auto_security`, `auto_performance`. - **Patch modes**: `full`, `quick_fix`, `bug_fix`, `add_feature` — each has its own pipeline via `getPipelineStages()`",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:05.112Z",
+      "queryHashes": [
+        "e414e8ba09a1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "missioncontrol-projects",
+        "missioncontrol-agentstatus",
+        "missioncontrol-approvals",
+        "current-stage",
+        "auto-approve",
+        "create/detail",
+        "per-card",
+        "per-stage"
+      ]
+    },
+    "memory:memory/2026-06-27.md:90:113": {
+      "key": "memory:memory/2026-06-27.md:90:113",
+      "path": "memory/2026-06-27.md",
+      "startLine": 90,
+      "endLine": 113,
+      "source": "memory",
+      "snippet": "- **Airtable as DB** — base `apptYNRJTXwItvied`. Tables: - MissionControl_Projects: `tblZDjRO5OSIqzmEY` - MissionControl_AgentStatus: `tblwlhJRTnuHzivlb` - MissionControl_Approvals: `tblr4Wex6GwRwz4WE` - **Stage tracking via `current_stage` text field** — legacy `status` singleSelect couldn't be extended via API. New text field accepts any stage string. - **Auto-approve toggles preset upfront** (Create/Detail modals), NOT per-card. Per-stage flags: `auto_scout`, `auto_code_auditor` (legacy name for code_reviewer), `auto_smoke_test`, `auto_security`, `auto_performance`. - **Patch modes**: `full`, `quick_fix`, `bug_fix`, `add_feature` — each has its own pipeline via `getPipelineStages()`",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:05.112Z",
+      "queryHashes": [
+        "e414e8ba09a1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "missioncontrol-projects",
+        "missioncontrol-agentstatus",
+        "missioncontrol-approvals",
+        "current-stage",
+        "auto-approve",
+        "create/detail",
+        "per-card",
+        "per-stage"
+      ]
+    },
+    "memory:memory/2026-06-27.md:136:161": {
+      "key": "memory:memory/2026-06-27.md:136:161",
+      "path": "memory/2026-06-27.md",
+      "startLine": 136,
+      "endLine": 161,
+      "source": "memory",
+      "snippet": "2. **Wire real Telegram approval pings** — currently placeholder `REPLACE_WITH_TELEGRAM_BOT_TOKEN` in `mission-control/api/config.php`. Chat ID `8714809782`. 3. **Battle-test Quick Fix patch flow** end-to-end after recovery. 4. **Proper Iterate flow** — currently loop-back on Reject is manual. Should automate Builder re-trigger with rejection feedback. 5. **Auto-deploy after LAST enabled audit stage** — verify firing logic, not just after Builder. ## Credentials (operational, not secret-level) - MC password: `MissionControl2026!` - Auth: POST `/api/auth.php` `{\"password\":\"...\"}` → PHPSESSID cookie - Runner heartbeat secret: `mc-runner-heartbeat-2026` - Airtable token + Anthropic key: see ME",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:05.112Z",
+      "queryHashes": [
+        "e414e8ba09a1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "replace-with-telegram-bot-token",
+        "mission-control/api/config.php",
+        "battle-test",
+        "end-to-end",
+        "loop-back",
+        "re-trigger",
+        "auto-deploy",
+        "secret-level"
+      ]
+    },
+    "memory:memory/2026-06-27.md:46:63": {
+      "key": "memory:memory/2026-06-27.md:46:63",
+      "path": "memory/2026-06-27.md",
+      "startLine": 46,
+      "endLine": 63,
+      "source": "memory",
+      "snippet": "- ✅ URL Shortener built end-to-end autonomously: https://agentrocketman.com/url-short/ (shorten, redirect, stats all working) - ✅ Total real spend: ~$4.30 (vs $10 budget cap) - ✅ Runner online & idle, polling every 15s - ✅ Approve/Reject buttons inline on Pipeline cards + Dashboard timeline - ✅ Timeline pills relabeled (waiting_approval/complete → \"View\", running → \"Running…\") - ✅ 11-column kanban with info icons (ⓘ) describing each agent ## Lessons Learned - **Airtable POST returns partial fields** — never trust the response shape; merge fields explicitly when chaining logic. - **`getNextStage` needs fallback** — pipelines vary per patch_mode; approving a stage outside the active pipeline",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:05.112Z",
+      "queryHashes": [
+        "e414e8ba09a1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "end-to-end",
+        "agentrocketman.com/url-short",
+        "4.30",
+        "approve/reject",
+        "waiting-approval/complete",
+        "11-column",
+        "patch-mode",
+        "url"
+      ]
+    },
+    "memory:memory/2026-06-27.md:121:138": {
+      "key": "memory:memory/2026-06-27.md:121:138",
+      "path": "memory/2026-06-27.md",
+      "startLine": 121,
+      "endLine": 138,
+      "source": "memory",
+      "snippet": "- ✅ URL Shortener built end-to-end autonomously: https://agentrocketman.com/url-short/ (shorten, redirect, stats all working) - ✅ Total real spend: ~$4.30 (vs $10 budget cap) - ✅ Runner online & idle, polling every 15s - ✅ Approve/Reject buttons inline on Pipeline cards + Dashboard timeline - ✅ Timeline pills relabeled (waiting_approval/complete → \"View\", running → \"Running…\") - ✅ 11-column kanban with info icons (ⓘ) describing each agent ## Lessons Learned - **Airtable POST returns partial fields** — never trust the response shape; merge fields explicitly when chaining logic. - **`getNextStage` needs fallback** — pipelines vary per patch_mode; approving a stage outside the active pipeline",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:05.112Z",
+      "queryHashes": [
+        "e414e8ba09a1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "end-to-end",
+        "agentrocketman.com/url-short",
+        "4.30",
+        "approve/reject",
+        "waiting-approval/complete",
+        "11-column",
+        "patch-mode",
+        "url"
+      ]
+    },
+    "memory:memory/2026-06-16.md:272:316": {
+      "key": "memory:memory/2026-06-16.md:272:316",
+      "path": "memory/2026-06-16.md",
+      "startLine": 272,
+      "endLine": 316,
+      "source": "memory",
+      "snippet": "### Browser Cache Disabled **Implementation:** - Added meta tags to index.html (Cache-Control, Pragma, Expires) - Created `.htaccess` file with server-side cache prevention - Cache-Control: no-cache, no-store, must-revalidate - Pragma: no-cache - Expires: 0 - ETags disabled - Applies to: HTML, JS, CSS, images, fonts, PHP **Result:** Browser will never cache any files; visitors always see latest version **Status:** ✅ Deployed (commit 97d5062) ### Navigation Bar Complete Rebuild — index2.html **Approach:** Used Claude Opus to rebuild nav from scratch (vs. transform hacks) **Removed:** - ❌ transform:scale() hacks (0.5, 1.3, 1.8) - ❌ Safari @supports overrides - ❌ Invalid CSS (or combin",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:05.112Z",
+      "queryHashes": [
+        "e414e8ba09a1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "index.html",
+        "cache-control",
+        "server-side",
+        "no-cache",
+        "no-store",
+        "must-revalidate",
+        "index2.html",
+        "0.5"
+      ]
+    },
+    "memory:memory/2026-06-16.md:238:280": {
+      "key": "memory:memory/2026-06-16.md:238:280",
+      "path": "memory/2026-06-16.md",
+      "startLine": 238,
+      "endLine": 280,
+      "source": "memory",
+      "snippet": "- /img/getmybin-logo.jpg ✓ (main logo) --- ## Additional Work (Continuation) — 2026-06-16 Evening ### Safari Desktop Logo Scaling Refinement **Problem:** Safari desktop logo was too large at 0.8 scale **Solution:** Reduced to 0.5 scale using @supports rule **Status:** ✅ Deployed (commit d3b8cf8) ### iPhone Landscape Orientation Issues Fixed **Problem 1 (Logo):** Logo positioned too far right when iPhone flipped horizontally **Solution:** Added landscape-specific media query `@media(orientation:landscape and max-width:900px)` - Logo left margin: 30px → 12px - Button padding: 6px 10px → 6px 8px **Status:** ✅ Deployed (commit 44f7ec5) **Problem 2 (Logo Redux):** Still too far to the right,",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:05.112Z",
+      "lastRecalledAt": "2026-06-28T03:01:05.112Z",
+      "queryHashes": [
+        "e414e8ba09a1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "img/getmybin-logo.jpg",
+        "0.8",
+        "0.5",
+        "landscape-specific",
+        "max-width",
+        "img",
+        "getmybin",
+        "logo.jpg"
+      ]
+    },
+    "memory:memory/2026-06-28.md:191:233": {
+      "key": "memory:memory/2026-06-28.md:191:233",
+      "path": "memory/2026-06-28.md",
+      "startLine": 191,
+      "endLine": 233,
+      "source": "memory",
+      "snippet": "- Verified live styles present. --- ## Mission Control — Fix Inline Patch Accordion Collapsing on Refresh (01:33 UTC) **Bug:** Expanding inline patches accordion collapsed after ~1s because `renderProjects()` rebuilds the grid every 2s and lost the open state. **Fix:** - Added `expandedPatches: {}` to dashboard state. - Badge click toggles class and records parentId in `state.expandedPatches`. - After each card render, if `state.expandedPatches[p.id]` is true, re-add `.open` to the inline list. **Deployment:** `deploy-final.sh agentrocketman.com` + hostinger-deploy.mjs. --- ## Mission Control — Active Patches Show as Cards (01:44 UTC) **Requested:** Active/running quick_fix patches s",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:09.245Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "state.expandedpatches",
+        "p.id",
+        "re-add",
+        "deploy-final.sh",
+        "agentrocketman.com",
+        "hostinger-deploy.mjs",
+        "active/running",
+        "quick-fix"
+      ]
+    },
+    "memory:memory/2026-06-28.md:222:266": {
+      "key": "memory:memory/2026-06-28.md:222:266",
+      "path": "memory/2026-06-28.md",
+      "startLine": 222,
+      "endLine": 266,
+      "source": "memory",
+      "snippet": "## Mission Control — Sort Patches Descending (01:46 UTC) **Requested:** Latest patch should be on top in the inline patches list. **Fix:** Changed inline patches sort from ascending `la.localeCompare(lb)` to descending `lb.localeCompare(la)`. **Deployment:** Same backup/deploy/restore workflow. --- ## Mission Control — Numeric Patch Sort Fix (01:48 UTC) **Bug:** String sorting placed `v1.2` incorrectly relative to `v1.20` (lexicographic order). **Fix:** Replaced `localeCompare` with numeric segment sort on iteration label parts, descending. Label “v1.20” now correctly sorts above “v1.2”. **Deployment:** backup/deploy to agentrocketman.com. --- ## Mission Control — Sort Patches by C",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:09.245Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "backup",
+        "la.localecompare",
+        "lb.localecompare",
+        "backup/deploy/restore",
+        "v1.2",
+        "v1.20",
+        "backup/deploy",
+        "agentrocketman.com"
+      ]
+    },
+    "memory:memory/2026-06-27.md:266:270": {
+      "key": "memory:memory/2026-06-27.md:266:270",
+      "path": "memory/2026-06-27.md",
+      "startLine": 266,
+      "endLine": 270,
+      "source": "memory",
+      "snippet": "1. **Stability test:** run a normal session on Kimi K2.7 Code, compare quality vs Sonnet on architecture/debug work 2. **Track Kimi spend daily** via https://openrouter.ai/activity to validate the cost savings 3. **Decide if Mission Control planning agents should also switch** to OpenRouter (currently still on Anthropic; ~5% of MC cost — probably not worth changing yet) 4. **Continue Mission Control polish:** Reject→Iterate auto-loop is the top workflow gap",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:09.245Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "router",
+        "k2.7",
+        "architecture/debug",
+        "openrouter.ai/activity",
+        "auto-loop",
+        "stability",
+        "test",
+        "run"
+      ]
+    },
+    "memory:memory/2026-06-28.md:166:200": {
+      "key": "memory:memory/2026-06-28.md:166:200",
+      "path": "memory/2026-06-28.md",
+      "startLine": 166,
+      "endLine": 200,
+      "source": "memory",
+      "snippet": "**Deployment:** - `deploy-final.sh agentrocketman.com` + `node hostinger-deploy.mjs agentrocketman.com /tmp/deploy-1782609209.tar.gz`. - Verified live HTML contains new delete/patches elements. **Next:** Test deleting a real project + verifying patch archive. --- ## Mission Control — Inline Patch Expansion (01:27 UTC) **Requested:** Remove \"Show patches\" checkbox; expand patches inline under the parent project when clicking \"Patches (N)\" badge. **Implementation:** - Updated `public_html/mission-control/dashboard.html`: - Removed the \"Show patches\" checkbox from header and `showPatches` state. - Root project grid now always hides patch projects. - Added `.inline-patches-list` conta",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:09.245Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "deploy-final.sh",
+        "agentrocketman.com",
+        "hostinger-deploy.mjs",
+        "tmp/deploy-1782609209.tar.gz",
+        "delete/patches",
+        "inline-patches-list",
+        "deployment",
+        "final.sh"
+      ]
+    },
+    "memory:memory/2026-06-28.md:141:175": {
+      "key": "memory:memory/2026-06-28.md:141:175",
+      "path": "memory/2026-06-28.md",
+      "startLine": 141,
+      "endLine": 175,
+      "source": "memory",
+      "snippet": "- Deployed via `node hostinger-deploy.mjs agentrocketman.com /tmp/deploy-1782607986.tar.gz`. - Verified live: `pipeline.html` contains the new placeholder text. **Next:** Need real test by rejecting an approval with comments. --- ## Mission Control — Delete Button + Patch Archiving (01:13 UTC) **Requested:** Delete project button + hide old patches behind a \"Patches\" link. **Implementation:** - Created `public_html/mission-control/api/projects/delete.php`: - Accepts POST `{project_id}`. - Loads project by ID via `airtableRequest('GET', table, [], id)`. - Deletes project record via `airtableRequest('DELETE', table, [], id)`. - Cleans up matching approval records. - **Fix applie",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:09.245Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "hostinger-deploy.mjs",
+        "agentrocketman.com",
+        "tmp/deploy-1782607986.tar.gz",
+        "pipeline.html",
+        "project-id",
+        "deployed",
+        "via",
+        "node"
+      ]
+    },
+    "memory:memory/2026-06-28.md:118:152": {
+      "key": "memory:memory/2026-06-28.md:118:152",
+      "path": "memory/2026-06-28.md",
+      "startLine": 118,
+      "endLine": 152,
+      "source": "memory",
+      "snippet": "- URL Shortener parent: `recjMPAzE1CMk5inB` (deployed `/url-short/`) --- ## Mission Control — Reject → Iterate Auto-Loop (00:53 UTC) **Requested:** Chris wanted the #1 open MC item — auto-loop on rejection. **Implementation:** - Created `public_html/mission-control/api/projects/patch-functions.php` with reusable `mcCreatePatchProject()`. - Refactored `api/projects/patch.php` to use the helper (no endpoint contract change). - Modified `api/approvals/decide.php`: - On reject with non-empty comments, auto-creates an iteration project. - Mode selection: `quick_fix` → quick_fix; `bug_fix`/`add_feature` → same; `full` → bug_fix. - Budget cap clamped to parent's remaining budget (default",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:09.245Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "url-short",
+        "auto-loop",
+        "api/projects/patch.php",
+        "api/approvals/decide.php",
+        "non-empty",
+        "auto-creates",
+        "quick-fix",
+        "bug-fix"
+      ]
+    },
+    "memory:memory/2026-06-28.md:100:127": {
+      "key": "memory:memory/2026-06-28.md:100:127",
+      "path": "memory/2026-06-28.md",
+      "startLine": 100,
+      "endLine": 127,
+      "source": "memory",
+      "snippet": "1. **Debug Kimi allowlist rejection** — inspect `normalizeModelRef`/`parseModelRef` to find key mismatch. Likely fix: align how `openrouter/moonshotai/kimi-k2.7-code` is keyed in `cfg.agents.defaults.models` vs. catalog. 2. Once unblocked: side-by-side quality test vs Sonnet baseline. 3. If acceptable: set as `agents.defaults.model.primary` default. 4. **Reject → Iterate auto-loop** (~1-2 hrs, biggest remaining workflow paper-cut) 5. Wire real Telegram approval pings (chat ID `8714809782`) 6. Add Delete project button (~15 min QoL) 7. Real Add Feature test on fresh project (Bug Fix + Add Feature unproven E2E) 8. Budget hard-stop (~30 min) ## Critical creds/IDs (carry-forward) - OpenRouter k",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T03:01:09.245Z",
+      "lastRecalledAt": "2026-06-28T03:01:09.245Z",
+      "queryHashes": [
+        "9fe332ae9af1"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "router",
+        "cfg.agents.defaults.models",
+        "side-by-side",
+        "agents.defaults.model.primary",
+        "auto-loop",
+        "1-2",
+        "paper-cut",
+        "hard-stop"
       ]
     }
   }

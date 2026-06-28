@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Mission Control — Login</title>
+    <style>
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f2e;
+            --border: #374151;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-green: #71b80c;
+            --red: #ef4444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .login-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+        h1 {
+            color: var(--accent-green);
+            font-size: 1.75rem;
+            margin-bottom: 0.25rem;
+        }
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+        }
+        .form-group { margin-bottom: 1.25rem; }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        input:focus { outline: none; border-color: var(--accent-green); }
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--accent-green);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .error {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid var(--red);
+            color: var(--red);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>Mission Control</h1>
+        <p class="subtitle">Sign in to continue</p>
+        <div class="error" id="errorBanner"></div>
+        <div class="form-group">
+            <label for="pwd">Password</label>
+            <input type="password" id="pwd" autocomplete="current-password" autofocus>
+        </div>
+        <button type="button" class="btn" id="btnLogin">Sign In</button>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        function $(id) { return document.getElementById(id); }
+
+        function showError(msg) {
+            var e = $('errorBanner');
+            e.textContent = msg;
+            e.style.display = 'block';
+        }
+
+        function hideError() {
+            $('errorBanner').style.display = 'none';
+        }
+
+        function login() {
+            hideError();
+            var pwd = $('pwd').value;
+            if (!pwd) {
+                showError('Please enter a password');
+                $('pwd').focus();
+                return;
+            }
+
+            var btn = $('btnLogin');
+            btn.disabled = true;
+            var originalText = btn.textContent;
+            btn.textContent = 'Signing in…';
+
+            fetch('/mission-control/api/auth.php', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pwd })
+            }).then(function(r) {
+                return r.json().then(function(data) {
+                    if (r.ok && data.success) {
+                        window.location.href = '/mission-control/dashboard.html';
+                    } else {
+                        showError(data.error || 'Invalid password');
+                        $('pwd').value = '';
+                        $('pwd').focus();
+                    }
+                });
+            }).catch(function(e) {
+                showError('Login failed: ' + e.message);
+            }).then(function() {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            $('btnLogin').addEventListener('click', login);
+            $('pwd').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') login();
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

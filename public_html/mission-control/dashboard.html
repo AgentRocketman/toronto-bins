@@ -786,20 +786,20 @@
 <div class="container">
     <div class="stats-row">
         <div class="stat-card">
-            <div class="stat-label">Active Projects</div>
-            <div class="stat-value" id="statActive">0</div>
+            <div class="stat-label">Total Projects</div>
+            <div class="stat-value" id="statProjects">0</div>
         </div>
         <div class="stat-card">
             <div class="stat-label">Pending Approvals</div>
             <div class="stat-value" id="statApprovals">0</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Deployed</div>
-            <div class="stat-value" id="statDeployed">0</div>
+            <div class="stat-label">Kimi Balance</div>
+            <div class="stat-value" id="statKimi">—</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Total Spent</div>
-            <div class="stat-value" id="statSpent">$0.00</div>
+            <div class="stat-label">Anthropic Balance</div>
+            <div class="stat-value" id="statAnthropic">—</div>
         </div>
     </div>
 
@@ -2067,20 +2067,12 @@
             state.projects = data.projects || [];
             state.statuses = statusesData.statuses || [];
             renderProjects();
-            var active = state.projects.filter(function(p) {
-                var s = (p.fields || {}).status;
-                var ds = (p.fields || {}).deploy_status;
-                return s !== 'complete' && s !== 'failed' && s !== 'paused' && ds !== 'deployed';
-            }).length;
+            var total = state.projects.length;
             var deployed = state.projects.filter(function(p) {
                 return (p.fields || {}).deploy_status === 'deployed';
             }).length;
-            var spent = state.projects.reduce(function(sum, p) {
-                return sum + (parseFloat((p.fields || {}).budget_spent) || 0);
-            }, 0);
-            $('statActive').textContent = active;
+            $('statProjects').textContent = total;
             $('statDeployed').textContent = deployed;
-            $('statSpent').textContent = fmtMoney(spent);
         }).catch(function(e) {
             // Transient API errors (Airtable hiccups, rate limits, brief 5xx)
             // should NOT wipe the screen — the existing data is still good and
@@ -2116,6 +2108,25 @@
         return api('/approvals/list.php').then(function(data) {
             $('statApprovals').textContent = (data.approvals || []).length;
         }).catch(function(e) { log('loadApprovals failed', e.message); });
+    }
+
+    function loadBalances() {
+        return api('/balances.php').then(function(data) {
+            if (data.balances.kimi !== null) {
+                $('statKimi').textContent = '$' + data.balances.kimi.toFixed(2);
+            } else {
+                $('statKimi').textContent = 'Error';
+            }
+            if (data.balances.anthropic !== null) {
+                $('statAnthropic').textContent = '$' + data.balances.anthropic.toFixed(2);
+            } else {
+                $('statAnthropic').textContent = 'Error';
+            }
+        }).catch(function(e) { 
+            log('loadBalances failed', e.message);
+            $('statKimi').textContent = '—';
+            $('statAnthropic').textContent = '—';
+        });
     }
 
     function loadRunnerStatus() {
@@ -2197,8 +2208,10 @@
 
         loadProjects();
         loadApprovals();
+        loadBalances();
         loadRunnerStatus();
         setInterval(function() { loadProjects(); loadApprovals(); loadRunnerStatus(); }, 2000);
+        setInterval(function() { loadBalances(); }, 30000); // Refresh balances every 30s
     });
 })();
 </script>
