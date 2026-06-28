@@ -797,14 +797,6 @@
             <div class="stat-label">Kimi Remaining</div>
             <div class="stat-value" id="statKimi">—</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-label">Kimi Usage</div>
-            <div class="stat-value" id="statKimiUsage">—</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Anthropic Balance</div>
-            <div class="stat-value" id="statAnthropic" style="font-size: 0.75rem; line-height: 1.3;">N/A (console only)</div>
-        </div>
     </div>
 
     <div class="section-header">
@@ -2130,20 +2122,8 @@
                 } else {
                     $('statKimi').textContent = 'N/A';
                 }
-                
-                // Kimi usage (total spent)
-                if (data.balances && data.balances.kimi_usage && typeof data.balances.kimi_usage === 'number') {
-                    $('statKimiUsage').textContent = '$' + data.balances.kimi_usage.toFixed(2);
-                } else {
-                    $('statKimiUsage').textContent = 'N/A';
-                }
-                
-                // Anthropic balance
-                $('statAnthropic').textContent = 'Check console';
             }).catch(function(e) { 
-                $('statKimi').textContent = 'Error';
-                $('statKimiUsage').textContent = 'Error';
-                $('statAnthropic').textContent = 'Check console';
+                $('statKimi').textContent = 'N/A';
             });
     }
 
