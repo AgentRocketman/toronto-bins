@@ -2116,13 +2116,16 @@
                 return r.json();
             })
             .then(function(data) {
-                console.log('Balance API response:', JSON.stringify(data));
+                console.log('Balance API response:', data);
+                if (data._debug_full_response) {
+                    console.log('Full OpenRouter response:', data._debug_full_response);
+                }
                 
                 // Kimi balance
                 if (data.balances && data.balances.kimi && typeof data.balances.kimi === 'number') {
                     $('statKimi').textContent = '$' + data.balances.kimi.toFixed(2);
                 } else if (data.balances && data.balances.errors && data.balances.errors.length > 0) {
-                    $('statKimi').textContent = data.balances.errors[0].substring(0, 20);
+                    $('statKimi').textContent = data.balances.errors[0].substring(0, 50);
                 } else {
                     $('statKimi').textContent = 'API error';
                 }
