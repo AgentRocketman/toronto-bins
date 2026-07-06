@@ -93,6 +93,27 @@
     .icon-btn:active { transform: scale(0.95); }
     .icon-btn.active { background: var(--accent); color: #fff; }
 
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .voice-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background: var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 8px 28px 8px 10px;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+    .voice-select:focus {
+      border-color: var(--accent);
+    }
+
     .chat {
       flex: 1;
       overflow-y: auto;
@@ -254,7 +275,17 @@
           <div class="brand-subtitle">Talk to your assistant</div>
         </div>
       </div>
-      <button id="muteBtn" class="icon-btn" title="Toggle voice output">🔊</button>
+      <div class="controls">
+        <select id="voiceSelect" class="voice-select" title="Choose voice">
+          <option value="alloy">Alloy</option>
+          <option value="echo">Echo</option>
+          <option value="fable">Fable</option>
+          <option value="onyx">Onyx</option>
+          <option value="nova">Nova</option>
+          <option value="shimmer">Shimmer</option>
+        </select>
+        <button id="muteBtn" class="icon-btn" title="Toggle voice output">🔊</button>
+      </div>
     </header>
 
     <div id="chat" class="chat">
@@ -323,6 +354,7 @@
       const textInput = document.getElementById('textInput');
       const sendBtn = document.getElementById('sendBtn');
       const muteBtn = document.getElementById('muteBtn');
+      const voiceSelect = document.getElementById('voiceSelect');
       const errorToast = document.getElementById('errorToast');
 
       // Speech recognition setup
@@ -477,6 +509,15 @@
       }
       sendBtn.addEventListener('click', submitText);
       textInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitText(); });
+
+      // Voice selector
+      if (voiceSelect) {
+        voiceSelect.value = state.ttsVoice;
+        voiceSelect.addEventListener('change', (e) => {
+          state.ttsVoice = e.target.value;
+          localStorage.setItem(TTS_VOICE_KEY, state.ttsVoice);
+        });
+      }
 
       // Mute toggle
       function applyMuted() {
