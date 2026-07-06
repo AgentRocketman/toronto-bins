@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>CurbIn Voice Assistant</title>
   <style>
     :root {
@@ -194,6 +197,7 @@
       transition: transform 0.1s, box-shadow 0.2s;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      touch-action: none;
     }
     .mic-button:active { transform: scale(0.94); }
     .mic-button.listening {
@@ -321,13 +325,56 @@
 
       // Speech recognition setup
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        micBtn.disabled = true;
+        micHint.textContent = 'Voice not supported in this browser';
+        showError('Speech recognition is not supported. Use the text box.');
+      }
 
-      function initRecognition() {
-        if (!SpeechRecognition) return null;
+      // Microphone state
+      let recognitionSession = {
+        rec: null,
+        transcripts: [],
+        hasInterim: false,
+        sending: false
+      };
+
+      function getHeardText() {
+        return recognitionSession.transcripts.join(' ').trim();
+      }
+
+      function flushTranscript() {
+        const message = getHeardText();
+        recognitionSession.transcripts = [];
+        recognitionSession.hasInterim = false;
+        return message;
+      }
+
+      function finishListening() {
+        const message = flushTranscript();
+        if (message) {
+          addMessage('user', message);
+          sendToAssistant(message);
+        } else if (recognitionSession.hasInterim) {
+          // We heard something but it never finalized. Try next time.
+          recognitionSession.hasInterim = false;
+        }
+      }
+
+      function startListening() {
+        if (!SpeechRecognition || state.processing || state.listening) return;
+
+        // Fresh recognition instance each session (iOS Safari is much happier this way)
+        if (recognitionSession.rec) {
+          try { recognitionSession.rec.stop(); } catch {}
+        }
+        recognitionSession = { rec: null, transcripts: [], hasInterim: false, sending: false };
+
         const rec = new SpeechRecognition();
-        rec.continuous = false;
+        rec.continuous = true;
         rec.interimResults = true;
         rec.lang = 'en-US';
+        recognitionSession.rec = rec;
 
         rec.onstart = () => {
           state.listening = true;
@@ -342,72 +389,81 @@
           micBtn.classList.remove('listening');
           micHint.textContent = 'Tap & hold to talk';
           statusEl.classList.remove('show');
+          finishListening();
         };
 
         rec.onresult = (event) => {
-          let final = '';
           let interim = '';
           for (let i = event.resultIndex; i < event.results.length; i++) {
             const transcript = event.results[i][0].transcript;
-            if (event.results[i].isFinal) final += transcript;
-            else interim += transcript;
+            if (event.results[i].isFinal) {
+              recognitionSession.transcripts.push(transcript);
+            } else {
+              interim += transcript;
+            }
           }
-          if (final) {
-            addMessage('user', final);
-            statusText.textContent = 'Thinking…';
-            statusEl.classList.add('show');
-            sendToAssistant(final);
-          } else if (interim) {
+          recognitionSession.hasInterim = recognitionSession.hasInterim || interim.length > 0;
+          if (interim) {
             statusText.textContent = 'Hearing: ' + interim;
+          } else {
+            statusText.textContent = 'Listening…';
           }
         };
 
         rec.onerror = (event) => {
           if (event.error === 'aborted') return;
+          state.listening = false;
+          micBtn.classList.remove('listening');
+          micHint.textContent = 'Tap & hold to talk';
+          statusEl.classList.remove('show');
+
           let msg = 'Voice input error: ' + event.error;
           if (event.error === 'not-allowed') msg = 'Microphone access denied. Check browser permissions.';
           if (event.error === 'no-speech') msg = 'No speech heard. Try again.';
           if (event.error === 'network') msg = 'Network error with speech recognition.';
           showError(msg);
-          if (state.listening) rec.stop();
         };
 
-        return rec;
-      }
-
-      state.recognition = initRecognition();
-      if (!state.recognition) {
-        micBtn.disabled = true;
-        micHint.textContent = 'Voice not supported in this browser';
-        showError('Speech recognition is not supported. Use the text box.');
-      }
-
-      function startListening() {
-        if (!state.recognition || state.processing) return;
         try {
-          state.recognition.stop();
-        } catch {}
-        try {
-          state.recognition.start();
+          rec.start();
         } catch (err) {
+          recognitionSession.rec = null;
           showError('Could not start microphone. ' + err.message);
         }
       }
 
       function stopListening() {
-        if (!state.recognition) return;
-        try {
-          state.recognition.stop();
-        } catch {}
+        if (recognitionSession.rec) {
+          try { recognitionSession.rec.stop(); } catch {}
+        }
       }
 
-      // Mic button interactions (tap or hold)
-      micBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); startListening(); });
-      micBtn.addEventListener('pointerup', () => stopListening());
-      micBtn.addEventListener('pointerleave', () => { if (state.listening) stopListening(); });
-      micBtn.addEventListener('pointercancel', () => stopListening());
-      micBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startListening(); }, {passive: false});
-      micBtn.addEventListener('touchend', () => stopListening());
+      function clearListeningState() {
+        state.listening = false;
+        micBtn.classList.remove('listening');
+        micHint.textContent = 'Tap & hold to talk';
+        statusEl.classList.remove('show');
+      }
+
+      // Mic button interactions (tap or hold). Pointer events cover mouse + touch.
+      // Capturing the pointer means releasing outside the button still works.
+      micBtn.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        try { micBtn.setPointerCapture(e.pointerId); } catch {}
+        startListening();
+      });
+      micBtn.addEventListener('pointerup', (e) => {
+        try { micBtn.releasePointerCapture(e.pointerId); } catch {}
+        stopListening();
+        // If onend already fired, finishListening has run. If not, force it after a short wait.
+        setTimeout(() => {
+          if (!state.listening) finishListening();
+        }, 200);
+      });
+      micBtn.addEventListener('pointercancel', () => {
+        stopListening();
+        clearListeningState();
+      });
 
       // Text input
       function submitText() {
