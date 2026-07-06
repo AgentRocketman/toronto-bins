@@ -305,12 +305,14 @@
       }
 
       const sessionId = getSessionId();
+      const TTS_VOICE_KEY = 'curbin_voice_tts_voice';
       const state = {
         listening: false,
         muted: false,
         processing: false,
         recognition: null,
-        voices: [],
+        ttsVoice: localStorage.getItem(TTS_VOICE_KEY) || 'alloy',
+        currentAudio: null,
       };
 
       const chatEl = document.getElementById('chat');
@@ -483,6 +485,7 @@
       }
       muteBtn.addEventListener('click', () => {
         state.muted = !state.muted;
+        if (state.muted) stopAudio();
         applyMuted();
       });
       applyMuted();
@@ -531,7 +534,7 @@
           history.push({ role: 'assistant', content: reply });
           saveHistory(history);
 
-          if (!state.muted) speak(reply);
+          if (!state.muted) fetchTTSAndPlay(reply);
         } catch (err) {
           showError(err.message || 'Failed to get a response.');
         } finally {
@@ -540,25 +543,67 @@
         }
       }
 
-      // Speech synthesis
-      function loadVoices() {
-        state.voices = window.speechSynthesis.getVoices();
+      // TTS via OpenAI (with browser TTS fallback)
+      function stopAudio() {
+        if (state.currentAudio) {
+          state.currentAudio.pause();
+          state.currentAudio = null;
+        }
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
       }
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-      loadVoices();
 
-      function speak(text) {
+      async function fetchTTSAndPlay(text) {
+        if (state.muted || !text) return;
+        stopAudio();
+
+        statusText.textContent = 'Reading response…';
+        statusEl.classList.add('show');
+
+        try {
+          const res = await fetch('./api/tts.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, voice: state.ttsVoice })
+          });
+
+          let data;
+          try { data = await res.json(); } catch { data = {}; }
+
+          if (!res.ok || data.error || !data.audio) {
+            throw new Error(data.error || 'TTS unavailable');
+          }
+
+          await playBase64Audio(data.audio);
+        } catch (err) {
+          console.warn('OpenAI TTS failed, falling back to browser TTS:', err);
+          browserTTS(text);
+        } finally {
+          statusEl.classList.remove('show');
+        }
+      }
+
+      function playBase64Audio(base64) {
+        return new Promise((resolve, reject) => {
+          const audio = new Audio('data:audio/mp3;base64,' + base64);
+          state.currentAudio = audio;
+          audio.onended = () => { state.currentAudio = null; resolve(); };
+          audio.onerror = () => { state.currentAudio = null; reject(new Error('Audio playback failed')); };
+          audio.play().catch((err) => { state.currentAudio = null; reject(err); });
+        });
+      }
+
+      function browserTTS(text) {
         if (!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = 'en-US';
         utter.rate = 1.05;
         utter.pitch = 1.0;
-        // Prefer a natural-sounding English voice
-        const preferred = state.voices.find(v => v.name.includes('Samantha'))
-          || state.voices.find(v => v.name.includes('Google US English'))
-          || state.voices.find(v => v.lang === 'en-US')
-          || state.voices[0];
+        const voices = window.speechSynthesis.getVoices();
+        const preferred = voices.find(v => v.name.includes('Samantha'))
+          || voices.find(v => v.name.includes('Google US English'))
+          || voices.find(v => v.lang === 'en-US')
+          || voices[0];
         if (preferred) utter.voice = preferred;
         window.speechSynthesis.speak(utter);
       }
