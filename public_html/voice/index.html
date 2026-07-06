@@ -8,6 +8,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>CurbIn Voice Assistant</title>
+  <script src="https://cdn.jsdelivr.net/npm/recordrtc@5.6.2/RecordRTC.min.js"></script>
   <style>
     :root {
       --bg: #0f172a;
@@ -50,86 +51,35 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       z-index: 10;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .brand { display: flex; align-items: center; gap: 10px; }
     .brand-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
+      width: 34px; height: 34px; border-radius: 10px;
       background: linear-gradient(135deg, var(--accent), #16a34a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 0 16px var(--accent-glow);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; box-shadow: 0 0 16px var(--accent-glow);
     }
-    .brand-title {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
-    .brand-subtitle {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: -2px;
-    }
-    .icon-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: 0;
-      background: var(--panel);
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .icon-btn:active { transform: scale(0.95); }
-    .icon-btn.active { background: var(--accent); color: #fff; }
+    .brand-title { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+    .brand-subtitle { font-size: 11px; color: var(--text-muted); margin-top: -2px; }
 
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .controls { display: flex; align-items: center; gap: 8px; }
     .voice-select {
-      appearance: none;
-      -webkit-appearance: none;
+      appearance: none; -webkit-appearance: none;
       background: var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 8px 28px 8px 10px;
-      font-size: 13px;
-      outline: none;
-      cursor: pointer;
+      color: var(--text); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 8px 28px 8px 10px;
+      font-size: 13px; outline: none; cursor: pointer;
     }
-    .voice-select:focus {
-      border-color: var(--accent);
-    }
+    .voice-select:focus { border-color: var(--accent); }
 
     .chat {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
       scroll-behavior: smooth;
     }
     .message {
-      max-width: 82%;
-      padding: 12px 14px;
+      max-width: 82%; padding: 12px 14px;
       border-radius: var(--radius);
-      font-size: 15px;
-      line-height: 1.45;
-      word-wrap: break-word;
+      font-size: 15px; line-height: 1.45; word-wrap: break-word;
       animation: popIn 0.2s ease-out;
     }
     @keyframes popIn {
@@ -137,125 +87,65 @@
       to { opacity: 1; transform: translateY(0); }
     }
     .message.user {
-      align-self: flex-end;
-      background: var(--accent);
-      color: #052e16;
+      align-self: flex-end; background: var(--accent); color: #052e16;
       border-bottom-right-radius: 4px;
     }
     .message.assistant {
-      align-self: flex-start;
-      background: var(--panel);
-      color: var(--text);
+      align-self: flex-start; background: var(--panel); color: var(--text);
       border-bottom-left-radius: 4px;
     }
     .status {
-      align-self: center;
-      color: var(--text-muted);
-      font-size: 13px;
-      padding: 6px 12px;
-      border-radius: 20px;
+      align-self: center; color: var(--text-muted); font-size: 13px;
+      padding: 6px 12px; border-radius: 20px;
       background: rgba(30, 41, 59, 0.8);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
+      display: flex; align-items: center; gap: 8px;
+      opacity: 0; transition: opacity 0.2s; pointer-events: none;
     }
     .status.show { opacity: 1; }
     .dot {
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
+      width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
       animation: pulse 1s infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.2); }
-    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.2)} }
 
     .input-area {
       padding: 12px 16px calc(12px + var(--safe-bottom));
       background: var(--panel);
       border-top: 1px solid rgba(255,255,255,0.06);
     }
-    .text-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
+    .text-row { display: flex; gap: 8px; margin-bottom: 12px; }
     .text-row input {
-      flex: 1;
-      background: var(--panel-2);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      padding: 10px 14px;
-      color: var(--text);
-      font-size: 15px;
-      outline: none;
+      flex: 1; background: var(--panel-2);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 24px;
+      padding: 10px 14px; color: var(--text); font-size: 15px; outline: none;
     }
     .text-row input::placeholder { color: var(--text-muted); }
-    .mic-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
+    .mic-row { display: flex; align-items: center; justify-content: center; position: relative; }
     .mic-button {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 0;
+      width: 80px; height: 80px; border-radius: 50%; border: 0;
       background: linear-gradient(135deg, var(--accent), #16a34a);
-      color: #052e16;
-      font-size: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 8px 28px rgba(34, 197, 94, 0.35);
+      color: #052e16; font-size: 34px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 8px 28px rgba(34, 197, 94, 0.35);
       transition: transform 0.1s, box-shadow 0.2s;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: none;
+      user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none;
     }
     .mic-button:active { transform: scale(0.94); }
     .mic-button.listening {
       animation: glow 1.2s infinite alternate, scalePulse 1.2s infinite alternate;
       box-shadow: 0 0 40px var(--accent-glow);
     }
-    @keyframes glow {
-      from { box-shadow: 0 0 20px var(--accent-glow); }
-      to { box-shadow: 0 0 55px var(--accent-glow); }
-    }
-    @keyframes scalePulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.06); }
-    }
-    .mic-hint {
-      position: absolute;
-      bottom: -24px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 12px;
-    }
+    @keyframes glow { from { box-shadow: 0 0 20px var(--accent-glow); } to { box-shadow: 0 0 55px var(--accent-glow); } }
+    @keyframes scalePulse { from { transform: scale(1); } to { transform: scale(1.06); } }
+    .mic-hint { position: absolute; bottom: -24px; left: 0; right: 0; text-align: center; color: var(--text-muted); font-size: 12px; }
     .hint { color: var(--text-muted); font-size: 12px; text-align: center; margin-top: 10px; }
 
     .error-toast {
-      position: fixed;
-      top: calc(10px + var(--safe-top));
-      left: 50%;
+      position: fixed; top: calc(10px + var(--safe-top)); left: 50%;
       transform: translateX(-50%) translateY(-60px);
-      background: var(--danger);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 24px;
-      font-size: 13px;
-      z-index: 100;
-      transition: transform 0.3s ease-out;
+      background: var(--danger); color: #fff;
+      padding: 10px 16px; border-radius: 24px; font-size: 13px;
+      z-index: 100; transition: transform 0.3s ease-out;
     }
     .error-toast.show { transform: translateX(-50%) translateY(0); }
 
@@ -289,7 +179,7 @@
     </header>
 
     <div id="chat" class="chat">
-      <div class="message assistant">Hey Chris — tap and hold the mic to speak, or type below.</div>
+      <div class="message assistant">Hey Chris — tap and hold the mic to record a voice message, or type below.</div>
     </div>
 
     <div id="status" class="status"><span class="dot"></span><span id="statusText">Listening…</span></div>
@@ -305,15 +195,15 @@
         <button id="micBtn" class="mic-button" title="Hold to speak">🎤</button>
         <div class="mic-hint" id="micHint">Tap & hold to talk</div>
       </div>
-      <div class="hint">Voice works best in Chrome, Safari, or Edge.</div>
+      <div class="hint">Powered by OpenAI Whisper for transcription.</div>
     </div>
   </div>
 
   <script>
     (function() {
-      // Session + history
       const SESSION_KEY = 'curbin_voice_session';
       const HISTORY_KEY = 'curbin_voice_history';
+      const TTS_VOICE_KEY = 'curbin_voice_tts_voice';
 
       function getSessionId() {
         let id = localStorage.getItem(SESSION_KEY);
@@ -323,28 +213,23 @@
         }
         return id;
       }
-
       function getHistory() {
-        try {
-          const raw = localStorage.getItem(HISTORY_KEY);
-          return raw ? JSON.parse(raw) : [];
-        } catch { return []; }
+        try { const raw = localStorage.getItem(HISTORY_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; }
       }
-
-      function saveHistory(history) {
-        localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-40)));
-      }
+      function saveHistory(history) { localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-40))); }
 
       const sessionId = getSessionId();
-      const TTS_VOICE_KEY = 'curbin_voice_tts_voice';
       const state = {
         listening: false,
         muted: false,
         processing: false,
-        recognition: null,
         ttsVoice: localStorage.getItem(TTS_VOICE_KEY) || 'alloy',
         currentAudio: null,
       };
+      let recorder = null;
+      let micStream = null;
+      let micActive = false;
+      let recordingTimer = null;
 
       const chatEl = document.getElementById('chat');
       const micBtn = document.getElementById('micBtn');
@@ -357,176 +242,185 @@
       const voiceSelect = document.getElementById('voiceSelect');
       const errorToast = document.getElementById('errorToast');
 
-      // Speech recognition setup
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        micBtn.disabled = true;
-        micHint.textContent = 'Voice not supported in this browser';
-        showError('Speech recognition is not supported. Use the text box.');
+      if (voiceSelect) {
+        voiceSelect.value = state.ttsVoice;
+        voiceSelect.addEventListener('change', (e) => {
+          state.ttsVoice = e.target.value;
+          localStorage.setItem(TTS_VOICE_KEY, state.ttsVoice);
+        });
       }
 
-      // Microphone state
-      let recognitionSession = {
-        rec: null,
-        transcripts: [],
-        hasInterim: false,
-        heardSomething: false
-      };
-
-      function getHeardText() {
-        return recognitionSession.transcripts.join(' ').trim();
+      function showError(msg) {
+        errorToast.textContent = msg;
+        errorToast.classList.add('show');
+        setTimeout(() => errorToast.classList.remove('show'), 5000);
       }
 
-      function finishListening() {
-        const message = getHeardText();
-        const heardSomething = recognitionSession.heardSomething;
-        recognitionSession = { rec: null, transcripts: [], hasInterim: false, heardSomething: false };
+      function addMessage(role, text) {
+        const div = document.createElement('div');
+        div.className = 'message ' + role;
+        div.textContent = text;
+        chatEl.appendChild(div);
+        chatEl.scrollTop = chatEl.scrollHeight;
+        return div;
+      }
 
-        if (message) {
-          addMessage('user', message);
-          sendToAssistant(message);
-        } else if (heardSomething) {
-          showError('Speech detected but not finalized. Try speaking a bit more clearly.');
+      function stopAudio() {
+        if (state.currentAudio) {
+          state.currentAudio.pause();
+          state.currentAudio = null;
         }
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
       }
 
-      function startListening() {
-        if (!SpeechRecognition || state.processing) return;
+      function isIOS() {
+        return /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+      }
 
-        // Stop any audio playback before starting the mic — on mobile, an active audio
-        // session can prevent speech recognition from getting microphone access.
+      // Recording
+      function setListeningUI(active) {
+        state.listening = active;
+        micBtn.classList.toggle('listening', active);
+        micHint.textContent = active ? 'Listening…' : 'Tap & hold to talk';
+        statusText.textContent = active ? 'Listening…' : '';
+        statusEl.classList.toggle('show', active);
+      }
+
+      async function startRecording() {
+        if (state.processing || micActive) return;
+        if (typeof RecordRTC === 'undefined') {
+          showError('Recording library failed to load. Use text input.');
+          return;
+        }
+
+        micActive = true;
         stopAudio();
-
-        // Reset any stuck state.
-        try { recognitionSession.rec.stop(); } catch {}
-        recognitionSession = { rec: null, transcripts: [], hasInterim: false, heardSomething: false };
-        state.listening = false;
-        micBtn.classList.remove('listening');
-        statusEl.classList.remove('show');
-
-        const rec = new SpeechRecognition();
-        // continuous=true lets the user speak for longer while holding the button.
-        rec.continuous = true;
-        rec.interimResults = true;
-        rec.lang = 'en-US';
-        recognitionSession.rec = rec;
-
-        rec.onstart = () => {
-          state.listening = true;
-          micBtn.classList.add('listening');
-          micHint.textContent = 'Listening…';
-          statusText.textContent = 'Listening…';
-          statusEl.classList.add('show');
-        };
-
-        rec.onend = () => {
-          state.listening = false;
-          micActive = false;
-          micBtn.classList.remove('listening');
-          micHint.textContent = 'Tap & hold to talk';
-          statusEl.classList.remove('show');
-          finishListening();
-        };
-
-        rec.onresult = (event) => {
-          let interim = '';
-          let gotFinal = false;
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
-            if (event.results[i].isFinal) {
-              recognitionSession.transcripts.push(transcript);
-              gotFinal = true;
-            } else {
-              interim += transcript;
-            }
-          }
-          if (interim || gotFinal) {
-            recognitionSession.heardSomething = true;
-          }
-          if (interim) {
-            recognitionSession.hasInterim = true;
-            statusText.textContent = 'Hearing: ' + interim;
-          } else if (recognitionSession.transcripts.length) {
-            statusText.textContent = 'Got it — keep speaking or release when done';
-          }
-        };
-
-        rec.onerror = (event) => {
-          if (event.error === 'aborted') return;
-          state.listening = false;
-          micActive = false;
-          micBtn.classList.remove('listening');
-          micHint.textContent = 'Tap & hold to talk';
-          statusEl.classList.remove('show');
-
-          let msg = 'Voice input error: ' + event.error;
-          if (event.error === 'not-allowed') msg = 'Microphone access denied. Check browser permissions.';
-          if (event.error === 'no-speech') msg = 'No speech heard. Try again.';
-          if (event.error === 'network') msg = 'Network error with speech recognition.';
-          if (event.error === 'audio-capture') msg = 'Microphone busy. Wait for the response to finish, then try again.';
-          showError(msg);
-        };
+        setListeningUI(true);
 
         try {
-          rec.start();
+          micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          recorder = new RecordRTC(micStream, {
+            type: 'audio',
+            mimeType: 'audio/wav',
+            recorderType: RecordRTC.StereoAudioRecorder,
+            numberOfAudioChannels: 1,
+            desiredSampRate: 16000,
+          });
+          recorder.startRecording();
+
+          // Hard cap at 90 seconds so we don't rack up huge Whisper bills.
+          if (recordingTimer) clearTimeout(recordingTimer);
+          recordingTimer = setTimeout(() => {
+            stopRecording();
+          }, 90000);
         } catch (err) {
-          recognitionSession.rec = null;
-          showError('Could not start microphone. ' + err.message);
+          console.error(err);
+          setListeningUI(false);
+          micActive = false;
+          stopStream();
+          if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            showError('Microphone permission denied.');
+          } else {
+            showError('Could not access microphone: ' + err.message);
+          }
         }
       }
 
-      function stopListening() {
-        if (recognitionSession.rec) {
-          try { recognitionSession.rec.stop(); } catch {}
+      function stopStream() {
+        if (micStream) {
+          micStream.getTracks().forEach(t => t.stop());
+          micStream = null;
         }
       }
 
-      function clearListeningState() {
-        state.listening = false;
-        micBtn.classList.remove('listening');
-        micHint.textContent = 'Tap & hold to talk';
-        statusEl.classList.remove('show');
-      }
-
-      // Mic button interactions (tap or hold).
-      // Pointer events work for mouse + most touch devices. iOS Safari sometimes
-      // handles the audio-session handoff better with touch events, so we keep both
-      // paths and guard with micActive to prevent double-firing.
-      let micActive = false;
-
-      function engageMic() {
-        if (micActive) return;
-        micActive = true;
-        startListening();
-      }
-
-      function releaseMic() {
-        if (!micActive) return;
+      async function stopRecording() {
+        if (!recorder || !micActive) return;
         micActive = false;
-        stopListening();
+        if (recordingTimer) { clearTimeout(recordingTimer); recordingTimer = null; }
+        setListeningUI(false);
+
+        recorder.stopRecording(async () => {
+          const blob = recorder.getBlob();
+          stopStream();
+
+          let rtc = recorder;
+          try { rtc.reset(); } catch {}
+          try { rtc.destroy(); } catch {}
+          recorder = null;
+
+          if (!blob || blob.size < 200) {
+            showError('Recording too short or empty.');
+            return;
+          }
+
+          await sendAudioForTranscription(blob);
+        });
       }
 
+      async function sendAudioForTranscription(blob) {
+        statusText.textContent = 'Transcribing…';
+        statusEl.classList.add('show');
+
+        try {
+          const form = new FormData();
+          form.append('audio', blob, 'recording.wav');
+
+          const res = await fetch('./api/transcribe.php', {
+            method: 'POST',
+            body: form
+          });
+
+          let data;
+          try { data = await res.json(); } catch { data = {}; }
+
+          if (!res.ok || data.error || !data.text) {
+            throw new Error(data.error || 'Transcription failed');
+          }
+
+          const text = data.text.trim();
+          if (!text) {
+            showError('No speech detected. Try again.');
+            return;
+          }
+
+          addMessage('user', text);
+          await sendToAssistant(text);
+        } catch (err) {
+          showError(err.message || 'Could not transcribe audio.');
+        } finally {
+          statusEl.classList.remove('show');
+        }
+      }
+
+      // Mic button interactions
+      let touchHandled = false;
       micBtn.addEventListener('pointerdown', (e) => {
         e.preventDefault();
-        try { micBtn.setPointerCapture(e.pointerId); } catch {}
-        engageMic();
+        touchHandled = false;
+        startRecording();
       });
       micBtn.addEventListener('pointerup', (e) => {
-        try { micBtn.releasePointerCapture(e.pointerId); } catch {}
-        releaseMic();
+        if (!touchHandled) stopRecording();
       });
-      micBtn.addEventListener('pointercancel', releaseMic);
+      micBtn.addEventListener('pointercancel', () => {
+        if (!touchHandled) { stopRecording(); }
+      });
 
-      // Dedicated touch handlers for Safari/iOS reliability.
       micBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        engageMic();
+        touchHandled = true;
+        startRecording();
       }, {passive: false});
       micBtn.addEventListener('touchend', (e) => {
         e.preventDefault();
-        releaseMic();
+        touchHandled = true;
+        stopRecording();
       });
-      micBtn.addEventListener('touchcancel', releaseMic);
+      micBtn.addEventListener('touchcancel', (e) => {
+        e.preventDefault();
+        touchHandled = true;
+        stopRecording();
+      });
       micBtn.addEventListener('contextmenu', (e) => e.preventDefault());
 
       // Text input
@@ -540,15 +434,6 @@
       sendBtn.addEventListener('click', submitText);
       textInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitText(); });
 
-      // Voice selector
-      if (voiceSelect) {
-        voiceSelect.value = state.ttsVoice;
-        voiceSelect.addEventListener('change', (e) => {
-          state.ttsVoice = e.target.value;
-          localStorage.setItem(TTS_VOICE_KEY, state.ttsVoice);
-        });
-      }
-
       // Mute toggle
       function applyMuted() {
         muteBtn.textContent = state.muted ? '🔇' : '🔊';
@@ -560,21 +445,6 @@
         applyMuted();
       });
       applyMuted();
-
-      function addMessage(role, text) {
-        const div = document.createElement('div');
-        div.className = 'message ' + role;
-        div.textContent = text;
-        chatEl.appendChild(div);
-        chatEl.scrollTop = chatEl.scrollHeight;
-        return div;
-      }
-
-      function showError(msg) {
-        errorToast.textContent = msg;
-        errorToast.classList.add('show');
-        setTimeout(() => errorToast.classList.remove('show'), 4000);
-      }
 
       async function sendToAssistant(message) {
         if (state.processing) return;
@@ -605,7 +475,7 @@
           history.push({ role: 'assistant', content: reply });
           saveHistory(history);
 
-          if (!state.muted) fetchTTSAndPlay(reply);
+          if (!state.muted) await fetchTTSAndPlay(reply);
         } catch (err) {
           showError(err.message || 'Failed to get a response.');
         } finally {
@@ -614,25 +484,11 @@
         }
       }
 
-      // TTS via OpenAI (with browser TTS fallback)
-      function stopAudio() {
-        if (state.currentAudio) {
-          state.currentAudio.pause();
-          state.currentAudio = null;
-        }
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
-      }
-
-      function isIOS() {
-        return /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
-      }
-
       async function fetchTTSAndPlay(text) {
         if (state.muted || !text) return;
         stopAudio();
 
-        // iOS Safari blocks autoplay of audio fetched asynchronously unless it is
-        // part of a fresh user gesture. Use the browser's built-in TTS there.
+        // iOS Safari blocks autoplay of fetched audio unless part of a fresh gesture.
         if (isIOS()) {
           browserTTS(text);
           return;
@@ -670,7 +526,7 @@
           state.currentAudio = audio;
           audio.onended = () => { state.currentAudio = null; resolve(); };
           audio.onerror = () => { state.currentAudio = null; reject(new Error('Audio playback failed')); };
-          audio.play().catch((err) => { state.currentAudio = null; reject(err); });
+          audio.play().then(() => {}).catch((err) => { state.currentAudio = null; reject(err); });
         });
       }
 
@@ -690,7 +546,6 @@
         window.speechSynthesis.speak(utter);
       }
 
-      // Keyboard shortcut: focus text input
       document.addEventListener('keydown', (e) => {
         if (e.key === '/' && document.activeElement !== textInput) {
           e.preventDefault();
