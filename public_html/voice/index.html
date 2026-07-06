@@ -421,6 +421,7 @@
 
         rec.onend = () => {
           state.listening = false;
+          micActive = false;
           micBtn.classList.remove('listening');
           micHint.textContent = 'Tap & hold to talk';
           statusEl.classList.remove('show');
@@ -453,6 +454,7 @@
         rec.onerror = (event) => {
           if (event.error === 'aborted') return;
           state.listening = false;
+          micActive = false;
           micBtn.classList.remove('listening');
           micHint.textContent = 'Tap & hold to talk';
           statusEl.classList.remove('show');
@@ -461,6 +463,7 @@
           if (event.error === 'not-allowed') msg = 'Microphone access denied. Check browser permissions.';
           if (event.error === 'no-speech') msg = 'No speech heard. Try again.';
           if (event.error === 'network') msg = 'Network error with speech recognition.';
+          if (event.error === 'audio-capture') msg = 'Microphone busy. Wait for the response to finish, then try again.';
           showError(msg);
         };
 
@@ -485,21 +488,46 @@
         statusEl.classList.remove('show');
       }
 
-      // Mic button interactions (tap or hold). Pointer events cover mouse + touch.
-      // Capturing the pointer means releasing outside the button still works.
+      // Mic button interactions (tap or hold).
+      // Pointer events work for mouse + most touch devices. iOS Safari sometimes
+      // handles the audio-session handoff better with touch events, so we keep both
+      // paths and guard with micActive to prevent double-firing.
+      let micActive = false;
+
+      function engageMic() {
+        if (micActive) return;
+        micActive = true;
+        startListening();
+      }
+
+      function releaseMic() {
+        if (!micActive) return;
+        micActive = false;
+        stopListening();
+      }
+
       micBtn.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         try { micBtn.setPointerCapture(e.pointerId); } catch {}
-        startListening();
+        engageMic();
       });
       micBtn.addEventListener('pointerup', (e) => {
         try { micBtn.releasePointerCapture(e.pointerId); } catch {}
-        stopListening();
+        releaseMic();
       });
-      micBtn.addEventListener('pointercancel', () => {
-        stopListening();
-        clearListeningState();
+      micBtn.addEventListener('pointercancel', releaseMic);
+
+      // Dedicated touch handlers for Safari/iOS reliability.
+      micBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        engageMic();
+      }, {passive: false});
+      micBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        releaseMic();
       });
+      micBtn.addEventListener('touchcancel', releaseMic);
+      micBtn.addEventListener('contextmenu', (e) => e.preventDefault());
 
       // Text input
       function submitText() {
@@ -595,9 +623,20 @@
         if (window.speechSynthesis) window.speechSynthesis.cancel();
       }
 
+      function isIOS() {
+        return /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+      }
+
       async function fetchTTSAndPlay(text) {
         if (state.muted || !text) return;
         stopAudio();
+
+        // iOS Safari blocks autoplay of audio fetched asynchronously unless it is
+        // part of a fresh user gesture. Use the browser's built-in TTS there.
+        if (isIOS()) {
+          browserTTS(text);
+          return;
+        }
 
         statusText.textContent = 'Reading response…';
         statusEl.classList.add('show');
