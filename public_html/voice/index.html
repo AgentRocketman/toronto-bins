@@ -271,10 +271,22 @@
           state.currentAudio = null;
         }
         if (window.speechSynthesis) window.speechSynthesis.cancel();
+        if (sharedAudioCtx && sharedAudioCtx.state === 'running') {
+          try { sharedAudioCtx.suspend(); } catch {}
+        }
       }
 
       function isIOS() {
         return /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+      }
+
+      let sharedAudioCtx = null;
+      function ensureAudioContext() {
+        if (sharedAudioCtx) return sharedAudioCtx;
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        sharedAudioCtx = new AC();
+        return sharedAudioCtx;
       }
 
       // Recording
@@ -296,6 +308,13 @@
         micActive = true;
         stopAudio();
         setListeningUI(true);
+
+        // Create/resume the shared audio context during the user gesture —
+        // this is required for iOS Safari to allow deferred playback of TTS audio.
+        const ctx = ensureAudioContext();
+        if (ctx && ctx.state === 'suspended') {
+          try { ctx.resume(); } catch {}
+        }
 
         try {
           micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -475,7 +494,7 @@
           history.push({ role: 'assistant', content: reply });
           saveHistory(history);
 
-          if (!state.muted) await fetchTTSAndPlay(reply);
+          if (!state.muted) fetchTTSAndPlay(reply);
         } catch (err) {
           showError(err.message || 'Failed to get a response.');
         } finally {
@@ -487,13 +506,6 @@
       async function fetchTTSAndPlay(text) {
         if (state.muted || !text) return;
         stopAudio();
-
-        // iOS Safari blocks autoplay of fetched audio unless part of a fresh gesture.
-        if (isIOS()) {
-          browserTTS(text);
-          return;
-        }
-
         statusText.textContent = 'Reading response…';
         statusEl.classList.add('show');
 
@@ -511,7 +523,12 @@
             throw new Error(data.error || 'TTS unavailable');
           }
 
-          await playBase64Audio(data.audio);
+          // iOS Safari: use Web Audio API via the AudioContext we resumed during mic press.
+          if (isIOS()) {
+            await playBase64AudioWebAudio(data.audio);
+          } else {
+            await playBase64Audio(data.audio);
+          }
         } catch (err) {
           console.warn('OpenAI TTS failed, falling back to browser TTS:', err);
           browserTTS(text);
@@ -526,7 +543,29 @@
           state.currentAudio = audio;
           audio.onended = () => { state.currentAudio = null; resolve(); };
           audio.onerror = () => { state.currentAudio = null; reject(new Error('Audio playback failed')); };
-          audio.play().then(() => {}).catch((err) => { state.currentAudio = null; reject(err); });
+          audio.play().then(resolve).catch((err) => { state.currentAudio = null; reject(err); });
+        });
+      }
+
+      async function playBase64AudioWebAudio(base64) {
+        const ctx = ensureAudioContext();
+        if (!ctx) throw new Error('Web Audio not available');
+        if (ctx.state === 'suspended') {
+          try { await ctx.resume(); } catch {}
+        }
+
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+
+        const buffer = await ctx.decodeAudioData(bytes.buffer.slice(0));
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(ctx.destination);
+        source.start(0);
+
+        return new Promise((resolve) => {
+          source.onended = resolve;
         });
       }
 
