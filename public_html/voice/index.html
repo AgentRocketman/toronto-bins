@@ -370,42 +370,39 @@
         rec: null,
         transcripts: [],
         hasInterim: false,
-        sending: false
+        heardSomething: false
       };
 
       function getHeardText() {
         return recognitionSession.transcripts.join(' ').trim();
       }
 
-      function flushTranscript() {
-        const message = getHeardText();
-        recognitionSession.transcripts = [];
-        recognitionSession.hasInterim = false;
-        return message;
-      }
-
       function finishListening() {
-        const message = flushTranscript();
+        const message = getHeardText();
+        const heardSomething = recognitionSession.heardSomething;
+        recognitionSession = { rec: null, transcripts: [], hasInterim: false, heardSomething: false };
+
         if (message) {
           addMessage('user', message);
           sendToAssistant(message);
-        } else if (recognitionSession.hasInterim) {
-          // We heard something but it never finalized. Try next time.
-          recognitionSession.hasInterim = false;
+        } else if (heardSomething) {
+          showError('Speech detected but not finalized. Try speaking a bit more clearly.');
         }
       }
 
       function startListening() {
-        if (!SpeechRecognition || state.processing || state.listening) return;
+        if (!SpeechRecognition || state.processing) return;
 
-        // Fresh recognition instance each session (iOS Safari is much happier this way)
-        if (recognitionSession.rec) {
-          try { recognitionSession.rec.stop(); } catch {}
-        }
-        recognitionSession = { rec: null, transcripts: [], hasInterim: false, sending: false };
+        // Reset any stuck state.
+        try { recognitionSession.rec.stop(); } catch {}
+        recognitionSession = { rec: null, transcripts: [], hasInterim: false, heardSomething: false };
+        state.listening = false;
+        micBtn.classList.remove('listening');
+        statusEl.classList.remove('show');
 
         const rec = new SpeechRecognition();
-        rec.continuous = true;
+        // continuous=false is more reliable on iOS Safari; recognition auto-stops after a pause.
+        rec.continuous = false;
         rec.interimResults = true;
         rec.lang = 'en-US';
         recognitionSession.rec = rec;
@@ -428,19 +425,24 @@
 
         rec.onresult = (event) => {
           let interim = '';
+          let gotFinal = false;
           for (let i = event.resultIndex; i < event.results.length; i++) {
             const transcript = event.results[i][0].transcript;
             if (event.results[i].isFinal) {
               recognitionSession.transcripts.push(transcript);
+              gotFinal = true;
             } else {
               interim += transcript;
             }
           }
-          recognitionSession.hasInterim = recognitionSession.hasInterim || interim.length > 0;
+          if (interim || gotFinal) {
+            recognitionSession.heardSomething = true;
+          }
           if (interim) {
+            recognitionSession.hasInterim = true;
             statusText.textContent = 'Hearing: ' + interim;
-          } else {
-            statusText.textContent = 'Listening…';
+          } else if (recognitionSession.transcripts.length) {
+            statusText.textContent = 'Got it — keep speaking or release when done';
           }
         };
 
@@ -489,10 +491,6 @@
       micBtn.addEventListener('pointerup', (e) => {
         try { micBtn.releasePointerCapture(e.pointerId); } catch {}
         stopListening();
-        // If onend already fired, finishListening has run. If not, force it after a short wait.
-        setTimeout(() => {
-          if (!state.listening) finishListening();
-        }, 200);
       });
       micBtn.addEventListener('pointercancel', () => {
         stopListening();
