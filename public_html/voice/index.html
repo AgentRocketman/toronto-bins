@@ -393,6 +393,10 @@
       function startListening() {
         if (!SpeechRecognition || state.processing) return;
 
+        // Stop any audio playback before starting the mic — on mobile, an active audio
+        // session can prevent speech recognition from getting microphone access.
+        stopAudio();
+
         // Reset any stuck state.
         try { recognitionSession.rec.stop(); } catch {}
         recognitionSession = { rec: null, transcripts: [], hasInterim: false, heardSomething: false };
@@ -401,8 +405,8 @@
         statusEl.classList.remove('show');
 
         const rec = new SpeechRecognition();
-        // continuous=false is more reliable on iOS Safari; recognition auto-stops after a pause.
-        rec.continuous = false;
+        // continuous=true lets the user speak for longer while holding the button.
+        rec.continuous = true;
         rec.interimResults = true;
         rec.lang = 'en-US';
         recognitionSession.rec = rec;
