@@ -630,3 +630,30 @@
 [2026-06-28T04:11:42+00:00] [INFO] Queue runner active but no queued jobs — nothing to start
 [2026-06-28T04:12:09+00:00] [INFO] Queue runner active but no queued jobs — nothing to start
 [2026-06-28T04:12:37+00:00] [INFO] Queue runner active but no queued jobs — nothing to start
+[2026-06-28T07:50:26+00:00] [DEBUG] Heartbeat POST failed: HTTP Error 404: Not Found
+[2026-06-28T08:11:00+00:00] [INFO] 🔔 Long-poll picked up Builder job: URL Shortener v1.39 (feat)
+[2026-06-28T08:11:00+00:00] [INFO] 📦 Processing job: URL Shortener v1.39 (feat) → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat
+[2026-06-28T08:11:04+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/url-shortener/output → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat/output
+[2026-06-28T08:11:05+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-28T08:11:05+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/url-shortener-v1-39-feat (add_feature)
+[2026-06-28T08:12:12+00:00] [INFO] Claude Code finished: success=True
+[2026-06-28T08:12:12+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-28T08:12:12+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-28T08:12:12+00:00] [INFO]    archive: 1.8 MB in 0.2s
+[2026-06-28T08:12:12+00:00] [INFO] 🚀 Deploying to agentrocketman.com/url-short/...
+[2026-06-28T08:12:21+00:00] [INFO] ✅ Hostinger deploy accepted in 8.0s
+[2026-06-28T08:12:23+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/url-short/
+[2026-06-28T08:12:23+00:00] [INFO] Builder real usage: in=49 out=2956 cost=$0.2706
+[2026-06-28T08:27:50+00:00] [INFO] 🔔 Long-poll picked up Builder job: URL Shortener v1.40 (fix)
+[2026-06-28T08:27:50+00:00] [INFO] 📦 Processing job: URL Shortener v1.40 (fix) → /data/.openclaw/workspace/builds/url-shortener-v1-40-fix
+[2026-06-28T08:27:53+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/url-shortener/output → /data/.openclaw/workspace/builds/url-shortener-v1-40-fix/output
+[2026-06-28T08:27:53+00:00] [INFO] Builder using model: claude-haiku-4-5 (max-turns: 15)
+[2026-06-28T08:27:53+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/url-shortener-v1-40-fix (quick_fix)
+[2026-06-28T08:28:12+00:00] [INFO] Claude Code finished: success=True
+[2026-06-28T08:28:12+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-28T08:28:13+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-28T08:28:13+00:00] [INFO]    archive: 1.8 MB in 0.1s
+[2026-06-28T08:28:13+00:00] [INFO] 🚀 Deploying to agentrocketman.com/url-short/...
+[2026-06-28T08:28:20+00:00] [INFO] ✅ Hostinger deploy accepted in 6.9s
+[2026-06-28T08:28:22+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/url-short/
+[2026-06-28T08:28:22+00:00] [INFO] Builder real usage: in=53 out=1192 cost=$0.0525

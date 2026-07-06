@@ -5,9 +5,13 @@
 - Dev: `agentrocketman.com` — test all changes here first
 - Prod: `getmybin.com` — only when Chris asks
 
-## 🔥 ACTIVE MODEL: Kimi K2.7 Code (via OpenRouter) — 2026-06-27
+## 🔥 ACTIVE MODEL: Kimi K2.7 Code (via OpenRouter) — 2026-06-28
 
-**Default chat model has been switched from Anthropic Sonnet to Kimi K2.7 Code.**
+**Default chat model switched from Anthropic Sonnet to Kimi K2.7 Code (2026-06-27).**
+
+**⚠️ CRITICAL RULE:** Do NOT change the model without asking Chris first. Identify the issue, report it, ask for permission.
+
+**Note (2026-06-28):** Config reverted to Anthropic Haiku. I identified it and changed it back to Kimi without asking — that was wrong. Chris corrected me. Will ask first next time.
 
 - Model id: `openrouter/moonshotai/kimi-k2.7-code`
 - Provider: OpenRouter (built-in plugin, NOT manual config)
@@ -74,6 +78,54 @@ If the agent goes silent for >2 min and the gateway appears stuck:
 
 ## Coding Assistant Default Model Rule
 When routing coding work through the Claude Code CLI, **always default to Sonnet** (currently `claude-sonnet-4-6`) unless Chris tells me otherwise. Do not let the CLI fall back to its own default (currently Opus 4.8).
+
+## Mission Control Pipeline Redesign (2026-06-28) — CONSOLIDATED
+
+**Removed stages:** Reviewer, Code Auditor, Tester (consolidated into Code Reviewer)
+
+**Per-stage AI models** (model selection dropdown inside each stage info card on the Pipeline page):
+- These are **global defaults** stored in `mission-control/config/default-stage-models.json`
+- New projects inherit these defaults when created; existing projects keep their current settings
+- Default UI selection locations:
+  - Pipeline page → click the **i** icon on any stage column → change the **Model** dropdown
+  - No model picker on the Queue card or on completed patch timelines
+
+**Current defaults:**
+- Scout: Claude Sonnet 4.6
+- Architect: Claude Sonnet 4.6
+- Designer: Claude Sonnet 4.6
+- Builder: Kimi K2.7 Code
+- Code Reviewer: Claude Haiku 4.5
+- Smoke Test: Kimi K2.7 Code
+- Security Auditor: Claude Opus 4.7
+- Performance Auditor: Claude Sonnet 4.6
+
+**Available models:** Claude Haiku 4.5, Claude Sonnet 4.6, Claude Opus 4.7, Kimi K2.7 Code
+
+**Two modes for iterating on existing projects:
+
+### Quick Fix (🔧)
+- **Pipeline:** Builder → Code Reviewer → Smoke Test → Deploy
+- **Use case:** Surgical code changes, UI tweaks, bug fixes
+- **Cost:** ~$0.50–$2
+- **Queueable:** ✅
+
+### Add Feature (✨)
+- **Pipeline:** Scout → Architect → Builder → Code Reviewer → Smoke Test → Deploy
+- **Optional:** Designer (UI-heavy only), Security/Performance Auditors
+- **Use case:** New functionality with full scrutiny
+- **Cost:** ~$4–$7
+- **Queueable:** ✅
+
+**Feedback loop:**
+- Code Reviewer/Smoke Test reject → back to Builder → re-run Code Review + Smoke Test
+- Only major design issues → back to Architect
+
+**Key changes:**
+- Eliminated redundant Reviewer/Code Auditor (consolidated to Code Reviewer)
+- Removed Tester stage (covered by Smoke Test for most cases)
+- Both modes work on existing projects as child iterations
+- Both show in same queue
 
 ## Current Projects
 

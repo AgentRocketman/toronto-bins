@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-28T03:01:09.245Z",
+  "updatedAt": "2026-06-28T05:31:13.532Z",
   "entries": {
     "memory:memory/2026-06-13.md:34:69": {
       "key": "memory:memory/2026-06-13.md:34:69",
@@ -1816,6 +1816,37 @@
         "1-2",
         "paper-cut",
         "hard-stop"
+      ]
+    },
+    "memory:memory/2026-06-27.md:247:268": {
+      "key": "memory:memory/2026-06-27.md:247:268",
+      "path": "memory/2026-06-27.md",
+      "startLine": 247,
+      "endLine": 268,
+      "source": "memory",
+      "snippet": "4. ✅ **Discovered the built-in `openrouter` plugin** at `/usr/local/lib/node_modules/openclaw/dist/extensions/openrouter/` 5. ✅ Removed all manual config, enabled the plugin + set `OPENROUTER_API_KEY` env var 6. ✅ Plugin auto-resolved `openrouter/moonshotai/kimi-k2.7-code` dynamically. Switch worked. ### Gateway hang (real outage) During the OpenRouter wiring, multiple back-to-back SIGUSR1 restarts left the gateway stuck. I went silent for several minutes. Chris recovered me via: 1. Hostinger panel → container shell 2. `openclaw doctor` 3. Manual `openclaw gateway restart` Then I came back online on Kimi K2.7 Code as the active model. ### Notable observations - OpenRouter free tier is es",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-06-28T05:31:13.532Z",
+      "lastRecalledAt": "2026-06-28T05:31:13.532Z",
+      "queryHashes": [
+        "e0d77c29af62"
+      ],
+      "recallDays": [
+        "2026-06-28"
+      ],
+      "conceptTags": [
+        "gateway",
+        "router",
+        "built-in",
+        "openrouter-api-key",
+        "auto-resolved",
+        "back-to-back",
+        "k2.7",
+        "discovered"
       ]
     }
   }
