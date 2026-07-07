@@ -11,7 +11,7 @@ if (!$isInternalCall) {
 }
 header('Content-Type: application/json');
 
-function triggerAsync($url, $payload, $cookieStr) {
+function triggerAsync($url, $payload, $cookieStr, $sync = false) {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
@@ -20,9 +20,17 @@ function triggerAsync($url, $payload, $cookieStr) {
         'Cookie: ' . $cookieStr
     ]);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    // More generous timeouts so PHP-FPM cold-start doesn't kill the trigger
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 4);
+    if ($sync) {
+        // Synchronous runner call: keep connection open until the agent finishes.
+        // Hostinger kills background PHP when the client disconnects, so this is
+        // how the local builder-runner keeps planning agents alive end-to-end.
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 240);
+    } else {
+        // Browser/dashboard trigger: return quickly so the UI doesn't hang.
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 4);
+    }
     curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
     curl_exec($ch);
     curl_close($ch);
@@ -73,14 +81,18 @@ try {
 
     $cookieStr = isset($_COOKIE['PHPSESSID']) ? 'PHPSESSID=' . $_COOKIE['PHPSESSID'] : '';
 
+    // Internal runner calls use synchronous mode so the HTTP connection stays
+    // open and Hostinger doesn't kill the PHP process mid-agent.
     triggerAsync(
         'https://agentrocketman.com/mission-control/api/agents/run.php',
         [
             'project_id' => $projectId,
             'stage' => $firstStage,
-            'internal_secret' => 'mc-runner-heartbeat-2026'
+            'internal_secret' => 'mc-runner-heartbeat-2026',
+            'sync' => $isInternalCall
         ],
-        $cookieStr
+        $cookieStr,
+        $isInternalCall
     );
 
     echo json_encode([

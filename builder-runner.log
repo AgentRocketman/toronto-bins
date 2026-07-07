@@ -657,3 +657,807 @@
 [2026-06-28T08:28:20+00:00] [INFO] ✅ Hostinger deploy accepted in 6.9s
 [2026-06-28T08:28:22+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/url-short/
 [2026-06-28T08:28:22+00:00] [INFO] Builder real usage: in=53 out=1192 cost=$0.0525
+[2026-06-28T09:15:00+00:00] [DEBUG] Heartbeat POST failed: HTTP Error 404: Not Found
+[2026-06-28T09:47:30+00:00] Watchdog: starting runner
+[2026-06-28T09:47:31+00:00] [INFO] Builder Runner v1.8-direct-deploy starting (PID 564)
+[2026-06-28T09:47:31+00:00] [INFO] Builder Runner v1.8-direct-deploy starting (PID 564)
+[2026-06-28T10:12:58+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator
+[2026-06-28T10:12:58+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator
+[2026-06-28T10:12:59+00:00] [INFO] 📦 Processing job: Domain Name Geberator → /data/.openclaw/workspace/builds/domain-name-geberator
+[2026-06-28T10:12:59+00:00] [INFO] 📦 Processing job: Domain Name Geberator → /data/.openclaw/workspace/builds/domain-name-geberator
+[2026-06-28T10:13:01+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-28T10:13:01+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-28T10:13:01+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator (full)
+[2026-06-28T10:13:01+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator (full)
+[2026-06-28T10:21:25+00:00] [INFO] Claude Code finished: success=True
+[2026-06-28T10:21:25+00:00] [INFO] Claude Code finished: success=True
+[2026-06-28T10:21:25+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-28T10:21:25+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-28T10:21:26+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-28T10:21:26+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-28T10:21:26+00:00] [INFO]    archive: 1.8 MB in 0.1s
+[2026-06-28T10:21:26+00:00] [INFO]    archive: 1.8 MB in 0.1s
+[2026-06-28T10:21:26+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-28T10:21:26+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-28T10:21:35+00:00] [INFO] ✅ Hostinger deploy accepted in 8.9s
+[2026-06-28T10:21:35+00:00] [INFO] ✅ Hostinger deploy accepted in 8.9s
+[2026-06-28T10:21:37+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-28T10:21:37+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-28T10:21:37+00:00] [INFO] Builder real usage: in=41 out=32913 cost=$1.1863
+[2026-06-28T10:21:37+00:00] [INFO] Builder real usage: in=41 out=32913 cost=$1.1863
+[2026-06-28T10:36:42+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator v1.1 (feat)
+[2026-06-28T10:36:42+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator v1.1 (feat)
+[2026-06-28T10:36:42+00:00] [INFO] 📦 Processing job: Domain Name Geberator v1.1 (feat) → /data/.openclaw/workspace/builds/domain-name-geberator-v1-1-feat
+[2026-06-28T10:36:42+00:00] [INFO] 📦 Processing job: Domain Name Geberator v1.1 (feat) → /data/.openclaw/workspace/builds/domain-name-geberator-v1-1-feat
+[2026-06-28T10:36:47+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/domain-name-geberator/output → /data/.openclaw/workspace/builds/domain-name-geberator-v1-1-feat/output
+[2026-06-28T10:36:47+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/domain-name-geberator/output → /data/.openclaw/workspace/builds/domain-name-geberator-v1-1-feat/output
+[2026-06-28T10:36:47+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-28T10:36:47+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-28T10:36:47+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator-v1-1-feat (add_feature)
+[2026-06-28T10:36:47+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator-v1-1-feat (add_feature)
+[2026-06-28T10:39:27+00:00] [INFO] Claude Code finished: success=True
+[2026-06-28T10:39:27+00:00] [INFO] Claude Code finished: success=True
+[2026-06-28T10:39:27+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-28T10:39:27+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-28T10:39:28+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-28T10:39:28+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-28T10:39:28+00:00] [INFO]    archive: 1.8 MB in 0.1s
+[2026-06-28T10:39:28+00:00] [INFO]    archive: 1.8 MB in 0.1s
+[2026-06-28T10:39:28+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-28T10:39:28+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-28T10:39:34+00:00] [INFO] ✅ Hostinger deploy accepted in 6.7s
+[2026-06-28T10:39:34+00:00] [INFO] ✅ Hostinger deploy accepted in 6.7s
+[2026-06-28T10:39:37+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-28T10:39:37+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-28T10:39:37+00:00] [INFO] Builder real usage: in=52 out=9740 cost=$0.5965
+[2026-06-28T10:39:37+00:00] [INFO] Builder real usage: in=52 out=9740 cost=$0.5965
+[2026-06-28T10:49:16+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator v1.2 (feat)
+[2026-06-28T10:49:16+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator v1.2 (feat)
+[2026-06-28T10:49:16+00:00] [INFO] 📦 Processing job: Domain Name Geberator v1.2 (feat) → /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat
+[2026-06-28T10:49:16+00:00] [INFO] 📦 Processing job: Domain Name Geberator v1.2 (feat) → /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat
+[2026-06-28T10:49:21+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/domain-name-geberator/output → /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat/output
+[2026-06-28T10:49:21+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/domain-name-geberator/output → /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat/output
+[2026-06-28T10:49:21+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-28T10:49:21+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-28T10:49:21+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat (add_feature)
+[2026-06-28T10:49:21+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat (add_feature)
+[2026-06-28T10:51:57+00:00] [INFO] Claude Code finished: success=True
+[2026-06-28T10:51:57+00:00] [INFO] Claude Code finished: success=True
+[2026-06-28T10:51:57+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-28T10:51:57+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-28T10:51:58+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-28T10:51:58+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-28T10:51:58+00:00] [INFO]    archive: 1.8 MB in 0.2s
+[2026-06-28T10:51:58+00:00] [INFO]    archive: 1.8 MB in 0.2s
+[2026-06-28T10:51:58+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-28T10:51:58+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-28T10:52:05+00:00] [INFO] ✅ Hostinger deploy accepted in 6.9s
+[2026-06-28T10:52:05+00:00] [INFO] ✅ Hostinger deploy accepted in 6.9s
+[2026-06-28T10:52:07+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-28T10:52:07+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-28T10:52:07+00:00] [INFO] Builder real usage: in=73 out=9649 cost=$0.6204
+[2026-06-28T10:52:07+00:00] [INFO] Builder real usage: in=73 out=9649 cost=$0.6204
+[2026-06-29T09:44:21+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator v1.2 (feat)
+[2026-06-29T09:44:21+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator v1.2 (feat)
+[2026-06-29T09:44:21+00:00] [INFO] 📦 Processing job: Domain Name Geberator v1.2 (feat) → /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat
+[2026-06-29T09:44:21+00:00] [INFO] 📦 Processing job: Domain Name Geberator v1.2 (feat) → /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat
+[2026-06-29T09:44:25+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/domain-name-geberator/output → /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat/output
+[2026-06-29T09:44:25+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/domain-name-geberator/output → /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat/output
+[2026-06-29T09:44:25+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-29T09:44:25+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-29T09:44:25+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat (add_feature)
+[2026-06-29T09:44:25+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator-v1-2-feat (add_feature)
+[2026-06-29T09:48:52+00:00] [INFO] Claude Code finished: success=True
+[2026-06-29T09:48:52+00:00] [INFO] Claude Code finished: success=True
+[2026-06-29T09:48:52+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-29T09:48:52+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-29T09:48:53+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-29T09:48:53+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-29T09:48:53+00:00] [INFO]    archive: 1.8 MB in 0.3s
+[2026-06-29T09:48:53+00:00] [INFO]    archive: 1.8 MB in 0.3s
+[2026-06-29T09:48:53+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-29T09:48:53+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-29T09:49:00+00:00] [INFO] ✅ Hostinger deploy accepted in 7.4s
+[2026-06-29T09:49:00+00:00] [INFO] ✅ Hostinger deploy accepted in 7.4s
+[2026-06-29T09:49:03+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-29T09:49:03+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-29T09:49:03+00:00] [INFO] Builder real usage: in=152 out=15446 cost=$0.7767
+[2026-06-29T09:49:03+00:00] [INFO] Builder real usage: in=152 out=15446 cost=$0.7767
+[2026-06-29T12:33:57+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-29T12:33:57+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-29T13:53:47+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator
+[2026-06-29T13:53:47+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator
+[2026-06-29T13:53:47+00:00] [INFO] 📦 Processing job: Domain Name Geberator → /data/.openclaw/workspace/builds/domain-name-geberator
+[2026-06-29T13:53:47+00:00] [INFO] 📦 Processing job: Domain Name Geberator → /data/.openclaw/workspace/builds/domain-name-geberator
+[2026-06-29T13:53:51+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-29T13:53:51+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-29T13:53:51+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator (full)
+[2026-06-29T13:53:51+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator (full)
+[2026-06-29T13:55:59+00:00] [INFO] Claude Code finished: success=True
+[2026-06-29T13:55:59+00:00] [INFO] Claude Code finished: success=True
+[2026-06-29T13:55:59+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-29T13:55:59+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-29T13:55:59+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-29T13:55:59+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-29T13:55:59+00:00] [INFO]    archive: 1.8 MB in 0.5s
+[2026-06-29T13:55:59+00:00] [INFO]    archive: 1.8 MB in 0.5s
+[2026-06-29T13:55:59+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-29T13:55:59+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-29T13:56:07+00:00] [INFO] ✅ Hostinger deploy accepted in 7.2s
+[2026-06-29T13:56:07+00:00] [INFO] ✅ Hostinger deploy accepted in 7.2s
+[2026-06-29T13:56:09+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-29T13:56:09+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-29T13:56:09+00:00] [INFO] Builder real usage: in=72 out=5758 cost=$0.3486
+[2026-06-29T13:56:09+00:00] [INFO] Builder real usage: in=72 out=5758 cost=$0.3486
+[2026-06-29T17:45:20+00:00] [INFO] 🔔 Long-poll picked up Builder job: URL Shortener v1.39 (feat)
+[2026-06-29T17:45:20+00:00] [INFO] 🔔 Long-poll picked up Builder job: URL Shortener v1.39 (feat)
+[2026-06-29T17:45:20+00:00] [INFO] 📦 Processing job: URL Shortener v1.39 (feat) → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat
+[2026-06-29T17:45:20+00:00] [INFO] 📦 Processing job: URL Shortener v1.39 (feat) → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat
+[2026-06-29T17:45:25+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/url-shortener/output → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat/output
+[2026-06-29T17:45:25+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/url-shortener/output → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat/output
+[2026-06-29T17:45:25+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-29T17:45:25+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-29T17:45:25+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/url-shortener-v1-39-feat (add_feature)
+[2026-06-29T17:45:25+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/url-shortener-v1-39-feat (add_feature)
+[2026-06-29T17:46:42+00:00] [INFO] Claude Code finished: success=True
+[2026-06-29T17:46:42+00:00] [INFO] Claude Code finished: success=True
+[2026-06-29T17:46:42+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-29T17:46:42+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-29T17:46:42+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-29T17:46:42+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-29T17:46:42+00:00] [INFO]    archive: 1.8 MB in 0.1s
+[2026-06-29T17:46:42+00:00] [INFO]    archive: 1.8 MB in 0.1s
+[2026-06-29T17:46:42+00:00] [INFO] 🚀 Deploying to agentrocketman.com/url-short/...
+[2026-06-29T17:46:42+00:00] [INFO] 🚀 Deploying to agentrocketman.com/url-short/...
+[2026-06-29T17:46:52+00:00] [INFO] ✅ Hostinger deploy accepted in 9.2s
+[2026-06-29T17:46:52+00:00] [INFO] ✅ Hostinger deploy accepted in 9.2s
+[2026-06-29T17:46:54+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/url-short/
+[2026-06-29T17:46:54+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/url-short/
+[2026-06-29T17:46:54+00:00] [INFO] Builder real usage: in=65 out=3934 cost=$0.3213
+[2026-06-29T17:46:54+00:00] [INFO] Builder real usage: in=65 out=3934 cost=$0.3213
+[2026-06-29T18:23:24+00:00] [INFO] 🔔 Long-poll picked up Builder job: URL Shortener v1.3 (fix)
+[2026-06-29T18:23:24+00:00] [INFO] 🔔 Long-poll picked up Builder job: URL Shortener v1.3 (fix)
+[2026-06-29T18:23:24+00:00] [INFO] 📦 Processing job: URL Shortener v1.3 (fix) → /data/.openclaw/workspace/builds/url-shortener-v1-3-fix
+[2026-06-29T18:23:24+00:00] [INFO] 📦 Processing job: URL Shortener v1.3 (fix) → /data/.openclaw/workspace/builds/url-shortener-v1-3-fix
+[2026-06-29T18:23:26+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/url-shortener/output → /data/.openclaw/workspace/builds/url-shortener-v1-3-fix/output
+[2026-06-29T18:23:26+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/url-shortener/output → /data/.openclaw/workspace/builds/url-shortener-v1-3-fix/output
+[2026-06-29T18:23:27+00:00] [INFO] Builder using model: claude-haiku-4-5 (max-turns: 15)
+[2026-06-29T18:23:27+00:00] [INFO] Builder using model: claude-haiku-4-5 (max-turns: 15)
+[2026-06-29T18:23:27+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/url-shortener-v1-3-fix (quick_fix)
+[2026-06-29T18:23:27+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/url-shortener-v1-3-fix (quick_fix)
+[2026-06-29T18:24:03+00:00] [INFO] Claude Code finished: success=False
+[2026-06-29T18:24:03+00:00] [INFO] Claude Code finished: success=False
+[2026-06-29T18:24:03+00:00] [INFO] Builder real usage: in=54 out=1906 cost=$0.0865
+[2026-06-29T18:24:03+00:00] [INFO] Builder real usage: in=54 out=1906 cost=$0.0865
+[2026-06-29T18:36:53+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator
+[2026-06-29T18:36:53+00:00] [INFO] 🔔 Long-poll picked up Builder job: Domain Name Geberator
+[2026-06-29T18:36:53+00:00] [INFO] 📦 Processing job: Domain Name Geberator → /data/.openclaw/workspace/builds/domain-name-geberator
+[2026-06-29T18:36:53+00:00] [INFO] 📦 Processing job: Domain Name Geberator → /data/.openclaw/workspace/builds/domain-name-geberator
+[2026-06-29T18:36:57+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-29T18:36:57+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-06-29T18:36:57+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator (full)
+[2026-06-29T18:36:57+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/domain-name-geberator (full)
+[2026-06-29T18:41:18+00:00] [INFO] Claude Code finished: success=True
+[2026-06-29T18:41:18+00:00] [INFO] Claude Code finished: success=True
+[2026-06-29T18:41:18+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-29T18:41:18+00:00] [INFO] Auto-deploying build to live URL...
+[2026-06-29T18:41:18+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-29T18:41:18+00:00] [INFO] 📦 Building deploy archive...
+[2026-06-29T18:41:19+00:00] [INFO]    archive: 1.8 MB in 0.6s
+[2026-06-29T18:41:19+00:00] [INFO]    archive: 1.8 MB in 0.6s
+[2026-06-29T18:41:19+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-29T18:41:19+00:00] [INFO] 🚀 Deploying to agentrocketman.com/domains/...
+[2026-06-29T18:41:26+00:00] [INFO] ✅ Hostinger deploy accepted in 7.5s
+[2026-06-29T18:41:26+00:00] [INFO] ✅ Hostinger deploy accepted in 7.5s
+[2026-06-29T18:41:28+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-29T18:41:28+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/domains/
+[2026-06-29T18:41:28+00:00] [INFO] Builder real usage: in=158 out=12914 cost=$0.9762
+[2026-06-29T18:41:28+00:00] [INFO] Builder real usage: in=158 out=12914 cost=$0.9762
+[2026-06-29T19:32:53+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-29T19:32:53+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T17:47:54+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T17:47:54+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:05:22+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:05:22+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:25:55+00:00] [DEBUG] Heartbeat POST failed: <urlopen error _ssl.c:1012: The handshake operation timed out>
+[2026-06-30T18:25:55+00:00] [DEBUG] Heartbeat POST failed: <urlopen error _ssl.c:1012: The handshake operation timed out>
+[2026-06-30T18:50:18+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:50:18+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:50:25+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:50:25+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:51:00+00:00] [WARN] long-poll network error: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:51:00+00:00] [WARN] long-poll network error: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:51:10+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:51:10+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:51:45+00:00] [WARN] long-poll network error: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:51:45+00:00] [WARN] long-poll network error: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:51:55+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:51:55+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T18:55:53+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:55:53+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:56:04+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:56:04+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:56:40+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:56:40+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:56:52+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:56:52+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:57:28+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:57:28+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:57:37+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:57:37+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:58:12+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:58:12+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:58:18+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:58:18+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:58:53+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:58:53+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T18:59:01+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:59:01+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:59:37+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T18:59:37+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:00:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:00:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:01:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:01:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:01:32+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:01:32+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:02:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:02:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:02:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:02:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:03:20+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:03:20+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:03:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:03:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:04:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:04:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:04:16+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:04:16+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:05:30+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:05:30+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:06:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:06:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:06:17+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:06:17+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:06:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:06:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:07:32+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:07:32+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:07:40+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:07:40+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:08:14+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:08:14+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:08:49+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:08:49+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:10:02+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:10:02+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:10:08+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:10:08+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:10:41+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:10:41+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:11:18+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:11:18+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:13:29+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:13:29+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:13:40+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:13:40+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:16:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:16:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:39:14+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T19:39:14+00:00] [DEBUG] Heartbeat POST failed: <urlopen error [Errno 101] Network is unreachable>
+[2026-06-30T19:40:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:40:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:41:02+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:41:02+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:41:13+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:41:13+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:41:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:41:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:42:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:42:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:44:05+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:44:05+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:44:43+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:44:43+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:45:55+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:45:55+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:46:01+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:46:01+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:46:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:46:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:47:20+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:47:20+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:47:56+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:47:56+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:48:32+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:48:32+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:49:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:49:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:49:44+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:49:44+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:49:55+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:49:55+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:51:59+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:51:59+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:52:05+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:52:05+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:52:40+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:52:40+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:53:22+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:53:22+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:53:57+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:53:57+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:54:03+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:54:03+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:54:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:54:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:54:49+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:54:49+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:55:24+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:55:24+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:56:00+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:56:00+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:56:10+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:56:10+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:57:13+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:57:13+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:57:48+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:57:48+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:58:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:58:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:59:01+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:59:01+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T19:59:06+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:59:06+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:59:43+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T19:59:43+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:00:19+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:00:19+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:00:24+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:00:24+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:00:59+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:00:59+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:01:35+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:01:35+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:01:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:01:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:02:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:02:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:03:01+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:03:01+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:03:12+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:03:12+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:03:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:03:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:03:57+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:03:57+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:05:04+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:05:04+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:05:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:05:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:06:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:06:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:06:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:06:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:07:33+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:07:33+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:08:08+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:08:08+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:08:19+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:08:19+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:08:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:08:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:09:04+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:09:04+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:09:41+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:09:41+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:10:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:10:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:10:57+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:10:57+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:11:33+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:11:33+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:12:35+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:12:35+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:13:10+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:13:10+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:13:43+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:13:43+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:15:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:15:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:15:22+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:15:22+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:15:57+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:15:57+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:16:07+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:16:07+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:16:42+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:16:42+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:16:53+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:16:53+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:17:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:17:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:18:30+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:18:30+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:19:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:19:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:19:16+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:19:16+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:19:51+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:19:51+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:20:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:20:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:21:34+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:21:34+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:22:16+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:22:16+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:22:47+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:22:47+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:23:23+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:23:23+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:23:28+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:23:28+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:23:59+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:23:59+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:24:34+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:24:34+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:25:10+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:25:10+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:25:50+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:25:50+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:26:01+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:26:01+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:26:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:26:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:27:03+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:27:03+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:28:30+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:28:30+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:28:40+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:28:40+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:29:15+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:29:15+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:29:21+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:29:21+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:29:56+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:29:56+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:30:32+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:30:32+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:31:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:31:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:31:43+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:31:43+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:32:18+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:32:18+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:32:29+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:32:29+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:33:05+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:33:05+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:33:36+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:33:36+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:34:42+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:34:42+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:35:17+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:35:17+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:35:28+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:35:28+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:36:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:36:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:41:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:41:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:42:02+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:42:02+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:42:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:42:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:42:48+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:42:48+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:43:23+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:43:23+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:44:04+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:44:04+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:44:14+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:44:14+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:44:49+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:44:49+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:45:30+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:45:30+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:47:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:47:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:47:39+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:47:39+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:48:45+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:48:45+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:48:55+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:48:55+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:49:58+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:49:58+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:50:39+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:50:39+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:50:44+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:50:44+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:51:20+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:51:20+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:51:30+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:51:30+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:52:00+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:52:00+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:52:35+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:52:35+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:52:41+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:52:41+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:53:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:53:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:53:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:53:26+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:54:28+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:54:28+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:54:34+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:54:34+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:55:09+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:55:09+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:55:20+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:55:20+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:55:55+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:55:55+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:56:00+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:56:00+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:56:35+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:56:35+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:56:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:56:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:57:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:57:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:57:52+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:57:52+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T20:58:28+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:58:28+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:59:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T20:59:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:00:05+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:00:05+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:00:10+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:00:10+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:00:45+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:00:45+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:00:56+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:00:56+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:01:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:01:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:02:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:02:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:03:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:03:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:03:08+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:03:08+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:03:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:03:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:04:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:04:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:05:02+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:05:02+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:05:35+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:05:35+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:06:36+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:06:36+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:07:12+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:07:12+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:07:52+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:07:52+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:08:03+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:08:03+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:08:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:08:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:10:10+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:10:10+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:11:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:11:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:11:52+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:11:52+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:12:55+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:12:55+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:13:59+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:13:59+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:14:34+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:14:34+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:15:37+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:15:37+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:16:45+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:16:45+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:17:17+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:17:17+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:18:23+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:18:23+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-06-30T21:18:59+00:00] [WARN] long-poll error: The read operation timed out
+[2026-06-30T21:18:59+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T08:43:41+00:00] [INFO] 🔔 Long-poll picked up Builder job: URL Shortener v1.39 (feat)
+[2026-07-01T08:43:41+00:00] [INFO] 🔔 Long-poll picked up Builder job: URL Shortener v1.39 (feat)
+[2026-07-01T08:43:42+00:00] [INFO] 📦 Processing job: URL Shortener v1.39 (feat) → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat
+[2026-07-01T08:43:42+00:00] [INFO] 📦 Processing job: URL Shortener v1.39 (feat) → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat
+[2026-07-01T08:43:46+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/url-shortener/output → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat/output
+[2026-07-01T08:43:46+00:00] [INFO] Copying parent code from /data/.openclaw/workspace/builds/url-shortener/output → /data/.openclaw/workspace/builds/url-shortener-v1-39-feat/output
+[2026-07-01T08:43:46+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-07-01T08:43:46+00:00] [INFO] Builder using model: claude-sonnet-4-5 (max-turns: unlimited)
+[2026-07-01T08:43:46+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/url-shortener-v1-39-feat (add_feature)
+[2026-07-01T08:43:46+00:00] [INFO] Launching Claude Code in /data/.openclaw/workspace/builds/url-shortener-v1-39-feat (add_feature)
+[2026-07-01T08:43:57+00:00] [INFO] Claude Code finished: success=False
+[2026-07-01T08:43:57+00:00] [INFO] Claude Code finished: success=False
+[2026-07-01T08:43:57+00:00] [INFO] Builder estimated usage (no JSON): cost=$0.05
+[2026-07-01T08:43:57+00:00] [INFO] Builder estimated usage (no JSON): cost=$0.05
+[2026-07-01T19:23:49+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:23:49+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:25:18+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-01T19:25:18+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-01T19:25:53+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:25:53+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:25:59+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-01T19:25:59+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-01T19:26:34+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:26:34+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:27:14+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:27:14+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:28:00+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-01T19:28:00+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-01T19:28:36+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:28:36+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:31:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-01T19:31:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-01T19:33:05+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-01T19:33:05+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:03:12+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:03:12+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:04:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:04:16+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:04:22+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:04:22+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:04:57+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:04:57+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:05:07+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:05:07+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:05:43+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:05:43+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:05:48+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:05:48+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:06:20+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:06:20+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:07:25+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:07:25+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:08:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:08:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:08:35+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:08:35+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:09:41+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:09:41+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:09:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:09:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:10:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:10:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:11:27+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:11:27+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:11:33+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:11:33+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:12:08+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:12:08+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:12:43+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:12:43+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:14:22+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:14:22+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:15:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:15:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:15:39+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:15:39+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:16:19+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:16:19+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:16:25+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:16:25+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:16:55+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:16:55+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:17:31+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:17:31+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:18:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:18:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:18:17+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:18:17+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:19:48+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:19:48+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:20:52+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:20:52+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:21:27+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:21:27+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:22:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:22:03+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:22:13+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:22:13+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:22:48+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:22:48+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:22:54+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:22:54+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:23:29+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:23:29+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:24:10+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:24:10+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:25:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:25:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:25:56+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:25:56+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:26:31+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:26:31+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:27:28+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:27:28+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:28:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:28:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:29:37+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:29:37+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:30:15+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:30:15+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:30:50+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:30:50+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:31:26+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:31:26+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:31:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:31:31+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:32:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:32:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:32:17+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:32:17+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:32:52+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:32:52+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:33:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:33:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:33:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:33:38+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:34:13+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:34:13+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:34:19+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:34:19+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:34:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:34:54+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:36:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:36:06+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:36:42+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:36:42+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:37:17+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:37:17+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:38:25+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:38:25+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:39:05+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:39:05+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:39:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:39:47+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:40:23+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:40:23+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:40:58+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:40:58+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:41:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:41:09+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:41:44+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:41:44+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:41:54+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:41:54+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:43:00+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:43:00+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:43:37+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:43:37+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:44:08+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:44:08+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:44:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:44:45+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:45:20+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:45:20+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:45:57+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:45:57+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:46:32+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:46:32+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:47:32+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:47:32+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:48:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:48:02+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:48:33+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:48:33+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:49:05+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:49:05+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:49:41+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:49:41+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:49:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:49:46+00:00] [DEBUG] Heartbeat POST failed: The read operation timed out
+[2026-07-02T02:50:21+00:00] [WARN] long-poll error: The read operation timed out
+[2026-07-02T02:50:21+00:00] [WARN] long-poll error: The read operation timed out

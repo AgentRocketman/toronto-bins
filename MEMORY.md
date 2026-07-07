@@ -5,6 +5,57 @@
 - Dev: `agentrocketman.com` — test all changes here first
 - Prod: `getmybin.com` — only when Chris asks
 
+## 🎙️ PWA Bridges — Drain-on-Trigger (2026-07-07)
+
+Chris has **two web bridges** that funnel messages into me via the Telegram bot. Because outbound Telegram bot messages don't trigger me, I have to check their stores and POST replies back on every Telegram interaction.
+
+### Voice bridge (`/assistant/`) — https://agentrocketman.com/assistant/
+- Marker in Telegram message: `🎙️ [PWA <req_id>]`
+- Store: `GET https://agentrocketman.com/assistant/api/debug-updates.php`
+  - Header: `X-Auth-Token: curbin-assistant-dev-2026`
+- Reply: `POST https://agentrocketman.com/assistant/api/reply.php`
+  - Header: `X-Hook-Auth: curbin-hook-auth-2026`
+  - Body: `{ request_id, reply }`
+- Keep replies **short (1–2 sentences)** — they get TTS'd.
+
+### Text chat bridge (`/chat/`) — https://agentrocketman.com/chat/  (built 2026-07-07)
+- Marker in Telegram message: `💬 [Chat <req_id>]`
+- Also markers a wake event: `💬 Chat page: [Chat <req_id>] <text>`
+- Store: `GET https://agentrocketman.com/chat/api/debug-updates.php`
+  - Header: `X-Auth-Token: curbin-chat-dev-2026`
+- Reply: `POST https://agentrocketman.com/chat/api/reply.php`
+  - Header: `X-Hook-Auth: curbin-chat-hook-2026`
+  - Body: `{ request_id, reply }`
+- Full replies OK — displayed as text on the page.
+- **Delivery mode: `/hooks/agent` pinned to `sessionKey: agent:main:main`** (final architecture as of 2026-07-07).
+  - `/hooks/wake` was unreliable — events queued but didn't reliably trigger a fresh turn.
+  - `/hooks/agent` reliably fires a turn. Passing `sessionKey: agent:main:main` makes that turn run INSIDE the main Telegram session so it shares full context.
+  - Requires config: `hooks.allowRequestSessionKey: true` and `hooks.allowedSessionKeyPrefixes` including both `"hook:"` (required by the schema) and `"agent:main:"`.
+  - `send.php` and `send-audio.php` POST an agent payload with instructions telling the agent to reply via `/chat/api/reply.php` and end Telegram turn with NO_REPLY.
+- Cloudflared quick tunnel maps public URL → `127.0.0.1:18789/hooks/agent`. URL stored in `/data/.openclaw/workspace/tunnel-url.txt`. Kept alive by `/data/.openclaw/workspace/tunnel-keepalive.sh`. If it changes, update `openclaw_hook_url` in `public_html/chat/api/config.php` and redeploy.
+- **My reflex when I see a `💬 Chat page ...` or `🎙️ Chat page VOICE ...` system event:**
+  1. Extract the `<req_id>` from the `[Chat <id>]` marker.
+  2. Compose a natural reply, drawing on the current Telegram conversation context (since I'm in the main session).
+  3. POST it to `/chat/api/reply.php` with `X-Hook-Auth: curbin-chat-hook-2026` and body `{ request_id, reply }`.
+  4. End the Telegram turn with `NO_REPLY` — the user is on the web page, not Telegram, so no Telegram message needed.
+
+- **Micro-status updates during LONG builds initiated from `/chat/`:** POST interim status lines with `"status": true` so the page shows them as small muted • bullets while I work. Keep them short (5-10 words), post 3-8 during a big build. Example:
+  ```bash
+  curl -sS -X POST -H 'Content-Type: application/json' -H 'X-Hook-Auth: curbin-chat-hook-2026' \
+    -d '{"request_id":"<id>","reply":"Reading the current file…","status":true}' \
+    https://agentrocketman.com/chat/api/reply.php
+  ```
+  Then post the FINAL reply normally (no `status` flag) — that marks the request done. Only skip status pings for quick answers (≤30s) where they'd be noise.
+- If a wake event was missed (I was busy) and I see stale pending entries in the store when I next reply to Chris, drain them all via `GET /chat/api/debug-updates.php` (`X-Auth-Token: curbin-chat-dev-2026`).
+
+### The reflex (every Telegram interaction with Chris)
+**BEFORE composing my Telegram reply:**
+1. If the inbound Telegram message text starts with `🎙️ [PWA <id>]` or `💬 [Chat <id>]`, extract the id and reply on that bridge directly — don't ALSO reply on Telegram (skip with `NO_REPLY`).
+2. Otherwise, do a quick drain of both stores: for any entry without `.reply` created in the last ~30 minutes, POST a reply.
+3. Then reply to Chris on Telegram as usual.
+
+Skip stale (>30 min) or gibberish requests. Do NOT set up recurring crons for polling — Chris rejected that because of cost.
+
 ## 🔥 ACTIVE MODEL: Kimi K2.7 Code (via OpenRouter) — 2026-06-28
 
 **Default chat model switched from Anthropic Sonnet to Kimi K2.7 Code (2026-06-27).**

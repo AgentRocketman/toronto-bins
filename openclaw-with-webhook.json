@@ -1,0 +1,392 @@
+{
+  "agents": {
+    "defaults": {
+      "heartbeat": {
+        "isolatedSession": true,
+        "lightContext": true
+      },
+      "model": {
+        "primary": "anthropic/claude-haiku-4-5"
+      },
+      "models": {
+        "anthropic/claude-haiku-4-5": {
+          "alias": "Claude Haiku 4.5"
+        },
+        "anthropic/claude-opus-4-6": {
+          "alias": "Claude Opus 4.6"
+        },
+        "anthropic/claude-opus-4-7": {
+          "alias": "Claude Opus 4.7"
+        },
+        "anthropic/claude-sonnet-4-6": {
+          "alias": "Claude Sonnet 4.6"
+        },
+        "openrouter/deepseek/deepseek-chat-v3.1:free": {
+          "alias": "DeepSeek V3 (free)"
+        },
+        "openrouter/google/gemini-2.0-flash-exp:free": {
+          "alias": "Gemini 2.0 Flash (free)"
+        },
+        "openrouter/meta-llama/llama-3.3-70b-instruct:free": {
+          "alias": "Llama 3.3 70B (free)"
+        },
+        "openrouter/moonshotai/kimi-k2.7-code": {
+          "alias": "Kimi K2.7 Code"
+        },
+        "openrouter/moonshotai/kimi-k2:free": {
+          "alias": "Kimi K2 (free)"
+        },
+        "openrouter/qwen/qwen-2.5-coder-32b-instruct:free": {
+          "alias": "Qwen 2.5 Coder 32B (free)"
+        }
+      }
+    },
+    "list": [
+      {
+        "id": "main",
+        "name": "main"
+      }
+    ]
+  },
+  "browser": {
+    "defaultProfile": "openclaw",
+    "headless": true,
+    "noSandbox": true
+  },
+  "channels": {
+    "telegram": {
+      "allowFrom": [
+        "8714809782"
+      ],
+      "botToken": "8991461374:AAGfPscA15vMZ4L3BmkmGta-hG8YhpZV60U",
+      "dmPolicy": "allowlist",
+      "enabled": true,
+      "webhookUrl": "https://agentrocketman.com/assistant/api/webhook.php",
+      "webhookHost": "127.0.0.1",
+      "webhookPort": 18790,
+      "webhookPath": "/telegram-webhook",
+      "webhookSecret": "a1b2c3d4e5f6789012345678"
+    },
+    "whatsapp": {
+      "allowFrom": [],
+      "dmPolicy": "allowlist",
+      "enabled": true,
+      "groupAllowFrom": [],
+      "groupPolicy": "allowlist",
+      "selfChatMode": true
+    }
+  },
+  "commands": {
+    "bash": true,
+    "native": "auto",
+    "nativeSkills": "auto",
+    "ownerAllowFrom": [
+      "telegram:8714809782"
+    ],
+    "restart": true
+  },
+  "env": {
+    "GROQ_API_KEY": "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",
+    "OPENROUTER_API_KEY": "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"
+  },
+  "gateway": {
+    "auth": {
+      "mode": "token",
+      "token": "${OPENCLAW_GATEWAY_TOKEN}"
+    },
+    "controlUi": {},
+    "mode": "local",
+    "remote": {
+      "token": "${OPENCLAW_GATEWAY_TOKEN}"
+    }
+  },
+  "hooks": {
+    "token": "${OPENCLAW_HOOKS_TOKEN}"
+  },
+  "mcp": {
+    "servers": {
+      "hostinger-api": {
+        "command": "hostinger-api-mcp",
+        "env": {
+          "API_TOKEN": "B4V2bxKyjkRgso0JS9CkiCqkqUZ32PhAzA16cxcB87d7b57e",
+          "DEBUG": "false"
+        }
+      }
+    }
+  },
+  "messages": {
+    "groupChat": {
+      "visibleReplies": "message_tool"
+    }
+  },
+  "meta": {
+    "lastTouchedAt": "2026-07-06T23:27:13.159Z",
+    "lastTouchedVersion": "2026.5.6"
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "openrouter": {
+        "api": "openai-completions",
+        "apiKey": "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",
+        "auth": "api-key",
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "headers": {
+          "HTTP-Referer": "https://openclaw.local",
+          "X-Title": "OpenClaw"
+        },
+        "models": [
+          {
+            "contextWindow": 64000,
+            "id": "deepseek/deepseek-chat-v3.1:free",
+            "maxTokens": 4096,
+            "name": "DeepSeek V3 (free)"
+          },
+          {
+            "contextWindow": 1000000,
+            "id": "google/gemini-2.0-flash-exp:free",
+            "maxTokens": 8192,
+            "name": "Gemini 2.0 Flash (free)"
+          },
+          {
+            "contextWindow": 131072,
+            "id": "meta-llama/llama-3.3-70b-instruct:free",
+            "maxTokens": 4096,
+            "name": "Llama 3.3 70B (free)"
+          },
+          {
+            "contextWindow": 32768,
+            "id": "qwen/qwen-2.5-coder-32b-instruct:free",
+            "maxTokens": 4096,
+            "name": "Qwen 2.5 Coder 32B (free)"
+          },
+          {
+            "contextWindow": 200000,
+            "id": "moonshotai/kimi-k2:free",
+            "maxTokens": 4096,
+            "name": "Kimi K2 (free)"
+          },
+          {
+            "contextWindow": 200000,
+            "id": "moonshotai/kimi-k2.7-code",
+            "maxTokens": 8192,
+            "name": "Kimi K2.7 Code"
+          }
+        ]
+      }
+    }
+  },
+  "plugins": {
+    "allow": [
+      "whatsapp",
+      "telegram",
+      "discord",
+      "slack",
+      "oxylabs-ai-studio-openclaw",
+      "anthropic",
+      "openrouter",
+      "browser"
+    ],
+    "bundledDiscovery": "compat",
+    "entries": {
+      "discord": {
+        "enabled": true
+      },
+      "oxylabs-ai-studio-openclaw": {
+        "enabled": true
+      },
+      "slack": {
+        "enabled": true
+      },
+      "telegram": {
+        "enabled": true
+      },
+      "whatsapp": {
+        "enabled": true
+      },
+      "anthropic": {
+        "enabled": true
+      },
+      "openrouter": {
+        "enabled": true
+      },
+      "browser": {
+        "enabled": true
+      }
+    }
+  },
+  "skills": {
+    "entries": {
+      "1password": {
+        "enabled": false
+      },
+      "apple-notes": {
+        "enabled": false
+      },
+      "apple-reminders": {
+        "enabled": false
+      },
+      "bear-notes": {
+        "enabled": false
+      },
+      "blogwatcher": {
+        "enabled": false
+      },
+      "blucli": {
+        "enabled": false
+      },
+      "bluebubbles": {
+        "enabled": false
+      },
+      "camsnap": {
+        "enabled": false
+      },
+      "coding-agent": {
+        "enabled": false
+      },
+      "discord": {
+        "enabled": false
+      },
+      "eightctl": {
+        "enabled": false
+      },
+      "gemini": {
+        "enabled": false
+      },
+      "gh-issues": {
+        "enabled": false
+      },
+      "gifgrep": {
+        "enabled": false
+      },
+      "github": {
+        "enabled": false
+      },
+      "gog": {
+        "enabled": false
+      },
+      "goplaces": {
+        "enabled": false
+      },
+      "hhmail": {
+        "enabled": true
+      },
+      "hostinger-mcp": {
+        "enabled": true
+      },
+      "imsg": {
+        "enabled": false
+      },
+      "mcporter": {
+        "enabled": false
+      },
+      "model-usage": {
+        "enabled": false
+      },
+      "nano-pdf": {
+        "enabled": false
+      },
+      "notion": {
+        "enabled": false
+      },
+      "obsidian": {
+        "enabled": false
+      },
+      "openai-whisper": {
+        "enabled": false
+      },
+      "openai-whisper-api": {
+        "enabled": false
+      },
+      "openhue": {
+        "enabled": false
+      },
+      "oracle": {
+        "enabled": false
+      },
+      "ordercli": {
+        "enabled": false
+      },
+      "peekaboo": {
+        "enabled": false
+      },
+      "sag": {
+        "enabled": false
+      },
+      "session-logs": {
+        "enabled": false
+      },
+      "sherpa-onnx-tts": {
+        "enabled": false
+      },
+      "slack": {
+        "enabled": false
+      },
+      "songsee": {
+        "enabled": false
+      },
+      "sonoscli": {
+        "enabled": false
+      },
+      "spotify-player": {
+        "enabled": false
+      },
+      "summarize": {
+        "enabled": false
+      },
+      "things-mac": {
+        "enabled": false
+      },
+      "tmux": {
+        "enabled": false
+      },
+      "trello": {
+        "enabled": false
+      },
+      "video-frames": {
+        "enabled": false
+      },
+      "voice-call": {
+        "enabled": false
+      },
+      "wacli": {
+        "enabled": false
+      },
+      "xurl": {
+        "enabled": false
+      }
+    }
+  },
+  "tools": {
+    "media": {
+      "audio": {
+        "models": [
+          {
+            "provider": "groq"
+          }
+        ]
+      }
+    },
+    "web": {
+      "fetch": {
+        "enabled": false
+      },
+      "search": {
+        "enabled": false
+      }
+    }
+  },
+  "update": {
+    "auto": {
+      "enabled": false
+    },
+    "channel": "stable",
+    "checkOnStart": false
+  },
+  "wizard": {
+    "lastRunAt": "2026-06-13T00:08:05.321Z",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local",
+    "lastRunVersion": "2026.5.6"
+  }
+}

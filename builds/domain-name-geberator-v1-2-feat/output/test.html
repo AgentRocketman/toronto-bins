@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Generator - System Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 2rem;
+            background: #f9fafb;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 { color: #111827; margin-bottom: 2rem; }
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+        }
+        .test-section h2 {
+            color: #374151;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: white;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+        }
+        .test-name { font-weight: 500; }
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .status.pending { background: #fef3c7; color: #92400e; }
+        .status.pass { background: #d1fae5; color: #065f46; }
+        .status.fail { background: #fee2e2; color: #991b1b; }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .btn:hover { background: #4f46e5; }
+        pre {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 System Test Suite</h1>
+
+        <div class="test-section">
+            <h2>Environment Checks</h2>
+            <div id="env-tests"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Database Connection</h2>
+            <div id="db-tests"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>API Configuration</h2>
+            <div id="api-tests"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Functional Tests</h2>
+            <div id="func-tests"></div>
+            <button class="btn" onclick="runFunctionalTests()">Run Functional Tests</button>
+        </div>
+
+        <div id="results" style="margin-top: 2rem;"></div>
+    </div>
+
+    <script>
+        async function checkEnvironment() {
+            const tests = [
+                { name: 'PHP Version >= 7.4', check: async () => {
+                    const response = await fetch('test-api.php?check=php_version');
+                    const data = await response.json();
+                    return data.pass;
+                }},
+                { name: 'MySQL Extension', check: async () => {
+                    const response = await fetch('test-api.php?check=mysql');
+                    const data = await response.json();
+                    return data.pass;
+                }},
+                { name: 'cURL Extension', check: async () => {
+                    const response = await fetch('test-api.php?check=curl');
+                    const data = await response.json();
+                    return data.pass;
+                }},
+                { name: 'JSON Extension', check: async () => {
+                    const response = await fetch('test-api.php?check=json');
+                    const data = await response.json();
+                    return data.pass;
+                }}
+            ];
+
+            const container = document.getElementById('env-tests');
+            for (const test of tests) {
+                const div = createTestItem(test.name);
+                container.appendChild(div);
+                try {
+                    const pass = await test.check();
+                    updateStatus(div, pass);
+                } catch (e) {
+                    updateStatus(div, false);
+                }
+            }
+        }
+
+        async function checkDatabase() {
+            const container = document.getElementById('db-tests');
+            const div = createTestItem('Database Connection');
+            container.appendChild(div);
+
+            try {
+                const response = await fetch('test-api.php?check=database');
+                const data = await response.json();
+                updateStatus(div, data.pass);
+            } catch (e) {
+                updateStatus(div, false);
+            }
+        }
+
+        async function checkAPIs() {
+            const container = document.getElementById('api-tests');
+
+            const tests = [
+                { name: 'OpenAI API Key Configured', check: 'openai_config' },
+                { name: 'Namecheap API Configured', check: 'namecheap_config' }
+            ];
+
+            for (const test of tests) {
+                const div = createTestItem(test.name);
+                container.appendChild(div);
+                try {
+                    const response = await fetch(`test-api.php?check=${test.check}`);
+                    const data = await response.json();
+                    updateStatus(div, data.pass);
+                } catch (e) {
+                    updateStatus(div, false);
+                }
+            }
+        }
+
+        async function runFunctionalTests() {
+            const container = document.getElementById('func-tests');
+            container.innerHTML = '';
+
+            const div = createTestItem('Generate Test Domains');
+            container.appendChild(div);
+
+            try {
+                const response = await fetch('api/generate.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        description: 'Test coffee shop in Portland Oregon',
+                        tld: 'com'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.domains && data.domains.length === 10) {
+                    updateStatus(div, true);
+
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '<h3>Generated Domains:</h3><pre>' +
+                        JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    updateStatus(div, false);
+                }
+            } catch (e) {
+                updateStatus(div, false);
+                console.error(e);
+            }
+        }
+
+        function createTestItem(name) {
+            const div = document.createElement('div');
+            div.className = 'test-item';
+            div.innerHTML = `
+                <span class="test-name">${name}</span>
+                <span class="status pending">Testing...</span>
+            `;
+            return div;
+        }
+
+        function updateStatus(div, pass) {
+            const status = div.querySelector('.status');
+            status.className = 'status ' + (pass ? 'pass' : 'fail');
+            status.textContent = pass ? 'PASS' : 'FAIL';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkEnvironment();
+            checkDatabase();
+            checkAPIs();
+        });
+    </script>
+</body>
+</html>

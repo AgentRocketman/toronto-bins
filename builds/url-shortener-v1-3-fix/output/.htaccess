@@ -1,4 +1,4 @@
-# My Little Shorter .htaccess Configuration
+# URL Shortener .htaccess Configuration
 
 # Enable URL Rewriting
 RewriteEngine On

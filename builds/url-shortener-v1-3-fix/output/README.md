@@ -1,4 +1,4 @@
-# My Little Shorter
+# URL Shortener
 
 A simple, lightweight URL shortener built with vanilla HTML/CSS/JS, PHP, and JSON file storage.
 

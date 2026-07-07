@@ -1,5 +1,5 @@
 <?php
-// Configuration constants for My Little Shorter
+// Configuration constants for URL Shortener
 
 // Base URL for the application (change this for deployment)
 define('BASE_URL', 'http://localhost:8000');

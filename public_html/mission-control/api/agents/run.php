@@ -104,7 +104,18 @@ try {
 
     // Return early to the caller (decide.php) so it doesn't time out waiting.
     // PHP-FPM keeps this request running after fastcgi_finish_request().
-    if (function_exists('fastcgi_finish_request')) {
+    //
+    // Exception: the local builder-runner calls us with sync=true so that
+    // Hostinger does NOT kill the background process when the HTTP client
+    // disconnects. In that case we keep the connection open and return the
+    // final result at the end.
+    $syncMode = !empty($input['sync']);
+    if ($syncMode) {
+        // Keep executing even if the runner/caller disconnects; Agent will
+        // finish and update Airtable regardless.
+        ignore_user_abort(true);
+    }
+    if (function_exists('fastcgi_finish_request') && !$syncMode) {
         echo json_encode([
             'ok' => true,
             'started' => true,
@@ -164,7 +175,8 @@ try {
     $approvalResult = createApproval($projectName, $stage, $result['response']);
 
     // Only echo final result if we didn't already finish the request early
-    if (!function_exists('fastcgi_finish_request')) {
+    // OR if the caller explicitly requested synchronous execution.
+    if ($syncMode || !function_exists('fastcgi_finish_request')) {
         echo json_encode([
             'ok' => true,
             'stage' => $stage,

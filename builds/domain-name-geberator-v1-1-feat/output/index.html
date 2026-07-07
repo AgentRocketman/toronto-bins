@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Name Generator</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Domain Name Generator</h1>
+            <p class="subtitle">Create unique, memorable domain names for your business</p>
+        </header>
+
+        <main>
+            <section class="generator-section">
+                <div class="input-group">
+                    <label for="business-description">Business Description</label>
+                    <textarea
+                        id="business-description"
+                        placeholder="Describe your business (e.g., 'organic coffee roastery in Portland')"
+                        rows="4"
+                        maxlength="500"
+                    ></textarea>
+                    <div class="char-counter">
+                        <span id="char-count">0</span>/500 characters
+                    </div>
+                </div>
+
+                <div class="tld-selector">
+                    <label>Domain Extension</label>
+                    <div class="tld-options">
+                        <label class="tld-option">
+                            <input type="radio" name="tld" value="com" checked>
+                            <span>.com</span>
+                        </label>
+                        <label class="tld-option">
+                            <input type="radio" name="tld" value="io">
+                            <span>.io</span>
+                        </label>
+                        <label class="tld-option">
+                            <input type="radio" name="tld" value="ai">
+                            <span>.ai</span>
+                        </label>
+                        <label class="tld-option">
+                            <input type="radio" name="tld" value="co">
+                            <span>.co</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="btn btn-primary">
+                    <span class="btn-text">Generate Domains</span>
+                    <span class="btn-loader" style="display: none;">
+                        <span class="spinner"></span> Generating...
+                    </span>
+                </button>
+
+                <div id="error-message" class="error-message" style="display: none;"></div>
+            </section>
+
+            <section class="results-section" id="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2>Generated Domains</h2>
+                    <button id="regenerate-btn" class="btn btn-secondary">Regenerate</button>
+                </div>
+
+                <div id="results-container" class="results-container">
+                    <!-- Results will be inserted here -->
+                </div>
+            </section>
+
+            <section class="favorites-section" id="favorites-section" style="display: none;">
+                <h2>⭐ Favorites</h2>
+                <div id="favorites-container" class="favorites-container">
+                    <!-- Favorites will be inserted here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

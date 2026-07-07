@@ -206,3 +206,4 @@
 [2026-06-28T08:28:20+00:00] [INFO] ✅ Hostinger deploy accepted in 6.9s
 [2026-06-28T08:28:22+00:00] [INFO] ✅ Deployed: https://agentrocketman.com/url-short/
 [2026-06-28T08:28:22+00:00] [INFO] Builder real usage: in=53 out=1192 cost=$0.0525
+[2026-06-28T09:15:00+00:00] [DEBUG] Heartbeat POST failed: HTTP Error 404: Not Found
