@@ -90,13 +90,15 @@
     /* Hero search — white card floating over video */
     .hero-search-wrap{position:relative;z-index:2;max-width:560px;margin:0 auto}
     .hero-search-box{
-      background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.3);
+      background:rgba(255,255,255,.18);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.2);
+      border:1px solid rgba(255,255,255,.25);
       position:relative;overflow:visible;
     }
     .hero-search-inner{display:flex;align-items:center;padding:8px 8px 8px 18px;gap:10px}
-    .hero-search-icon{color:#94a3b8;flex-shrink:0;display:flex;align-items:center}
-    #address{flex:1;border:none;outline:none;font-size:1rem;color:var(--slate);background:transparent;padding:11px 0;min-width:0}
-    #address::placeholder{color:#94a3b8}
+    .hero-search-icon{color:rgba(255,255,255,.6);flex-shrink:0;display:flex;align-items:center}
+    #address{flex:1;border:none;outline:none;font-size:1rem;color:#fff;background:transparent;padding:11px 0;min-width:0}
+    #address::placeholder{color:rgba(255,255,255,.45)}
     .hero-search-btn{
       background:var(--green);color:#fff;border:none;border-radius:12px;
       padding:14px 24px;font-weight:800;font-size:.92rem;cursor:pointer;
@@ -110,8 +112,9 @@
     .hero-note{margin-top:.7rem;color:rgba(255,255,255,.55);font-size:.78rem;text-align:center}
 
     .suggestions{
-      position:absolute;left:0;right:0;background:#fff;border:1px solid #e2e8f0;
-      border-radius:14px;box-shadow:var(--shadow-lg);z-index:9999;display:none;
+      position:absolute;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,.3);
+      border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.25);z-index:9999;display:none;
       max-height:280px;overflow-y:auto;margin-top:4px;
     }
     .suggestions.show{display:block}
