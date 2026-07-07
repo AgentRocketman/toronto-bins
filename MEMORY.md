@@ -59,7 +59,8 @@ Skip stale (>30 min) or gibberish requests. Do NOT set up recurring crons for po
 
 ## 🔥 ACTIVE MODEL: DeepSeek V4 Pro (via OpenRouter) — 2026-07-07
 
-**Default chat model switched to DeepSeek V4 Pro by Chris request.**
+**Permanent unless Chris says otherwise. Both chat AND coding use DeepSeek V4 Pro.**
+Never revert to another model on my own initiative — Chris explicitly said "Keep it like that unless I tell you."
 
 **⚠️ CRITICAL RULE:** Do NOT change the model without asking Chris first. Identify the issue, report it, ask for permission.
 

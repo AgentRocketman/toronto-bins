@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-07T17:44:39.615Z",
+  "updatedAt": "2026-07-07T19:18:28.017Z",
   "entries": {
     "memory:memory/2026-06-27.md:247:268": {
       "key": "memory:memory/2026-06-27.md:247:268",
@@ -205,18 +205,19 @@
       "endLine": 81,
       "source": "memory",
       "snippet": "- Removed 1.6s mystery wait - Added instant \"Scrolling to your schedule...\" feedback with spinner - Uses `transitionend` event for smart timing - Fallback 1.6s timeout for robustness - Works consistently on first AND subsequent clicks 3. **Dynamic recurring info** — Text now updates reactively when switching service types (Opus fix) 4. **Accordion** — Collapsible \"Upcoming Schedule\" (started session) 5. **Pricing** — Fixed recurring \"Both\" service to show $11.90/event 6. **Autocomplete scroll** — Fixed first-click scroll behavior ### Final Status: - ✅ GitHub Pages live: https://agentrocketman.github.io/toronto-bins/ - ✅ All UX issues resolved - ✅ Badge, scroll, pricing, recur",
-      "recallCount": 4,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 4,
+      "totalScore": 5,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T04:44:03.947Z",
-      "lastRecalledAt": "2026-07-07T17:44:39.615Z",
+      "lastRecalledAt": "2026-07-07T19:18:28.017Z",
       "queryHashes": [
         "4448bfbac301",
         "c28c6ad52629",
         "4863b0ccfd56",
-        "f91bb3ba8175"
+        "f91bb3ba8175",
+        "24c7d318528b"
       ],
       "recallDays": [
         "2026-07-07"
@@ -239,17 +240,18 @@
       "endLine": 83,
       "source": "memory",
       "snippet": "| Hostinger Email | support@agentrocketman.com | Yuserbsme | AgentEmail1! | Webmail works, IMAP pending | | GitHub | N/A | N/A | PAT provided (ghp_6e…IYim) | Pushed v2 successfully | ## Chris's Feedback Processed 1. Accordion approach preferred for schedule visibility ✅ 2. Recurring pricing bug caught and fixed ✅ 3. Autocomplete scroll timing fixed ✅ 4. v1 backup created for reference ✅",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T04:44:03.947Z",
-      "lastRecalledAt": "2026-07-07T17:44:39.615Z",
+      "lastRecalledAt": "2026-07-07T19:18:28.017Z",
       "queryHashes": [
         "4448bfbac301",
         "c28c6ad52629",
-        "f91bb3ba8175"
+        "f91bb3ba8175",
+        "24c7d318528b"
       ],
       "recallDays": [
         "2026-07-07"
@@ -404,17 +406,18 @@
       "endLine": 103,
       "source": "memory",
       "snippet": "- `/api/admin-auth/change-password.php` — Password update endpoint - `/api/admin-auth/setup-admins-table.php` — Setup script (run once) - `/api/admin-auth/create-admin.php` — Create new admin endpoint - `/api/get-dashboard-data.php` — Dashboard data API (PHP proxy for Airtable) ### Airtable Integration: - **Table:** `Admins` (in base apptYNRJTXwItvied) - **Fields:** Email, Password, FirstName, LastName, Active, CreatedAt, LastPasswordChange - **Initial admin:** support@getmybin.com / GetMyBinAdmin2026! ### Admin Panel Features: 1. **Login page** — Email + password authentication with JWT tokens (7-day expiry) 2. **Navigation bar** (fixed top): - 📊 Dashboard (default) - 📍 Service Sc",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:22:48.782Z",
-      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-07T19:18:28.017Z",
       "queryHashes": [
         "70380bd32bcd",
         "7a949d74f8b3",
-        "cc373728c2cc"
+        "cc373728c2cc",
+        "24c7d318528b"
       ],
       "recallDays": [
         "2026-07-07"
@@ -1904,6 +1907,99 @@
         "api/health.php",
         "api/upload.php",
         "api/save-service.php"
+      ]
+    },
+    "memory:memory/2026-06-19.md:339:375": {
+      "key": "memory:memory/2026-06-19.md:339:375",
+      "path": "memory/2026-06-19.md",
+      "startLine": 339,
+      "endLine": 375,
+      "source": "memory",
+      "snippet": "- Added \"Cancelled/Refunded\" card showing total count - **Color scheme:** - Blue: New orders - Orange: Pending orders - Green: Completed orders - Red: Cancelled/Refunded orders (NEW) ### 9. Interactive Chart Filtering ✅ (NEW THIS TURN) - **Click any bar section to filter table:** - Click blue (New) → shows only New orders for that date - Click orange (Pending) → shows only Pending orders for that date - Click green (Completed) → shows only Completed orders for that date - Click red (Cancelled) → shows only Cancelled/Refunded orders for that date - **Filter indicator display:** - Shows: \"🔍 Filtered by: [Status] orders on [Date]\" - Includes \"Clear Filter\" button to rese",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T19:18:28.017Z",
+      "lastRecalledAt": "2026-07-07T19:18:28.017Z",
+      "queryHashes": [
+        "24c7d318528b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "cancelled/refunded",
+        "added",
+        "cancelled",
+        "refunded",
+        "card",
+        "showing",
+        "total",
+        "count"
+      ]
+    },
+    "memory:memory/2026-06-19.md:231:261": {
+      "key": "memory:memory/2026-06-19.md:231:261",
+      "path": "memory/2026-06-19.md",
+      "startLine": 231,
+      "endLine": 261,
+      "source": "memory",
+      "snippet": "- 📍 Service Schedule (loads `/service-routing.html` in iframe) - 💬 Chat Analytics (loads `/admin/chat_analytics.html` in iframe) - 🔒 Change Password - User greeting + Sign Out button 3. **Dashboard page** — Chart.js with stacked bars: - ✅ **Stacked bar chart** (green = completed, orange = pending) - Default: next 7 days - Date range picker (From/To inputs) - Refresh button to reload with new dates - Stats cards: Total Orders, Avg Per Day, Completed, Pending 4. **Content area** — Full-height iframe below header that loads selected pages 5. **Active button styling** — White button with green text when selected ### Dashboard API (`/api/get-dashboard-data.php`): -",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T19:18:28.017Z",
+      "lastRecalledAt": "2026-07-07T19:18:28.017Z",
+      "queryHashes": [
+        "24c7d318528b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "service-routing.html",
+        "admin/chat-analytics.html",
+        "chart.js",
+        "from/to",
+        "full-height",
+        "api/get-dashboard-data.php",
+        "service",
+        "schedule"
+      ]
+    },
+    "memory:memory/2026-06-14.md:122:162": {
+      "key": "memory:memory/2026-06-14.md:122:162",
+      "path": "memory/2026-06-14.md",
+      "startLine": 122,
+      "endLine": 162,
+      "source": "memory",
+      "snippet": "- Color coding (pending vs completed) displaying correctly ## DEPLOYMENT CORRECTION - Chris's Improvements Restored ✅ **What went wrong:** I initially deployed an intermediate version (curbin-v2-accordion-fixed.html from 19:21) instead of the FINAL version (curbin-v2-final.html from 19:35). **Key improvements I missed:** 1. ✅ \"Save 34%\" gold badge on Recurring button 2. ✅ Fixed scroll timing (removed unreliable 200ms setTimeout) 3. ✅ All pricing calculations for \"Both\" service 4. ✅ Accordion/harmonica functionality 5. ✅ Dynamic recurring info text **Fix applied:** Redeployed curbin-v2-final.html with ALL improvements intact. **Status:** Production restored to full feature set ✅ # Sessio",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T19:18:28.017Z",
+      "lastRecalledAt": "2026-07-07T19:18:28.017Z",
+      "queryHashes": [
+        "24c7d318528b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "curbin-v2-accordion-fixed.html",
+        "curbin-v2-final.html",
+        "accordion/harmonica",
+        "color",
+        "coding",
+        "pending",
+        "completed",
+        "displaying"
       ]
     }
   }
