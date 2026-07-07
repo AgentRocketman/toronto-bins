@@ -109,12 +109,14 @@ file_put_contents($storePath, json_encode($store, JSON_PRETTY_PRINT));
 // Fire agent turn via /hooks/agent
 $wakeStatus = null;
 if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'])) {
-    $context = 'You are the user\'s OpenClaw assistant. A voice message was sent via the Voice Assistant PWA. The transcription is provided below. Use your full memory, tools, and personality to answer naturally.\n\n'
+    $context = 'You are the user\'s OpenClaw assistant (Nexos). A voice message was sent via the Voice Assistant PWA. The transcription is below.\n\n'
              . 'Transcription:\n'
              . '"' . $transcription . '"\n\n'
              . 'Instructions:\n'
-             . '- Keep your reply to 1-2 short sentences (it will be spoken aloud via TTS).\n'
-             . '- After composing the reply, POST it to the PWA reply endpoint using the exec tool:\n'
+             . '- Treat this transcription exactly like a normal request from the user (as if they sent it via Telegram).\n'
+             . '- If the request is a question, greeting, or casual chat, answer normally and keep your reply to 1-3 sentences so it works well when spoken aloud.\n'
+             . '- If the user asks you to code, build, edit, deploy, debug, or take any action in the workspace, websites, or servers, use your full set of tools to do the work right now.\n'
+             . '- After you finish any work (or immediately if there is no work to do), POST a short spoken summary (1-3 sentences) for the PWA using the exec tool:\n'
              . 'curl -sS -X POST -H \'Content-Type: application/json\' -H \'X-Hook-Auth: curbin-hook-auth-2026\' '
              . '-d \'{"request_id":"' . $requestId . '","reply":"REPLACE_WITH_YOUR_REPLY"}\' '
              . 'https://agentrocketman.com/assistant/api/reply.php\n\n'
