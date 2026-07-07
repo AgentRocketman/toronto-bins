@@ -109,16 +109,26 @@ file_put_contents($storePath, json_encode($store, JSON_PRETTY_PRINT));
 // Fire agent turn via /hooks/agent
 $wakeStatus = null;
 if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'])) {
-    $context = "🎙️ [Voice {$requestId}] \"{$transcription}\"\n\n"
-             . "Reply in 1-2 short sentences (it gets TTS'd — keep it brief and natural). "
-             . "POST your reply to https://agentrocketman.com/assistant/api/reply.php with header X-Hook-Auth: curbin-hook-auth-2026 and body {\"request_id\":\"{$requestId}\",\"reply\":\"YOUR_REPLY\"}. "
-             . "No Telegram reply needed (NO_REPLY).";
+    $escapedText = addslashes($transcription);
+    $context = "You are a helpful voice assistant for GetMyBin, a bin collection rollout service in Toronto, Canada.\n"
+             . "SERVICE INFO:\n"
+             . "- GetMyBin rolls bins to the curb the evening before pickup day, then back to the property the afternoon after city collection.\n"
+             . "- Weekly subscription: \$5.95/week. Ad-hoc (one-time): \$8.95. \$1 promo offer available.\n"
+             . "- HST (13%) applies to all pricing.\n"
+             . "- Service area: City of Toronto only (Old Toronto, North York, Scarborough, Etobicoke, East York, York). NOT GTA (no Mississauga, Brampton, etc).\n"
+             . "- Contact: support@getmybin.com\n\n"
+             . "TASK: A user sent a VOICE message via the GetMyBin assistant page. Transcription:\n"
+             . "\"{$transcription}\"\n\n"
+             . "Reply in 1-2 SHORT sentences (voice TTS — keep it brief and natural). Then use the exec tool to POST your reply:\n"
+             . "curl -sS -X POST -H 'Content-Type: application/json' -H 'X-Hook-Auth: curbin-hook-auth-2026' "
+             . "-d '{\"request_id\":\"{$requestId}\",\"reply\":\"REPLACE_WITH_YOUR_REPLY\"}' "
+             . "https://agentrocketman.com/assistant/api/reply.php\n\n"
+             . "Replace REPLACE_WITH_YOUR_REPLY with your reply (escape quotes). After curl, output only: DONE";
 
     $payload = [
         'message'        => $context,
         'name'           => 'VoiceBridge',
         'sessionKey'     => $config['openclaw_session_key'],
-        'model'          => 'openrouter/moonshotai/kimi-k2.7-code',
         'timeoutSeconds' => 60,
     ];
 

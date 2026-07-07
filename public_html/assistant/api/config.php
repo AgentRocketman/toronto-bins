@@ -22,7 +22,7 @@ return [
     'telegram_api_base' => 'https://api.telegram.org/',
 
     // OpenAI API key (used for Whisper transcription and TTS)
-    'openai_api_key' => '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',
+    'openai_api_key' => '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',
 
     // Secret token the OpenClaw hook must send when posting replies
     'hook_auth_token' => 'curbin-hook-auth-2026',
