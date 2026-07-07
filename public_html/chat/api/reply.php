@@ -13,6 +13,7 @@
 // The store gains a `chunks` array of { seq, text, ts, status } and a `done`
 // flag when the final reply is set.
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/session-store.php';
 $config = require __DIR__ . '/config.php';
 
 header('Content-Type: application/json');
@@ -71,6 +72,11 @@ if (!$isStatus && !$isAppend) {
         'received_at' => time(),
     ];
     $store[$requestId]['done'] = true;
+
+    // Keep the server-side conversation log in sync so future turns have context.
+    if (!empty($store[$requestId]['session_id'])) {
+        chatLogAppend($store[$requestId]['session_id'], 'assistant', $replyText);
+    }
 }
 
 file_put_contents($config['store_file'], json_encode($store, JSON_PRETTY_PRINT), LOCK_EX);

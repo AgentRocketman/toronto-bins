@@ -8,6 +8,7 @@
     pollBackoffMs: 3000,
     pollTimeoutMs: 200000,
     storageKey: 'openclaw-chat-history-v1',
+    sessionKey: 'openclaw-chat-session-id-v1',
     maxHistory: 200,
   };
 
@@ -66,6 +67,24 @@
     for (let i = 0; i < len; i++) buf[i] = bin.charCodeAt(i);
     return new Blob([buf], { type: mime });
   }
+
+  /* ---------- Session ID ---------- */
+  function loadSessionId() {
+    try {
+      let id = localStorage.getItem(CONFIG.sessionKey);
+      if (!id) {
+        id = 'sess_' + Math.random().toString(36).slice(2) + '_' + Date.now().toString(36);
+        localStorage.setItem(CONFIG.sessionKey, id);
+      }
+      return id;
+    } catch { return 'sess_fallback_' + Date.now(); }
+  }
+  function saveSessionId(id) {
+    if (id) {
+      try { localStorage.setItem(CONFIG.sessionKey, id); } catch {}
+    }
+  }
+  let sessionId = loadSessionId();
 
   // ---------- History ----------
   function loadHistory() {
@@ -249,7 +268,7 @@
         'Content-Type': 'application/json',
         'X-Auth-Token': CONFIG.authToken,
       },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text, session_id: sessionId, history }),
     });
     if (!res.ok) {
       const errText = await res.text().catch(() => '');
@@ -257,6 +276,10 @@
     }
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'Send failed');
+    if (data.session_id) {
+      sessionId = data.session_id;
+      saveSessionId(sessionId);
+    }
     return data.request_id;
   }
 
@@ -488,6 +511,8 @@
     const filename = `chat_${Date.now()}.${ext}`;
     const fd = new FormData();
     fd.append('audio', blob, filename);
+    fd.append('session_id', sessionId);
+    fd.append('history', JSON.stringify(history));
 
     // Show a placeholder user message with a spinner — will get replaced with transcription
     const placeholder = { role: 'user', text: '🎙️ (recording…)', ts: Date.now() };
@@ -512,6 +537,11 @@
 
       // Voice input → next reply should auto-play as TTS
       lastMessageWasVoice = true;
+
+      if (data.session_id) {
+        sessionId = data.session_id;
+        saveSessionId(sessionId);
+      }
 
       setStatus('Waiting for OpenClaw…', 'thinking');
       inflight = { requestId: data.request_id, pollTimer: null, typingEl };

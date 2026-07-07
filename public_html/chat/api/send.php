@@ -1,6 +1,7 @@
 <?php
 // POST { text: "..." } → forwards to Telegram, stores request, fires /hooks/agent wake.
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/session-store.php';
 $config = require __DIR__ . '/config.php';
 
 header('Content-Type: application/json');
@@ -28,6 +29,19 @@ if (!$data || !isset($data['text']) || !is_string($data['text'])) bail('text req
 $text = trim($data['text']);
 if ($text === '') bail('text empty');
 if (strlen($text) > 4000) bail('text too long (max 4000 chars)');
+
+$sessionId = isset($data['session_id']) && is_string($data['session_id'])
+    ? trim($data['session_id'])
+    : '';
+if ($sessionId === '') {
+    $sessionId = bin2hex(random_bytes(8));
+}
+
+// Seed server-side log from client history on first use, then append this message.
+if (!empty($data['history']) && is_array($data['history'])) {
+    chatLogInitFromClient($sessionId, $data['history']);
+}
+chatLogAppend($sessionId, 'user', $text);
 
 if (!$config['telegram_bot_token']) bail('Telegram not configured', 500);
 
@@ -69,6 +83,7 @@ if (file_exists($config['store_file'])) {
 $store[$requestId] = [
     'created_at'          => time(),
     'text'                => $text,
+    'session_id'          => $sessionId,
     'telegram_message_id' => $messageId,
 ];
 if (count($store) > 100) {
@@ -80,20 +95,24 @@ file_put_contents($config['store_file'], json_encode($store, JSON_PRETTY_PRINT),
 // Fire agent turn via /hooks/agent
 $wakeStatus = null;
 if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'])) {
+    $historyBlock = chatLogHistoryText($sessionId, 20);
     $context = "You are a helpful assistant for GetMyBin, a bin collection rollout service in Toronto, Canada.\n"
              . "SERVICE INFO:\n"
              . "- GetMyBin rolls bins to the curb the evening before pickup day, then back to the property the afternoon after city collection.\n"
              . "- Weekly subscription: $5.95/week. Ad-hoc (one-time): $8.95. $1 promo offer available.\n"
              . "- HST (13%) applies to all pricing.\n"
              . "- Service area: City of Toronto only (Old Toronto, North York, Scarborough, Etobicoke, East York, York). NOT GTA (no Mississauga, Brampton, etc).\n"
-             . "- Contact: support@getmybin.com\n\n"
-             . "TASK: A customer sent the following message via the GetMyBin website chat:\n"
-             . "\"{$text}\"\n\n"
-             . "Reply helpfully in 1-3 sentences. Then use the exec tool to run this curl command EXACTLY:\n"
-             . "curl -sS -X POST -H 'Content-Type: application/json' -H 'X-Hook-Auth: curbin-chat-hook-2026' "
-             . "-d '{\"request_id\":\"{$requestId}\",\"reply\":\"REPLACE_WITH_YOUR_REPLY\"}' "
-             . "https://agentrocketman.com/chat/api/reply.php\n\n"
-             . "Replace REPLACE_WITH_YOUR_REPLY with your actual reply text (escape quotes). After running curl, output only: DONE";
+             . "- Contact: support@getmybin.com\n\n";
+    if ($historyBlock !== '') {
+        $context .= $historyBlock . "\n\n";
+    }
+    $context .= "TASK: A customer sent the following message via the GetMyBin website chat:\n"
+              . "\"{$text}\"\n\n"
+              . "Reply helpfully in 1-3 sentences. Then use the exec tool to run this curl command EXACTLY:\n"
+              . "curl -sS -X POST -H 'Content-Type: application/json' -H 'X-Hook-Auth: curbin-chat-hook-2026' "
+              . "-d '{\"request_id\":\"{$requestId}\",\"reply\":\"REPLACE_WITH_YOUR_REPLY\"}' "
+              . "https://agentrocketman.com/chat/api/reply.php\n\n"
+              . "Replace REPLACE_WITH_YOUR_REPLY with your actual reply text (escape quotes). After running curl, output only: DONE";
     $ch2 = curl_init($config['openclaw_hook_url']);
     curl_setopt($ch2, CURLOPT_POST, true);
     curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode([
@@ -120,6 +139,7 @@ if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'
 echo json_encode([
     'ok'                  => true,
     'request_id'          => $requestId,
+    'session_id'          => $sessionId,
     'telegram_message_id' => $messageId,
     'wake_status'         => $wakeStatus,
 ]);

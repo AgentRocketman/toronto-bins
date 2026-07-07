@@ -15,8 +15,9 @@ return [
     'hook_auth_token' => 'curbin-chat-hook-2026',
 
     // Where the JSON request/reply store lives
-    'store_dir'   => __DIR__ . '/../store/',
-    'store_file'  => __DIR__ . '/../store/messages.json',
+    'store_dir'     => __DIR__ . '/../store/',
+    'store_file'    => __DIR__ . '/../store/messages.json',
+    'sessions_dir'  => __DIR__ . '/../store/sessions/',
 
     // Telegram API base
     'telegram_api_base' => 'https://api.telegram.org/',

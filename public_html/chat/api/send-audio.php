@@ -2,6 +2,7 @@
 // POST multipart with `audio` file → transcribes with Whisper → routes through the
 // same send + wake pipeline as send.php.
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/session-store.php';
 $config = require __DIR__ . '/config.php';
 
 header('Content-Type: application/json');
@@ -53,6 +54,21 @@ if ($transcription === null) bail('Transcription failed', 502);
 $transcription = trim($transcription);
 if ($transcription === '') bail('Empty transcription — please try recording again', 422);
 
+$sessionId = isset($_POST['session_id']) && is_string($_POST['session_id'])
+    ? trim($_POST['session_id'])
+    : '';
+if ($sessionId === '') {
+    $sessionId = bin2hex(random_bytes(8));
+}
+
+if (!empty($_POST['history'])) {
+    $clientHistory = json_decode($_POST['history'], true);
+    if (is_array($clientHistory)) {
+        chatLogInitFromClient($sessionId, $clientHistory);
+    }
+}
+chatLogAppend($sessionId, 'user', $transcription);
+
 // Filter out known Whisper hallucinations on silence/noise.
 $hallucinationPatterns = [
     '/^MBC ?뉴스/u',                    // Korean news intro
@@ -101,6 +117,7 @@ if (file_exists($config['store_file'])) {
 $store[$requestId] = [
     'created_at' => time(),
     'text'       => $transcription,
+    'session_id' => $sessionId,
     'source'     => 'voice',
     'telegram_message_id' => $messageId,
 ];
@@ -113,25 +130,30 @@ file_put_contents($config['store_file'], json_encode($store, JSON_PRETTY_PRINT),
 // Fire agent turn via /hooks/agent
 $wakeStatus = null;
 if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'])) {
+    $historyBlock = chatLogHistoryText($sessionId, 20);
     $context = "You are a helpful assistant for GetMyBin, a bin collection rollout service in Toronto, Canada.\n"
              . "SERVICE INFO:\n"
              . "- GetMyBin rolls bins to the curb the evening before pickup day, then back to the property the afternoon after city collection.\n"
              . "- Weekly subscription: $5.95/week. Ad-hoc (one-time): $8.95. $1 promo offer available.\n"
              . "- HST (13%) applies to all pricing.\n"
              . "- Service area: City of Toronto only (Old Toronto, North York, Scarborough, Etobicoke, East York, York). NOT GTA (no Mississauga, Brampton, etc).\n"
-             . "- Contact: support@getmybin.com\n\n"
-             . "TASK: A customer sent the following VOICE message via the GetMyBin website chat:\n"
-             . "\"{$transcription}\"\n\n"
-             . "Reply helpfully and briefly (1-2 sentences, will be read aloud via TTS). Then use the exec tool to run this curl command EXACTLY:\n"
-             . "curl -sS -X POST -H 'Content-Type: application/json' -H 'X-Hook-Auth: curbin-chat-hook-2026' "
-             . "-d '{\"request_id\":\"{$requestId}\",\"reply\":\"REPLACE_WITH_YOUR_REPLY\"}' "
-             . "https://agentrocketman.com/chat/api/reply.php\n\n"
-             . "Replace REPLACE_WITH_YOUR_REPLY with your actual reply text (escape quotes). After running curl, output only: DONE";
+             . "- Contact: support@getmybin.com\n\n";
+    if ($historyBlock !== '') {
+        $context .= $historyBlock . "\n\n";
+    }
+    $context .= "TASK: A customer sent the following VOICE message via the GetMyBin website chat:\n"
+              . "\"{$transcription}\"\n\n"
+              . "Reply helpfully and briefly (1-2 sentences, will be read aloud via TTS). Then use the exec tool to run this curl command EXACTLY:\n"
+              . "curl -sS -X POST -H 'Content-Type: application/json' -H 'X-Hook-Auth: curbin-chat-hook-2026' "
+              . "-d '{\"request_id\":\"{$requestId}\",\"reply\":\"REPLACE_WITH_YOUR_REPLY\"}' "
+              . "https://agentrocketman.com/chat/api/reply.php\n\n"
+              . "Replace REPLACE_WITH_YOUR_REPLY with your actual reply text (escape quotes). After running curl, output only: DONE";
     $ch2 = curl_init($config['openclaw_hook_url']);
     curl_setopt($ch2, CURLOPT_POST, true);
     curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode([
         'message'        => $context,
         'name'           => 'ChatBridgeVoice',
+        'sessionKey'     => $config['openclaw_session_key'],
         'timeoutSeconds' => 180,
     ]));
     curl_setopt($ch2, CURLOPT_HTTPHEADER, [
@@ -151,6 +173,7 @@ if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'
 echo json_encode([
     'ok'                  => true,
     'request_id'          => $requestId,
+    'session_id'          => $sessionId,
     'text'                => $transcription,
     'telegram_message_id' => $messageId,
     'wake_status'         => $wakeStatus,
