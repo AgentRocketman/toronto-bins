@@ -9,6 +9,11 @@
   const statusEl = document.getElementById('status');
   const messagesEl = document.getElementById('messages');
   const player = document.getElementById('player');
+  const settingsBtn = document.getElementById('settingsBtn');
+  const settingsPanel = document.getElementById('settingsPanel');
+  const voiceSelect = document.getElementById('voiceSelect');
+
+  const VOICES = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'];
 
   let mediaRecorder = null;
   let audioChunks = [];
@@ -16,6 +21,33 @@
   let recordTimer = null;
   let isRecording = false;
   let pollTimer = null;
+  let currentAudioUrl = null;
+  let audioUnlocked = false;
+
+  // iOS Safari requires a user gesture before audio can play via JS.
+  // We prime the persistent player with a silent frame so later async
+  // TTS playback (after the network roundtrip) still works.
+  function unlockAudioOnce() {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+    try {
+      const silentWav = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+      player.src = silentWav;
+      player.volume = 0;
+      player.play().catch(() => { /* still counts as an attempt */ });
+    } catch {}
+  }
+  ['pointerdown', 'touchstart', 'click'].forEach(ev => {
+    document.addEventListener(ev, unlockAudioOnce, { once: true, passive: true });
+  });
+
+  function base64ToBlob(b64, mime) {
+    const bin = atob(b64);
+    const len = bin.length;
+    const buf = new Uint8Array(len);
+    for (let i = 0; i < len; i++) buf[i] = bin.charCodeAt(i);
+    return new Blob([buf], { type: mime });
+  }
 
   function getSupportedMimeType() {
     const candidates = [
@@ -210,21 +242,40 @@
           'Content-Type': 'application/json',
           'X-Auth-Token': AUTH_TOKEN,
         },
-        body: JSON.stringify({ text: reply.text, voice: 'alloy' }),
+        body: JSON.stringify({ text: reply.text, voice: getSelectedVoice() }),
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || 'TTS failed');
 
-      playBase64Audio(data.audio_base64);
+      await playBase64Audio(data.audio_base64);
     } catch (err) {
-      console.error('TTS error:', err);
+      console.error('TTS/playback error:', err);
       speak(reply.text);
     }
   }
 
-  function playBase64Audio(base64) {
-    const audio = new Audio('data:audio/mpeg;base64,' + base64);
-    audio.play().catch(() => {});
+  function stopAudio() {
+    try { player.pause(); } catch {}
+    if (currentAudioUrl) {
+      try { URL.revokeObjectURL(currentAudioUrl); } catch {}
+      currentAudioUrl = null;
+    }
+  }
+
+  async function playBase64Audio(base64) {
+    stopAudio();
+    const blob = base64ToBlob(base64, 'audio/mpeg');
+    const url = URL.createObjectURL(blob);
+    currentAudioUrl = url;
+    player.src = url;
+    player.volume = 1;
+    player.preload = 'auto';
+    try {
+      await player.play();
+    } catch (err) {
+      console.warn('Audio playback failed:', err);
+      throw err;
+    }
   }
 
   function speak(text) {
@@ -233,6 +284,80 @@
       window.speechSynthesis.speak(u);
     }
   }
+
+  function loadVoiceSetting() {
+    const saved = localStorage.getItem('curbin_voice');
+    if (saved && VOICES.includes(saved)) {
+      voiceSelect.value = saved;
+    }
+  }
+
+  function getSelectedVoice() {
+    const v = voiceSelect.value;
+    return VOICES.includes(v) ? v : 'alloy';
+  }
+
+  settingsBtn.addEventListener('click', () => {
+    settingsPanel.classList.toggle('hidden');
+  });
+
+  voiceSelect.addEventListener('change', () => {
+    localStorage.setItem('curbin_voice', getSelectedVoice());
+  });
+
+  loadVoiceSetting();
+
+  // Load the persistent conversation from the server so context is shared across devices.
+  async function loadConversation() {
+    try {
+      const res = await fetch(`${API_BASE}/get-conversation.php`, {
+        headers: { 'X-Auth-Token': AUTH_TOKEN },
+      });
+      const data = await res.json();
+      if (!data.ok) {
+        console.error('Conversation load error:', data.error);
+        return;
+      }
+
+      messagesEl.innerHTML = '';
+      data.messages.forEach((item) => {
+        if (!item || typeof item.text !== 'string') return;
+        const who = item.role === 'user' ? 'you' : 'assistant';
+        addMessage(item.text, who, 'text');
+      });
+    } catch (err) {
+      console.error('Failed to load conversation:', err);
+    }
+  }
+
+  async function clearConversation() {
+    try {
+      const res = await fetch(`${API_BASE}/clear-conversation.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': AUTH_TOKEN,
+        },
+      });
+      const data = await res.json();
+      if (!data.ok) {
+        console.error('Clear conversation error:', data.error);
+        return;
+      }
+      messagesEl.innerHTML = '';
+    } catch (err) {
+      console.error('Failed to clear conversation:', err);
+    }
+  }
+
+  function renderClearHistoryButton() {
+    const btn = document.createElement('button');
+    btn.className = 'clear-history';
+    btn.textContent = 'Clear chat history';
+    btn.addEventListener('click', clearConversation);
+    settingsPanel.appendChild(btn);
+  }
+  renderClearHistoryButton();
 
   // Touch / mouse handlers for press-and-hold
   micBtn.addEventListener('pointerdown', (e) => {
@@ -257,5 +382,6 @@
     navigator.serviceWorker.register('sw.js').catch(console.error);
   }
 
+  loadConversation();
   setStatus('Tap and hold the mic to talk');
 })();
