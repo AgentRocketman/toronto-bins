@@ -23,6 +23,11 @@
   let pollTimer = null;
   let currentAudioUrl = null;
   let audioUnlocked = false;
+  let audioCtx = null;
+  let thinkingOsc = null;
+  let thinkingGain = null;
+  let thinkingInterval = null;
+  const thinkingDots = document.getElementById('thinkingDots');
 
   // iOS Safari requires a user gesture before audio can play via JS.
   // We prime the persistent player with a silent frame so later async
@@ -35,6 +40,15 @@
       player.src = silentWav;
       player.volume = 0;
       player.play().catch(() => { /* still counts as an attempt */ });
+    } catch {}
+    try {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
     } catch {}
   }
   ['pointerdown', 'touchstart', 'click'].forEach(ev => {
@@ -79,6 +93,91 @@
   function setStatus(text, cls = '') {
     statusEl.textContent = text;
     statusEl.className = 'status ' + cls;
+  }
+
+  function startThinkingTone() {
+    if (!audioCtx) return;
+    try {
+      // Safari may suspend the context after gesture ends; try to resume.
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+
+      stopThinkingTone();
+      const now = audioCtx.currentTime;
+
+      thinkingOsc = audioCtx.createOscillator();
+      thinkingGain = audioCtx.createGain();
+      thinkingOsc.type = 'sine';
+      thinkingOsc.frequency.setValueAtTime(432, now);
+
+      thinkingOsc.connect(thinkingGain);
+      thinkingGain.connect(audioCtx.destination);
+
+      // Pulsing envelope: 0 -> 0.045 -> 0 over 1.5s, repeated.
+      const cycle = 1.5;
+      const repeats = 20;
+      thinkingGain.gain.setValueAtTime(0, now);
+      for (let i = 0; i < repeats; i++) {
+        const t = now + (i * cycle);
+        thinkingGain.gain.linearRampToValueAtTime(0.045, t + 0.35);
+        thinkingGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+        thinkingGain.gain.setValueAtTime(0, t + 0.95);
+      }
+
+      thinkingOsc.start(now);
+      thinkingOsc.stop(now + (cycle * repeats));
+
+      // Loop the thinking pulse while we wait.
+      thinkingInterval = setInterval(() => {
+        if (!audioCtx) return;
+        const t2 = audioCtx.currentTime;
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(432, t2);
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        g.gain.setValueAtTime(0, t2);
+        g.gain.linearRampToValueAtTime(0.045, t2 + 0.35);
+        g.gain.exponentialRampToValueAtTime(0.0001, t2 + 0.9);
+        g.gain.setValueAtTime(0, t2 + 0.95);
+        o.start(t2);
+        o.stop(t2 + 1.5);
+      }, 1500);
+    } catch (err) {
+      console.error('startThinkingTone error:', err);
+    }
+  }
+
+  function stopThinkingTone() {
+    try {
+      if (thinkingInterval) {
+        clearInterval(thinkingInterval);
+        thinkingInterval = null;
+      }
+      if (thinkingOsc) {
+        try { thinkingOsc.stop(); } catch {}
+        try { thinkingOsc.disconnect(); } catch {}
+        thinkingOsc = null;
+      }
+      if (thinkingGain) {
+        try { thinkingGain.disconnect(); } catch {}
+        thinkingGain = null;
+      }
+    } catch (err) {
+      console.error('stopThinkingTone error:', err);
+    }
+  }
+
+  function showThinking() {
+    thinkingDots?.classList.add('active');
+    startThinkingTone();
+  }
+
+  function hideThinking() {
+    thinkingDots?.classList.remove('active');
+    stopThinkingTone();
   }
 
   function addMessage(text, who, type = 'text') {
@@ -169,6 +268,7 @@
   function resetUI() {
     micBtn.classList.remove('recording');
     recordingRing.classList.remove('active');
+    hideThinking();
     setStatus('Tap and hold the mic to talk');
   }
 
@@ -194,6 +294,7 @@
 
       addMessage(data.text || 'You sent a voice message', 'you', 'text');
       setStatus('Waiting for reply…');
+      showThinking();
       startPolling(data.request_id);
     } catch (err) {
       showError('Failed to send: ' + err.message);
@@ -217,6 +318,7 @@
 
         if (data.status === 'replied') {
           clearInterval(pollTimer);
+          hideThinking();
           handleReply(data.reply);
           resetUI();
         }

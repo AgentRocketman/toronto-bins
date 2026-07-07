@@ -17,6 +17,18 @@
     <header>
       <h1>CurbIn Assistant</h1>
       <p class="subtitle">Voice message me. I'll reply when I can.</p>
+      <button id="settingsBtn" class="settings-button" aria-label="Settings">⚙️</button>
+      <div id="settingsPanel" class="settings-panel hidden">
+        <label for="voiceSelect">Assistant voice</label>
+        <select id="voiceSelect">
+          <option value="alloy">alloy</option>
+          <option value="echo">echo</option>
+          <option value="fable">fable</option>
+          <option value="onyx">onyx</option>
+          <option value="nova">nova</option>
+          <option value="shimmer">shimmer</option>
+        </select>
+      </div>
     </header>
 
     <main>
@@ -30,6 +42,10 @@
           </svg>
         </button>
         <div id="recordingRing" class="recording-ring"></div>
+      </div>
+
+      <div id="thinkingDots" class="thinking-dots">
+        <span></span><span></span><span></span>
       </div>
 
       <div id="messages" class="messages"></div>

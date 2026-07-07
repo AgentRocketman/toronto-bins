@@ -172,6 +172,87 @@ main {
   display: block;
 }
 
+header {
+  position: relative;
+}
+
+.settings-button {
+  position: absolute;
+  top: 18px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 10px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.settings-button:active {
+  background: var(--panel);
+}
+
+.settings-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.settings-panel.hidden {
+  display: none;
+}
+
+.settings-panel label {
+  margin: 0;
+  font-weight: 500;
+}
+
+.settings-panel select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--panel-2);
+  border-radius: 12px;
+  padding: 8px 32px 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 7.5L2.5 4h7z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.settings-panel select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.clear-history {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.clear-history:active {
+  background: rgba(239, 68, 68, 0.15);
+}
+
 footer {
   text-align: center;
   padding: 12px;
@@ -182,4 +263,28 @@ footer {
 .error {
   color: var(--danger);
   text-align: center;
+}
+
+.thinking-dots {
+  display: flex;
+  gap: 9px;
+  justify-content: center;
+  align-items: center;
+  height: 24px;
+  visibility: hidden; /* reserves space, no layout jump */
+}
+.thinking-dots.active { visibility: visible; }
+.thinking-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.4;
+  animation: bounce-dot 1.2s ease-in-out infinite;
+}
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-10px); opacity: 1; }
 }
