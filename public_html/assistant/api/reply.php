@@ -53,6 +53,25 @@ $store[$requestId]['reply'] = [
     'text' => $replyText,
     'received_at' => time(),
 ];
-file_put_contents($storePath, json_encode($store, JSON_PRETTY_PRINT));
+file_put_contents($storePath, json_encode($store, JSON_PRETTY_PRINT), LOCK_EX);
+
+// Also append the assistant reply to the persistent conversation log.
+$conversationId = 'main';
+$convPath = $config['conversation_store'];
+$convStore = [];
+if (file_exists($convPath)) {
+    $convStore = json_decode(file_get_contents($convPath), true) ?: [];
+}
+if (!isset($convStore[$conversationId]) || !is_array($convStore[$conversationId])) {
+    $convStore[$conversationId] = [];
+}
+$convStore[$conversationId][] = [
+    'role' => 'assistant',
+    'text' => $replyText,
+    'timestamp' => time(),
+    'request_id' => $requestId,
+];
+$convStore[$conversationId] = array_slice($convStore[$conversationId], -100);
+file_put_contents($convPath, json_encode($convStore, JSON_PRETTY_PRINT), LOCK_EX);
 
 echo json_encode(['ok' => true]);

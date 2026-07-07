@@ -143,11 +143,17 @@ if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'
     }
     $context .= "TASK: A customer sent the following VOICE message via the GetMyBin website chat:\n"
               . "\"{$transcription}\"\n\n"
-              . "Reply helpfully and briefly (1-2 sentences, will be read aloud via TTS). Then use the exec tool to run this curl command EXACTLY:\n"
+              . "Reply helpfully and briefly (1-2 sentences, will be read aloud via TTS).\n\n"
+              . "IMPORTANT — Progress updates during long tasks:\n"
+              . "If answering will take longer than ~30 seconds, first send 3-8 short progress updates (5-10 words each) using this curl with status:true:\n"
+              . "curl -sS -X POST -H 'Content-Type: application/json' -H 'X-Hook-Auth: curbin-chat-hook-2026' "
+              . "-d '{\"request_id\":\"{$requestId}\",\"reply\":\"STATUS_TEXT_HERE\",\"status\":true}' "
+              . "https://agentrocketman.com/chat/api/reply.php\n\n"
+              . "Then send the FINAL reply by running this curl command EXACTLY:\n"
               . "curl -sS -X POST -H 'Content-Type: application/json' -H 'X-Hook-Auth: curbin-chat-hook-2026' "
               . "-d '{\"request_id\":\"{$requestId}\",\"reply\":\"REPLACE_WITH_YOUR_REPLY\"}' "
               . "https://agentrocketman.com/chat/api/reply.php\n\n"
-              . "Replace REPLACE_WITH_YOUR_REPLY with your actual reply text (escape quotes). After running curl, output only: DONE";
+              . "Replace REPLACE_WITH_YOUR_REPLY with your actual reply text (escape quotes). After the final curl returns ok:true, output only: DONE";
     $ch2 = curl_init($config['openclaw_hook_url']);
     curl_setopt($ch2, CURLOPT_POST, true);
     curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode([

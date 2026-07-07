@@ -33,6 +33,28 @@ if (!isset($_FILES['audio']) || $_FILES['audio']['error'] !== UPLOAD_ERR_OK) {
     error('Audio file required');
 }
 
+function addConversationMessage($config, $conversationId, $role, $text, $extra = []) {
+    $storePath = $config['conversation_store'];
+    $store = [];
+    if (file_exists($storePath)) {
+        $store = json_decode(file_get_contents($storePath), true) ?: [];
+    }
+    if (!isset($store[$conversationId]) || !is_array($store[$conversationId])) {
+        $store[$conversationId] = [];
+    }
+    $entry = array_merge([
+        'role' => $role,
+        'text' => $text,
+        'timestamp' => time(),
+    ], $extra);
+    $store[$conversationId][] = $entry;
+    // Keep last 100 messages per conversation.
+    $store[$conversationId] = array_slice($store[$conversationId], -100);
+    file_put_contents($storePath, json_encode($store, JSON_PRETTY_PRINT), LOCK_EX);
+}
+
+$conversationId = 'main';
+
 $allowedTypes = ['audio/wav', 'audio/webm', 'audio/mp4', 'audio/mpeg', 'audio/ogg', 'audio/aac', 'audio/x-m4a'];
 $mime = $_FILES['audio']['type'];
 if (!in_array($mime, $allowedTypes, true)) {
@@ -104,23 +126,21 @@ $store[$requestId] = [
     'file' => $filename,
     'mime' => $mime,
 ];
-file_put_contents($storePath, json_encode($store, JSON_PRETTY_PRINT));
+file_put_contents($storePath, json_encode($store, JSON_PRETTY_PRINT), LOCK_EX);
+
+// Append this user message to the persistent conversation log.
+addConversationMessage($config, $conversationId, 'user', $transcription, ['request_id' => $requestId]);
 
 // Fire agent turn via /hooks/agent
 $wakeStatus = null;
 if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'])) {
-    $context = 'You are the user\'s OpenClaw assistant (Nexos). A voice message was sent via the Voice Assistant PWA. The transcription is below.\n\n'
-             . 'Transcription:\n'
-             . '"' . $transcription . '"\n\n'
-             . 'Instructions:\n'
-             . '- Treat this transcription exactly like a normal request from the user (as if they sent it via Telegram).\n'
-             . '- If the request is a question, greeting, or casual chat, answer normally and keep your reply to 1-3 sentences so it works well when spoken aloud.\n'
-             . '- If the user asks you to code, build, edit, deploy, debug, or take any action in the workspace, websites, or servers, use your full set of tools to do the work right now.\n'
-             . '- After you finish any work (or immediately if there is no work to do), POST a short spoken summary (1-3 sentences) for the PWA using the exec tool:\n'
+    $context = 'Voice message from the user. Treat this exactly like a normal Telegram message, but keep your reply to 1-3 short sentences that work well spoken aloud.\n\n'
+             . 'After you finish any work (or immediately if there is none), POST the reply to the PWA:\n'
              . 'curl -sS -X POST -H \'Content-Type: application/json\' -H \'X-Hook-Auth: curbin-hook-auth-2026\' '
-             . '-d \'{"request_id":"' . $requestId . '","reply":"REPLACE_WITH_YOUR_REPLY"}\' '
+             . '-d \'{"request_id":"' . $requestId . '","reply":"YOUR_REPLY_HERE"}\' '
              . 'https://agentrocketman.com/assistant/api/reply.php\n\n'
-             . 'Replace REPLACE_WITH_YOUR_REPLY with your actual reply, escaping any double quotes. Then output only: NO_REPLY';
+             . 'Then output only: NO_REPLY\n\n'
+             . 'Transcription: "' . $transcription . '"';
 
     $payload = [
         'message'        => $context,

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'curbin-assistant-v1';
+const CACHE_NAME = 'curbin-assistant-v2';
 const ASSETS = [
   '/assistant/',
   '/assistant/index.html',

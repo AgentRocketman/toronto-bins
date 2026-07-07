@@ -15,8 +15,11 @@ return [
     // Where uploaded audio files are stored temporarily
     'upload_dir' => __DIR__ . '/../uploads/',
 
-    // JSON file used to track pending requests: request_id -> message_id
+    // JSON file used to track pending requests: request_id -> message_id + reply
     'request_store' => __DIR__ . '/../uploads/requests.json',
+
+    // Persistent conversation log (per conversation_id -> array of messages)
+    'conversation_store' => __DIR__ . '/../uploads/conversation.json',
 
     // Telegram Bot API base URL (without trailing bot/token path)
     'telegram_api_base' => 'https://api.telegram.org/',
