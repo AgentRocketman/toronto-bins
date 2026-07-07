@@ -31,7 +31,7 @@ return [
     // Points to a cloudflared quick tunnel → gateway 127.0.0.1:18789/hooks/wake.
     // URL is stored in /data/.openclaw/workspace/tunnel-url.txt on the OpenClaw side
     // and can be rotated by editing this value (or making it env-driven).
-    'openclaw_hook_url'   => 'https://shepherd-relevant-pepper-shortcuts.trycloudflare.com/hooks/agent',
+    'openclaw_hook_url'   => 'https://announcements-landscapes-premier-assumed.trycloudflare.com/hooks/agent',
     // Pin the isolated agent turn to the main Telegram session so it shares context.
     'openclaw_session_key' => 'agent:main:main',
     'openclaw_hook_token' => 'hooks_ykIDvQ5jja3heZvUhzjSPQP_UblMlxfR',

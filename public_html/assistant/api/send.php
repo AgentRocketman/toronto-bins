@@ -118,6 +118,7 @@ if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'
         'message'        => $context,
         'name'           => 'VoiceBridge',
         'sessionKey'     => $config['openclaw_session_key'],
+        'model'          => 'openrouter/moonshotai/kimi-k2.7-code',
         'timeoutSeconds' => 60,
     ];
 

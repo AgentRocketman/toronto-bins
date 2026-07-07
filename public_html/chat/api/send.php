@@ -99,6 +99,8 @@ if (!empty($config['openclaw_hook_url']) && !empty($config['openclaw_hook_token'
     curl_setopt($ch2, CURLOPT_POSTFIELDS, json_encode([
         'message'        => $context,
         'name'           => 'ChatBridge',
+        'sessionKey'     => $config['openclaw_session_key'],
+        'model'          => 'openrouter/moonshotai/kimi-k2.7-code',
         'timeoutSeconds' => 180,
     ]));
     curl_setopt($ch2, CURLOPT_HTTPHEADER, [

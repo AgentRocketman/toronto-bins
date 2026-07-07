@@ -29,7 +29,7 @@ return [
 
     // OpenClaw hook endpoint — fires an agent turn in the main session.
     // URL stored in /data/.openclaw/workspace/tunnel-url.txt on the OpenClaw side.
-    'openclaw_hook_url'    => 'https://shepherd-relevant-pepper-shortcuts.trycloudflare.com/hooks/agent',
+    'openclaw_hook_url'    => 'https://announcements-landscapes-premier-assumed.trycloudflare.com/hooks/agent',
     'openclaw_session_key' => 'agent:main:main',
     'openclaw_hook_token'  => 'hooks_ykIDvQ5jja3heZvUhzjSPQP_UblMlxfR',
 ];
