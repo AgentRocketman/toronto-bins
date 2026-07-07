@@ -17,6 +17,33 @@
   let isRecording = false;
   let pollTimer = null;
 
+  // AudioContext for reliable playback (bypasses autoplay restrictions after first gesture)
+  let audioCtx = null;
+  let audioCtxUnlocked = false;
+
+  function getAudioContext() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtx;
+  }
+
+  function unlockAudio() {
+    if (audioCtxUnlocked) return;
+    const ctx = getAudioContext();
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(() => { audioCtxUnlocked = true; });
+    } else {
+      audioCtxUnlocked = true;
+    }
+    // Play a brief silent buffer to fully unlock on iOS
+    const buf = ctx.createBuffer(1, 1, 22050);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start(0);
+  }
+
   function getSupportedMimeType() {
     const candidates = [
       'audio/mp4',
@@ -222,9 +249,33 @@
     }
   }
 
-  function playBase64Audio(base64) {
-    const audio = new Audio('data:audio/mpeg;base64,' + base64);
-    audio.play().catch(() => {});
+  async function playBase64Audio(base64) {
+    // Try <audio> element first — most reliable on iOS Safari for dynamic TTS content
+    // (AudioContext.resume() requires a direct user gesture, which we don't have at poll time)
+    try {
+      const audio = new Audio('data:audio/mpeg;base64,' + base64);
+      audio.volume = 1.0;
+      await audio.play();
+      return;
+    } catch (err) {
+      console.warn('Audio element playback failed, trying AudioContext:', err);
+    }
+
+    // Fallback: AudioContext (desktop browsers with unlocked context)
+    try {
+      const ctx = getAudioContext();
+      if (ctx.state === 'suspended') await ctx.resume();
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const audioBuffer = await ctx.decodeAudioData(bytes.buffer);
+      const src = ctx.createBufferSource();
+      src.buffer = audioBuffer;
+      src.connect(ctx.destination);
+      src.start(0);
+    } catch (err) {
+      console.error('All audio playback methods failed:', err);
+    }
   }
 
   function speak(text) {
@@ -237,6 +288,7 @@
   // Touch / mouse handlers for press-and-hold
   micBtn.addEventListener('pointerdown', (e) => {
     e.preventDefault();
+    unlockAudio(); // Unlock AudioContext on first user gesture
     startRecording();
   });
 

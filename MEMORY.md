@@ -11,6 +11,7 @@ Chris has **two web bridges** that funnel messages into me via the Telegram bot.
 
 ### Voice bridge (`/assistant/`) — https://agentrocketman.com/assistant/
 - Marker in Telegram message: `🎙️ [PWA <req_id>]`
+- **Direct agent turn marker (2026-07-07):** `🎙️ [Voice <req_id>] "<transcription>"` — fires via `/hooks/agent` to main session. Respond as Nexos (not as GetMyBin FAQ bot). Keep reply 1–2 sentences (TTS'd). POST reply to voice bridge and send NO_REPLY on Telegram.
 - Store: `GET https://agentrocketman.com/assistant/api/debug-updates.php`
   - Header: `X-Auth-Token: curbin-assistant-dev-2026`
 - Reply: `POST https://agentrocketman.com/assistant/api/reply.php`

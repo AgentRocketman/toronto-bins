@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-07T03:46:55.039Z",
+  "updatedAt": "2026-07-07T04:30:53.543Z",
   "entries": {
     "memory:memory/2026-06-27.md:247:268": {
       "key": "memory:memory/2026-06-27.md:247:268",
@@ -71,15 +71,16 @@
       "endLine": 29,
       "source": "memory",
       "snippet": "# 2026-07-06 ## Voice-to-agent exploration - Chris wants to speak with *me* (the OpenClaw session), not a separate chatbot. - Explored OpenClaw's native `voice-call` plugin. - Installed `@openclaw/voice-call@2026.5.6`; it loaded but `voicecall.start` RPC was unknown. - Started updating OpenClaw to `2026.6.11` to fix compatibility. - Chris stopped me mid-update: he wants to speak with me, not an LLM. - Killed the update process (`nimble-prairie`). Gateway still on `2026.5.6`. - Voice-call plugin remains installed/enabled in config, but unused. ## Options discussed for actually speaking with me 1. Telegram voice notes here — actually me, free, already works. 2. Voicemail + callback phone bri",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T01:50:07.406Z",
-      "lastRecalledAt": "2026-07-07T01:50:07.406Z",
+      "lastRecalledAt": "2026-07-07T04:30:53.543Z",
       "queryHashes": [
-        "1cf338e0d6bf"
+        "1cf338e0d6bf",
+        "25677c91d691"
       ],
       "recallDays": [
         "2026-07-07"
