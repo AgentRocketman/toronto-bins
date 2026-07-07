@@ -1,0 +1,17 @@
+Task: Add conversation context retention to the Voice Assistant PWA at /data/.openclaw/workspace/public_html/assistant/
+
+Background: The PWA sends each voice message as a standalone Telegram message via a hook, and the agent only sees the current transcription. The agent has no prior context about earlier parts of the same conversation, so follow-up questions like "Please provide their websites" cannot be answered.
+
+Current files:
+- public_html/assistant/app.js — PWA frontend
+- public_html/assistant/api/send.php — receives audio, transcribes it, sends Telegram message + fires OpenClaw agent hook
+- public_html/assistant/api/reply.php — stores agent replies keyed by request_id for poll.php
+- public_html/assistant/api/poll.php — client polls for reply
+
+Required changes:
+1. In app.js, persist conversation history in a localStorage key `curbin_voice_history`. Store each exchange as { role: 'user' | 'assistant', text, timestamp } and load it on app start. Include a way to clear history (e.g. reset after 24h of inactivity, or add a small "Clear chat" option). Display history in #messages on load.
+2. Modify send.php so the client includes a JSON `history` field (last ~8 messages) in the FormData. Build a `Transcript so far:` block from this history and append it to the agent prompt before `Transcription: "..."`. Do not trust client input blindly: validate JSON, keep it short (max 2000 chars total). If history is empty, omit the block. Prefer history to Telegram-only context so the PWA conversation is coherent.
+3. Update send.php to also store the assistant reply message_id or similar mapping back to the request entry (reply.php already handles this; no change needed there unless required for history). But app.js needs to know the assistant's reply so it can append it to localStorage history. poll.php already returns `reply.text`; use that to add to history.
+4. Keep existing auth/security: X-Auth-Token header, X-Hook-Auth in reply.php unchanged.
+5. Use Claude Code CLI coding tools to edit the files directly, then run any local syntax/lint checks if available (e.g. php -l for the PHP files). Do not deploy or run git unless asked.
+6. Briefly explain what you changed and any limits (e.g., context only persists in this browser/device session; other users/devices don't share history).

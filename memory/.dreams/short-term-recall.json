@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-07T04:30:53.543Z",
+  "updatedAt": "2026-07-07T14:53:14.560Z",
   "entries": {
     "memory:memory/2026-06-27.md:247:268": {
       "key": "memory:memory/2026-06-27.md:247:268",
@@ -71,16 +71,19 @@
       "endLine": 29,
       "source": "memory",
       "snippet": "# 2026-07-06 ## Voice-to-agent exploration - Chris wants to speak with *me* (the OpenClaw session), not a separate chatbot. - Explored OpenClaw's native `voice-call` plugin. - Installed `@openclaw/voice-call@2026.5.6`; it loaded but `voicecall.start` RPC was unknown. - Started updating OpenClaw to `2026.6.11` to fix compatibility. - Chris stopped me mid-update: he wants to speak with me, not an LLM. - Killed the update process (`nimble-prairie`). Gateway still on `2026.5.6`. - Voice-call plugin remains installed/enabled in config, but unused. ## Options discussed for actually speaking with me 1. Telegram voice notes here — actually me, free, already works. 2. Voicemail + callback phone bri",
-      "recallCount": 2,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 5,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T01:50:07.406Z",
-      "lastRecalledAt": "2026-07-07T04:30:53.543Z",
+      "lastRecalledAt": "2026-07-07T06:44:11.260Z",
       "queryHashes": [
         "1cf338e0d6bf",
-        "25677c91d691"
+        "25677c91d691",
+        "70380bd32bcd",
+        "b42d064477f7",
+        "a5cefdaadcf9"
       ],
       "recallDays": [
         "2026-07-07"
@@ -156,6 +159,1357 @@
         "openai-responses",
         "openai-codex-responses",
         "anthropic-messages"
+      ]
+    },
+    "memory:memory/2026-06-12.md:1:31": {
+      "key": "memory:memory/2026-06-12.md:1:31",
+      "path": "memory/2026-06-12.md",
+      "startLine": 1,
+      "endLine": 31,
+      "source": "memory",
+      "snippet": "# 2026-06-12 — Testing Infrastructure & CurbIn v2 ## Hostinger MCP Setup - **Status:** Connected via API token (JuxzmiZ7ml4AAfv8GtBg5IBelbva8ZDsfg0u2GMcfd5ffe1c) - **Plan purchased:** Business Web Hosting (annual, $203.88) - **Order ID:** 1009510349 - **Datacenter:** Boston (closest to Toronto) - **Domain:** agentrocketman.com (active, DNS configured) - **Email:** support@agentrocketman.com (username: Yuserbsme, password: AgentEmail1!) - **IMAP/SMTP:** imap.hostinger.com:993, smtp.hostinger.com:465 (TLS) - **Himalaya config:** ~/.config/himalaya/config.toml (ready but IMAP not yet activated by Hostinger backend) - **Website:** Still provisioning on Hostinger (API hasn't returned it yet, but",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 4,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T04:44:03.947Z",
+      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "queryHashes": [
+        "4448bfbac301",
+        "c28c6ad52629",
+        "70380bd32bcd",
+        "4863b0ccfd56"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "203.88",
+        "agentrocketman.com",
+        "imap/smtp",
+        "imap.hostinger.com",
+        "smtp.hostinger.com",
+        "config/himalaya/config.toml",
+        "testing",
+        "infrastructure"
+      ]
+    },
+    "memory:memory/2026-06-12.md:49:81": {
+      "key": "memory:memory/2026-06-12.md:49:81",
+      "path": "memory/2026-06-12.md",
+      "startLine": 49,
+      "endLine": 81,
+      "source": "memory",
+      "snippet": "- Removed 1.6s mystery wait - Added instant \"Scrolling to your schedule...\" feedback with spinner - Uses `transitionend` event for smart timing - Fallback 1.6s timeout for robustness - Works consistently on first AND subsequent clicks 3. **Dynamic recurring info** — Text now updates reactively when switching service types (Opus fix) 4. **Accordion** — Collapsible \"Upcoming Schedule\" (started session) 5. **Pricing** — Fixed recurring \"Both\" service to show $11.90/event 6. **Autocomplete scroll** — Fixed first-click scroll behavior ### Final Status: - ✅ GitHub Pages live: https://agentrocketman.github.io/toronto-bins/ - ✅ All UX issues resolved - ✅ Badge, scroll, pricing, recur",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T04:44:03.947Z",
+      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "queryHashes": [
+        "4448bfbac301",
+        "c28c6ad52629",
+        "4863b0ccfd56"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "1.6s",
+        "11.90/event",
+        "first-click",
+        "removed",
+        "mystery",
+        "wait",
+        "added",
+        "instant"
+      ]
+    },
+    "memory:memory/2026-06-12.md:75:83": {
+      "key": "memory:memory/2026-06-12.md:75:83",
+      "path": "memory/2026-06-12.md",
+      "startLine": 75,
+      "endLine": 83,
+      "source": "memory",
+      "snippet": "| Hostinger Email | support@agentrocketman.com | Yuserbsme | AgentEmail1! | Webmail works, IMAP pending | | GitHub | N/A | N/A | PAT provided (ghp_6e…IYim) | Pushed v2 successfully | ## Chris's Feedback Processed 1. Accordion approach preferred for schedule visibility ✅ 2. Recurring pricing bug caught and fixed ✅ 3. Autocomplete scroll timing fixed ✅ 4. v1 backup created for reference ✅",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T04:44:03.947Z",
+      "lastRecalledAt": "2026-07-07T04:44:11.833Z",
+      "queryHashes": [
+        "4448bfbac301",
+        "c28c6ad52629"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "backup",
+        "agentrocketman.com",
+        "n/a",
+        "ghp-6e",
+        "hostinger",
+        "email",
+        "support",
+        "yuserbsme"
+      ]
+    },
+    "memory:memory/2026-06-10.md:1:19": {
+      "key": "memory:memory/2026-06-10.md:1:19",
+      "path": "memory/2026-06-10.md",
+      "startLine": 1,
+      "endLine": 19,
+      "source": "memory",
+      "snippet": "# 2026-06-10 ## Logo Update - Updated CurbIn site with new curbin wordmark logo (logo.jpg) - Replaced text-based nav and footer logos with image - Committed and pushed to GitHub Pages: `64eb441` ## Token Optimization (major) - Chris asked to minimize Nexos token burn - Installed Claude Code CLI (`@anthropic-ai/claude-code` v2.1.170) with Chris's Anthropic API key - All coding work now routes through Claude Code → Anthropic billing, not Nexos - Disabled heartbeat (set `every: \"0\"` in config) - Confirmed zero cron jobs, zero auto-updates - Documented strategy in MEMORY.md, TOOLS.md, USER.md ## Key Decision - **Permanent rule:** Never use Nexos subagents for coding. Always use `claude -p` wi",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 4,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T04:44:03.947Z",
+      "lastRecalledAt": "2026-07-07T06:53:12.805Z",
+      "queryHashes": [
+        "4448bfbac301",
+        "c28c6ad52629",
+        "70380bd32bcd",
+        "e917bd1e5fdb"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "logo.jpg",
+        "text-based",
+        "anthropic-ai/claude-code",
+        "v2.1.170",
+        "auto-updates",
+        "memory.md",
+        "tools.md",
+        "user.md"
+      ]
+    },
+    "memory:memory/2026-06-18.md:195:217": {
+      "key": "memory:memory/2026-06-18.md:195:217",
+      "path": "memory/2026-06-18.md",
+      "startLine": 195,
+      "endLine": 217,
+      "source": "memory",
+      "snippet": "1. `airtable-bookings.js` — Added `geocodeAddressForMap()` calling `/api/geocode.php`; `saveBookingToAirtable()` now geocodes address and writes `Lat`/`Lng` to both Booking and Order records 2. `service-routing.html` — Updated lat/lng resolution: Order → Booking → `binPlacement.cameraLatLng` → downtown Toronto sentinel (with warning) 3. `/api/geocode.php` — Server-side geocoding proxy (Google Maps Geocoding API, key stays server-side, 1-year cache, biased to Toronto) 4. Airtable schema — Added `Lat` + `Lng` (number, precision 7) to Bookings (`tblKMhGnYjsH0z7Lj`) AND Orders (`tblGhNRi3ENwVpNty`) 5. Deployed full site to production **Status at compaction:** Geocoder endpoint deployed and bein",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T04:44:03.947Z",
+      "lastRecalledAt": "2026-07-07T04:44:11.833Z",
+      "queryHashes": [
+        "4448bfbac301",
+        "c28c6ad52629"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "airtable-bookings.js",
+        "api/geocode.php",
+        "service-routing.html",
+        "lat/lng",
+        "binplacement.cameralatlng",
+        "server-side",
+        "1-year",
+        "airtable"
+      ]
+    },
+    "memory:memory/2026-06-19.md:48:78": {
+      "key": "memory:memory/2026-06-19.md:48:78",
+      "path": "memory/2026-06-19.md",
+      "startLine": 48,
+      "endLine": 78,
+      "source": "memory",
+      "snippet": "2. Iframe loading blank: Fixed by removing srcdoc approach, using src consistently 3. Service routing auth: Updated to accept admin tokens 4. Dashboard CORS error: Created PHP proxy endpoint to fetch Airtable data ### What's NOT Persisted (Demo Mode): - Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Airtable 2. Add admin user management UI in admin panel 3. Add more analytics/metrics to dashboard 4. Security: Remove `setup-admins-table.php` after first run # Session Memory - 2026",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "queryHashes": [
+        "70380bd32bcd"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "analytics/metrics",
+        "setup-admins-table.php",
+        "iframe",
+        "loading",
+        "blank",
+        "fixed",
+        "removing",
+        "srcdoc"
+      ]
+    },
+    "memory:memory/2026-06-19.md:1:34": {
+      "key": "memory:memory/2026-06-19.md:1:34",
+      "path": "memory/2026-06-19.md",
+      "startLine": 1,
+      "endLine": 34,
+      "source": "memory",
+      "snippet": "# Session Memory - 2026-06-19 ## Admin Panel System - COMPLETE ✅ ### Files Created: - `/admin-login.html` — Admin login form (email + password) - `/admin-panel.html` — Main admin panel with iframe navigation - `/admin/dashboard.html` — Orders dashboard with Chart.js graph - `/admin/change-password.html` — Password change form with strength indicator - `/api/admin-auth/login.php` — Login endpoint (Airtable) - `/api/admin-auth/verify.php` — Token verification - `/api/admin-auth/change-password.php` — Password update endpoint - `/api/admin-auth/setup-admins-table.php` — Setup script (run once) - `/api/admin-auth/create-admin.php` — Create new admin endpoint - `/api/get-dashboard-data.php` — D",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "queryHashes": [
+        "70380bd32bcd"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "admin-login.html",
+        "admin-panel.html",
+        "admin/dashboard.html",
+        "chart.js",
+        "admin/change-password.html",
+        "api/admin-auth/login.php",
+        "api/admin-auth/verify.php",
+        "api/admin-auth/create-admin.php"
+      ]
+    },
+    "memory:memory/2026-06-19.md:72:103": {
+      "key": "memory:memory/2026-06-19.md:72:103",
+      "path": "memory/2026-06-19.md",
+      "startLine": 72,
+      "endLine": 103,
+      "source": "memory",
+      "snippet": "- `/api/admin-auth/change-password.php` — Password update endpoint - `/api/admin-auth/setup-admins-table.php` — Setup script (run once) - `/api/admin-auth/create-admin.php` — Create new admin endpoint - `/api/get-dashboard-data.php` — Dashboard data API (PHP proxy for Airtable) ### Airtable Integration: - **Table:** `Admins` (in base apptYNRJTXwItvied) - **Fields:** Email, Password, FirstName, LastName, Active, CreatedAt, LastPasswordChange - **Initial admin:** support@getmybin.com / GetMyBinAdmin2026! ### Admin Panel Features: 1. **Login page** — Email + password authentication with JWT tokens (7-day expiry) 2. **Navigation bar** (fixed top): - 📊 Dashboard (default) - 📍 Service Sc",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "queryHashes": [
+        "70380bd32bcd"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "api/admin-auth/create-admin.php",
+        "api/get-dashboard-data.php",
+        "getmybin.com",
+        "7-day",
+        "api",
+        "admin",
+        "auth",
+        "change"
+      ]
+    },
+    "memory:memory/2026-06-19.md:205:237": {
+      "key": "memory:memory/2026-06-19.md:205:237",
+      "path": "memory/2026-06-19.md",
+      "startLine": 205,
+      "endLine": 237,
+      "source": "memory",
+      "snippet": "- Refund process now fully flexible - allows refunds regardless of date with warnings # Session Memory - 2026-06-19 ## Admin Panel System - COMPLETE ✅ ### Files Created: - `/admin-login.html` — Admin login form (email + password) - `/admin-panel.html` — Main admin panel with iframe navigation - `/admin/dashboard.html` — Orders dashboard with Chart.js graph (stacked bar) - `/admin/change-password.html` — Password change form with strength indicator - `/api/admin-auth/login.php` — Login endpoint (Airtable) - `/api/admin-auth/verify.php` — Token verification - `/api/admin-auth/change-password.php` — Password update endpoint - `/api/admin-auth/setup-admins-table.php` — Setup script (run once)",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "queryHashes": [
+        "70380bd32bcd"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "admin-login.html",
+        "admin-panel.html",
+        "admin/dashboard.html",
+        "chart.js",
+        "admin/change-password.html",
+        "api/admin-auth/login.php",
+        "api/admin-auth/verify.php",
+        "refund"
+      ]
+    },
+    "memory:memory/2026-06-19.md:255:293": {
+      "key": "memory:memory/2026-06-19.md:255:293",
+      "path": "memory/2026-06-19.md",
+      "startLine": 255,
+      "endLine": 293,
+      "source": "memory",
+      "snippet": "- **Service routing auth:** Modified to accept either employee token OR admin token - **Password change:** Frontend validation + server-side verification via Airtable lookup ### Deployment Status: - ✅ All files deployed to agentrocketman.com - ✅ Admin login working - ✅ Dashboard graph showing completed + pending orders - ✅ Date range selection working - ✅ Refresh button loads new date range ### What's NOT Persisted (Demo Mode): - Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Ai",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "queryHashes": [
+        "70380bd32bcd"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "server-side",
+        "agentrocketman.com",
+        "service",
+        "routing",
+        "auth",
+        "modified",
+        "accept",
+        "either"
+      ]
+    },
+    "memory:memory/2026-06-13.md:713:764": {
+      "key": "memory:memory/2026-06-13.md:713:764",
+      "path": "memory/2026-06-13.md",
+      "startLine": 713,
+      "endLine": 764,
+      "source": "memory",
+      "snippet": "✅ Clickable addresses with embedded directions ✅ Turn-by-turn navigation modal ✅ Large, readable text for field work ✅ Responsive design (desktop + mobile) ### API Backend ✅ 5 PHP endpoints (health, upload, save-service, optimize-route, services) ✅ Airtable integration (real-time sync) ✅ Image storage (/bin-pics/) ✅ CORS configured ✅ Security validation ### User Experience ✅ No app switching required ✅ Turn-by-turn directions in-app ✅ Intuitive checkbox workflow ✅ Clear visual feedback ✅ Mobile-friendly --- ## NEXT STEPS (OPTIONAL) 1. Test embedded directions on mobile devices 2. Add real Toronto addresses (replace test locations) 3. Deploy to field teams 4. Monitor Airtable for real-wor",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:27:17.032Z",
+      "lastRecalledAt": "2026-07-07T06:27:17.032Z",
+      "queryHashes": [
+        "b42d064477f7"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "turn-by-turn",
+        "save-service",
+        "optimize-route",
+        "real-time",
+        "bin-pics",
+        "in-app",
+        "mobile-friendly",
+        "real-wor"
+      ]
+    },
+    "memory:memory/2026-06-13.md:756:776": {
+      "key": "memory:memory/2026-06-13.md:756:776",
+      "path": "memory/2026-06-13.md",
+      "startLine": 756,
+      "endLine": 776,
+      "source": "memory",
+      "snippet": "- ❌ Removed turn-by-turn navigation modal - ❌ Removed embedded directions map - ❌ Removed directions panel (step-by-step) - ✅ Direct Google Maps links for all addresses - ✅ Full voice guidance immediately (one click) - ✅ Cleaner code (no directions API calls) **User Flow (v17):** 1. Click address (sidebar or tooltip) 2. Google Maps opens → Full voice guidance 3. No intermediate modal step 4. Return to CurbIn, click next address --- **Session Status:** ✅ PRODUCTION READY (v17 LIVE) **Live URL:** https://agentrocketman.com/service-routing.html **Last Update:** 2026-06-13 19:47 UTC **Total Versions Deployed:** 17 (v1-v17) **Features Delivered:** 20+ improvements (backend API, UI/UX,",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:27:17.032Z",
+      "lastRecalledAt": "2026-07-07T06:27:17.032Z",
+      "queryHashes": [
+        "b42d064477f7"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "turn-by-turn",
+        "step-by-step",
+        "v1-v17",
+        "ui/ux",
+        "removed",
+        "turn",
+        "navigation",
+        "modal"
+      ]
+    },
+    "memory:memory/2026-07-07.md:33:55": {
+      "key": "memory:memory/2026-07-07.md:33:55",
+      "path": "memory/2026-07-07.md",
+      "startLine": 33,
+      "endLine": 55,
+      "source": "memory",
+      "snippet": "1. Use browser (targetId of an existing tab, or open one) to `fetch('https://agentrocketman.com/assistant/api/debug-updates.php', { headers: { 'X-Auth-Token': 'curbin-assistant-dev-2026' }})` 2. Find all unreplied PWA requests (entries without `.reply`). 3. For each one, compose a short natural reply and POST to `https://agentrocketman.com/assistant/api/reply.php` with: - Header `X-Hook-Auth: curbin-hook-auth-2026` - Body `{\"request_id\": \"<id>\", \"reply\": \"<text>\"}` 4. Then reply to Chris normally. ### Guardrails - Skip requests older than ~30 minutes (Chris has moved on). - Skip requests with obviously mistranscribed / gibberish text unless clear intent. - Keep PWA replies short (1–2",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:44:11.260Z",
+      "lastRecalledAt": "2026-07-07T06:44:11.260Z",
+      "queryHashes": [
+        "a5cefdaadcf9"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "x-auth-token",
+        "curbin-assistant-dev-2026",
+        "x-hook-auth",
+        "curbin-hook-auth-2026",
+        "request-id",
+        "use",
+        "browser",
+        "targetid"
+      ]
+    },
+    "memory:memory/2026-07-07.md:15:35": {
+      "key": "memory:memory/2026-07-07.md:15:35",
+      "path": "memory/2026-07-07.md",
+      "startLine": 15,
+      "endLine": 35,
+      "source": "memory",
+      "snippet": "Pushed placeholder replies (`[expired test request — no reply]`) to all 16 stale unreplied PWA requests so the cron only picks up **new** requests from Chris. ### Known cost concern Cron fires every 30s regardless. Idle Haiku isolated agent ≈ ~$0.001/run × 2880/day = ~$3/day when idle. Not free — need to revisit or add smarter triggering later. ### Bug fix in prior manual subagent test The earlier one-shot subagent used `message` (bot channel send) instead of `sessions_send`, and used `sessions_yield` instead of running end-to-end. The cron payload explicitly warns against both. ## 01:25 UTC — Cron approach abandoned; adopted Option B (drain-on-trigger) ### Why we bailed on cron - sessio",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:44:11.260Z",
+      "lastRecalledAt": "2026-07-07T06:44:11.260Z",
+      "queryHashes": [
+        "a5cefdaadcf9"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "0.001/run",
+        "2880/day",
+        "3/day",
+        "one-shot",
+        "sessions-send",
+        "sessions-yield",
+        "end-to-end",
+        "drain-on-trigger"
+      ]
+    },
+    "memory:memory/2026-07-06.md:25:35": {
+      "key": "memory:memory/2026-07-06.md:25:35",
+      "path": "memory/2026-07-06.md",
+      "startLine": 25,
+      "endLine": 35,
+      "source": "memory",
+      "snippet": "- `index.html`, `style.css`, `app.js`, `manifest.json`, `sw.js` - Backend: `api/send.php`, `api/poll.php`, `api/media.php`, `api/config.php` (placeholder) - Press-and-hold mic records audio, sends to backend. - Backend will forward to a dedicated Telegram bot, I'll reply via Telegram, backend polls and plays reply. - Deployed to https://agentrocketman.com/assistant/. - Backend token placeholder is `__SET_ME__`; waiting for Chris to create a Telegram bot via @BotFather and provide the token. - Once token received, will add new Telegram channel to OpenClaw config and restart gateway. ## Next step - Receive Telegram bot token from Chris, configure, restart gateway, test end-to-end.",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:44:11.260Z",
+      "lastRecalledAt": "2026-07-07T06:44:11.260Z",
+      "queryHashes": [
+        "a5cefdaadcf9"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "gateway",
+        "index.html",
+        "style.css",
+        "app.js",
+        "manifest.json",
+        "sw.js",
+        "api/send.php",
+        "api/poll.php"
+      ]
+    },
+    "memory:memory/2026-06-14.md:319:349": {
+      "key": "memory:memory/2026-06-14.md:319:349",
+      "path": "memory/2026-06-14.md",
+      "startLine": 319,
+      "endLine": 349,
+      "source": "memory",
+      "snippet": "4. Continue debugging service-routing.html Airtable integration ## URGENT FIX NEEDED — Stripe \"Save\" button still showing (2026-06-14 ~22:32 UTC) **Problem:** `stripe.elements()` in `/data/.openclaw/workspace/public_html/stripe-integration.js` is missing `disableLink: true`, so Stripe Link injects its \"Autofill →\" / \"Save card\" button into the card number field. **Exact fix — line 7 of stripe-integration.js:** Change: `const elements = stripe.elements();` To: `const elements = stripe.elements({ disableLink: true });` **Also fix remounting issue:** Elements are created at global scope, so remounting fails after the modal is closed/reopened. Fix: move element creation into `initStripeForm(",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:44:11.260Z",
+      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "queryHashes": [
+        "a5cefdaadcf9",
+        "e9c3edf34d1b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "service-routing.html",
+        "stripe.elements",
+        "stripe-integration.js",
+        "closed/reopened",
+        "continue",
+        "debugging",
+        "service",
+        "routing.html"
+      ]
+    },
+    "memory:memory/2026-07-07.md:48:73": {
+      "key": "memory:memory/2026-07-07.md:48:73",
+      "path": "memory/2026-07-07.md",
+      "startLine": 48,
+      "endLine": 73,
+      "source": "memory",
+      "snippet": "- Push reply: `POST https://agentrocketman.com/assistant/api/reply.php` with headers `Content-Type: application/json` + `X-Hook-Auth: curbin-hook-auth-2026`, body `{request_id, reply}` ### Queued dupes Before disabling cron, two systemEvents were dispatched for `816c49c43b02bdca`. When those fire, both requests already have replies — respond NO_REPLY. ## 01:51 UTC — Session ended after wordy-and-not-fixing feedback ### What happened - Reinstated cron every 60s with immediate lock (placeholder `…`) + one-shot systemEvent to main. First run timed out at 60s; bumped to 180s. - Chris said \"I don't want no cron\" (Whisper misheard as \"crime\"). Killed cron. - Walked him through why PWA → me is n",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:44:11.260Z",
+      "lastRecalledAt": "2026-07-07T06:44:11.260Z",
+      "queryHashes": [
+        "a5cefdaadcf9"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "content-type",
+        "application/json",
+        "x-hook-auth",
+        "curbin-hook-auth-2026",
+        "request-id",
+        "no-reply",
+        "wordy-and-not-fixing",
+        "one-shot"
+      ]
+    },
+    "memory:memory/2026-06-14.md:272:303": {
+      "key": "memory:memory/2026-06-14.md:272:303",
+      "path": "memory/2026-06-14.md",
+      "startLine": 272,
+      "endLine": 303,
+      "source": "memory",
+      "snippet": "**Fix applied:** Redeployed curbin-v2-final.html with ALL improvements intact. **Status:** Production restored to full feature set ✅ --- ## 2026-06-14 20:51 UTC — Pre-Compaction Flush ### Session Summary Worked on CurbIn homepage \"Save 34%\" badge placement issue: - User reported badge positioning differs from a previous version - Current CSS: `position:absolute;top:-10px;right:6px` on `.save-badge` class - Badge parent element (`.toggle-btn`) has `position:relative` for proper absolute positioning - Code review showed current styling matches deployed version (no recent changes to CSS) - Unable to determine desired positioning change without user clarification ### Current Homepage Status",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:53:12.805Z",
+      "lastRecalledAt": "2026-07-07T06:53:12.805Z",
+      "queryHashes": [
+        "e917bd1e5fdb"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "curbin-v2-final.html",
+        "pre-compaction",
+        "save-badge",
+        "toggle-btn",
+        "fix",
+        "applied",
+        "redeployed",
+        "curbin"
+      ]
+    },
+    "memory:memory/2026-06-14.md:298:324": {
+      "key": "memory:memory/2026-06-14.md:298:324",
+      "path": "memory/2026-06-14.md",
+      "startLine": 298,
+      "endLine": 324,
+      "source": "memory",
+      "snippet": "1. **Badge placement clarification needed** — User wants position adjusted but current CSS positioning wasn't changed in recent work; need specific feedback on: - Should badge be positioned OUTSIDE button (to the right) vs current position? - Different vertical alignment needed? - Size adjustment required? - Example reference from previous version? 2. **Service Routing** — Still pending Airtable dynamic loading (date picker integration) 3. **Version Archive System** — VERSION_HISTORY.md established for quick rollbacks without rebuilding ### Key Files & Credentials - **Live homepage:** https://agentrocketman.com/index.html (curbin-v2-final.html) - **Live service routing:** http",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T06:53:12.805Z",
+      "lastRecalledAt": "2026-07-07T06:53:12.805Z",
+      "queryHashes": [
+        "e917bd1e5fdb"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "version-history.md",
+        "agentrocketman.com/index.html",
+        "curbin-v2-final.html",
+        "badge",
+        "placement",
+        "clarification",
+        "needed",
+        "wants"
+      ]
+    },
+    "memory:memory/2026-06-23.md:1:35": {
+      "key": "memory:memory/2026-06-23.md:1:35",
+      "path": "memory/2026-06-23.md",
+      "startLine": 1,
+      "endLine": 35,
+      "source": "memory",
+      "snippet": "## Bin Type Tracking — Option 3 (dev only) ✅ 2026-06-24 02:17 UTC Implemented Toronto bin schedule auto-detect with customer override. Used existing embedded CSV_DATA (already had per-date bin info via `g`/`b`/`r`/`y`/`c` codes). ### Files changed - `public_html/index.html` (~+45 lines) — `dateBinSelections` state, bin checkbox panel pre-filled from schedule, attached to `window.currentBooking.binsByDate` / `binsRecurring`. - `public_html/airtable-bookings.js` — writes `Bins To Roll` (driver-readable string) and `Bins JSON` (raw map) to both Bookings table and per-Order rows. Graceful fallback when columns don't exist. - `public_html/api/save-booking.php` — same fields added (curr",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T12:42:55.356Z",
+      "lastRecalledAt": "2026-07-07T12:57:22.562Z",
+      "queryHashes": [
+        "944f601047a1",
+        "d82fd5ac4124",
+        "24c714612573"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "auto-detect",
+        "csv-data",
+        "per-date",
+        "public-html/index.html",
+        "pre-filled",
+        "window.currentbooking.binsbydate",
+        "public-html/airtable-bookings.js",
+        "driver-readable"
+      ]
+    },
+    "memory:memory/2026-06-23.md:77:91": {
+      "key": "memory:memory/2026-06-23.md:77:91",
+      "path": "memory/2026-06-23.md",
+      "startLine": 77,
+      "endLine": 91,
+      "source": "memory",
+      "snippet": "### New Airtable columns (added via API) - Bookings table `Calendar Name` — singleLineText — id `fldJfSyti34WAvtIS` - Orders table `Calendar Name` — singleLineText — id `fldNcNrPtIbu2trwV` ### Test on dev 1. https://agentrocketman.com → enter address → pick a date → checkout. - No bin checkbox panel should appear. Customer flow is identical to before the feature was added. 2. Confirm in Airtable: the Booking has `Calendar Name` set; each Order row has `Calendar Name`, `Bins To Roll` (e.g. \"Green, Recycling\"), and `Bins JSON`. 3. Log into employee dashboard → check the stop card shows colored bin chips. ### Coding Via Claude Code CLI (Anthropic billing). Spec at `/tmp/bin-rip-spe",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T12:42:55.356Z",
+      "lastRecalledAt": "2026-07-07T12:57:22.562Z",
+      "queryHashes": [
+        "944f601047a1",
+        "d82fd5ac4124",
+        "24c714612573"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "e.g",
+        "tmp/bin-rip-spe",
+        "new",
+        "airtable",
+        "columns",
+        "added",
+        "via"
+      ]
+    },
+    "memory:memory/2026-06-18.md:166:196": {
+      "key": "memory:memory/2026-06-18.md:166:196",
+      "path": "memory/2026-06-18.md",
+      "startLine": 166,
+      "endLine": 196,
+      "source": "memory",
+      "snippet": "Built Street View bin placement system: ### **Customer side (index2.html)** - Replaced \"Your Order\" summary with embedded Street View + green crosshair - No visible pin — coords captured silently at crosshair when \"Go to Checkout\" clicked - Checkout button disabled until date selected or recurring chosen ### **Driver side (service-routing.html)** - Static SV thumbnail per stop (via `/api/streetview-thumb.php`) - Click thumbnail → bin-spot modal - Modal: custom DOM-overlay green teardrop pin (SVG) that reprojects on every POV change - Replaces `google.maps.Marker` which silently no-ops on StreetViewPanorama ### **Data flow** - `airtable-bookings.js` writes `Bin Placement` JSON to Bookings",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T12:42:55.356Z",
+      "lastRecalledAt": "2026-07-07T12:57:22.562Z",
+      "queryHashes": [
+        "944f601047a1",
+        "d82fd5ac4124",
+        "24c714612573"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "index2.html",
+        "service-routing.html",
+        "api/streetview-thumb.php",
+        "bin-spot",
+        "dom-overlay",
+        "google.maps.marker",
+        "no-ops",
+        "airtable-bookings.js"
+      ]
+    },
+    "memory:memory/2026-06-23.md:53:83": {
+      "key": "memory:memory/2026-06-23.md:53:83",
+      "path": "memory/2026-06-23.md",
+      "startLine": 53,
+      "endLine": 83,
+      "source": "memory",
+      "snippet": "- `Bins JSON` — multilineText — id `fldwM1IRNMMjNXzCq` - **Orders** (tblGhNRi3ENwVpNty): - `Bins To Roll` — singleLineText — id `fldyV2i6x1GFmytqP` - `Bins JSON` — multilineText — id `fldv3jxInlxBr0zaE` Bookings + chips on driver dashboard now fully wired end-to-end on dev. ## Bin Checkbox UI Ripped — bins now fully automatic ✅ 2026-06-24 03:17 UTC Customer was right — checkboxes made checkout cumbersome, and the recurring path let you check \"Christmas Tree\" on a weekly subscription (paradox). ### Changes - `index.html`: removed all bin-selection UI + state + helpers (-84 lines). Booking payload now carries `binsByDate` (computed from selectedDates + Toronto schedule) for ad-ho",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T12:42:55.356Z",
+      "lastRecalledAt": "2026-07-07T12:42:55.356Z",
+      "queryHashes": [
+        "944f601047a1"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "end-to-end",
+        "index.html",
+        "bin-selection",
+        "ad-ho",
+        "bins",
+        "multilinetext",
+        "fldwm1irnmmjnxzcq",
+        "orders"
+      ]
+    },
+    "memory:memory/2026-06-16.md:86:126": {
+      "key": "memory:memory/2026-06-16.md:86:126",
+      "path": "memory/2026-06-16.md",
+      "startLine": 86,
+      "endLine": 126,
+      "source": "memory",
+      "snippet": "- Logo: 30px left margin (ALL screens), vertically centered, 1.8x scale (mobile), 1.3x scale (Chrome desktop), 1x scale (Safari desktop) - Links: How It Works, Pricing, Get Started button - Mobile link spacing: .6rem between all links (equal spacing) - Mobile logo: margin-top -5px (moved up slightly) - Color: Green (#71b80c) throughout - Favicon: Green wheelie bin (PNG, transparent background) **All Pages Unified:** ✅ index.html - Homepage ✅ contact.html - Contact page ✅ privacy.html - Privacy policy ✅ terms.html - Terms of service All 4 pages have IDENTICAL navigation with same styling, spacing, and functionality. **Total Commits This Session: 15+ 1. fb3571d - Session memory + favicon 2.",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T12:42:55.356Z",
+      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "queryHashes": [
+        "944f601047a1",
+        "4863b0ccfd56"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "1.8x",
+        "1.3x",
+        "margin-top",
+        "index.html",
+        "contact.html",
+        "privacy.html",
+        "terms.html",
+        "logo"
+      ]
+    },
+    "memory:memory/2026-06-26.md:24:60": {
+      "key": "memory:memory/2026-06-26.md:24:60",
+      "path": "memory/2026-06-26.md",
+      "startLine": 24,
+      "endLine": 60,
+      "source": "memory",
+      "snippet": "- All 8 branches across 3 brands with full contact details - 40+ URL directory for clickable hyperlinks in responses ### Key decisions: - Brand blue: #213c92 (from polcu.com CSS) - Markdown links in chat responses → rendered as clickable `<a>` tags opening new tabs - Domain obfuscation: double-base64 + hex-escaped chunks in loader - Airtable table: PolcuChatLogs (tblNHbuQjTwZRnhpQ) - API endpoints use absolute URLs to agentrocketman.com (IP doesn't work on shared hosting) - Same OpenAI API key as GetMyBin ### Embed snippet for polcu.ca: ```html <script src=\"polcu-loader.js\"></script> ``` (polcu-loader.js hosted locally on their server, decodes domain at runtime) ### Files emailed to Chris",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T12:42:55.446Z",
+      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "queryHashes": [
+        "4863b0ccfd56"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "openai",
+        "polcu.com",
+        "double-base64",
+        "hex-escaped",
+        "agentrocketman.com",
+        "polcu.ca",
+        "polcu-loader.js",
+        "all"
+      ]
+    },
+    "memory:memory/2026-06-15.md:140:163": {
+      "key": "memory:memory/2026-06-15.md:140:163",
+      "path": "memory/2026-06-15.md",
+      "startLine": 140,
+      "endLine": 163,
+      "source": "memory",
+      "snippet": "- Chose Option B: show date cards greyed out with \"Booking closed · 4pm cutoff\" label (not hidden) - Implementation: `Intl.DateTimeFormat.formatToParts()` for reliable Toronto timezone detection - Day zone cutoff: 4pm day BEFORE collection - Night zone cutoff: 4pm ON collection day - Bug fixed: initial implementation greyed ALL future dates — was using unreliable `toLocaleString()` approach returning Invalid Date - Fixed with `formatToParts()` — only tomorrow greyed out when past cutoff - Tested at 12pm and 1pm cutoff temporarily, confirmed working, restored to 4pm - Label text: \"Booking closed · 4pm cutoff\" (Chris chose option 2 of 4 suggestions) - All committed and deployed ✅ ## Toronto O",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T12:42:55.446Z",
+      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "queryHashes": [
+        "4863b0ccfd56"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "chose",
+        "option",
+        "show",
+        "date",
+        "cards",
+        "greyed",
+        "out",
+        "booking"
+      ]
+    },
+    "memory:memory/2026-06-16.md:1:33": {
+      "key": "memory:memory/2026-06-16.md:1:33",
+      "path": "memory/2026-06-16.md",
+      "startLine": 1,
+      "endLine": 33,
+      "source": "memory",
+      "snippet": "# 2026-06-16 - GetMyBin Rebrand & Navigation Refinement ## GetMyBin Rebrand - COMPLETE ✅ - **Old brand:** CurbIn → **New brand:** GetMyBin - **Color change:** Old #A4D233 → New vibrant green #71b80c (56+ instances) - **Logos added:** 5 new logos (bin icons, transparent, white backgrounds) - All HTML, JS, PHP, email templates updated - Full rebrand deployed to agentrocketman.com ✓ ## Navigation Bar Refinements - **Height:** Reduced from 205px → 102px (50% slimmer on desktop), 40px → 60px (mobile) - **Background:** Semi-transparent → Solid white (#fff) - **Logo positioning:** - Added 20px left margin (final) - 1.5x scale (transform:scale(1.5)) - Overflow:hidden to prevent top/bottom s",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T12:42:55.446Z",
+      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "queryHashes": [
+        "4863b0ccfd56"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "semi-transparent",
+        "1.5x",
+        "1.5",
+        "top/bottom",
+        "getmybin",
+        "rebrand",
+        "navigation"
+      ]
+    },
+    "memory:memory/2026-06-28.md:141:175": {
+      "key": "memory:memory/2026-06-28.md:141:175",
+      "path": "memory/2026-06-28.md",
+      "startLine": 141,
+      "endLine": 175,
+      "source": "memory",
+      "snippet": "- Deployed via `node hostinger-deploy.mjs agentrocketman.com /tmp/deploy-1782607986.tar.gz`. - Verified live: `pipeline.html` contains the new placeholder text. **Next:** Need real test by rejecting an approval with comments. --- ## Mission Control — Delete Button + Patch Archiving (01:13 UTC) **Requested:** Delete project button + hide old patches behind a \"Patches\" link. **Implementation:** - Created `public_html/mission-control/api/projects/delete.php`: - Accepts POST `{project_id}`. - Loads project by ID via `airtableRequest('GET', table, [], id)`. - Deletes project record via `airtableRequest('DELETE', table, [], id)`. - Cleans up matching approval records. - **Fix applie",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "queryHashes": [
+        "e9c3edf34d1b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "hostinger-deploy.mjs",
+        "agentrocketman.com",
+        "tmp/deploy-1782607986.tar.gz",
+        "pipeline.html",
+        "project-id",
+        "deployed",
+        "via",
+        "node"
+      ]
+    },
+    "memory:memory/2026-06-14.md:68:102": {
+      "key": "memory:memory/2026-06-14.md:68:102",
+      "path": "memory/2026-06-14.md",
+      "startLine": 68,
+      "endLine": 102,
+      "source": "memory",
+      "snippet": "- ✅ Email backend (server.js running on localhost:3001, SMTP working) - ✅ Airtable credentials & API integration (verified) - ✅ SPF/DMARC DNS records configured ## What Doesn't Work Yet - ❌ Dynamic Airtable order loading in service-routing.html - ❌ Date picker filtering - ❌ Real-time orders display ## Next Session Action Items 1. **Debug service-routing.html** - Check browser console for errors, verify Airtable API calls 2. **Rewrite dynamic section** - Either fix subagent code or build from scratch (recommend fresh build) 3. **Test thoroughly** - Before redeployment via Hostinger API 4. **Decision:** Keep dynamic version OR revert to hardcoded (ask user) ## Key Learning - **Deployment me",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "queryHashes": [
+        "e9c3edf34d1b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "server.js",
+        "spf/dmarc",
+        "service-routing.html",
+        "real-time",
+        "email",
+        "backend",
+        "running",
+        "localhost"
+      ]
+    },
+    "memory:memory/2026-06-13.md:98:146": {
+      "key": "memory:memory/2026-06-13.md:98:146",
+      "path": "memory/2026-06-13.md",
+      "startLine": 98,
+      "endLine": 146,
+      "source": "memory",
+      "snippet": "**Service Routing App** — https://agentrocketman.com/service-routing.html - ✅ Load map with all 8 addresses - ✅ Click checkbox → mark complete (green + checkmark) - ✅ Instant sync to Airtable - ✅ Update worker name → synced to all new records - ✅ Image upload buttons ready (saves to /bin-pics/) - ✅ Date picker for scheduling **Backend API** — /api/ folder on agentrocketman.com - ✅ Health check: `/api/health.php` - ✅ Image upload: `/api/upload.php` - ✅ Airtable sync: `/api/save-service.php` - ✅ Route optimization: `/api/optimize-route.php` - ✅ Get services: `/api/services.php` **Airtable Integration** - ✅ ServiceStops table created - ✅ 6 test records synced & verified - ✅ All field types co",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "queryHashes": [
+        "e9c3edf34d1b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "bin-pics",
+        "agentrocketman.com",
+        "api/health.php",
+        "api/upload.php",
+        "api/save-service.php",
+        "api/optimize-route.php",
+        "api/services.php",
+        "service"
+      ]
+    },
+    "memory:memory/2026-06-19.md:121:157": {
+      "key": "memory:memory/2026-06-19.md:121:157",
+      "path": "memory/2026-06-19.md",
+      "startLine": 121,
+      "endLine": 157,
+      "source": "memory",
+      "snippet": "- Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Airtable 2. Add admin user management UI in admin panel 3. Add more analytics/metrics to dashboard 4. Security: Remove `setup-admins-table.php` after first run # 2026-06-19 — Session Log ## Completed Features ### 1. Mobile Navigation Landscape Optimization ✅ - Added media query for landscape orientation (`@media (max-height: 500px) and (orientation: landscape)`) - Hamburger menu (☰) appears in landscape to save vertical space - Re",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "queryHashes": [
+        "e9c3edf34d1b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "analytics/metrics",
+        "setup-admins-table.php",
+        "max-height",
+        "password",
+        "change",
+        "endpoint",
+        "validates",
+        "but"
+      ]
+    },
+    "memory:memory/2026-06-27.md:30:50": {
+      "key": "memory:memory/2026-06-27.md:30:50",
+      "path": "memory/2026-06-27.md",
+      "startLine": 30,
+      "endLine": 50,
+      "source": "memory",
+      "snippet": "- `api/approvals/{create,decide}.php` - `api/runner-{heartbeat,status}.php` - `builder-runner.py` (root workspace) ## Stuck Issue (End of Session) **Project**: `recDZeVn8PrYtwMjF` (URL Shortener v1.1 (fix), patch_mode=quick_fix) **Symptom**: Chris approved Scout recommendations but next stage didn't fire. **Three bugs found & fixed**: 1. `patch.php` — `getFirstStage()` got partial Airtable POST response missing `patch_mode`, defaulted to full mode → Scout instead of Builder. **Fix**: explicitly set `patch_mode` + enable flags on `$newProject['fields']` before calling. 2. `decide.php` — when approved stage isn't in project's pipeline, `getNextStage()` returns null. **Fix**: fallback to `exp",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "queryHashes": [
+        "e9c3edf34d1b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "api/approvals",
+        "api/runner",
+        "builder-runner.py",
+        "v1.1",
+        "patch-mode",
+        "quick-fix",
+        "patch.php",
+        "decide.php"
+      ]
+    },
+    "memory:memory/2026-06-27.md:105:125": {
+      "key": "memory:memory/2026-06-27.md:105:125",
+      "path": "memory/2026-06-27.md",
+      "startLine": 105,
+      "endLine": 125,
+      "source": "memory",
+      "snippet": "- `api/approvals/{create,decide}.php` - `api/runner-{heartbeat,status}.php` - `builder-runner.py` (root workspace) ## Stuck Issue (End of Session) **Project**: `recDZeVn8PrYtwMjF` (URL Shortener v1.1 (fix), patch_mode=quick_fix) **Symptom**: Chris approved Scout recommendations but next stage didn't fire. **Three bugs found & fixed**: 1. `patch.php` — `getFirstStage()` got partial Airtable POST response missing `patch_mode`, defaulted to full mode → Scout instead of Builder. **Fix**: explicitly set `patch_mode` + enable flags on `$newProject['fields']` before calling. 2. `decide.php` — when approved stage isn't in project's pipeline, `getNextStage()` returns null. **Fix**: fallback to `exp",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "queryHashes": [
+        "e9c3edf34d1b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "api/approvals",
+        "api/runner",
+        "builder-runner.py",
+        "v1.1",
+        "patch-mode",
+        "quick-fix",
+        "patch.php",
+        "decide.php"
+      ]
+    },
+    "memory:memory/2026-06-27.md:46:63": {
+      "key": "memory:memory/2026-06-27.md:46:63",
+      "path": "memory/2026-06-27.md",
+      "startLine": 46,
+      "endLine": 63,
+      "source": "memory",
+      "snippet": "- ✅ URL Shortener built end-to-end autonomously: https://agentrocketman.com/url-short/ (shorten, redirect, stats all working) - ✅ Total real spend: ~$4.30 (vs $10 budget cap) - ✅ Runner online & idle, polling every 15s - ✅ Approve/Reject buttons inline on Pipeline cards + Dashboard timeline - ✅ Timeline pills relabeled (waiting_approval/complete → \"View\", running → \"Running…\") - ✅ 11-column kanban with info icons (ⓘ) describing each agent ## Lessons Learned - **Airtable POST returns partial fields** — never trust the response shape; merge fields explicitly when chaining logic. - **`getNextStage` needs fallback** — pipelines vary per patch_mode; approving a stage outside the active pipeline",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "queryHashes": [
+        "e9c3edf34d1b"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "end-to-end",
+        "agentrocketman.com/url-short",
+        "4.30",
+        "approve/reject",
+        "waiting-approval/complete",
+        "11-column",
+        "patch-mode",
+        "url"
+      ]
+    },
+    "memory:memory/2026-06-15.md:74:101": {
+      "key": "memory:memory/2026-06-15.md:74:101",
+      "path": "memory/2026-06-15.md",
+      "startLine": 74,
+      "endLine": 101,
+      "source": "memory",
+      "snippet": "- Chris chose Option A: tax added at checkout (standard Canadian practice) - 13% HST rate for Ontario - Pricing cards show base prices, tax note added: \"Plus applicable taxes (13% HST added at checkout)\" - Checkout modal shows: Subtotal + HST + Total breakdown before payment - Stripe charges full amount (base + tax) - Confirmation email shows tax breakdown - All committed and deployed to https://agentrocketman.com ### Stripe Card Input Fix ✅ - Issue: Card fields wouldn't accept keyboard input on mobile - Root cause: Overly complex initialization + wrong container sizing (min-height vs fixed height) - Fix: Restored proven working stripe-integration.js, fixed container to `height:48px`, added",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:33:49.573Z",
+      "lastRecalledAt": "2026-07-07T13:33:49.573Z",
+      "queryHashes": [
+        "9ffaa17590d6"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "min-height",
+        "stripe-integration.js",
+        "chris",
+        "chose",
+        "option",
+        "tax",
+        "added"
+      ]
+    },
+    "memory:memory/2026-06-15.md:1:32": {
+      "key": "memory:memory/2026-06-15.md:1:32",
+      "path": "memory/2026-06-15.md",
+      "startLine": 1,
+      "endLine": 32,
+      "source": "memory",
+      "snippet": "# Daily Memory — 2026-06-15 ## Session Summary ### HST Tax Implementation (Option A) ✅ - Chris chose Option A: tax added at checkout (standard Canadian practice) - 13% HST rate for Ontario - Pricing cards show base prices, tax note added: \"Plus applicable taxes (13% HST added at checkout)\" - Checkout modal shows: Subtotal + HST + Total breakdown before payment - Stripe charges full amount (base + tax) - Confirmation email shows tax breakdown - All committed and deployed to https://agentrocketman.com ### Stripe Card Input Fix ✅ - Issue: Card fields wouldn't accept keyboard input on mobile - Root cause: Overly complex initialization + wrong container sizing (min-height vs fixed height) - Fi",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:33:49.573Z",
+      "lastRecalledAt": "2026-07-07T13:33:49.573Z",
+      "queryHashes": [
+        "9ffaa17590d6"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "min-height",
+        "summary",
+        "hst",
+        "tax",
+        "implementation",
+        "option",
+        "chris"
+      ]
+    },
+    "memory:memory/2026-06-18.md:29:71": {
+      "key": "memory:memory/2026-06-18.md:29:71",
+      "path": "memory/2026-06-18.md",
+      "startLine": 29,
+      "endLine": 71,
+      "source": "memory",
+      "snippet": "- 10 fake chat sessions created for testing (52 total messages, one per day) ### **Security** - ✅ OpenAI API key: **server-side only** (no exposure in client code) - ✅ Google Maps API key: **server-side only** (moved from client) - ✅ All external API calls go through secure PHP endpoints - ✅ CORS headers restrict to agentrocketman.com --- ## Street View Integration — IN PROGRESS 🚧 Started building property Street View preview: ### **Files Created** - `/api/maps-key.php` — Serves Google Maps API key from backend - `/streetview.js` — Reusable Street View module - `/index2.html` — New homepage with Street View (test version) - `/service_routing2.html` — New service routing with Street Vie",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:33:49.573Z",
+      "lastRecalledAt": "2026-07-07T13:33:49.573Z",
+      "queryHashes": [
+        "9ffaa17590d6"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "openai",
+        "server-side",
+        "agentrocketman.com",
+        "api/maps-key.php",
+        "streetview.js",
+        "index2.html",
+        "service-routing2.html",
+        "fake"
+      ]
+    },
+    "memory:memory/2026-06-18.md:60:112": {
+      "key": "memory:memory/2026-06-18.md:60:112",
+      "path": "memory/2026-06-18.md",
+      "startLine": 60,
+      "endLine": 112,
+      "source": "memory",
+      "snippet": "- Test with known Street View-covered addresses --- ## Other Updates ### **FAQ Reordering** ✅ - Sorted questions by customer journey (eligibility → details → operations → commitments → guarantees) - 6 questions total (last added: bin rollout timing) ### **Domain Transfer Discussion** - Recommended transferring getmybin.com from GoDaddy to Hostinger - Consolidates infrastructure (one vendor, one dashboard) - Reduces friction for DNS/email/SSL management --- ## Airtable Credentials (For Reference) - Base ID: `apptYNRJTXwItvied` - API Key: `patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd` - ChatLogs Table: `tblChatLogs` (or `tblatXRj8Ka7hyGyZ` — verify w",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:33:49.573Z",
+      "lastRecalledAt": "2026-07-07T13:33:49.573Z",
+      "queryHashes": [
+        "9ffaa17590d6"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "view-covered",
+        "getmybin.com",
+        "dns/email/ssl",
+        "test",
+        "known",
+        "street",
+        "view",
+        "covered"
+      ]
+    },
+    "memory:memory/2026-06-27.md:15:38": {
+      "key": "memory:memory/2026-06-27.md:15:38",
+      "path": "memory/2026-06-27.md",
+      "startLine": 15,
+      "endLine": 38,
+      "source": "memory",
+      "snippet": "- **Airtable as DB** — base `apptYNRJTXwItvied`. Tables: - MissionControl_Projects: `tblZDjRO5OSIqzmEY` - MissionControl_AgentStatus: `tblwlhJRTnuHzivlb` - MissionControl_Approvals: `tblr4Wex6GwRwz4WE` - **Stage tracking via `current_stage` text field** — legacy `status` singleSelect couldn't be extended via API. New text field accepts any stage string. - **Auto-approve toggles preset upfront** (Create/Detail modals), NOT per-card. Per-stage flags: `auto_scout`, `auto_code_auditor` (legacy name for code_reviewer), `auto_smoke_test`, `auto_security`, `auto_performance`. - **Patch modes**: `full`, `quick_fix`, `bug_fix`, `add_feature` — each has its own pipeline via `getPipelineStages()`",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T13:33:49.573Z",
+      "lastRecalledAt": "2026-07-07T13:33:49.573Z",
+      "queryHashes": [
+        "9ffaa17590d6"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "missioncontrol-projects",
+        "missioncontrol-agentstatus",
+        "missioncontrol-approvals",
+        "current-stage",
+        "auto-approve",
+        "create/detail",
+        "per-card",
+        "per-stage"
+      ]
+    },
+    "memory:memory/2026-06-19.md:179:213": {
+      "key": "memory:memory/2026-06-19.md:179:213",
+      "path": "memory/2026-06-19.md",
+      "startLine": 179,
+      "endLine": 213,
+      "source": "memory",
+      "snippet": "- Admin panel: https://agentrocketman.com/admin-panel.html - Service routing: https://agentrocketman.com/service-routing.html ## Latest Updates (Session 2) ### 5. Max Available Refund Logic ✅ - Booking $40, if Order 1 refunded $10 → max refund = $30 - Prevents over-refunding on partially refunded bookings - Displayed in refund summary card ### 6. Removed 48-Hour Refund Restriction ✅ - **Old behavior:** Orders within 48 hours couldn't be refunded - **New behavior:** All orders refundable, shows warning instead - Warning text: \"⚠️ This booking was placed more than 48 hours ago, but refund will still be processed as requested.\" - `hasOutdatedOrders` flag indicates when warning should display",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T14:53:14.560Z",
+      "lastRecalledAt": "2026-07-07T14:53:14.560Z",
+      "queryHashes": [
+        "e32968b29bae"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "over-refunding",
+        "48-hour",
+        "admin",
+        "panel",
+        "https",
+        "agentrocketman.com",
+        "panel.html",
+        "service"
+      ]
+    },
+    "memory:memory/2026-06-19.md:286:320": {
+      "key": "memory:memory/2026-06-19.md:286:320",
+      "path": "memory/2026-06-19.md",
+      "startLine": 286,
+      "endLine": 320,
+      "source": "memory",
+      "snippet": "- Added `gestureHandling: 'greedy'` to all Google Maps instances - Maps now scroll/pan with ONE finger instead of requiring two - Applied to: - Service routing page (service-routing.html) - Driver service routing page (service_routing2.html) - Order details Street View (order-details.html) ### 3. Granular Refund Controls ✅ - **Removed:** \"Actions\" section from order details page - **Added:** \"Refund Entire Booking\" button in Booking section - Refunds whole booking + cancels all orders - Processes Stripe refund automatically - **Added:** Individual \"🗑️ Refund\" buttons next to each order in Related Orders section - Refund just that specific order - Keep other orders active -",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T14:53:14.560Z",
+      "lastRecalledAt": "2026-07-07T14:53:14.560Z",
+      "queryHashes": [
+        "e32968b29bae"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "scroll/pan",
+        "service-routing.html",
+        "service-routing2.html",
+        "order-details.html",
+        "added",
+        "gesturehandling",
+        "greedy",
+        "all"
+      ]
+    },
+    "memory:memory/2026-06-19.md:150:188": {
+      "key": "memory:memory/2026-06-19.md:150:188",
+      "path": "memory/2026-06-19.md",
+      "startLine": 150,
+      "endLine": 188,
+      "source": "memory",
+      "snippet": "- Refunds whole booking + cancels all orders - Processes Stripe refund automatically - **Added:** Individual \"🗑️ Refund\" buttons next to each order in Related Orders section - Refund just that specific order - Keep other orders active - Requires manual Stripe refund (order-level) ### 4. Refund Amount Display ✅ - Created new endpoint: `/api/calculate-refund.php` - Calculates refund amount based on 48-hour Toronto cutoff - Returns breakdown: (total amount / total orders) × (orders beyond cutoff) - Handles both booking-level and order-level refunds - Cancellation summary card shows: - Large green refund amount display ($X.XX CAD) - Details: \"X out of Y dates beyond 48-hour",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T14:53:14.560Z",
+      "lastRecalledAt": "2026-07-07T14:53:14.560Z",
+      "queryHashes": [
+        "e32968b29bae"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "order-level",
+        "api/calculate-refund.php",
+        "48-hour",
+        "booking-level",
+        "x.xx",
+        "refunds",
+        "whole",
+        "booking"
+      ]
+    },
+    "memory:memory/2026-06-19.md:314:348": {
+      "key": "memory:memory/2026-06-19.md:314:348",
+      "path": "memory/2026-06-19.md",
+      "startLine": 314,
+      "endLine": 348,
+      "source": "memory",
+      "snippet": "- Booking $40, if Order 1 refunded $10 → max refund = $30 - Prevents over-refunding on partially refunded bookings - Displayed in refund summary card ### 6. Removed 48-Hour Refund Restriction ✅ - **Old behavior:** Orders within 48 hours couldn't be refunded - **New behavior:** All orders refundable, shows warning instead - Warning text: \"⚠️ This booking was placed more than 48 hours ago, but refund will still be processed as requested.\" - `hasOutdatedOrders` flag indicates when warning should display - Applied to both booking-level and order-level refunds ### 7. Error Message Fixes ✅ - Clear error messages when page loads - Clear error messages when refund calculation succeeds - Fixed Airt",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T14:53:14.560Z",
+      "lastRecalledAt": "2026-07-07T14:53:14.560Z",
+      "queryHashes": [
+        "e32968b29bae"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "over-refunding",
+        "48-hour",
+        "booking-level",
+        "order-level",
+        "booking",
+        "order",
+        "refunded",
+        "max"
       ]
     }
   }
