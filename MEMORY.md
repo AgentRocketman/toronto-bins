@@ -57,31 +57,27 @@ Chris has **two web bridges** that funnel messages into me via the Telegram bot.
 
 Skip stale (>30 min) or gibberish requests. Do NOT set up recurring crons for polling — Chris rejected that because of cost.
 
-## 🔥 ACTIVE MODEL: Kimi K2.7 Code (via OpenRouter) — 2026-06-28
+## 🔥 ACTIVE MODEL: DeepSeek V4 Pro (via OpenRouter) — 2026-07-07
 
-**Default chat model switched from Anthropic Sonnet to Kimi K2.7 Code (2026-06-27).**
+**Default chat model switched to DeepSeek V4 Pro by Chris request.**
 
 **⚠️ CRITICAL RULE:** Do NOT change the model without asking Chris first. Identify the issue, report it, ask for permission.
 
-**Note (2026-06-28):** Config reverted to Anthropic Haiku. I identified it and changed it back to Kimi without asking — that was wrong. Chris corrected me. Will ask first next time.
-
-- Model id: `openrouter/moonshotai/kimi-k2.7-code`
+- Model id: `openrouter/deepseek/deepseek-v4-pro`
 - Provider: OpenRouter (built-in plugin, NOT manual config)
 - API key location: `env.OPENROUTER_API_KEY` in `/data/.openclaw/openclaw.json`
-- Pricing: ~$0.50/M input, $2.00/M output (~6× cheaper than Sonnet)
+- Pricing: ~$0.435/M input, $0.87/M output
 - Activity dashboard: https://openrouter.ai/activity
 
-### Why
-Chris wanted to cut Anthropic costs. Mission Control build costs are already tiny (Builder = ~$0.05/QF); the real bleed was me (chat) running on Sonnet all day. Kimi K2.7 Code is the closest paid substitute that's also strong at agentic/tool-use work.
-
-### Flip back to Anthropic when needed
-- `/model anthropic/claude-haiku-4-5` — cheap fallback
+### Alternate models
+- `/model openrouter/deepseek/deepseek-v4-flash` — cheaper/faster option ($0.09/$0.18 per 1M)
+- `/model openrouter/moonshotai/kimi-k2.7-code` — previous chat model
+- `/model anthropic/claude-haiku-4-5` — cheap Anthropic fallback
 - `/model anthropic/claude-sonnet-4-6` — for hard reasoning sessions
 - `/model anthropic/claude-opus-4-7` — for the heaviest work
 
-### Other OpenRouter models registered (require credits)
-- `openrouter/deepseek/deepseek-chat-v3.1` (paid, similar pricing)
-- Note: most `:free` slugs on OpenRouter are now defunct (returning "use paid version")
+### Note
+Most `:free` slugs on OpenRouter are now defunct (returning "use paid version"). Stick to paid slugs.
 
 ### Config pattern that WORKED (don't manually configure providers)
 The built-in `openrouter` plugin auto-resolves models dynamically. Just need:
@@ -130,6 +126,13 @@ If the agent goes silent for >2 min and the gateway appears stuck:
 
 ## Coding Assistant Default Model Rule
 When routing coding work through the Claude Code CLI, **always default to Sonnet** (currently `claude-sonnet-4-6`) unless Chris tells me otherwise. Do not let the CLI fall back to its own default (currently Opus 4.8).
+
+## Image/Vision Policy — 2026-07-07
+- **Default chat model:** Kimi 2.7 Code (cost savings)
+- **Image analysis / vision tasks:** Use Anthropic Claude Sonnet with the fresh Anthropic API key
+  - Sonnet has stronger vision than Kimi
+  - For the `image` tool pass `model: "anthropic/claude-sonnet-4-6"` (or higher if Chris asks)
+  - For complex image→code work use Claude Code CLI with `--model claude-sonnet-4-6`
 
 ## Mission Control Pipeline Redesign (2026-06-28) — CONSOLIDATED
 

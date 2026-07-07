@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-07T14:53:14.560Z",
+  "updatedAt": "2026-07-07T17:44:39.615Z",
   "entries": {
     "memory:memory/2026-06-27.md:247:268": {
       "key": "memory:memory/2026-06-27.md:247:268",
@@ -106,15 +106,16 @@
       "endLine": 405,
       "source": "memory",
       "snippet": "- `api/agents/run.php`: removed `createApproval()`, replaced with `triggerNextStage()` for auto-cascade. Added simple verdict parsing to auto-iterate when `code_reviewer`, `security_auditor`, or `performance_auditor` outputs a rejecting verdict. - `api/agent-status/webhook.php`: auto-advances on Builder / async success; auto-iterates on failure via `mcAutoIterateOnFailure()`. - `api/projects/patch-functions.php`: added `MC_MAX_AUTO_ITERATIONS = 5`, `mcFindRootProjectId()`, `mcCountFamilyPatches()`, `mcAutoIterateOnFailure()`. - `api/projects/create.php` + `update.php`: removed all auto-approve flag writes (`auto_scout`, `auto_architect`, etc.) and `auto_deploy`. - `api/projects/get.php` + `d",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T03:46:55.039Z",
-      "lastRecalledAt": "2026-07-07T03:46:55.039Z",
+      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
       "queryHashes": [
-        "f8a7b28b6724"
+        "f8a7b28b6724",
+        "e4b3c2b183f8"
       ],
       "recallDays": [
         "2026-07-07"
@@ -168,18 +169,20 @@
       "endLine": 31,
       "source": "memory",
       "snippet": "# 2026-06-12 — Testing Infrastructure & CurbIn v2 ## Hostinger MCP Setup - **Status:** Connected via API token (JuxzmiZ7ml4AAfv8GtBg5IBelbva8ZDsfg0u2GMcfd5ffe1c) - **Plan purchased:** Business Web Hosting (annual, $203.88) - **Order ID:** 1009510349 - **Datacenter:** Boston (closest to Toronto) - **Domain:** agentrocketman.com (active, DNS configured) - **Email:** support@agentrocketman.com (username: Yuserbsme, password: AgentEmail1!) - **IMAP/SMTP:** imap.hostinger.com:993, smtp.hostinger.com:465 (TLS) - **Himalaya config:** ~/.config/himalaya/config.toml (ready but IMAP not yet activated by Hostinger backend) - **Website:** Still provisioning on Hostinger (API hasn't returned it yet, but",
-      "recallCount": 4,
+      "recallCount": 6,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 4,
+      "totalScore": 6,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T04:44:03.947Z",
-      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
       "queryHashes": [
         "4448bfbac301",
         "c28c6ad52629",
         "70380bd32bcd",
-        "4863b0ccfd56"
+        "4863b0ccfd56",
+        "7a949d74f8b3",
+        "cc373728c2cc"
       ],
       "recallDays": [
         "2026-07-07"
@@ -202,17 +205,18 @@
       "endLine": 81,
       "source": "memory",
       "snippet": "- Removed 1.6s mystery wait - Added instant \"Scrolling to your schedule...\" feedback with spinner - Uses `transitionend` event for smart timing - Fallback 1.6s timeout for robustness - Works consistently on first AND subsequent clicks 3. **Dynamic recurring info** — Text now updates reactively when switching service types (Opus fix) 4. **Accordion** — Collapsible \"Upcoming Schedule\" (started session) 5. **Pricing** — Fixed recurring \"Both\" service to show $11.90/event 6. **Autocomplete scroll** — Fixed first-click scroll behavior ### Final Status: - ✅ GitHub Pages live: https://agentrocketman.github.io/toronto-bins/ - ✅ All UX issues resolved - ✅ Badge, scroll, pricing, recur",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T04:44:03.947Z",
-      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "lastRecalledAt": "2026-07-07T17:44:39.615Z",
       "queryHashes": [
         "4448bfbac301",
         "c28c6ad52629",
-        "4863b0ccfd56"
+        "4863b0ccfd56",
+        "f91bb3ba8175"
       ],
       "recallDays": [
         "2026-07-07"
@@ -235,16 +239,17 @@
       "endLine": 83,
       "source": "memory",
       "snippet": "| Hostinger Email | support@agentrocketman.com | Yuserbsme | AgentEmail1! | Webmail works, IMAP pending | | GitHub | N/A | N/A | PAT provided (ghp_6e…IYim) | Pushed v2 successfully | ## Chris's Feedback Processed 1. Accordion approach preferred for schedule visibility ✅ 2. Recurring pricing bug caught and fixed ✅ 3. Autocomplete scroll timing fixed ✅ 4. v1 backup created for reference ✅",
-      "recallCount": 2,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T04:44:03.947Z",
-      "lastRecalledAt": "2026-07-07T04:44:11.833Z",
+      "lastRecalledAt": "2026-07-07T17:44:39.615Z",
       "queryHashes": [
         "4448bfbac301",
-        "c28c6ad52629"
+        "c28c6ad52629",
+        "f91bb3ba8175"
       ],
       "recallDays": [
         "2026-07-07"
@@ -333,15 +338,17 @@
       "endLine": 78,
       "source": "memory",
       "snippet": "2. Iframe loading blank: Fixed by removing srcdoc approach, using src consistently 3. Service routing auth: Updated to accept admin tokens 4. Dashboard CORS error: Created PHP proxy endpoint to fetch Airtable data ### What's NOT Persisted (Demo Mode): - Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Airtable 2. Add admin user management UI in admin panel 3. Add more analytics/metrics to dashboard 4. Security: Remove `setup-admins-table.php` after first run # Session Memory - 2026",
-      "recallCount": 1,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:22:48.782Z",
-      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
       "queryHashes": [
-        "70380bd32bcd"
+        "70380bd32bcd",
+        "7a949d74f8b3",
+        "cc373728c2cc"
       ],
       "recallDays": [
         "2026-07-07"
@@ -364,15 +371,17 @@
       "endLine": 34,
       "source": "memory",
       "snippet": "# Session Memory - 2026-06-19 ## Admin Panel System - COMPLETE ✅ ### Files Created: - `/admin-login.html` — Admin login form (email + password) - `/admin-panel.html` — Main admin panel with iframe navigation - `/admin/dashboard.html` — Orders dashboard with Chart.js graph - `/admin/change-password.html` — Password change form with strength indicator - `/api/admin-auth/login.php` — Login endpoint (Airtable) - `/api/admin-auth/verify.php` — Token verification - `/api/admin-auth/change-password.php` — Password update endpoint - `/api/admin-auth/setup-admins-table.php` — Setup script (run once) - `/api/admin-auth/create-admin.php` — Create new admin endpoint - `/api/get-dashboard-data.php` — D",
-      "recallCount": 1,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:22:48.782Z",
-      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
       "queryHashes": [
-        "70380bd32bcd"
+        "70380bd32bcd",
+        "7a949d74f8b3",
+        "cc373728c2cc"
       ],
       "recallDays": [
         "2026-07-07"
@@ -395,15 +404,17 @@
       "endLine": 103,
       "source": "memory",
       "snippet": "- `/api/admin-auth/change-password.php` — Password update endpoint - `/api/admin-auth/setup-admins-table.php` — Setup script (run once) - `/api/admin-auth/create-admin.php` — Create new admin endpoint - `/api/get-dashboard-data.php` — Dashboard data API (PHP proxy for Airtable) ### Airtable Integration: - **Table:** `Admins` (in base apptYNRJTXwItvied) - **Fields:** Email, Password, FirstName, LastName, Active, CreatedAt, LastPasswordChange - **Initial admin:** support@getmybin.com / GetMyBinAdmin2026! ### Admin Panel Features: 1. **Login page** — Email + password authentication with JWT tokens (7-day expiry) 2. **Navigation bar** (fixed top): - 📊 Dashboard (default) - 📍 Service Sc",
-      "recallCount": 1,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:22:48.782Z",
-      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
       "queryHashes": [
-        "70380bd32bcd"
+        "70380bd32bcd",
+        "7a949d74f8b3",
+        "cc373728c2cc"
       ],
       "recallDays": [
         "2026-07-07"
@@ -426,15 +437,17 @@
       "endLine": 237,
       "source": "memory",
       "snippet": "- Refund process now fully flexible - allows refunds regardless of date with warnings # Session Memory - 2026-06-19 ## Admin Panel System - COMPLETE ✅ ### Files Created: - `/admin-login.html` — Admin login form (email + password) - `/admin-panel.html` — Main admin panel with iframe navigation - `/admin/dashboard.html` — Orders dashboard with Chart.js graph (stacked bar) - `/admin/change-password.html` — Password change form with strength indicator - `/api/admin-auth/login.php` — Login endpoint (Airtable) - `/api/admin-auth/verify.php` — Token verification - `/api/admin-auth/change-password.php` — Password update endpoint - `/api/admin-auth/setup-admins-table.php` — Setup script (run once)",
-      "recallCount": 1,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:22:48.782Z",
-      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
       "queryHashes": [
-        "70380bd32bcd"
+        "70380bd32bcd",
+        "7a949d74f8b3",
+        "cc373728c2cc"
       ],
       "recallDays": [
         "2026-07-07"
@@ -457,15 +470,17 @@
       "endLine": 293,
       "source": "memory",
       "snippet": "- **Service routing auth:** Modified to accept either employee token OR admin token - **Password change:** Frontend validation + server-side verification via Airtable lookup ### Deployment Status: - ✅ All files deployed to agentrocketman.com - ✅ Admin login working - ✅ Dashboard graph showing completed + pending orders - ✅ Date range selection working - ✅ Refresh button loads new date range ### What's NOT Persisted (Demo Mode): - Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Ai",
-      "recallCount": 1,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:22:48.782Z",
-      "lastRecalledAt": "2026-07-07T06:22:48.782Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
       "queryHashes": [
-        "70380bd32bcd"
+        "70380bd32bcd",
+        "7a949d74f8b3",
+        "cc373728c2cc"
       ],
       "recallDays": [
         "2026-07-07"
@@ -612,15 +627,16 @@
       "endLine": 35,
       "source": "memory",
       "snippet": "- `index.html`, `style.css`, `app.js`, `manifest.json`, `sw.js` - Backend: `api/send.php`, `api/poll.php`, `api/media.php`, `api/config.php` (placeholder) - Press-and-hold mic records audio, sends to backend. - Backend will forward to a dedicated Telegram bot, I'll reply via Telegram, backend polls and plays reply. - Deployed to https://agentrocketman.com/assistant/. - Backend token placeholder is `__SET_ME__`; waiting for Chris to create a Telegram bot via @BotFather and provide the token. - Once token received, will add new Telegram channel to OpenClaw config and restart gateway. ## Next step - Receive Telegram bot token from Chris, configure, restart gateway, test end-to-end.",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:44:11.260Z",
-      "lastRecalledAt": "2026-07-07T06:44:11.260Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
       "queryHashes": [
-        "a5cefdaadcf9"
+        "a5cefdaadcf9",
+        "cc373728c2cc"
       ],
       "recallDays": [
         "2026-07-07"
@@ -706,15 +722,16 @@
       "endLine": 303,
       "source": "memory",
       "snippet": "**Fix applied:** Redeployed curbin-v2-final.html with ALL improvements intact. **Status:** Production restored to full feature set ✅ --- ## 2026-06-14 20:51 UTC — Pre-Compaction Flush ### Session Summary Worked on CurbIn homepage \"Save 34%\" badge placement issue: - User reported badge positioning differs from a previous version - Current CSS: `position:absolute;top:-10px;right:6px` on `.save-badge` class - Badge parent element (`.toggle-btn`) has `position:relative` for proper absolute positioning - Code review showed current styling matches deployed version (no recent changes to CSS) - Unable to determine desired positioning change without user clarification ### Current Homepage Status",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:53:12.805Z",
-      "lastRecalledAt": "2026-07-07T06:53:12.805Z",
+      "lastRecalledAt": "2026-07-07T17:44:39.615Z",
       "queryHashes": [
-        "e917bd1e5fdb"
+        "e917bd1e5fdb",
+        "f91bb3ba8175"
       ],
       "recallDays": [
         "2026-07-07"
@@ -1054,15 +1071,16 @@
       "endLine": 102,
       "source": "memory",
       "snippet": "- ✅ Email backend (server.js running on localhost:3001, SMTP working) - ✅ Airtable credentials & API integration (verified) - ✅ SPF/DMARC DNS records configured ## What Doesn't Work Yet - ❌ Dynamic Airtable order loading in service-routing.html - ❌ Date picker filtering - ❌ Real-time orders display ## Next Session Action Items 1. **Debug service-routing.html** - Check browser console for errors, verify Airtable API calls 2. **Rewrite dynamic section** - Either fix subagent code or build from scratch (recommend fresh build) 3. **Test thoroughly** - Before redeployment via Hostinger API 4. **Decision:** Keep dynamic version OR revert to hardcoded (ask user) ## Key Learning - **Deployment me",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T13:01:07.568Z",
-      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
       "queryHashes": [
-        "e9c3edf34d1b"
+        "e9c3edf34d1b",
+        "e4b3c2b183f8"
       ],
       "recallDays": [
         "2026-07-07"
@@ -1116,15 +1134,17 @@
       "endLine": 157,
       "source": "memory",
       "snippet": "- Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Airtable 2. Add admin user management UI in admin panel 3. Add more analytics/metrics to dashboard 4. Security: Remove `setup-admins-table.php` after first run # 2026-06-19 — Session Log ## Completed Features ### 1. Mobile Navigation Landscape Optimization ✅ - Added media query for landscape orientation (`@media (max-height: 500px) and (orientation: landscape)`) - Hamburger menu (☰) appears in landscape to save vertical space - Re",
-      "recallCount": 1,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T13:01:07.568Z",
-      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
       "queryHashes": [
-        "e9c3edf34d1b"
+        "e9c3edf34d1b",
+        "7a949d74f8b3",
+        "cc373728c2cc"
       ],
       "recallDays": [
         "2026-07-07"
@@ -1302,15 +1322,16 @@
       "endLine": 71,
       "source": "memory",
       "snippet": "- 10 fake chat sessions created for testing (52 total messages, one per day) ### **Security** - ✅ OpenAI API key: **server-side only** (no exposure in client code) - ✅ Google Maps API key: **server-side only** (moved from client) - ✅ All external API calls go through secure PHP endpoints - ✅ CORS headers restrict to agentrocketman.com --- ## Street View Integration — IN PROGRESS 🚧 Started building property Street View preview: ### **Files Created** - `/api/maps-key.php` — Serves Google Maps API key from backend - `/streetview.js` — Reusable Street View module - `/index2.html` — New homepage with Street View (test version) - `/service_routing2.html` — New service routing with Street Vie",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T13:33:49.573Z",
-      "lastRecalledAt": "2026-07-07T13:33:49.573Z",
+      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
       "queryHashes": [
-        "9ffaa17590d6"
+        "9ffaa17590d6",
+        "e4b3c2b183f8"
       ],
       "recallDays": [
         "2026-07-07"
@@ -1510,6 +1531,379 @@
         "order",
         "refunded",
         "max"
+      ]
+    },
+    "memory:memory/2026-06-18.md:1:38": {
+      "key": "memory:memory/2026-06-18.md:1:38",
+      "path": "memory/2026-06-18.md",
+      "startLine": 1,
+      "endLine": 38,
+      "source": "memory",
+      "snippet": "# Session Notes — 2026-06-18 ## Chat Analytics System — COMPLETE ✅ Built **comprehensive chat logging & analytics dashboard** for GetMyBin: ### **Backend Infrastructure** - `/api/config.php` — Centralized config (Airtable keys, OpenAI key, helpers) - `/api/log-chat.php` — Logs Q&A to Airtable ChatLogs table - `/api/summarize-chats.php` — Queries Airtable, summarizes via OpenAI server-side - `/api/chat.php` — **NEW** Handles chat messages securely (no exposed API key) ### **Frontend** - `/chat-logger.js` — Captures sessionId, timestamps, IP, browser, device - `/admin/chat_analytics.html` → **RENAMED TO** `/admin/chat_analytics.html` - Features: - Date range pickers (top) - Top 5 issue",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T16:34:11.553Z",
+      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
+      "queryHashes": [
+        "e4b3c2b183f8"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "openai",
+        "api/config.php",
+        "api/log-chat.php",
+        "api/summarize-chats.php",
+        "server-side",
+        "api/chat.php",
+        "chat-logger.js",
+        "admin/chat-analytics.html"
+      ]
+    },
+    "memory:memory/2026-06-14.md:191:221": {
+      "key": "memory:memory/2026-06-14.md:191:221",
+      "path": "memory/2026-06-14.md",
+      "startLine": 191,
+      "endLine": 221,
+      "source": "memory",
+      "snippet": "- **SSH deployment:** Unavailable from this environment - **Hostinger API deployment:** ✅ SUCCESS via `hostinger-api__hosting_deployStaticWebsite` - File: `/tmp/service-routing.tar.gz` - Deployed to: agentrocketman.com - Status: Upload accepted, deploy queued ## Service Routing Feature Status - NOT WORKING YET ⚠️ - **Issue:** Deployed file shows \"Service routing initialized with 8 stops\" (hardcoded fallback) - **Root cause:** Subagent-generated HTML contains BOTH dynamic + hardcoded code; falls back to hardcoded when dynamic fails - **Evidence:** No orders actually loaded from Airtable on test - **Blocker:** Dynamic code has bugs; needs proper debugging ## What Works - ✅ Hostinger A",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T16:34:11.553Z",
+      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
+      "queryHashes": [
+        "e4b3c2b183f8"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "hostinger-api",
+        "hosting-deploystaticwebsite",
+        "tmp/service-routing.tar.gz",
+        "agentrocketman.com",
+        "subagent-generated",
+        "ssh",
+        "deployment",
+        "unavailable"
+      ]
+    },
+    "memory:memory/2026-06-18.md:136:173": {
+      "key": "memory:memory/2026-06-18.md:136:173",
+      "path": "memory/2026-06-18.md",
+      "startLine": 136,
+      "endLine": 173,
+      "source": "memory",
+      "snippet": "- `/api/chat.php` — **NEW** Handles chat messages securely (no exposed API key) ### **Frontend** - `/chat-logger.js` — Captures sessionId, timestamps, IP, browser, device - `/admin/chat_analytics.html` → **RENAMED TO** `/admin/chat_analytics.html` - Features: - Date range pickers (top) - Top 5 issues summary (OpenAI-generated from selected date range) - Session count & message count stats - Harmonica sessions with full chat history (Q→A chronologically) - Only one harmonica open at a time - Sessions sorted chronologically - Combined label: \"Chat History / # Messages:\" ### **Airtable Integration** - Table: `ChatLogs` (tblChatLogs) — Not yet created in Airtable - Fields: sessio",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T16:34:11.553Z",
+      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
+      "queryHashes": [
+        "e4b3c2b183f8"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "openai",
+        "api/chat.php",
+        "chat-logger.js",
+        "admin/chat-analytics.html",
+        "openai-generated",
+        "api",
+        "chat.php",
+        "new"
+      ]
+    },
+    "memory:memory/2026-06-13.md:34:69": {
+      "key": "memory:memory/2026-06-13.md:34:69",
+      "path": "memory/2026-06-13.md",
+      "startLine": 34,
+      "endLine": 69,
+      "source": "memory",
+      "snippet": "- Checkbox completion → instant Airtable sync - Worker name tracking (localStorage + Airtable) - Date picker for service dates ### Airtable Records Created **6 total records synced:** - ro-1: 30 Woodbury Rd (Rollout) ✓ Complete - ro-2: 41 Foch Ave (Rollout) ✓ Complete - ri-1: 2020 Roncesvalles Ave (Roll-In) ✓ Complete - ri-2: 1 Bloor St E (Roll-In) ✓ Complete - Worker names: \"John Smith\", \"Sarah Anderson\" (localStorage) - Image URLs recorded for each stop ### Key Fixes Applied 1. **Airtable Base ID Correction:** `appCurbInServiceStops` → `apptYNRJTXwItvied` 2. **ServiceStops Table Creation:** Created via Airtable API with proper field types 3. **Date Format Options:** Configured for date f",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T16:34:11.553Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "queryHashes": [
+        "e4b3c2b183f8",
+        "cc373728c2cc"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "ro-1",
+        "ro-2",
+        "ri-1",
+        "roll-in",
+        "ri-2",
+        "checkbox",
+        "completion",
+        "instant"
+      ]
+    },
+    "memory:memory/2026-06-18.md:103:143": {
+      "key": "memory:memory/2026-06-18.md:103:143",
+      "path": "memory/2026-06-18.md",
+      "startLine": 103,
+      "endLine": 143,
+      "source": "memory",
+      "snippet": "geocoder.geocode({ address: formattedAddress }, ...) // undefined variable! // ✅ FIXED geocoder.geocode({ address: address }, ...) // use parameter ``` The code was trying to geocode an **undefined variable**, so geocoding always failed → \"address not found\" error → Street View never rendered. ### **Impact** - This was a typo/variable scoping bug introduced during last rewrite - Explains why every test address returned \"address not found\" regardless of validity - Single-line fix; now deployed ### **Verification Steps** User should now test at: https://agentrocketman.com/index2.html 1. Enter Toronto address (e.g., \"100 King St W, Toronto\") 2. Click \"Check my address\" 3. Scroll down → St",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T16:34:11.553Z",
+      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
+      "queryHashes": [
+        "e4b3c2b183f8"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "geocoder.geocode",
+        "typo/variable",
+        "single-line",
+        "agentrocketman.com/index2.html",
+        "e.g",
+        "address",
+        "formattedaddress",
+        "undefined"
+      ]
+    },
+    "memory:memory/2026-06-19.md:96:127": {
+      "key": "memory:memory/2026-06-19.md:96:127",
+      "path": "memory/2026-06-19.md",
+      "startLine": 96,
+      "endLine": 127,
+      "source": "memory",
+      "snippet": "4. **Content area** — Full-height iframe below header that loads selected pages 5. **Active button styling** — White button with green text when selected ### Dashboard API (`/api/get-dashboard-data.php`): - Fetches all Bookings from Airtable - Returns `chartCompletedCounts` and `chartPendingCounts` arrays - Separates orders by status (Completed vs Pending) - Filters by date range (From/To) - Returns stats: totalOrders, completedOrders, pendingOrders, avgOrders ### Key Implementation Details: - **Auth flow:** Login → JWT token stored in localStorage → Token verified on page load - **Iframe loading:** Uses `frame.src` consistently (removed srcdoc to avoid iframe \"locking\") - **Dashboard data",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T17:14:49.583Z",
+      "lastRecalledAt": "2026-07-07T17:14:49.583Z",
+      "queryHashes": [
+        "7a949d74f8b3"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "full-height",
+        "api/get-dashboard-data.php",
+        "from/to",
+        "frame.src",
+        "content",
+        "area",
+        "full",
+        "height"
+      ]
+    },
+    "memory:memory/2026-06-13.md:63:105": {
+      "key": "memory:memory/2026-06-13.md:63:105",
+      "path": "memory/2026-06-13.md",
+      "startLine": 63,
+      "endLine": 105,
+      "source": "memory",
+      "snippet": "### Credentials & Configuration - **Airtable API Token:** patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd - **Airtable Base:** \"Curbin\" (apptYNRJTXwItvied) - **ServiceStops Table:** tbl7r5OBk0L7Epnro - **Google Maps API:** AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI - **Server:** PHP 8.3.30, Apache 2.4, cURL enabled ### Architecture Decisions - **PHP over Node.js** — Hostinger shared hosting limitation - **Embedded credentials** — Simpler for shared hosting (no .env support) - **Haversine distance** — Local calculation, no API cost - **CORS via .htaccess** — Works on all Apache versions - **localStorage** — Worker name persistence across sessions ### Document",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "queryHashes": [
+        "cc373728c2cc"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "8.3.30",
+        "2.4",
+        "node.js",
+        "credentials",
+        "configuration",
+        "airtable",
+        "api",
+        "token"
+      ]
+    },
+    "memory:memory/2026-06-13.md:200:241": {
+      "key": "memory:memory/2026-06-13.md:200:241",
+      "path": "memory/2026-06-13.md",
+      "startLine": 200,
+      "endLine": 241,
+      "source": "memory",
+      "snippet": "- 06:34 UTC — Archive packaged and uploaded to Hostinger - 06:40 UTC — Health check passing, PHP 8.3 confirmed - 06:40 UTC — Discovered base ID mismatch - 16:26 UTC — Airtable base ID corrected, ServiceStops table created - 16:27 UTC — Full end-to-end testing completed - All tests passing, production ready ### Credentials & Configuration - **Airtable API Token:** patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd - **Airtable Base:** \"Curbin\" (apptYNRJTXwItvied) - **ServiceStops Table:** tbl7r5OBk0L7Epnro - **Google Maps API:** AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI - **Server:** PHP 8.3.30, Apache 2.4, cURL enabled ### Architecture Decisions - **PHP over N",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "queryHashes": [
+        "cc373728c2cc"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "8.3",
+        "end-to-end",
+        "8.3.30",
+        "2.4",
+        "utc",
+        "archive",
+        "packaged",
+        "uploaded"
+      ]
+    },
+    "memory:memory/2026-06-13.md:403:438": {
+      "key": "memory:memory/2026-06-13.md:403:438",
+      "path": "memory/2026-06-13.md",
+      "startLine": 403,
+      "endLine": 438,
+      "source": "memory",
+      "snippet": "3. **Date Format Options:** Configured for date field schema validation 4. **Checkbox Options:** Added icon + color to checkbox field definition 5. **API URLs Updated:** PHP files deployed with correct base ID ### Deployment Timeline - 06:31 UTC — PHP API files created - 06:34 UTC — Archive packaged and uploaded to Hostinger - 06:40 UTC — Health check passing, PHP 8.3 confirmed - 06:40 UTC — Discovered base ID mismatch - 16:26 UTC — Airtable base ID corrected, ServiceStops table created - 16:27 UTC — Full end-to-end testing completed - All tests passing, production ready ### Credentials & Configuration - **Airtable API Token:** patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "queryHashes": [
+        "cc373728c2cc"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "8.3",
+        "end-to-end",
+        "date",
+        "format",
+        "options",
+        "configured",
+        "field",
+        "schema"
+      ]
+    },
+    "memory:memory/2026-06-13.md:172:207": {
+      "key": "memory:memory/2026-06-13.md:172:207",
+      "path": "memory/2026-06-13.md",
+      "startLine": 172,
+      "endLine": 207,
+      "source": "memory",
+      "snippet": "| Frontend→API→Airtable | ✅ | Full E2E: checkbox → sync → Airtable ✓ | | Health Check | ✅ | PHP 8.3, cURL enabled, bin-pics writable | ### Frontend Integration Status - Service routing page: https://agentrocketman.com/service-routing.html ✅ - All 8 Toronto addresses on map - Checkbox completion → instant Airtable sync - Worker name tracking (localStorage + Airtable) - Date picker for service dates ### Airtable Records Created **6 total records synced:** - ro-1: 30 Woodbury Rd (Rollout) ✓ Complete - ro-2: 41 Foch Ave (Rollout) ✓ Complete - ri-1: 2020 Roncesvalles Ave (Roll-In) ✓ Complete - ri-2: 1 Bloor St E (Roll-In) ✓ Complete - Worker names: \"John Smith\", \"Sarah Anderson\" (localStorage)",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "queryHashes": [
+        "cc373728c2cc"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "8.3",
+        "bin-pics",
+        "ro-1",
+        "ro-2",
+        "ri-1",
+        "roll-in",
+        "ri-2",
+        "frontend"
+      ]
+    },
+    "memory:memory/2026-06-12.md:26:54": {
+      "key": "memory:memory/2026-06-12.md:26:54",
+      "path": "memory/2026-06-12.md",
+      "startLine": 26,
+      "endLine": 54,
+      "source": "memory",
+      "snippet": "### 2. Fixed Recurring Pricing for \"Both\" Service Type - **Bug:** When user selected \"Both\" (Roll Out + Roll In) + Recurring, price showed only $5.95/event - **Fix:** Now correctly shows $11.90/event ($5.95 + $5.95) - Applied fix in two places: - `buildRecurringInfo()` — description text - `updateTotal()` — final total display - **Calculation:** `PRICE_RECURRING * serviceMultiplier` (multiplier = 2 for \"Both\", 1 for others) ### 3. Fixed Autocomplete Scroll Timing Issue - **Bug:** First time user clicks autocomplete address, page scrolls to pricing section instead of green address bar - **Root cause:** Page was scrolling to booking-section before DOM fully rendered with data - **Fix:** A",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T17:44:39.615Z",
+      "lastRecalledAt": "2026-07-07T17:44:39.615Z",
+      "queryHashes": [
+        "f91bb3ba8175"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "5.95/event",
+        "11.90/event",
+        "5.95",
+        "price-recurring",
+        "booking-section",
+        "fixed",
+        "recurring",
+        "pricing"
+      ]
+    },
+    "memory:memory/2026-06-14.md:432:450": {
+      "key": "memory:memory/2026-06-14.md:432:450",
+      "path": "memory/2026-06-14.md",
+      "startLine": 432,
+      "endLine": 450,
+      "source": "memory",
+      "snippet": "- `/data/.openclaw/workspace/public_html/` is source of truth for all production files - ALWAYS deploy full folder — never partial deploys (partial archives wipe other files on server) --- ## Files in public_html/ (as of end of session) - `index.html` — homepage with accordion, Save 34% badge, /week pricing; Stripe payment fixes - `service-routing.html` — Airtable integration + email + status update + thumbnail loading - `stripe-integration.js` — individual card elements + disableLink: true + explicit unmount() - `api/health.php`, `api/upload.php`, `api/save-service.php`, `api/services.php`, `api/optimize-route.php`, `api/send-email.php` - `airtable-bookings.js`, `email-service.js`, `logo.",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-07T17:44:39.615Z",
+      "lastRecalledAt": "2026-07-07T17:44:39.615Z",
+      "queryHashes": [
+        "f91bb3ba8175"
+      ],
+      "recallDays": [
+        "2026-07-07"
+      ],
+      "conceptTags": [
+        "openclaw/workspace/public-html",
+        "public-html",
+        "index.html",
+        "service-routing.html",
+        "stripe-integration.js",
+        "api/health.php",
+        "api/upload.php",
+        "api/save-service.php"
       ]
     }
   }
