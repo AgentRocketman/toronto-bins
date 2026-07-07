@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="icon" type="image/png" href="/img/getmybin-icon.png">
+  <link rel="shortcut icon" href="/img/getmybin-icon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <title>GetMyBin — Toronto Bin Collection Service</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --green:#71b80c;--green-dark:#5a9109;--green-light:#d4f3a8;--green-xlight:#f7fce3;
+      --teal:#0d9488;--teal-dark:#0f766e;
+      --slate:#334155;--slate-light:#64748b;--slate-xlight:#f1f5f9;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.08);
+      --shadow-lg:0 12px 40px rgba(0,0,0,.12);--shadow-xl:0 20px 60px rgba(0,0,0,.15);
+      --radius:16px;--radius-sm:10px;--radius-lg:24px
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--slate);line-height:1.6;overflow-x:hidden}
+    body.modal-open{overflow:hidden}
+
+    /* ===== NAV ===== */
+    nav{
+      position:sticky;top:0;z-index:200;background:rgba(255,255,255,.92);
+      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(0,0,0,.06);width:100%;
+    }
+    .nav-inner{
+      max-width:1280px;margin:0 auto;display:flex;align-items:center;
+      justify-content:space-between;height:72px;padding:0 32px;gap:16px;
+    }
+    .nav-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0;height:100%}
+    .nav-logo img{height:40px;width:auto;object-fit:contain;display:block}
+    .nav-links{display:flex;align-items:center;gap:36px;list-style:none;margin:0;padding:0}
+    .nav-links a{color:var(--slate);text-decoration:none;font-size:.93rem;font-weight:600;transition:color .2s;white-space:nowrap;padding:8px 0}
+    .nav-links a:hover{color:var(--green)}
+    .nav-cta{
+      background:var(--green);color:#fff;padding:10px 28px;border-radius:99px;
+      font-weight:700;font-size:.9rem;transition:all .2s;box-shadow:0 2px 8px rgba(113,184,12,.25);
+    }
+    .nav-cta:hover{background:var(--green-dark);color:#fff;transform:translateY(-1px);box-shadow:0 4px 16px rgba(113,184,12,.35)}
+
+    @media (max-width:767px){
+      .nav-inner{padding:0 16px;height:60px;gap:8px}
+      .nav-logo img{height:32px}
+      .nav-links{gap:16px}
+      .nav-links a{font-size:.82rem}
+      .nav-cta{padding:8px 22px;font-size:.82rem}
+    }
+
+    /* ===== HERO — video-forward, two-column ===== */
+    .hero{
+      position:relative;overflow:hidden;
+      background:linear-gradient(170deg,#f8fdf5 0%,#f0fdfa 40%,#ecfeff 100%);
+      padding:5rem 2rem 6rem;
+    }
+    .hero::before{
+      content:'';position:absolute;top:-120px;right:-80px;
+      width:500px;height:500px;border-radius:50%;
+      background:radial-gradient(circle,rgba(113,184,12,.08) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .hero::after{
+      content:'';position:absolute;bottom:-60px;left:-40px;
+      width:300px;height:300px;border-radius:50%;
+      background:radial-gradient(circle,rgba(13,148,136,.06) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .hero-inner{
+      position:relative;z-index:1;
+      max-width:1280px;margin:0 auto;
+      display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;
+    }
+    .hero-text{max-width:560px}
+    .hero-badge{
+      display:inline-block;background:var(--green-xlight);border:1px solid var(--green-light);
+      color:var(--green-dark);font-size:.72rem;font-weight:800;letter-spacing:.1em;
+      text-transform:uppercase;padding:6px 14px;border-radius:99px;margin-bottom:1.4rem;
+    }
+    .hero h1{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:900;color:#0f172a;letter-spacing:-1.5px;line-height:1.08;margin-bottom:1rem}
+    .hero h1 em{background:linear-gradient(135deg,var(--green),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal}
+    .hero-sub{font-size:clamp(.95rem,2vw,1.1rem);color:var(--slate-light);max-width:460px;margin-bottom:2.2rem;line-height:1.65}
+    .hero-rating{display:flex;align-items:center;gap:10px;margin-top:1.4rem;flex-wrap:wrap}
+    .hero-rating-stars{color:#f59e0b;font-size:1rem;letter-spacing:1px}
+    .hero-rating-text{color:var(--slate-light);font-size:.84rem}
+    .hero-rating-divider{color:#cbd5e0}
+
+    /* Hero search */
+    .hero-search-wrap{position:relative}
+    .hero-search-box{background:#fff;border-radius:18px;box-shadow:var(--shadow-lg);position:relative;overflow:visible;border:1px solid #e2e8f0}
+    .hero-search-inner{display:flex;align-items:center;padding:8px 8px 8px 18px;gap:10px}
+    .hero-search-icon{color:#94a3b8;flex-shrink:0;display:flex;align-items:center}
+    #address{flex:1;border:none;outline:none;font-size:1rem;color:var(--slate);background:transparent;padding:11px 0;min-width:0}
+    #address::placeholder{color:#94a3b8}
+    .hero-search-btn{
+      background:var(--green);color:#fff;border:none;border-radius:12px;
+      padding:14px 24px;font-weight:800;font-size:.92rem;cursor:pointer;
+      white-space:nowrap;flex-shrink:0;transition:all .2s;
+    }
+    .hero-search-btn:hover{background:var(--green-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(113,184,12,.3)}
+    .hero-note{margin-top:.9rem;color:var(--slate-light);font-size:.8rem}
+
+    /* Hero video card */
+    .hero-video-wrap{position:relative}
+    .hero-video-card{
+      position:relative;border-radius:var(--radius-lg);overflow:hidden;
+      box-shadow:var(--shadow-xl);background:#000;
+      border:3px solid rgba(255,255,255,.8);
+    }
+    .hero-video-card video{display:block;width:100%;height:auto;object-fit:cover;aspect-ratio:16/9}
+    .hero-video-card::after{
+      content:'';position:absolute;inset:0;pointer-events:none;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);
+      border-radius:var(--radius-lg);
+    }
+    .hero-video-dot{
+      position:absolute;top:-12px;right:-12px;z-index:2;
+      background:var(--green);color:#fff;font-size:.68rem;font-weight:800;
+      padding:5px 12px;border-radius:99px;box-shadow:var(--shadow-md);
+      letter-spacing:.05em;text-transform:uppercase;
+    }
+    .hero-video-shimmer{
+      position:absolute;top:-40px;left:-40px;width:80px;height:80px;
+      border-radius:16px;background:linear-gradient(135deg,rgba(113,184,12,.12),rgba(13,148,136,.12));
+      pointer-events:none;z-index:0;transform:rotate(12deg);
+    }
+
+    .suggestions{
+      position:absolute;left:0;right:0;background:#fff;border:1px solid #e2e8f0;
+      border-radius:14px;box-shadow:var(--shadow-lg);z-index:9999;display:none;
+      max-height:280px;overflow-y:auto;margin-top:4px;
+    }
+    .suggestions.show{display:block}
+    .suggestion-item{
+      padding:12px 18px;cursor:pointer;font-size:.93rem;color:#2d3748;
+      border-bottom:1px solid #f7fafc;transition:background .12s;text-align:left;
+    }
+    .suggestion-item:last-child{border-bottom:none}
+    .suggestion-item:hover,.suggestion-item.active{background:var(--green-xlight);color:var(--green-dark)}
+    #hero-loading{display:none;margin-top:1rem;color:var(--slate-light);font-size:.9rem;font-weight:500}
+    .spinner-sm{display:inline-block;width:16px;height:16px;border:2px solid #e2e8f0;border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+    #hero-error{display:none;margin-top:1rem;padding:12px 18px;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:12px;font-size:.9rem;text-align:center}
+
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Mobile hero */
+    @media (max-width:900px){
+      .hero{padding:3rem 1.5rem 4rem}
+      .hero-inner{grid-template-columns:1fr;gap:2.5rem}
+      .hero-text{max-width:100%;text-align:center;margin:0 auto}
+      .hero-video-wrap{order:-1;max-width:100%}
+      .hero-search-wrap{margin:0 auto}
+      .hero-sub{margin-left:auto;margin-right:auto}
+      .hero-rating{justify-content:center}
+    }
+    @media (max-width:600px){
+      .hero{padding:2rem 1rem 3rem}
+      .hero-search-inner{flex-wrap:wrap;padding:10px}
+      .hero-search-btn{width:100%;text-align:center;border-radius:10px}
+      .hero h1{letter-spacing:-1px}
+      .hero-video-dot{top:-8px;right:-8px;font-size:.62rem;padding:4px 10px}
+    }
+
+    /* ===== SECTIONS ===== */
+    section{padding:5rem 2rem}
+    .section-inner{max-width:1080px;margin:0 auto}
+    .section-eyebrow{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--green);margin-bottom:.5rem}
+    .section-title{font-size:clamp(1.6rem,4vw,2.3rem);font-weight:900;color:#0f172a;letter-spacing:-.5px;margin-bottom:.8rem}
+    .section-desc{color:var(--slate-light);font-size:1.02rem;max-width:520px}
+
+    /* HOW IT WORKS */
+    #how{background:var(--slate-xlight)}
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2.5rem}
+    .step-card{
+      background:#fff;border-radius:var(--radius);padding:2rem 1.8rem;
+      box-shadow:var(--shadow-sm);border:1px solid #e8ecf1;
+      position:relative;transition:all .25s;
+    }
+    .step-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px);border-color:var(--green-light)}
+    .step-num{position:absolute;top:1rem;right:1.4rem;font-size:3.8rem;font-weight:900;color:var(--green-xlight);line-height:1}
+    .step-icon{font-size:2.4rem;margin-bottom:1rem;display:inline-block;background:var(--green-xlight);width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+    .step-card h3{font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:.4rem}
+    .step-card p{color:var(--slate-light);font-size:.9rem;line-height:1.6}
+
+    /* REVIEWS */
+    #reviews{background:linear-gradient(180deg,#f0fdfa 0%,#fff 100%)}
+    .reviews-eyebrow{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--green);margin-bottom:.4rem;text-align:center}
+    .reviews-title{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:900;color:#0f172a;letter-spacing:-.4px;text-align:center;margin-bottom:2.5rem}
+    .reviews-carousel{max-width:680px;margin:0 auto;--swiper-theme-color:#71b80c;padding-bottom:50px;cursor:pointer}
+    .swiper-slide{display:flex;align-items:center;justify-content:center}
+    .review-slide{width:100%}
+    .swiper-pagination{bottom:0;position:relative;display:flex;justify-content:center;gap:6px;padding-top:1.4rem}
+    .swiper-pagination-bullet{width:8px;height:8px;border-radius:50%;background:var(--slate-light);opacity:.3;margin:0;cursor:pointer;transition:all .3s}
+    .swiper-pagination-bullet.swiper-pagination-bullet-active{background:var(--green);opacity:1}
+    .review-card{
+      background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);
+      padding:2rem 2.2rem;border:1px solid #e8ecf1;position:relative;
+    }
+    .review-stars{color:#f59e0b;font-size:1.3rem;letter-spacing:2px;margin-bottom:1rem}
+    .review-text{font-size:1.05rem;color:#334155;line-height:1.7;font-style:italic;margin-bottom:1.2rem}
+    .review-author{font-size:.88rem;font-weight:700;color:#0f172a}
+
+    /* PRICING */
+    #pricing{background:#fff}
+    .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:2.5rem}
+    .price-card{
+      border-radius:var(--radius);padding:2.2rem;border:2px solid #e2e8f0;
+      background:#fff;position:relative;transition:all .25s;
+    }
+    .price-card:hover{box-shadow:var(--shadow-lg);border-color:#cbd5e0}
+    .price-card.featured{
+      border-color:var(--green);box-shadow:0 0 0 5px rgba(113,184,12,.08);
+      background:linear-gradient(180deg,#fff 0%,var(--green-xlight) 100%);
+    }
+    .price-badge{
+      position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+      background:linear-gradient(135deg,var(--green),var(--green-dark));
+      color:#fff;font-size:.7rem;font-weight:800;letter-spacing:.08em;
+      text-transform:uppercase;padding:5px 16px;border-radius:99px;white-space:nowrap;
+      box-shadow:0 2px 8px rgba(113,184,12,.3);
+    }
+    .price-name{font-size:1.2rem;font-weight:800;color:#0f172a;margin-bottom:.25rem}
+    .price-amount{font-size:2.8rem;font-weight:900;color:var(--green);line-height:1.05;letter-spacing:-1px}
+    .price-unit{font-size:.82rem;color:var(--slate-light);margin-bottom:.3rem}
+    .price-tagline{font-size:.85rem;color:var(--slate-light);font-style:italic;margin-bottom:1.3rem}
+    .price-features{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+    .price-features li{display:flex;align-items:center;gap:9px;font-size:.89rem;color:var(--slate)}
+    .price-features li::before{content:"✓";color:var(--green);font-weight:800;font-size:.82rem;flex-shrink:0}
+    .pricing-note{margin-top:1.8rem;text-align:center;font-size:.82rem;color:var(--slate-light)}
+    .pricing-note strong{color:var(--slate)}
+    .tax-note{margin-top:.8rem;text-align:center;font-size:.76rem;color:var(--slate-light);font-style:italic}
+
+    /* FAQ */
+    #faq{background:var(--slate-xlight)}
+    .faq-list{max-width:760px;margin:2.5rem auto 0;display:flex;flex-direction:column;gap:10px}
+    .faq-item{border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;background:#fff;transition:box-shadow .2s}
+    .faq-item:hover{box-shadow:var(--shadow-sm)}
+    .faq-q{width:100%;background:none;border:none;text-align:left;padding:1.1rem 1.5rem;font-size:1rem;font-weight:700;color:#0f172a;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;line-height:1.4}
+    .faq-q:hover{background:#f8fafc}
+    .faq-chevron{flex-shrink:0;color:var(--green);font-size:1.3rem;transition:transform .25s;font-weight:300}
+    .faq-item.open .faq-chevron{transform:rotate(45deg)}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease;padding:0 1.5rem}
+    .faq-item.open .faq-a{max-height:300px;padding:0 1.5rem 1.3rem}
+    .faq-a p{margin:0;color:var(--slate-light);font-size:.95rem;line-height:1.7}
+    .faq-a a{color:var(--teal);font-weight:600;text-decoration:underline}
+
+    /* GUARANTEE */
+    #guarantee{
+      background:linear-gradient(135deg,var(--teal-dark),var(--teal));
+      padding:2.5rem 2rem;text-align:center;
+    }
+    .guarantee-inner{max-width:700px;margin:0 auto}
+    .guarantee-icon{font-size:2.2rem;margin-bottom:.6rem}
+    .guarantee-title{font-size:1.15rem;font-weight:900;color:#fff;margin-bottom:.5rem}
+    .guarantee-text{font-size:.92rem;color:rgba(255,255,255,.85);line-height:1.7;max-width:560px;margin:0 auto}
+    .guarantee-text strong{color:#a7f3d0}
+
+    /* BOOKING SECTION — hidden until address confirmed */
+    #booking-section{overflow:hidden;max-height:0;opacity:0;transition:max-height 1.5s cubic-bezier(.4,0,.2,1),opacity .7s ease .15s;background:#fff}
+    #booking-section.revealed{max-height:6000px;opacity:1}
+    .booking-inner{max-width:860px;margin:0 auto;padding:5rem 2rem}
+    .address-confirmed{
+      background:linear-gradient(135deg,var(--green-dark),var(--green));
+      border-radius:var(--radius);padding:1.5rem 1.8rem;color:#fff;margin-bottom:2.5rem;
+      display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+      box-shadow:0 6px 24px rgba(113,184,12,.25);
+    }
+    .ac-icon{font-size:2rem;flex-shrink:0}
+    .ac-text{flex:1;min-width:0}
+    .ac-address{font-size:1.05rem;font-weight:800;margin-bottom:2px}
+    .ac-day{font-size:.88rem;opacity:.85}
+    .ac-change{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.78rem;font-weight:700;padding:7px 15px;border-radius:99px;cursor:pointer;transition:background .15s;white-space:nowrap;flex-shrink:0}
+    .ac-change:hover{background:rgba(255,255,255,.3)}
+
+    .next-pickup{background:linear-gradient(135deg,#f0fdf9,#e6fffa);border:1px solid #b2f5ea;border-radius:var(--radius);padding:1.2rem 1.5rem;margin-bottom:1.4rem}
+    .next-pickup-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--green-dark);margin-bottom:5px}
+    .next-date{font-size:1.15rem;font-weight:800;color:#0f172a;margin-bottom:8px}
+    .bin-tags{display:flex;flex-wrap:wrap;gap:6px}
+    .bin-tag{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:99px;font-size:.78rem;font-weight:700;color:#fff}
+    .bin-tag.green-bin{background:#38a169}
+    .bin-tag.garbage{background:#4a5568}
+    .bin-tag.recycling{background:#3182ce}
+    .bin-tag.yard-waste{background:#d69e2e}
+    .bin-tag.christmas-tree{background:#e53e3e}
+
+    .calendar-section h4{font-size:.88rem;font-weight:700;color:var(--slate);margin-bottom:8px}
+    .week-row{display:grid;grid-template-columns:1fr repeat(5,42px);gap:2px;align-items:center;padding:7px 10px;border-radius:8px;font-size:.83rem}
+    .week-row:nth-child(even){background:#f8fafc}
+    .week-row.header{font-weight:700;color:var(--slate-light);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;background:none;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:4px}
+    .week-row .date-col{font-weight:500;color:var(--slate)}
+    .week-row .icon-col{text-align:center}
+    .week-row.today-row{background:var(--green-xlight);border:2px solid var(--green);font-weight:700}
+    .week-row.past-row{opacity:.38}
+    .check{color:#38a169;font-weight:800}
+    .no-check{color:#cbd5e0}
+    .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;padding:10px 14px;background:#f8fafc;border-radius:10px;font-size:.76rem;color:var(--slate-light)}
+    .legend-item{display:flex;align-items:center;gap:5px}
+    .legend-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0}
+
+    .schedule-accordion{margin-bottom:1.5rem}
+    .accordion-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 16px;background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;font-weight:700;color:var(--slate);transition:all .15s;user-select:none;width:100%}
+    .accordion-header:hover{background:#ecf2f6;border-color:var(--green-light)}
+    .accordion-chevron{display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;transition:transform .3s cubic-bezier(.4,0,.2,1);flex-shrink:0;margin-left:10px}
+    .schedule-accordion.open .accordion-chevron{transform:rotate(180deg)}
+    .accordion-content{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}
+    .schedule-accordion.open .accordion-content{max-height:2000px}
+    .accordion-inner{padding:16px 0;border-top:2px solid #e2e8f0;margin-top:0}
+
+    #service-section{margin-top:2rem}
+    .divider{border:none;border-top:2px solid #e2e8f0;margin:2rem 0 1.5rem}
+    .subsection-title,.service-title{font-size:1.08rem;font-weight:800;color:#0f172a;margin-bottom:1.1rem}
+    .toggle-group{display:flex;border:2px solid #e2e8f0;border-radius:12px;overflow:visible;width:fit-content;position:relative}
+    .toggle-btn{padding:10px 22px;background:#fff;border:none;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--slate-light);transition:all .15s;border-right:2px solid #e2e8f0;position:relative}
+    .toggle-btn:last-child{border-right:none}
+    .toggle-btn.active{background:var(--green);color:#fff}
+    .toggle-btn:hover:not(.active){background:var(--green-xlight);color:var(--green-dark)}
+    .save-badge{position:absolute;top:-8px;right:-55px;background:#d4af37;color:#0f172a;font-size:.65rem;font-weight:900;padding:3px 8px;border-radius:12px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;z-index:10}
+    .options-row{display:flex;gap:2rem;flex-wrap:wrap;margin-top:1.2rem}
+    .options-col{min-width:180px}
+    .options-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-light);margin-bottom:8px}
+
+    #adhoc-dates{display:none;margin-top:1.5rem}
+    #adhoc-dates h4{font-size:.88rem;font-weight:700;color:var(--slate);margin-bottom:10px}
+    .date-cards{display:flex;flex-wrap:wrap;gap:8px}
+    .date-card{border:2px solid #e2e8f0;border-radius:12px;padding:10px 14px;cursor:pointer;text-align:center;transition:all .15s;min-width:90px;background:#fff}
+    .date-card:hover{border-color:var(--green);background:var(--green-xlight)}
+    .date-card.selected{border-color:var(--green);background:var(--green);color:#fff}
+    .date-card.cutoff{cursor:not-allowed;opacity:.55;border-color:#e2e8f0;background:#f8fafc}
+    .date-card.cutoff:hover{border-color:#e2e8f0;background:#f8fafc}
+    .dc-cutoff{font-size:.62rem;color:#94a3b8;margin-top:3px;line-height:1.2}
+    .dc-month{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
+    .dc-day{font-size:1.05rem;font-weight:900;line-height:1.2;margin:2px 0}
+    .dc-weekday{font-size:.68rem;opacity:.6;margin-bottom:6px}
+    .dc-dots{display:flex;justify-content:center;gap:3px;flex-wrap:wrap;min-height:10px}
+    .dc-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+
+    #recurring-info{display:none;margin-top:1.5rem}
+    .recurring-box{background:var(--green-xlight);border:1px solid #b2f5ea;border-radius:var(--radius);padding:1.2rem 1.5rem}
+    .recurring-box h4{font-size:.95rem;font-weight:800;color:var(--green-dark);margin-bottom:6px}
+    .recurring-box p{font-size:.88rem;color:var(--slate)}
+    .recurring-monthly{margin-top:8px;font-size:.82rem;color:var(--slate-light);border-top:1px solid #b2f5ea;padding-top:8px}
+
+    #total-wrap{display:none;margin-top:1.5rem}
+    .total-box{background:#f8fafc;border:2px solid #e2e8f0;border-radius:var(--radius);padding:1.2rem 1.5rem}
+    .total-box h4{font-size:.75rem;font-weight:800;color:var(--slate-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+    .total-items{display:flex;flex-direction:column;gap:5px}
+    .total-item{display:flex;justify-content:space-between;font-size:.88rem;color:var(--slate)}
+    .total-hr{border:none;border-top:1px solid #e2e8f0;margin:10px 0}
+    .total-final{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:900;color:#0f172a}
+
+    #bin-placement-block{margin-top:1.2rem}
+    .bin-placement-title{font-size:1rem;font-weight:700;color:var(--slate);margin-bottom:.35rem}
+    .bin-placement-optional{font-weight:500;color:var(--slate-light);font-size:.85rem;margin-left:.3rem}
+    .bin-placement-help{font-size:.85rem;color:var(--slate-light);background:#f0fdf9;border-left:3px solid var(--green);padding:.6rem .8rem;border-radius:8px;margin-bottom:.7rem;line-height:1.45}
+    #bp-streetview{width:100%;height:340px;border-radius:12px;overflow:hidden;background:#e2e8f0;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    @media (max-width:600px){#bp-streetview{height:280px}}
+    #bp-crosshair{position:absolute;top:70%;left:50%;transform:translate(-50%,-50%);pointer-events:none;width:100px;height:100px;z-index:5;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='22' fill='none' stroke='%23ffffff' stroke-width='5'/><circle cx='50' cy='50' r='22' fill='none' stroke='%2371b80c' stroke-width='3.5'/><line x1='50' y1='4' x2='50' y2='24' stroke='%23ffffff' stroke-width='5'/><line x1='50' y1='4' x2='50' y2='24' stroke='%2371b80c' stroke-width='3.5'/><line x1='50' y1='76' x2='50' y2='96' stroke='%23ffffff' stroke-width='5'/><line x1='50' y1='76' x2='50' y2='96' stroke='%2371b80c' stroke-width='3.5'/><line x1='4' y1='50' x2='24' y2='50' stroke='%23ffffff' stroke-width='5'/><line x1='4' y1='50' x2='24' y2='50' stroke='%2371b80c' stroke-width='3.5'/><line x1='76' y1='50' x2='96' y2='50' stroke='%23ffffff' stroke-width='5'/><line x1='76' y1='50' x2='96' y2='50' stroke='%2371b80c' stroke-width='3.5'/><circle cx='50' cy='50' r='4' fill='%2371b80c' stroke='%23ffffff' stroke-width='1.5'/></svg>");background-size:contain;background-repeat:no-repeat;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));animation:bpPulse 1.6s ease-in-out infinite}
+    @keyframes bpPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.08)}}
+    #bp-crosshair.hidden{display:none}
+    #bp-status{margin-top:.55rem;font-size:.85rem;color:var(--slate-light);text-align:center;min-height:1.2em}
+    #bp-status.placed{color:var(--green-dark);font-weight:600}
+    .bp-actions{display:flex;gap:.5rem;margin-top:.7rem;margin-bottom:.8rem;flex-wrap:wrap}
+    .bp-btn{flex:1;min-width:130px;padding:.7rem 1rem;border-radius:10px;border:2px solid var(--slate-xlight);background:#fff;color:var(--slate);font-weight:600;font-size:.92rem;cursor:pointer;transition:all .15s}
+    .bp-btn:hover{border-color:var(--green);color:var(--green-dark)}
+    .bp-btn-primary{background:var(--green);color:#fff;border-color:var(--green);flex:2}
+    .bp-btn-primary:hover{background:var(--green-dark);border-color:var(--green-dark);color:#fff}
+    .bp-unavailable{background:#fff7ed;border:1px dashed #fb923c;color:#9a3412;padding:.75rem 1rem;border-radius:10px;font-size:.88rem;margin-top:1rem}
+
+    .btn-checkout{display:block;width:100%;margin-top:1rem;background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;font-size:1.02rem;font-weight:800;padding:16px;border-radius:14px;border:none;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(113,184,12,.3)}
+    .btn-checkout:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(113,184,12,.45)}
+    .btn-checkout:disabled{background:#cbd5e0;cursor:not-allowed;transform:none;box-shadow:none}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);overflow-y:auto}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:var(--radius-lg);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-xl);animation:slideUp .22s ease}
+    @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-header{background:linear-gradient(135deg,var(--green-dark),var(--green));padding:1.5rem 2rem;color:#fff;border-radius:20px 20px 0 0}
+    .modal-header h3{font-size:1.15rem;font-weight:900}
+    .modal-header p{font-size:.83rem;opacity:.8;margin-top:3px}
+    .modal-body{padding:1.5rem 2rem}
+    .modal-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:.88rem}
+    .modal-row:last-of-type{border-bottom:none}
+    .mr-label{color:var(--slate-light);flex-shrink:0;margin-right:1rem}
+    .mr-value{font-weight:600;color:#0f172a;text-align:right}
+    .modal-total{background:var(--green-xlight);border:1px solid #b2f5ea;border-radius:10px;padding:12px 16px;margin:1rem 0;display:flex;justify-content:space-between;align-items:center}
+    .mt-label{font-weight:800;color:var(--slate)}
+    .mt-value{font-size:1.5rem;font-weight:900;color:var(--green-dark)}
+    .modal-actions{display:flex;gap:10px;margin-top:1.2rem}
+    .btn-back{flex:1;padding:12px;border:2px solid #e2e8f0;background:#fff;border-radius:12px;font-weight:700;font-size:.9rem;color:var(--slate);cursor:pointer;transition:background .15s}
+    .btn-back:hover{background:#f8fafc}
+    .btn-confirm{flex:2;padding:12px;background:var(--green);border:none;border-radius:12px;font-weight:800;font-size:.95rem;color:#fff;cursor:pointer;transition:background .2s}
+    .btn-confirm:hover{background:var(--green-dark)}
+    .thankyou{text-align:center;padding:2rem 0 1rem}
+    .thankyou-icon{font-size:3.5rem;margin-bottom:1rem}
+    .thankyou h3{font-size:1.4rem;font-weight:900;color:#0f172a;margin-bottom:.5rem}
+    .thankyou p{color:var(--slate-light);font-size:.95rem;max-width:340px;margin:0 auto}
+
+    /* ===== FOOTER ===== */
+    footer{background:var(--slate-xlight);padding:3rem 2rem 5rem;text-align:center;border-top:1px solid #e2e8f0}
+    .footer-note{font-size:.8rem;color:var(--slate-light)}
+    .footer-note a{color:var(--slate-light)}
+
+    @media(max-width:600px){
+      section{padding:3.5rem 1.2rem}
+      .hero-search-inner{flex-wrap:wrap;padding:10px}
+      .hero-search-btn{width:100%;text-align:center;border-radius:10px}
+      .booking-inner{padding:3rem 1.2rem}
+      .week-row{grid-template-columns:1fr repeat(5,34px);font-size:.76rem}
+      .modal-body{padding:1.2rem}
+      .options-row{gap:1rem}
+      .pricing-grid{grid-template-columns:1fr}
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="/" aria-label="GetMyBin home">
+      <img src="/img/getmybin-logo.jpg" alt="GetMyBin">
+    </a>
+    <ul class="nav-links">
+      <li><a href="/#how">How It Works</a></li>
+      <li><a href="/#pricing">Pricing</a></li>
+      <li><a href="/#hero-anchor" class="nav-cta">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ===== HERO — video + search ===== -->
+<div class="hero" id="hero-anchor">
+  <div class="hero-inner">
+    <!-- Left: Text + Search -->
+    <div class="hero-text">
+      <div class="hero-badge">📍 Toronto's Bin Service</div>
+      <h1>Bin day,<br><em>handled.</em></h1>
+      <p class="hero-sub">We roll your bins to the curb and back — so you don't have to. Enter your address to see your schedule and get started.</p>
+      <div class="hero-search-wrap">
+        <div class="hero-search-box">
+          <div class="hero-search-inner">
+            <span class="hero-search-icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </span>
+            <input type="text" id="address" placeholder="Start typing your Toronto address…" autocomplete="off" />
+            <button class="hero-search-btn" id="hero-search-btn">Check Schedule →</button>
+          </div>
+        </div>
+        <div class="suggestions" id="suggestions"></div>
+        <div class="hero-rating">
+          <span class="hero-rating-stars">★★★★★</span>
+          <span class="hero-rating-text"><strong>5.0</strong> — Loved by Toronto homeowners</span>
+          <span class="hero-rating-divider">·</span>
+          <span class="hero-rating-text">No commitment</span>
+        </div>
+        <p class="hero-note">📍 Serving Toronto residential addresses</p>
+        <div id="hero-loading"><span class="spinner-sm"></span>Looking up your schedule…</div>
+        <div id="hero-error"></div>
+      </div>
+    </div>
+
+    <!-- Right: Video -->
+    <div class="hero-video-wrap" style="position:relative">
+      <div class="hero-video-shimmer"></div>
+      <div class="hero-video-card">
+        <div class="hero-video-dot">▶ See it in action</div>
+        <video autoplay muted loop playsinline poster="">
+          <source src="/assets/video/hero.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section id="how">
+  <div class="section-inner">
+    <div class="section-eyebrow">Simple Process</div>
+    <h2 class="section-title">Three steps, zero hassle</h2>
+    <p class="section-desc">We handle everything from start to finish — just enter your address and we take care of the rest.</p>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-icon">📍</div>
+        <h3>Enter your address</h3>
+        <p>We look up your City of Toronto collection schedule automatically. No forms, no phone calls.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-icon">📋</div>
+        <h3>Pick your service</h3>
+        <p>Choose roll-out, roll-in, or both. Select ad hoc dates or subscribe for recurring service every week.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-icon">✅</div>
+        <h3>We handle the rest</h3>
+        <p>We roll your bins to the curb the evening before pickup — and bring them back in the afternoon after collection.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REVIEWS ===== -->
+<section id="reviews">
+  <div class="section-inner">
+    <div class="reviews-eyebrow">What Customers Say</div>
+    <h2 class="reviews-title">Toronto homeowners love GetMyBin</h2>
+    <div class="swiper reviews-carousel" id="reviewsCarousel">
+      <div class="swiper-wrapper">
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Honestly? I rolled my eyes when my neighbour told me about GetMyBin. Paying someone to move bins felt absurd. Six months later I'm the one evangelizing it to everyone on my street. It just works — every single time, without fail."</p><div class="review-author">Michael T. — The Beaches</div></div></div>
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Two demanding jobs, zero patience for bin schedules. Which week is garbage? Which is recycling? We don't know and we don't care anymore. GetMyBin handles every pickup without fail. Best twelve dollars we spend all month."</p><div class="review-author">Sarah & Kevin D. — Leslieville</div></div></div>
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Three kids, two jobs, one very chaotic life. GetMyBin showed up every single week without me lifting a finger — or a bin. My husband still can't figure out how the bins always make it to the curb on time. I'm not telling him."</p><div class="review-author">Lisa M. — Willowdale</div></div></div>
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Every January I'd lie awake picturing my dad slipping on an icy driveway dragging those bins out at 6am. I found GetMyBin, set it up in 10 minutes, and that weight lifted immediately. They love it, I sleep better. Worth every single penny."</p><div class="review-author">Priya S. — North York</div></div></div>
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"I've bought my mom flowers, spa days, fancy dinners. She's always polite. I got her GetMyBin for her birthday half as a joke. She called me four days later, completely serious, and said it was the best gift she'd received in years."</p><div class="review-author">James O. — North York</div></div></div>
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"I'm 76 and my daughter kept offering to 'help' with the bins, which I knew meant she was worried. I signed up for GetMyBin myself, thank you very much. Simple, reliable, and now she stops fussing."</p><div class="review-author">Dorothy W. — Scarborough</div></div></div>
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Six weeks in Florida every February. For years we felt guilty asking the neighbours to deal with the bins. Now we book our flights, set up GetMyBin, and don't think about Toronto once until we land. We handle the margaritas. They handle the bins."</p><div class="review-author">Sandra P. — Etobicoke</div></div></div>
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"I'm on a plane two weeks out of every month. Bin day was this low-grade anxiety buzzing in the background. GetMyBin handles every pickup whether I'm in Vancouver or Frankfurt. Zero missed collections in nearly a year."</p><div class="review-author">Marcus T. — Etobicoke</div></div></div>
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Six rental units across three properties. Bin day was a constant headache. GetMyBin eliminated all of it overnight. Reliable, professional, and one of the best operational decisions I've made as a landlord."</p><div class="review-author">Tony R. — East York</div></div></div>
+
+      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Running an Airbnb on top of three rentals means my calendar is always chaos. Bin day used to mean driving across the city or praying a tenant remembered. GetMyBin took all of that off my plate completely."</p><div class="review-author">David K. — East York</div></div></div>
+
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section id="pricing">
+  <div class="section-inner">
+    <div class="section-eyebrow">Transparent Pricing</div>
+    <h2 class="section-title">Straightforward rates</h2>
+    <p class="section-desc">Per collection event — covers all bins scheduled that day. Roll out and roll in are charged separately.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Ad Hoc</div>
+        <div class="price-amount">$8.95</div>
+        <div class="price-unit">per collection event</div>
+        <div class="price-tagline">"Pick exactly the dates you need"</div>
+        <ul class="price-features">
+          <li>Choose any upcoming collection dates</li>
+          <li>No commitment or subscription</li>
+          <li>Perfect for vacations or one-offs</li>
+          <li>Pay per event, no surprises</li>
+        </ul>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">Most Popular</div>
+        <div class="price-name">Recurring</div>
+        <div class="price-amount">$5.95</div>
+        <div class="price-unit">per collection event</div>
+        <div class="price-tagline">"Every collection day, automatically"</div>
+        <ul class="price-features">
+          <li>We show up every week, no reminders needed</li>
+          <li>Save 34% vs ad hoc pricing</li>
+          <li>Cancel or pause any time</li>
+          <li>Works with your full city schedule</li>
+        </ul>
+      </div>
+    </div>
+    <p class="tax-note">Plus applicable taxes (13% HST added at checkout)</p>
+    <p class="pricing-note"><strong>Note:</strong> Roll out and roll in are each a separate charge. Both on the same day? That's two events.</p>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section id="faq">
+  <div class="section-inner">
+    <div class="section-eyebrow">Got Questions?</div>
+    <h2 class="section-title">Frequently asked</h2>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Which areas do you cover?<span class="faq-chevron">+</span></button>
+        <div class="faq-a" role="region"><p>We serve all Toronto residential addresses with City of Toronto curbside collection. Not sure if that's you? Type your address above — we'll tell you instantly.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Which bins do you handle?<span class="faq-chevron">+</span></button>
+        <div class="faq-a" role="region"><p>All of them — garbage, recycling, green bin, and yard waste. Whatever the City collects at your address on your collection day, we handle it.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">When do you roll bins out and back?<span class="faq-chevron">+</span></button>
+        <div class="faq-a" role="region"><p>We roll your bins to the curb the evening before your scheduled collection day and return them to their designated spot the following afternoon after they've been emptied.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Do you follow Toronto's holiday schedule?<span class="faq-chevron">+</span></button>
+        <div class="faq-a" role="region"><p>Yes. We follow the City of Toronto's adjusted holiday schedule automatically. If the City moves your collection day, we move with it — no action needed from you.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Can I cancel or pause my recurring service?<span class="faq-chevron">+</span></button>
+        <div class="faq-a" role="region"><p>Cancel anytime — just let us know 48 hours before your next scheduled collection. No contracts, no penalties. <a href="/manage.html">Cancel your service →</a></p></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">What if you miss my scheduled service?<span class="faq-chevron">+</span></button>
+        <div class="faq-a" role="region"><p>If we miss your scheduled service for any reason, you don't pay for that event. Simple as that.</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== GUARANTEE ===== -->
+<section id="guarantee">
+  <div class="guarantee-inner">
+    <div class="guarantee-icon">🛡️</div>
+    <div class="guarantee-title">Our service guarantee</div>
+    <p class="guarantee-text">
+      If we miss your scheduled collection, <strong>you don't pay.</strong>
+      No questions asked.
+    </p>
+  </div>
+</section>
+
+<!-- ===== BOOKING SECTION (hidden until address confirmed) ===== -->
+<div id="booking-section">
+  <div id="booking-anchor"></div>
+  <div class="booking-inner">
+    <div class="address-confirmed" id="address-confirmed">
+      <div class="ac-icon">📍</div>
+      <div class="ac-text">
+        <div class="ac-address" id="ac-address-text"></div>
+        <div class="ac-day" id="ac-day-text"></div>
+      </div>
+      <button class="ac-change" onclick="resetSearch()">✏️ Change Address</button>
+    </div>
+
+    <div class="next-pickup">
+      <div class="next-pickup-label">📅 Next Collection</div>
+      <div class="next-date" id="next-date"></div>
+      <div class="bin-tags" id="next-bins"></div>
+    </div>
+
+    <div class="schedule-accordion" id="schedule-accordion">
+      <button class="accordion-header" onclick="toggleScheduleAccordion()" aria-expanded="false">
+        <span>📅 Upcoming Schedule</span>
+        <span class="accordion-chevron">▼</span>
+      </button>
+      <div class="accordion-content">
+        <div class="accordion-inner">
+          <div class="calendar-section">
+            <div class="week-row header">
+              <div>Week of</div>
+              <div class="icon-col" title="Green Bin">🟢</div>
+              <div class="icon-col" title="Garbage">⚫</div>
+              <div class="icon-col" title="Recycling">🔵</div>
+              <div class="icon-col" title="Yard Waste">🟡</div>
+              <div class="icon-col" title="Christmas Tree">🎄</div>
+            </div>
+            <div id="schedule-rows"></div>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-dot" style="background:#38a169"></span> Green Bin</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#4a5568"></span> Garbage</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#3182ce"></span> Recycling</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#d69e2e"></span> Yard Waste</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#e53e3e"></span> Christmas Tree</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="service-title">⚙️ Choose Your Service</div>
+
+    <div class="options-row">
+      <div class="options-col">
+        <div class="options-label">Service Type</div>
+        <div class="toggle-group" id="service-toggle">
+          <button class="toggle-btn active" data-val="rollout">Roll Out</button>
+          <button class="toggle-btn" data-val="rollin">Roll In</button>
+          <button class="toggle-btn" data-val="both">Both</button>
+        </div>
+      </div>
+      <div class="options-col">
+        <div class="options-label">Plan</div>
+        <div class="toggle-group" id="plan-toggle">
+          <button class="toggle-btn active" data-val="adhoc">Ad Hoc</button>
+          <button class="toggle-btn" data-val="recurring">Recurring<span class="save-badge">Save 34%</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="adhoc-dates">
+      <h4>Select collection dates (tap to toggle):</h4>
+      <div class="date-cards" id="date-cards"></div>
+    </div>
+
+    <div id="recurring-info">
+      <div class="recurring-box">
+        <h4 id="recurring-title"></h4>
+        <p id="recurring-desc"></p>
+        <div class="recurring-monthly" id="recurring-monthly"></div>
+      </div>
+    </div>
+
+    <div id="total-wrap">
+      <hr class="divider">
+      <div id="bin-placement-block" style="display:none;">
+        <div class="bin-placement-title">📍 Show us where to leave your bin <span class="bin-placement-optional">(optional)</span></div>
+        <div class="bin-placement-help">Drag the view to look around. Tap the white arrows or double-click to walk forward. <strong>Aim the green crosshair</strong> at your bin spot — we'll save it when you tap <strong>Go to Checkout</strong>.</div>
+        <div id="bp-sv-wrap" style="position:relative;">
+          <div id="bp-streetview"></div>
+          <div id="bp-crosshair" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div id="bin-placement-unavailable" style="display:none;">
+        <div class="bp-unavailable">Street View isn't available for this address — no worries, we'll find your bins. 👍</div>
+      </div>
+      <button class="btn-checkout" id="btn-checkout" disabled>Go to Checkout →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHECKOUT MODAL ===== -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📋 Order Summary</h3>
+      <p>Review your details before confirming</p>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p class="footer-note">Schedule data from <a href="https://www.toronto.ca/services-payments/recycling-organics-garbage/houses/collection-schedule/" target="_blank">City of Toronto Open Data</a> · Toronto, ON</p>
+  <p class="footer-note" style="margin-top:.4rem"><a href="/terms.html">Terms of Service</a> · <a href="/privacy.html">Privacy Policy</a> · <a href="/contact.html">Contact Us</a></p>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+// ===== EMBEDDED SCHEDULE DATA =====
+const CSV_DATA = {"Tuesday1":[{"w":"2026-01-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-13","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-27","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-02-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-10","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-24","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-31","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-05","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-06","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-15","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-29","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-16","g":true,"b":true,"r":true,"y":false,"c":false},{"w":"2025-12-23","g":true,"b":false,"r":false,"y":true,"c":false},{"w":"2025-12-30","g":true,"b":true,"r":true,"y":false,"c":false}],"Tuesday2":[{"w":"2026-01-06","g":true,"b":true,"r":true,"y":false,"c":true},{"w":"2026-01-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-20","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-03","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-17","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-03","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-31","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-22","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-16","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-23","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-30","g":true,"b":false,"r":true,"y":true,"c":false}],"Wednesday1":[{"w":"2026-01-07","g":true,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-14","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-28","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-02-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-11","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-25","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-06","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-16","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-30","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-17","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-24","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-31","g":true,"b":true,"r":false,"y":false,"c":false}],"Wednesday2":[{"w":"2026-01-07","g":true,"b":true,"r":true,"y":false,"c":true},{"w":"2026-01-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-21","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-04","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-18","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-04","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-05","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-23","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-17","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-24","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-31","g":true,"b":false,"r":true,"y":true,"c":false}],"Thursday1":[{"w":"2026-01-02","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-01-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-15","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-29","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-02-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-12","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-26","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-05","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-17","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-31","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-18","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-26","g":true,"b":false,"r":true,"y":true,"c":false}],"Thursday2":[{"w":"2026-01-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-08","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-22","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-05","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-19","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-05","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-06","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-24","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-31","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-18","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-26","g":true,"b":true,"r":false,"y":false,"c":false}],"Friday1":[{"w":"2026-01-03","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-01-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-16","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-30","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-02-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-13","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-27","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-05","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-31","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-06","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-18","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-19","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-27","g":true,"b":false,"r":true,"y":true,"c":false}],"Friday2":[{"w":"2026-01-03","g":true,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-09","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-23","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-06","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-20","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-06","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-31","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-26","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-19","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-27","g":true,"b":true,"r":false,"y":false,"c":false}]};
+// Expose the schedule globally so airtable-bookings.js (external file) can compute
+// bins for future recurring pickup dates without hauling its own copy of the data.
+window.CSV_DATA = CSV_DATA;
+
+// ===== JSONP helper =====
+let jsonpCounter = 0;
+function jsonp(url) {
+  return new Promise((resolve, reject) => {
+    const cbName = '_torontoCb_' + (jsonpCounter++);
+    const script = document.createElement('script');
+    const timeout = setTimeout(() => { cleanup(); reject(new Error('JSONP timeout')); }, 8000);
+    function cleanup() { clearTimeout(timeout); delete window[cbName]; if (script.parentNode) script.parentNode.removeChild(script); }
+    window[cbName] = function(data) { cleanup(); resolve(data); };
+    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
+    script.onerror = function() { cleanup(); reject(new Error('JSONP load error')); };
+    document.head.appendChild(script);
+  });
+}
+
+const SUGGEST_URL = 'https://map.toronto.ca/cotgeocoder/rest/geocoder/suggest?matchAddress=1&matchIntersection=1&matchStreetName=1&matchPlacename=1&f=pjson&retRowLimit=8&searchString=';
+const FIND_URL = 'https://map.toronto.ca/cotgeocoder/rest/geocoder/findAddressCandidates?f=json&unit=%25&areaTypeCode1=RESW&areaTypeCode2=CITW&keyString=';
+
+// ===== State =====
+let currentSchedule = null;
+let currentCalendarName = null;
+let currentAddress = null;
+let currentIsNightZone = false;
+let selectedDates = new Set();
+let serviceType = 'rollout'; // rollout | rollin | both
+let planType = 'adhoc'; // adhoc | recurring
+
+// ===== Night collection zone detection =====
+// Source: City of Toronto 2026 curbside collection schedules
+function isNightCollection(lat, lng) {
+  // Monday night: east of Bathurst, south of Bloor/Danforth, west of Victoria Park
+  const monNight = lat < 43.668 && lat > 43.620 && lng > -79.414 && lng < -79.300;
+  // Tuesday night: Bloor corridor E&W between Bathurst and Danforth
+  const tueNight = lat > 43.655 && lat < 43.675 && lng > -79.415 && lng < -79.345;
+  // Wednesday night: Bathurst corridor, north of Bloor
+  const wedNight = lat > 43.663 && lat < 43.725 && lng > -79.419 && lng < -79.406;
+  // Thursday night: Bathurst south of Bloor + Bloor W west of Bathurst
+  const thuNight = (lat > 43.630 && lat < 43.666 && lng > -79.419 && lng < -79.406) ||
+                   (lat > 43.655 && lat < 43.672 && lng < -79.413 && lng > -79.455);
+  return monNight || tueNight || wedNight || thuNight;
+}
+
+const PRICE_ADHOC = 8.95;
+const PRICE_RECURRING = 5.95;
+const HST_RATE = 0.13; // 13% Harmonized Sales Tax (Ontario)
+
+// ===== DOM refs =====
+const addressInput = document.getElementById('address');
+const suggestionsDiv = document.getElementById('suggestions');
+let selectedIndex = -1;
+let debounceTimer = null;
+
+// Pin suggestions directly below the search box
+function setSuggestionsTop() {
+  const h = document.querySelector('.hero-search-box').offsetHeight;
+  suggestionsDiv.style.top = (h + 6) + 'px';
+}
+setSuggestionsTop();
+window.addEventListener('resize', setSuggestionsTop);
+
+
+
+// ===== Address search =====
+addressInput.addEventListener('input', function() {
+  clearTimeout(debounceTimer);
+  const val = this.value.trim();
+  if (val.length < 3) { hideSuggestions(); return; }
+  debounceTimer = setTimeout(() => fetchSuggestions(val), 300);
+});
+
+addressInput.addEventListener('keydown', function(e) {
+  const items = suggestionsDiv.querySelectorAll('.suggestion-item');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); selectedIndex = Math.min(selectedIndex + 1, items.length - 1); highlightItem(items); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); selectedIndex = Math.max(selectedIndex - 1, 0); highlightItem(items); }
+  else if (e.key === 'Enter' && selectedIndex >= 0) { e.preventDefault(); items[selectedIndex].click(); }
+  else if (e.key === 'Escape') { hideSuggestions(); }
+});
+
+document.getElementById('hero-search-btn').addEventListener('click', function() {
+  const val = addressInput.value.trim();
+  if (val.length >= 3) fetchSuggestions(val);
+});
+
+document.addEventListener('click', function(e) { if (!e.target.closest('.hero-search-wrap')) hideSuggestions(); });
+
+function highlightItem(items) { items.forEach((item, i) => item.classList.toggle('active', i === selectedIndex)); }
+function hideSuggestions() { suggestionsDiv.classList.remove('show'); suggestionsDiv.innerHTML = ''; selectedIndex = -1; }
+
+
+
+async function fetchSuggestions(query) {
+  try {
+    const json = await jsonp(SUGGEST_URL + encodeURIComponent(query));
+    const rows = json.result?.rows || [];
+    if (!rows.length) { hideSuggestions(); return; }
+    suggestionsDiv.innerHTML = ''; selectedIndex = -1;
+    rows.slice(0, 5).forEach(row => {
+      const div = document.createElement('div');
+      div.className = 'suggestion-item';
+      div.textContent = row.ADDRESS;
+      div.addEventListener('click', () => selectAddress(row.KEYSTRING, row.ADDRESS));
+      suggestionsDiv.appendChild(div);
+    });
+    suggestionsDiv.classList.add('show');
+  } catch(e) { console.error('Suggest error:', e); }
+}
+
+async function selectAddress(keyString, displayAddress) {
+  hideSuggestions();
+  addressInput.value = displayAddress;
+  showHeroError('');
+  showHeroLoading(true);
+  selectedDates.clear();
+
+  try {
+    const json = await jsonp(FIND_URL + encodeURIComponent(keyString));
+    const rows = json.result?.rows || [];
+    if (!rows.length) throw new Error('Address not found');
+    const row = rows[0];
+    const areas = row.AREACURSOR1?.array || [];
+    const resw = areas.find(a => a.AREA_TYPE === 'RESW');
+    if (!resw || resw.AREA_NAME === 'No Collection') {
+      showHeroError('This address does not have curbside waste collection. It may be a condo or apartment with private collection.');
+      return;
+    }
+    const calendarName = resw.AREA_NAME.replace(/\s/g, '');
+    const fullAddress = row.ADDRESS_FULL || displayAddress;
+    if (!CSV_DATA[calendarName]) {
+      showHeroError('Schedule "' + calendarName + '" not found in data.');
+      return;
+    }
+    currentCalendarName = calendarName;
+    currentAddress = fullAddress;
+    window.currentAddress = fullAddress;
+    currentSchedule = CSV_DATA[calendarName];
+    // Detect night collection zone using geocoder coordinates
+    const lat = row.LATITUDE || row.OUTX || 0;
+    const lng = row.LONGITUDE || row.OUTY || 0;
+    currentIsNightZone = isNightCollection(lat, lng);
+    revealBooking(fullAddress, calendarName, currentSchedule);
+  } catch(e) {
+    showHeroError('Could not look up this address. Please try another one.');
+    console.error(e);
+  } finally {
+    showHeroLoading(false);
+  }
+}
+
+function showHeroLoading(show) { document.getElementById('hero-loading').style.display = show ? 'block' : 'none'; }
+function showHeroError(msg) {
+  const el = document.getElementById('hero-error');
+  if (msg) { el.textContent = msg; el.style.display = 'block'; } else { el.style.display = 'none'; }
+}
+
+function resetSearch() {
+  document.getElementById('booking-section').classList.remove('revealed');
+  addressInput.value = '';
+  currentSchedule = null; currentCalendarName = null; currentAddress = null; selectedDates.clear();
+  document.getElementById('hero-anchor').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===== Toggle schedule accordion =====
+function toggleScheduleAccordion() {
+  const accordion = document.getElementById('schedule-accordion');
+  const header = accordion.querySelector('.accordion-header');
+  const isOpen = accordion.classList.contains('open');
+  accordion.classList.toggle('open');
+  header.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+}
+
+// ===== Reveal booking section =====
+function revealBooking(address, calendarName, schedule) {
+  document.getElementById('ac-address-text').textContent = address;
+  const match = calendarName.match(/^([A-Za-z]+?)(\d+)$/);
+  const dayName = match ? match[1] : calendarName;
+  const weekNum = match ? match[2] : '';
+  document.getElementById('ac-day-text').textContent = 'Collection day: ' + dayName + '  \u00B7  Schedule: Week ' + weekNum;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayStr = formatDateISO(today);
+  let nextIdx = schedule.findIndex(s => s.w >= todayStr);
+  if (nextIdx === -1) nextIdx = schedule.length - 1;
+  const nextWeek = schedule[nextIdx];
+
+  document.getElementById('next-date').textContent = formatDateNice(nextWeek.w);
+  const nextBinsDiv = document.getElementById('next-bins');
+  nextBinsDiv.innerHTML = '';
+  if (nextWeek.g) nextBinsDiv.innerHTML += '<span class="bin-tag green-bin">&#x1F7E2; Green Bin</span>';
+  if (nextWeek.b) nextBinsDiv.innerHTML += '<span class="bin-tag garbage">&#x26AB; Garbage</span>';
+  if (nextWeek.r) nextBinsDiv.innerHTML += '<span class="bin-tag recycling">&#x1F535; Recycling</span>';
+  if (nextWeek.y) nextBinsDiv.innerHTML += '<span class="bin-tag yard-waste">&#x1F7E1; Yard Waste</span>';
+  if (nextWeek.c) nextBinsDiv.innerHTML += '<span class="bin-tag christmas-tree">&#x1F384; Christmas Tree</span>';
+
+  const rowsDiv = document.getElementById('schedule-rows');
+  rowsDiv.innerHTML = '';
+  let startShow = Math.max(0, nextIdx - 2);
+  const showWeeks = schedule.slice(startShow, startShow + 20);
+  showWeeks.forEach(week => {
+    const isPast = week.w < todayStr;
+    const isThisWeek = week.w === nextWeek.w;
+    const row = document.createElement('div');
+    row.className = 'week-row' + (isThisWeek ? ' today-row' : '') + (isPast ? ' past-row' : '');
+    row.innerHTML = '<div class="date-col">' + formatDateShort(week.w) + '</div>' +
+      '<div class="icon-col">' + (week.g ? '<span class="check">&#10003;</span>' : '<span class="no-check">&ndash;</span>') + '</div>' +
+      '<div class="icon-col">' + (week.b ? '<span class="check">&#10003;</span>' : '<span class="no-check">&ndash;</span>') + '</div>' +
+      '<div class="icon-col">' + (week.r ? '<span class="check">&#10003;</span>' : '<span class="no-check">&ndash;</span>') + '</div>' +
+      '<div class="icon-col">' + (week.y ? '<span class="check">&#10003;</span>' : '<span class="no-check">&ndash;</span>') + '</div>' +
+      '<div class="icon-col">' + (week.c ? '<span class="check">&#10003;</span>' : '<span class="no-check">&ndash;</span>') + '</div>';
+    rowsDiv.appendChild(row);
+  });
+
+  // Reset service UI state
+  serviceType = 'rollout'; planType = 'adhoc';
+  document.querySelectorAll('#service-toggle .toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'rollout'));
+  document.querySelectorAll('#plan-toggle .toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.val === 'adhoc'));
+
+  // Night zone: disable Roll In + Both, show note
+  const rollinBtn = document.querySelector('#service-toggle [data-val="rollin"]');
+  const bothBtn = document.querySelector('#service-toggle [data-val="both"]');
+  let nightNote = document.getElementById('night-zone-note');
+  if (currentIsNightZone) {
+    rollinBtn.disabled = true; rollinBtn.style.opacity = '0.35'; rollinBtn.style.cursor = 'not-allowed';
+    bothBtn.disabled = true;   bothBtn.style.opacity = '0.35';   bothBtn.style.cursor = 'not-allowed';
+    if (!nightNote) {
+      nightNote = document.createElement('p');
+      nightNote.id = 'night-zone-note';
+      nightNote.style.cssText = 'margin-top:0.6rem;font-size:0.8rem;color:#0d9488;background:#f0fdfa;border:1px solid #99f6e4;border-radius:8px;padding:8px 12px;';
+      document.getElementById('service-toggle').parentNode.appendChild(nightNote);
+    }
+    nightNote.style.display = 'block';
+    nightNote.innerHTML = '&#127769; <strong>Overnight collection area.</strong> Roll Out only &mdash; we arrive early evening on your collection day.';
+  } else {
+    rollinBtn.disabled = false; rollinBtn.style.opacity = ''; rollinBtn.style.cursor = '';
+    bothBtn.disabled = false;   bothBtn.style.opacity = ''; bothBtn.style.cursor = '';
+    if (nightNote) nightNote.style.display = 'none';
+  }
+
+  // Reveal the booking section with smooth animation
+  document.getElementById('booking-section').classList.add('revealed');
+  buildDateCards();
+  document.getElementById('adhoc-dates').style.display = 'block';
+  document.getElementById('recurring-info').style.display = 'none';
+  document.getElementById('total-wrap').style.display = 'none';
+
+  // Reset the bin-placement section for the new address
+  resetBinPlacement();
+
+  // Scroll to booking anchor once reveal animation completes
+  const bookingSection = document.getElementById('booking-section');
+  const scrollToAnchor = () => {
+    bookingSection.removeEventListener('transitionend', scrollToAnchor);
+    const anchor = document.getElementById('booking-anchor');
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  bookingSection.addEventListener('transitionend', scrollToAnchor);
+  // Fallback: scroll anyway after 1.7s if transition doesn't fire
+  setTimeout(() => {
+    bookingSection.removeEventListener('transitionend', scrollToAnchor);
+    const anchor = document.getElementById('booking-anchor');
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 1700);
+}
+
+// ===== Service toggles =====
+document.getElementById('service-toggle').addEventListener('click', function(e) {
+  const btn = e.target.closest('.toggle-btn');
+  if (!btn) return;
+  this.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  serviceType = btn.dataset.val;
+  updateTotal();
+});
+
+document.getElementById('plan-toggle').addEventListener('click', function(e) {
+  const btn = e.target.closest('.toggle-btn');
+  if (!btn) return;
+  this.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  planType = btn.dataset.val;
+  showPlanUI();
+  updateTotal();
+});
+
+function showPlanUI() {
+  if (planType === 'adhoc') {
+    document.getElementById('adhoc-dates').style.display = 'block';
+    document.getElementById('recurring-info').style.display = 'none';
+  } else {
+    document.getElementById('adhoc-dates').style.display = 'none';
+    document.getElementById('recurring-info').style.display = 'block';
+    buildRecurringInfo();
+  }
+}
+
+// ===== Date cards =====
+// Returns true if the cutoff has passed for a given collection date
+function isPastCutoff(collectionDateStr) {
+  // Cutoff day: day before collection (day zone) or same day (night zone)
+  const cutoffDay = currentIsNightZone ? collectionDateStr : (function(){
+    const d = new Date(collectionDateStr + 'T12:00:00');
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().split('T')[0];
+  })();
+
+  // Reliably get Toronto date + time using Intl.DateTimeFormat.formatToParts
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Toronto',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  }).formatToParts(now);
+  const todayToronto = parts.find(p=>p.type==='year').value + '-' +
+                       parts.find(p=>p.type==='month').value + '-' +
+                       parts.find(p=>p.type==='day').value;
+  const torontoHour = parseInt(parts.find(p=>p.type==='hour').value);
+  const torontoMin  = parseInt(parts.find(p=>p.type==='minute').value);
+
+  if (cutoffDay < todayToronto) return true;  // cutoff day already in the past
+  if (cutoffDay > todayToronto) return false; // cutoff day still in the future
+  // Cutoff day is today — check if past 4pm Toronto time
+  return torontoHour > 16 || (torontoHour === 16 && torontoMin >= 0);
+}
+
+function buildDateCards() {
+  if (!currentSchedule) return;
+  const container = document.getElementById('date-cards');
+  container.innerHTML = '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayStr = formatDateISO(today);
+  const future = currentSchedule.filter(w => w.w >= todayStr).slice(0, 12);
+  future.forEach(week => {
+    const d = new Date(week.w + 'T00:00:00');
+    const month = d.toLocaleDateString('en-CA', { month: 'short' });
+    const dayNum = d.getDate();
+    const weekday = d.toLocaleDateString('en-CA', { weekday: 'short' });
+    const dots = [];
+    if (week.g) dots.push('<span class="dc-dot" style="background:#38a169" title="Green Bin"></span>');
+    if (week.b) dots.push('<span class="dc-dot" style="background:#4a5568" title="Garbage"></span>');
+    if (week.r) dots.push('<span class="dc-dot" style="background:#3182ce" title="Recycling"></span>');
+    if (week.y) dots.push('<span class="dc-dot" style="background:#d69e2e" title="Yard Waste"></span>');
+    if (week.c) dots.push('<span class="dc-dot" style="background:#e53e3e" title="Christmas Tree"></span>');
+    const pastCutoff = isPastCutoff(week.w);
+    const card = document.createElement('div');
+    card.className = 'date-card' + (pastCutoff ? ' cutoff' : (selectedDates.has(week.w) ? ' selected' : ''));
+    card.dataset.date = week.w;
+    const cutoffNote = pastCutoff ? '<div class="dc-cutoff">Booking closed<br>4pm cutoff</div>' : '';
+    card.innerHTML = '<div class="dc-month">' + month + '</div><div class="dc-day">' + dayNum + '</div><div class="dc-weekday">' + weekday + '</div><div class="dc-dots">' + dots.join('') + '</div>' + cutoffNote;
+    if (!pastCutoff) {
+      card.addEventListener('click', function() {
+        if (selectedDates.has(week.w)) {
+          selectedDates.delete(week.w);
+        } else {
+          selectedDates.add(week.w);
+        }
+        this.classList.toggle('selected');
+        updateTotal();
+      });
+    }
+    container.appendChild(card);
+  });
+}
+
+// ===== Recurring info =====
+function buildRecurringInfo() {
+  if (!currentCalendarName) return;
+  const match = currentCalendarName.match(/^([A-Za-z]+)/);
+  const dayName = match ? match[1] : 'collection day';
+  const eventsPerMonth = 4;
+  const serviceMultiplier = serviceType === 'both' ? 2 : 1;
+  const monthlyTotal = (PRICE_RECURRING * eventsPerMonth * serviceMultiplier).toFixed(2);
+  const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
+  const eventPrice = (PRICE_RECURRING * serviceMultiplier).toFixed(2);
+  document.getElementById('recurring-title').textContent = 'Every ' + dayName + ' \u2014 ' + serviceLabel;
+  document.getElementById('recurring-desc').textContent = 'We\'ll handle your bins on every ' + dayName + ' collection day, automatically. $' + eventPrice + '/week.';
+  document.getElementById('recurring-monthly').textContent = 'Estimated monthly: ~$' + monthlyTotal + '/month (' + (serviceMultiplier * eventsPerMonth) + ' service events \xd7 $' + eventPrice + ')'
+}
+
+// ===== Running total =====
+function updateTotal() {
+  const wrap = document.getElementById('total-wrap');
+  const btn = document.getElementById('btn-checkout');
+
+  // Has the customer made a billable selection?
+  const hasSelection = (planType === 'recurring') || (planType === 'adhoc' && selectedDates.size > 0);
+
+  if (!hasSelection) {
+    wrap.style.display = 'none';
+    btn.disabled = true;
+    return;
+  }
+
+  wrap.style.display = 'block';
+  btn.disabled = false;
+
+  // Make sure the Street View block is mounted (lazily, first time we have a selection)
+  ensureBinPlacementMounted();
+}
+
+// ===== Checkout =====
+document.getElementById('btn-checkout').addEventListener('click', openCheckout);
+
+// Returns {g,b,r,y,c} for a specific ISO date from the customer's current
+// schedule. Returns null if no schedule loaded or date not in schedule.
+function binsForDate(dateStr) {
+  if (!currentSchedule) return null;
+  const w = currentSchedule.find(x => x.w === dateStr);
+  if (!w) return null;
+  return { g: !!w.g, b: !!w.b, r: !!w.r, y: !!w.y, c: !!w.c };
+}
+
+function openCheckout() {
+  // Auto-drop the bin pin at the current crosshair position before capturing placement data.
+  if (typeof bpAutoDropAtCrosshair === 'function') bpAutoDropAtCrosshair();
+  const overlay = document.getElementById('modal-overlay');
+  const body = document.getElementById('modal-body');
+  const serviceMultiplier = serviceType === 'both' ? 2 : 1;
+  const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
+  const match = currentCalendarName ? currentCalendarName.match(/^([A-Za-z]+)/) : null;
+  const dayName = match ? match[1] : 'collection day';
+
+  let datesHTML = '';
+  let subtotalVal = 0;
+  let itemsHTML = '';
+
+  if (planType === 'adhoc') {
+    const sortedDates = [...selectedDates].sort();
+    datesHTML = sortedDates.map(d => formatDateNice(d)).join('<br>');
+    const eventCount = selectedDates.size * serviceMultiplier;
+    subtotalVal = eventCount * PRICE_ADHOC;
+    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">' + selectedDates.size + ' date' + (selectedDates.size !== 1 ? 's' : '') + (serviceType === 'both' ? ' &times; 2 services' : '') + '<br>= $' + subtotalVal.toFixed(2) + '</span></div>';
+  } else {
+    datesHTML = 'Every ' + dayName + ' (recurring)';
+    subtotalVal = PRICE_RECURRING * serviceMultiplier;
+    itemsHTML = '<div class="modal-row"><span class="mr-label">' + serviceLabel + '</span><span class="mr-value">$' + subtotalVal.toFixed(2) + '/week</span></div>';
+  }
+
+  // Calculate tax and total
+  const hstAmount = subtotalVal * HST_RATE;
+  const totalWithTax = subtotalVal + hstAmount;
+
+  // Store booking data in global scope for payment processing
+  const binPlacement = typeof bpGetPlacementData === 'function' ? bpGetPlacementData() : null;
+  // Pickup day name (e.g. "Tuesday") parsed from the calendar/schedule the customer matched into
+  const dowMatch = currentCalendarName ? currentCalendarName.match(/^([A-Za-z]+)/) : null;
+  const pickupDayOfWeek = dowMatch ? dowMatch[1] : 'Tuesday';
+  window.currentBooking = {
+    customerName: '',
+    customerEmail: '',
+    customerPhone: '',
+    address: currentAddress,
+    serviceType: serviceType,
+    frequency: planType,
+    dayOfWeek: pickupDayOfWeek,
+    subtotal: subtotalVal,
+    hstAmount: hstAmount,
+    totalWithTax: totalWithTax,
+    amount: Math.round(totalWithTax * 100),
+    selectedDates: planType === 'adhoc' ? [...selectedDates].sort() : [],
+    isNightZone: currentIsNightZone,
+    binPlacement: binPlacement,  // null if customer skipped, or no Street View available
+    // Bins are computed automatically from Toronto's schedule per pickup date.
+    binsByDate: planType === 'adhoc'
+      ? Object.fromEntries([...selectedDates].sort().map(d => [d, binsForDate(d)]).filter(([,v]) => v))
+      : {},
+    // Calendar zone (e.g. "Tuesday1") — driver dashboard uses this to compute bins
+    // for future recurring orders on-the-fly.
+    calendarName: currentCalendarName || ''
+  };
+
+  // Build tax breakdown section (for ad hoc only; recurring shows per week)
+  let taxBreakdownHTML = '';
+  if (planType === 'adhoc') {
+    taxBreakdownHTML = '<div style="margin-top:1.2rem;padding:12px;background:#f0fdf9;border:1px solid #b2f5ea;border-radius:8px;font-size:0.85rem;color:var(--slate)">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+        '<span>Subtotal</span>' +
+        '<span>$' + subtotalVal.toFixed(2) + '</span>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+        '<span>HST (13%)</span>' +
+        '<span>$' + hstAmount.toFixed(2) + '</span>' +
+      '</div>' +
+      '<div style="border-top:1px solid #b2f5ea;padding-top:6px;display:flex;justify-content:space-between;font-weight:700;color:var(--green-dark)">' +
+        '<span>Total</span>' +
+        '<span>$' + totalWithTax.toFixed(2) + '</span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  body.innerHTML = '<div class="modal-row"><span class="mr-label">Address</span><span class="mr-value">' + (currentAddress || '') + '</span></div>' +
+    '<div class="modal-row"><span class="mr-label">Service</span><span class="mr-value">' + serviceLabel + '</span></div>' +
+    '<div class="modal-row"><span class="mr-label">Plan</span><span class="mr-value">' + (planType === 'adhoc' ? 'Ad Hoc' : 'Recurring') + '</span></div>' +
+    '<div class="modal-row"><span class="mr-label">Date(s)</span><span class="mr-value">' + datesHTML + '</span></div>' +
+    itemsHTML +
+    taxBreakdownHTML +
+    '<div class="modal-total"><span class="mt-label">' + (planType === 'recurring' ? 'Per week (plus HST)' : 'Amount to be Charged') + '</span><span class="mt-value">$' + (planType === 'recurring' ? subtotalVal.toFixed(2) + '/week' : totalWithTax.toFixed(2)) + '</span></div>' +
+    '<div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #e2e8f0"><p style="font-size:0.85rem;font-weight:600;color:var(--slate-light);margin-bottom:0.8rem">Your Details</p>' +
+    '<input id="customer-name" type="text" placeholder="Full Name" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
+    '<input id="customer-email" type="email" placeholder="Email" style="width:100%;padding:10px;margin-bottom:0.8rem;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
+    '<input id="customer-phone" type="tel" placeholder="Phone (optional)" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:6px;font-size:0.9rem" />' +
+    '</div>' +
+    '<div class="modal-actions">' +
+      '<button class="btn-back" onclick="closeModal()">&#8592; Back</button>' +
+      '<button class="btn-confirm" onclick="goToPayment()">Proceed to Payment &#10003;</button>' +
+    '</div>';
+
+  overlay.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+
+function goToPayment() {
+  const name = document.getElementById('customer-name')?.value || '';
+  const email = document.getElementById('customer-email')?.value || '';
+  const phone = document.getElementById('customer-phone')?.value || '';
+
+  if (!name || !email) {
+    alert('Please enter your name and email');
+    return;
+  }
+
+  // Update booking data
+  if (window.currentBooking) {
+    window.currentBooking.customerName = name;
+    window.currentBooking.customerEmail = email;
+    window.currentBooking.customerPhone = phone;
+  }
+
+  // Show payment form
+  showStripeForm();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.classList.remove('modal-open');
+}
+
+function showStripeForm() {
+  const body = document.getElementById('modal-body');
+  const booking = window.currentBooking || {};
+  const chargeAmount = booking.amount / 100;
+
+  body.innerHTML = '<div style="margin-bottom:1.2rem"><label style="display:block;font-weight:600;margin-bottom:0.5rem;color:var(--slate)">Card Details</label>' +
+    '<div id="card-number" style="border:1px solid #e2e8f0;padding:12px;margin-bottom:0.8rem;border-radius:8px;background:#f8fafc;height:48px"></div>' +
+    '<div style="display:flex;gap:0.8rem">' +
+      '<div id="card-expiry" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;height:48px;flex:1"></div>' +
+      '<div id="card-cvc" style="border:1px solid #e2e8f0;padding:12px;border-radius:8px;background:#f8fafc;height:48px;flex:1"></div>' +
+    '</div>' +
+    '<div id="card-errors" style="margin-top:0.5rem;color:#dc2626;font-size:0.85rem;min-height:22px"></div></div>' +
+    '<div style="padding:12px;background:var(--green-xlight);border-radius:8px;margin:1rem 0;font-size:0.85rem;color:var(--slate)"><strong>Test card:</strong> 4242 4242 4242 4242 · Exp: any future · CVC: any 3 digits</div>' +
+    '<div style="margin:1rem 0;padding:12px;background:#f0fdf9;border:1px solid #b2f5ea;border-radius:8px;font-size:0.85rem;color:var(--slate)">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+        '<span>Subtotal</span>' +
+        '<span>$' + (booking.subtotal || 0).toFixed(2) + '</span>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:6px">' +
+        '<span>HST (13%)</span>' +
+        '<span>$' + (booking.hstAmount || 0).toFixed(2) + '</span>' +
+      '</div>' +
+      '<div style="border-top:1px solid #b2f5ea;padding-top:6px;display:flex;justify-content:space-between;font-weight:700;color:var(--green-dark)">' +
+        '<span>Total to Charge</span>' +
+        '<span>$' + chargeAmount.toFixed(2) + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="modal-actions">' +
+      '<button class="btn-back" onclick="closeModal()">&#8592; Cancel</button>' +
+      '<button class="btn-confirm" id="pay-btn" onclick="processPayment()">Pay $' + chargeAmount.toFixed(2) + ' &#10003;</button>' +
+    '</div>';
+
+  // Mount Stripe card elements
+  if (typeof initStripeForm === 'function') {
+    setTimeout(() => {
+      initStripeForm();
+    }, 100);
+  }
+}
+
+async function processPayment() {
+  const btn = document.getElementById('pay-btn');
+  if (!btn) return;
+
+  const booking = window.currentBooking;
+  if (!booking) {
+    alert('Booking data missing');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  try {
+    const result = await processBookingPayment(booking);
+    if (result && result.success) {
+      showPaymentSuccess(result.bookingId, booking, result.savedLocation, result.ordersCount || 0);
+    } else {
+      throw new Error(result?.error || 'Payment failed');
+    }
+  } catch (err) {
+    const errorDiv = document.getElementById('card-errors');
+    if (errorDiv) {
+      errorDiv.textContent = 'Error: ' + (err.message || 'Payment failed');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Try Again';
+    console.error('Payment error:', err);
+  }
+}
+
+function showPaymentSuccess(bookingId, bookingData, savedLocation, ordersCount) {
+  const body = document.getElementById('modal-body');
+  const locationText = '';
+  const ordersText = ordersCount > 0 ? `<p style="font-size:0.8rem;color:var(--slate-light);margin-top:0.75rem;padding:0.75rem;background:var(--green-xlight);border-radius:8px"><strong>${ordersCount} service date(s)</strong> scheduled</p>` : '';
+  body.innerHTML = '<div class="thankyou"><div class="thankyou-icon">✅</div><h3>Payment Successful!</h3><p>Your booking is confirmed! A confirmation email is on its way to <strong>' + bookingData.customerEmail + '</strong>.</p><p style="font-size:0.85rem;color:var(--slate-light);margin-top:0.5rem"><strong>Booking ID:</strong> ' + bookingId + '</p>' + ordersText + '</div><div class="modal-actions"><button class="btn-confirm" onclick="window.location.href=\'index.html\'" style="flex:1">Done</button></div>';
+  
+  // Send confirmation emails (async, don't block)
+  if (typeof sendConfirmationEmail === 'function') {
+    sendConfirmationEmail(bookingData, bookingId).catch(err => {
+      console.warn('Email send failed (non-blocking):', err);
+    });
+  }
+}
+
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ===== Date utilities =====
+function formatDateISO(date) {
+  return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+}
+function formatDateNice(isoStr) {
+  const d = new Date(isoStr + 'T00:00:00');
+  return d.toLocaleDateString('en-CA', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+}
+function formatDateShort(isoStr) {
+  const d = new Date(isoStr + 'T00:00:00');
+  return d.toLocaleDateString('en-CA', { month:'short', day:'numeric' });
+}
+</script>
+</body>
+</html>
