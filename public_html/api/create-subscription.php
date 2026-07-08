@@ -2,8 +2,8 @@
 /**
  * GetMyBin — Recurring Subscription
  * Creates Stripe Customer + Product + Price + Subscription.
- * Uses pending_if_incomplete so Stripe attempts payment immediately.
- * If payment succeeds → prepaid:true. If 3D Secure needed → returns clientSecret.
+ * Uses allow_incomplete so Stripe attempts payment immediately.
+ * Returns prepaid:true when payment succeeds, clientSecret when 3DS is needed.
  */
 require_once __DIR__ . '/config.php';
 corsHeaders();
@@ -62,14 +62,12 @@ $r = stripeRequest('POST', '/prices', [
 if ($r['code'] >= 400) fail('Price: ' . ($r['body']['error']['message'] ?? 'failed'));
 $priceId = $r['body']['id'];
 
-// Step 4: Create Subscription with pending_if_incomplete
-// Stripe attempts payment immediately. 4242 cards succeed right away.
-// 3D Secure cards need browser confirmation.
+// Step 4: Create Subscription (allow_incomplete = attempt payment, don't block on failure)
 $r = stripeRequest('POST', '/subscriptions', [
     'customer'                                               => $customerId,
     'items[0][price]'                                        => $priceId,
     'default_payment_method'                                => $paymentMethodId,
-    'payment_behavior'                                      => 'pending_if_incomplete',
+    'payment_behavior'                                      => 'allow_incomplete',
     'payment_settings[payment_method_types][0]'             => 'card',
     'payment_settings[save_default_payment_method]'         => 'on_subscription',
     'metadata[booking_id]'                                  => $bookingId,
@@ -81,9 +79,8 @@ $subscriptionId = $sub['id'];
 $subStatus      = $sub['status'] ?? 'unknown';
 
 // Step 5: Check subscription status
-// active = payment succeeded immediately
-// incomplete = payment requires confirmation (3D Secure etc.)
-// past_due / unpaid = payment failed
+// active = payment succeeded (no 3DS needed) → prepaid
+// incomplete = payment pending (3DS or failed) → try to get PI for confirmation
 if ($subStatus === 'active') {
     echo json_encode([
         'success'        => true,
@@ -94,48 +91,26 @@ if ($subStatus === 'active') {
     exit;
 }
 
-if ($subStatus === 'incomplete' || $subStatus === 'past_due') {
-    // Try to get the latest invoice's payment_intent for confirmation
+// Subscription is incomplete — find the payment intent for browser confirmation
+if (in_array($subStatus, ['incomplete', 'past_due', 'unpaid'])) {
     $invoiceId = $sub['latest_invoice'] ?? null;
-    if (!$invoiceId) fail('No latest_invoice on subscription');
+    if (!$invoiceId) fail('No invoice on incomplete subscription');
 
-    // Direct API call to get invoice with payment_intent expanded
-    $ch = curl_init('https://api.stripe.com/v1/invoices/' . $invoiceId . '?expand%5B%5D=payment_intent');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_USERPWD        => STRIPE_SECRET_KEY . ':',
+    // Look up payment intents associated with this customer
+    $piList = stripeRequest('GET', '/payment_intents', [
+        'customer' => $customerId,
+        'limit'    => '5',
     ]);
-    $resp = curl_exec($ch);
-    curl_close($ch);
-    $invBody = json_decode($resp, true);
-    $pi      = $invBody['payment_intent'] ?? null;
-
-    if (is_array($pi) && !empty($pi['client_secret'])) {
-        echo json_encode([
-            'success'         => true,
-            'subscriptionId'  => $subscriptionId,
-            'customerId'      => $customerId,
-            'clientSecret'    => $pi['client_secret'],
-            'paymentIntentId' => $pi['id'],
-            'prepaid'         => false,
-        ]);
-        exit;
-    }
-
-    // Payment intent not available — check if there's a pending setup intent
-    $pendingIntent = $sub['pending_setup_intent'] ?? null;
-    if ($pendingIntent) {
-        $piResp = stripeRequest('GET', "/setup_intents/$pendingIntent");
-        if ($piResp['code'] < 400 && $piResp['body']['payment_intent'] ?? null) {
-            $piId = $piResp['body']['payment_intent'];
-            $piResult = stripeRequest('GET', "/payment_intents/$piId");
-            if ($piResult['code'] < 400 && !empty($piResult['body']['client_secret'])) {
+    if ($piList['code'] < 400 && !empty($piList['body']['data'])) {
+        foreach ($piList['body']['data'] as $pi) {
+            if (in_array($pi['status'] ?? '', ['requires_action', 'requires_confirmation', 'requires_payment_method'])
+                && !empty($pi['client_secret'])) {
                 echo json_encode([
                     'success'         => true,
                     'subscriptionId'  => $subscriptionId,
                     'customerId'      => $customerId,
-                    'clientSecret'    => $piResult['body']['client_secret'],
-                    'paymentIntentId' => $piId,
+                    'clientSecret'    => $pi['client_secret'],
+                    'paymentIntentId' => $pi['id'],
                     'prepaid'         => false,
                 ]);
                 exit;
@@ -143,8 +118,7 @@ if ($subStatus === 'incomplete' || $subStatus === 'past_due') {
         }
     }
 
-    fail('Payment requires confirmation but no client_secret found. Sub status: ' . $subStatus);
+    fail('Subscription is ' . $subStatus . ' but no actionable payment intent found');
 }
 
-// Unknown status — debug
-fail('Unexpected subscription status: ' . $subStatus . ' — ' . json_encode(array_keys($sub)));
+fail('Unexpected subscription status: ' . $subStatus);
