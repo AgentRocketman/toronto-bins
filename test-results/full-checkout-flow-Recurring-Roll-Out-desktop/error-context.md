@@ -209,7 +209,7 @@ Call log:
 - iframe
 - iframe
 - iframe
-- text: "Error: Unexpected payment status: unknown"
+- text: "Error: No payment_intent on invoice. Invoice keys: id, object, account_country, account_name, account_tax_ids, amount_due, amount_overpaid, amount_paid, amount_remaining, amount_shipping, application, attempt_count, attempted, auto_advance, automatic_tax, automatically_finalizes_at, billing_reason, collection_method, created, currency, custom_fields, customer, customer_account, customer_address, customer_email, customer_name, customer_phone, customer_shipping, customer_tax_exempt, customer_tax_ids, default_payment_method, default_source, default_tax_rates, description, discounts, due_date, effective_at, ending_balance, footer, from_invoice, hosted_invoice_url, invoice_pdf, issuer, last_finalization_error, latest_revision, lines, livemode, metadata, next_payment_attempt, number, on_behalf_of, parent, payment_settings, period_end, period_start, post_payment_credit_notes_amount, pre_payment_credit_notes_amount, receipt_number, rendering, shipping_cost, shipping_details, starting_balance, statement_descriptor, status, status_transitions, subtotal, subtotal_excluding_tax, test_clock, total, total_discount_amounts, total_excluding_tax, total_pretax_credit_amounts, total_taxes, webhooks_delivered_at"
 - strong: "Test card:"
 - text: "4242 4242 4242 4242 · Exp: any future · CVC: any 3 digits Subtotal $5.95 HST (13%) $0.77 Total to Charge $6.72"
 - button "← Cancel"

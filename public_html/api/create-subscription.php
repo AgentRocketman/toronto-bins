@@ -104,9 +104,7 @@ $subscriptionId = $subscription['id'];
 $invoiceId      = $subscription['latest_invoice']; // string ID
 
 // Step 5: Retrieve invoice to get payment_intent (expand didn't work via form-urlencoded)
-$invoiceResult = stripeRequest('GET', "/invoices/$invoiceId", [
-    'expand[0]' => 'payment_intent',
-]);
+$invoiceResult = stripeRequest('GET', "/invoices/$invoiceId?expand[]=payment_intent");
 
 if ($invoiceResult['code'] >= 400) {
     $errorMsg = $invoiceResult['body']['error']['message'] ?? 'Failed to retrieve invoice';
