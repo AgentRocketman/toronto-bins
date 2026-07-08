@@ -9,250 +9,216 @@
   <link rel="icon" type="image/png" href="/img/getmybin-icon.png">
   <link rel="shortcut icon" href="/img/getmybin-icon.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-  <title>GetMyBin — Toronto Bin Collection Service</title>
+  <title>GetMyBin &mdash; Toronto Bin Collection Service</title>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
       --green:#71b80c;--green-dark:#5a9109;--green-light:#d4f3a8;--green-xlight:#f7fce3;
-      --teal:#0d9488;--teal-dark:#0f766e;
       --slate:#334155;--slate-light:#64748b;--slate-xlight:#f1f5f9;
-      --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.08);
-      --shadow-lg:0 12px 40px rgba(0,0,0,.12);--shadow-xl:0 20px 60px rgba(0,0,0,.15);
-      --radius:16px;--radius-sm:10px;--radius-lg:24px
+      --shadow-sm:0 1px 3px rgba(0,0,0,.1);--shadow-md:0 4px 12px rgba(0,0,0,.08);
+      --shadow-lg:0 10px 30px rgba(0,0,0,.12);--radius:14px
     }
     html{scroll-behavior:smooth}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--slate);line-height:1.6;overflow-x:hidden}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:var(--slate);line-height:1.6}
     body.modal-open{overflow:hidden}
 
-    /* ===== NAV ===== */
+    /* ===== NAVIGATION BAR ===== */
+    /* Rebuilt from scratch — clean, modern, fully responsive */
     nav{
-      position:sticky;top:0;z-index:200;background:rgba(255,255,255,.92);
-      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-      border-bottom:1px solid rgba(0,0,0,.06);width:100%;
+      position:sticky;
+      top:0;
+      z-index:200;
+      background:#fff;
+      border-bottom:1px solid #e2e8f0;
+      box-shadow:0 1px 3px rgba(0,0,0,.04);
+      width:100%;
     }
     .nav-inner{
-      max-width:1280px;margin:0 auto;display:flex;align-items:center;
-      justify-content:space-between;height:72px;padding:0 32px;gap:16px;
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      height:72px;
+      padding:0 24px 0 40px;
+      gap:16px;
     }
-    .nav-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0;height:100%}
-    .nav-logo img{height:40px;width:auto;object-fit:contain;display:block}
-    .nav-links{display:flex;align-items:center;gap:36px;list-style:none;margin:0;padding:0}
-    .nav-links a{color:var(--slate);text-decoration:none;font-size:.93rem;font-weight:600;transition:color .2s;white-space:nowrap;padding:8px 0}
+    .nav-logo{
+      display:flex;
+      align-items:center;
+      text-decoration:none;
+      flex-shrink:0;
+      height:100%;
+    }
+    .nav-logo img{
+      height:44px;
+      width:auto;
+      object-fit:contain;
+      display:block;
+    }
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:32px;
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+    .nav-links a{
+      color:var(--slate);
+      text-decoration:none;
+      font-size:.95rem;
+      font-weight:600;
+      transition:color .2s ease;
+      white-space:nowrap;
+      padding:8px 0;
+    }
     .nav-links a:hover{color:var(--green)}
     .nav-cta{
-      background:var(--green);color:#fff;padding:10px 28px;border-radius:99px;
-      font-weight:700;font-size:.9rem;transition:all .2s;box-shadow:0 2px 8px rgba(113,184,12,.25);
+      background:var(--green);
+      color:#fff;
+      padding:10px 48px;
+      border-radius:99px;
+      font-weight:700;
+      font-size:.92rem;
+      transition:background .2s ease,transform .15s ease,box-shadow .2s ease;
+      box-shadow:0 2px 8px rgba(113,184,12,.25);
     }
-    .nav-cta:hover{background:var(--green-dark);color:#fff;transform:translateY(-1px);box-shadow:0 4px 16px rgba(113,184,12,.35)}
+    .nav-cta:hover{
+      background:var(--green-dark);
+      color:#fff;
+      transform:translateY(-1px);
+      box-shadow:0 4px 12px rgba(113,184,12,.35);
+    }
 
+    /* Tablet (768px – 1023px) */
+    @media (max-width:1023px){
+      .nav-inner{
+        padding:0 20px 0 32px;
+        height:68px;
+      }
+      .nav-logo img{height:42px}
+      .nav-links{gap:24px}
+      .nav-links a{font-size:.9rem}
+      .nav-cta{padding:9px 44px;font-size:.9rem}
+    }
+
+    /* Mobile Portrait (480px – 767px) */
     @media (max-width:767px){
-      .nav-inner{padding:0 16px;height:60px;gap:8px}
+      .nav-inner{
+        padding:0 16px 0 20px;
+        height:60px;
+        gap:8px;
+      }
+      .nav-logo img{height:36px}
+      .nav-links{gap:14px}
+      .nav-links a{font-size:.85rem;padding:6px 0}
+      .nav-cta{padding:8px 38px;font-size:.85rem}
+    }
+
+    /* Small Mobile (up to 479px) */
+    @media (max-width:479px){
+      .nav-inner{
+        padding:0 12px 0 16px;
+        height:56px;
+        gap:6px;
+      }
       .nav-logo img{height:32px}
-      .nav-links{gap:16px}
-      .nav-links a{font-size:.82rem}
-      .nav-cta{padding:8px 22px;font-size:.82rem}
+      .nav-links{gap:10px}
+      .nav-links a{font-size:.78rem}
+      .nav-cta{padding:7px 36px;font-size:.78rem}
     }
 
-    /* ===== HERO — full-width video with text overlay ===== */
-    .hero{
-      position:relative;overflow:hidden;
-      background:#000;display:flex;align-items:center;justify-content:center;
-      min-height:75vh;max-height:85vh;
+    /* Mobile Landscape (up to 900px wide, short height) */
+    @media (max-width:900px) and (orientation:landscape) and (max-height:500px){
+      .nav-inner{
+        height:54px;
+        padding:0 16px 0 24px;
+      }
+      .nav-logo img{height:34px}
+      .nav-links{gap:18px}
+      .nav-links a{font-size:.85rem}
+      .nav-cta{padding:7px 40px;font-size:.85rem}
     }
-    .hero-video-bg{
-      position:absolute;inset:0;width:100%;height:100%;
-      object-fit:cover;z-index:0;
-    }
-    .hero-overlay{
-      position:absolute;inset:0;z-index:1;
-      background:linear-gradient(180deg,
-        rgba(0,0,0,.55) 0%,
-        rgba(0,0,0,.25) 40%,
-        rgba(0,0,0,.5) 100%
-      );
-    }
-    .hero-inner{
-      position:relative;z-index:2;
-      max-width:780px;width:100%;
-      padding:2rem;
-      text-align:center;
-    }
-    .hero h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:900;color:#fff;letter-spacing:-1.8px;line-height:1.05;margin-bottom:.6rem;text-shadow:0 2px 12px rgba(0,0,0,.3)}
-    .hero h1 em{background:linear-gradient(135deg,var(--green),#a3e635);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal}
-    .hero-badge{
-      display:inline-block;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-      border:1px solid rgba(255,255,255,.25);color:#fff;
-      font-size:.72rem;font-weight:800;letter-spacing:.1em;
-      text-transform:uppercase;padding:6px 16px;border-radius:99px;margin-bottom:1rem;
-    }
-    .hero-sub{font-size:clamp(.9rem,2vw,1.05rem);color:rgba(255,255,255,.85);max-width:500px;margin:0 auto 2rem;line-height:1.6;text-shadow:0 1px 6px rgba(0,0,0,.2)}
 
-    /* Hero search — white card floating over video */
-    .hero-search-wrap{position:relative;z-index:2;max-width:560px;margin:0 auto}
-    .hero-search-box{
-      background:rgba(255,255,255,.18);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-      border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.2);
-      border:1px solid rgba(255,255,255,.25);
-      position:relative;overflow:visible;
-    }
+    /* HERO */
+    .hero{background:linear-gradient(135deg,#0a5c56 0%,#0d9488 45%,#14b8a6 100%);padding:5.5rem 1.5rem 7rem;text-align:center;position:relative;overflow:visible}
+    .hero::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.04;background-image:radial-gradient(circle,#fff 1px,transparent 1px);background-size:32px 32px}
+    .hero-inner{position:relative;max-width:740px;margin:0 auto}
+    .hero-badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.75rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:1.4rem}
+    .hero h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:.9rem}
+    .hero h1 em{color:#a7f3d0;font-style:normal}
+    .hero-sub{font-size:clamp(.95rem,2.5vw,1.1rem);color:rgba(255,255,255,.82);max-width:520px;margin:0 auto 2.8rem}
+    .hero-note{margin-top:1.1rem;color:rgba(255,255,255,.55);font-size:.8rem}
+    /* HERO SEARCH */
+    .hero-search-wrap{max-width:600px;margin:0 auto;position:relative}
+    .hero-search-box{background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.28);position:relative;overflow:visible}
     .hero-search-inner{display:flex;align-items:center;padding:8px 8px 8px 18px;gap:10px}
-    .hero-search-icon{color:rgba(255,255,255,.6);flex-shrink:0;display:flex;align-items:center}
-    #address{flex:1;border:none;outline:none;font-size:1rem;color:#fff;background:transparent;padding:11px 0;min-width:0}
-    #address::placeholder{color:rgba(255,255,255,.45)}
-    .hero-search-btn{
-      background:var(--green);color:#fff;border:none;border-radius:12px;
-      padding:14px 24px;font-weight:800;font-size:.92rem;cursor:pointer;
-      white-space:nowrap;flex-shrink:0;transition:all .2s;
-    }
-    .hero-search-btn:hover{background:var(--green-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(113,184,12,.3)}
-    .hero-rating{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:1.2rem;flex-wrap:wrap}
-    .hero-rating-stars{color:#f59e0b;font-size:1rem;letter-spacing:1px}
-    .hero-rating-text{color:rgba(255,255,255,.75);font-size:.82rem}
-    .hero-rating-divider{color:rgba(255,255,255,.4)}
-    .hero-note{margin-top:.7rem;color:rgba(255,255,255,.55);font-size:.78rem;text-align:center}
+    .hero-search-icon{color:#94a3b8;flex-shrink:0;display:flex;align-items:center}
+    .hero-search-btn{background:var(--green);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-weight:800;font-size:.92rem;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s,transform .15s}
+    .hero-search-btn:hover{background:var(--green-dark);transform:translateY(-1px)}
+    #hero-loading{display:none;margin-top:1.2rem;color:rgba(255,255,255,.9);font-size:.92rem;font-weight:500}
+    .spinner-sm{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+    #hero-error{display:none;margin-top:1rem;padding:12px 18px;background:rgba(239,68,68,.15);color:#fde8e8;border:1px solid rgba(239,68,68,.3);border-radius:12px;font-size:.9rem;text-align:center}
 
-    .suggestions{
-      position:absolute;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-      border:1px solid rgba(255,255,255,.3);
-      border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.25);z-index:9999;display:none;
-      max-height:280px;overflow-y:auto;margin-top:4px;
-    }
-    .suggestions.show{display:block}
-    .suggestion-item{
-      padding:12px 18px;cursor:pointer;font-size:.93rem;color:#2d3748;
-      border-bottom:1px solid #f7fafc;transition:background .12s;text-align:left;
-    }
-    .suggestion-item:last-child{border-bottom:none}
-    .suggestion-item:hover,.suggestion-item.active{background:var(--green-xlight);color:var(--green-dark)}
-    #hero-loading{display:none;margin-top:.8rem;color:rgba(255,255,255,.8);font-size:.9rem;font-weight:500;text-align:center}
-    .spinner-sm{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-    #hero-error{display:none;margin-top:.8rem;padding:12px 18px;background:rgba(254,242,242,.95);color:#991b1b;border:1px solid #fecaca;border-radius:12px;font-size:.9rem;text-align:center}
 
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    /* Mobile hero */
-    @media (max-width:768px){
-      .hero{min-height:70vh;max-height:none}
-      .hero-inner{padding:2rem 1.2rem 3rem}
-      .hero h1{font-size:clamp(1.8rem,7vw,2.8rem)}
-      .hero-sub{font-size:.88rem;margin-bottom:1.4rem}
-    }
-    @media (max-width:480px){
-      .hero{min-height:60vh}
-      .hero-search-inner{flex-wrap:wrap;padding:10px}
-      .hero-search-btn{width:100%;text-align:center;border-radius:10px}
-    }
-
-    /* ===== SECTIONS ===== */
-    section{padding:5rem 2rem}
-    .section-inner{max-width:1080px;margin:0 auto}
-    .section-eyebrow{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--green);margin-bottom:.5rem}
-    .section-title{font-size:clamp(1.6rem,4vw,2.3rem);font-weight:900;color:#0f172a;letter-spacing:-.5px;margin-bottom:.8rem}
-    .section-desc{color:var(--slate-light);font-size:1.02rem;max-width:520px}
+    /* SECTIONS */
+    section{padding:5rem 1.5rem}
+    .section-inner{max-width:1000px;margin:0 auto}
+    .section-eyebrow{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:.5rem}
+    .section-title{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:900;color:#0f172a;letter-spacing:-.5px;margin-bottom:.8rem}
+    .section-desc{color:var(--slate-light);font-size:1.02rem;max-width:500px}
 
     /* HOW IT WORKS */
     #how{background:var(--slate-xlight)}
-    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2.5rem}
-    .step-card{
-      background:#fff;border-radius:var(--radius);padding:2rem 1.8rem;
-      box-shadow:var(--shadow-sm);border:1px solid #e8ecf1;
-      position:relative;transition:all .25s;
-    }
-    .step-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px);border-color:var(--green-light)}
-    .step-num{position:absolute;top:1rem;right:1.4rem;font-size:3.8rem;font-weight:900;color:var(--green-xlight);line-height:1}
-    .step-icon{font-size:2.4rem;margin-bottom:1rem;display:inline-block;background:var(--green-xlight);width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center}
-    .step-card h3{font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:.4rem}
-    .step-card p{color:var(--slate-light);font-size:.9rem;line-height:1.6}
-
-    /* REVIEWS */
-    #reviews{background:linear-gradient(180deg,#f0fdfa 0%,#fff 100%)}
-    .reviews-eyebrow{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--green);margin-bottom:.4rem;text-align:center}
-    .reviews-title{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:900;color:#0f172a;letter-spacing:-.4px;text-align:center;margin-bottom:2.5rem}
-    .reviews-carousel{max-width:680px;margin:0 auto;--swiper-theme-color:#71b80c;padding-bottom:50px;cursor:pointer}
-    .swiper-slide{display:flex;align-items:center;justify-content:center}
-    .review-slide{width:100%}
-    .swiper-pagination{bottom:0;position:relative;display:flex;justify-content:center;gap:6px;padding-top:1.4rem}
-    .swiper-pagination-bullet{width:8px;height:8px;border-radius:50%;background:var(--slate-light);opacity:.3;margin:0;cursor:pointer;transition:all .3s}
-    .swiper-pagination-bullet.swiper-pagination-bullet-active{background:var(--green);opacity:1}
-    .review-card{
-      background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-md);
-      padding:2rem 2.2rem;border:1px solid #e8ecf1;position:relative;
-    }
-    .review-stars{color:#f59e0b;font-size:1.3rem;letter-spacing:2px;margin-bottom:1rem}
-    .review-text{font-size:1.05rem;color:#334155;line-height:1.7;font-style:italic;margin-bottom:1.2rem}
-    .review-author{font-size:.88rem;font-weight:700;color:#0f172a}
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:2.5rem}
+    .step-card{background:#fff;border-radius:var(--radius);padding:2rem 1.8rem;box-shadow:var(--shadow-sm);position:relative;transition:box-shadow .2s,transform .2s}
+    .step-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+    .step-num{position:absolute;top:1rem;right:1.4rem;font-size:3.8rem;font-weight:900;color:var(--green-light);line-height:1}
+    .step-icon{font-size:2.2rem;margin-bottom:1rem}
+    .step-card h3{font-size:1.02rem;font-weight:800;color:#0f172a;margin-bottom:.4rem}
+    .step-card p{color:var(--slate-light);font-size:.9rem}
 
     /* PRICING */
     #pricing{background:#fff}
-    .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:2.5rem}
-    .price-card{
-      border-radius:var(--radius);padding:2.2rem;border:2px solid #e2e8f0;
-      background:#fff;position:relative;transition:all .25s;
-    }
-    .price-card:hover{box-shadow:var(--shadow-lg);border-color:#cbd5e0}
-    .price-card.featured{
-      border-color:var(--green);box-shadow:0 0 0 5px rgba(113,184,12,.08);
-      background:linear-gradient(180deg,#fff 0%,var(--green-xlight) 100%);
-    }
-    .price-badge{
-      position:absolute;top:-14px;left:50%;transform:translateX(-50%);
-      background:linear-gradient(135deg,var(--green),var(--green-dark));
-      color:#fff;font-size:.7rem;font-weight:800;letter-spacing:.08em;
-      text-transform:uppercase;padding:5px 16px;border-radius:99px;white-space:nowrap;
-      box-shadow:0 2px 8px rgba(113,184,12,.3);
-    }
-    .price-name{font-size:1.2rem;font-weight:800;color:#0f172a;margin-bottom:.25rem}
-    .price-amount{font-size:2.8rem;font-weight:900;color:var(--green);line-height:1.05;letter-spacing:-1px}
+    .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:2.5rem}
+    .price-card{border-radius:var(--radius);padding:2rem 1.8rem;border:2px solid #e2e8f0;background:#fff;position:relative;transition:border-color .2s,box-shadow .2s}
+    .price-card.featured{border-color:var(--green);box-shadow:0 0 0 4px rgba(13,148,136,.1)}
+    .price-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 14px;border-radius:99px;white-space:nowrap}
+    .price-name{font-size:1.15rem;font-weight:800;color:#0f172a;margin-bottom:.25rem}
+    .price-amount{font-size:2.5rem;font-weight:900;color:var(--green);line-height:1.1}
     .price-unit{font-size:.82rem;color:var(--slate-light);margin-bottom:.3rem}
-    .price-tagline{font-size:.85rem;color:var(--slate-light);font-style:italic;margin-bottom:1.3rem}
-    .price-features{list-style:none;display:flex;flex-direction:column;gap:.5rem}
-    .price-features li{display:flex;align-items:center;gap:9px;font-size:.89rem;color:var(--slate)}
+    .price-tagline{font-size:.85rem;color:var(--slate-light);font-style:italic;margin-bottom:1.2rem}
+    .price-features{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+    .price-features li{display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--slate)}
     .price-features li::before{content:"✓";color:var(--green);font-weight:800;font-size:.82rem;flex-shrink:0}
     .pricing-note{margin-top:1.8rem;text-align:center;font-size:.82rem;color:var(--slate-light)}
     .pricing-note strong{color:var(--slate)}
-    .tax-note{margin-top:.8rem;text-align:center;font-size:.76rem;color:var(--slate-light);font-style:italic}
+    .tax-note{margin-top:0.8rem;text-align:center;font-size:.76rem;color:var(--slate-light);font-style:italic}
 
-    /* FAQ */
-    #faq{background:var(--slate-xlight)}
-    .faq-list{max-width:760px;margin:2.5rem auto 0;display:flex;flex-direction:column;gap:10px}
-    .faq-item{border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;background:#fff;transition:box-shadow .2s}
-    .faq-item:hover{box-shadow:var(--shadow-sm)}
-    .faq-q{width:100%;background:none;border:none;text-align:left;padding:1.1rem 1.5rem;font-size:1rem;font-weight:700;color:#0f172a;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;line-height:1.4}
-    .faq-q:hover{background:#f8fafc}
-    .faq-chevron{flex-shrink:0;color:var(--green);font-size:1.3rem;transition:transform .25s;font-weight:300}
-    .faq-item.open .faq-chevron{transform:rotate(45deg)}
-    .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease;padding:0 1.5rem}
-    .faq-item.open .faq-a{max-height:300px;padding:0 1.5rem 1.3rem}
-    .faq-a p{margin:0;color:var(--slate-light);font-size:.95rem;line-height:1.7}
-    .faq-a a{color:var(--teal);font-weight:600;text-decoration:underline}
-
-    /* GUARANTEE */
-    #guarantee{
-      background:linear-gradient(135deg,var(--teal-dark),var(--teal));
-      padding:2.5rem 2rem;text-align:center;
-    }
-    .guarantee-inner{max-width:700px;margin:0 auto}
-    .guarantee-icon{font-size:2.2rem;margin-bottom:.6rem}
-    .guarantee-title{font-size:1.15rem;font-weight:900;color:#fff;margin-bottom:.5rem}
-    .guarantee-text{font-size:.92rem;color:rgba(255,255,255,.85);line-height:1.7;max-width:560px;margin:0 auto}
-    .guarantee-text strong{color:#a7f3d0}
-
-    /* BOOKING SECTION — hidden until address confirmed */
-    #booking-section{overflow:hidden;max-height:0;opacity:0;transition:max-height 1.5s cubic-bezier(.4,0,.2,1),opacity .7s ease .15s;background:#fff}
+    /* BOOKING SECTION */
+    #booking-section{overflow:hidden;max-height:0;opacity:0;transition:max-height 1.5s cubic-bezier(.4,0,.2,1),opacity .7s ease .15s;background:linear-gradient(180deg,#ecfdf5 0%,#fff 120px)}
     #booking-section.revealed{max-height:6000px;opacity:1}
-    .booking-inner{max-width:860px;margin:0 auto;padding:5rem 2rem}
-    .address-confirmed{
-      background:linear-gradient(135deg,var(--green-dark),var(--green));
-      border-radius:var(--radius);padding:1.5rem 1.8rem;color:#fff;margin-bottom:2.5rem;
-      display:flex;align-items:center;gap:16px;flex-wrap:wrap;
-      box-shadow:0 6px 24px rgba(113,184,12,.25);
-    }
+    .booking-inner{max-width:860px;margin:0 auto;padding:5rem 1.5rem}
+    .address-confirmed{background:linear-gradient(135deg,var(--green-dark),var(--green));border-radius:18px;padding:1.5rem 1.8rem;color:#fff;margin-bottom:2.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 6px 24px rgba(13,148,136,.3)}
     .ac-icon{font-size:2rem;flex-shrink:0}
     .ac-text{flex:1;min-width:0}
     .ac-address{font-size:1.05rem;font-weight:800;margin-bottom:2px}
     .ac-day{font-size:.88rem;opacity:.85}
     .ac-change{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.78rem;font-weight:700;padding:7px 15px;border-radius:99px;cursor:pointer;transition:background .15s;white-space:nowrap;flex-shrink:0}
     .ac-change:hover{background:rgba(255,255,255,.3)}
+
+    /* Search autocomplete in hero */
+    #address{flex:1;border:none;outline:none;font-size:1rem;color:var(--slate);background:transparent;padding:11px 0;min-width:0}
+    #address::placeholder{color:#94a3b8}
+    .suggestions{position:absolute;left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:var(--shadow-lg);z-index:9999;display:none;max-height:280px;overflow-y:auto}
+    .suggestions.show{display:block}
+    .suggestion-item{padding:12px 18px;cursor:pointer;font-size:.93rem;color:#2d3748;border-bottom:1px solid #f7fafc;transition:background .12s;text-align:left}
+    .suggestion-item:last-child{border-bottom:none}
+    .suggestion-item:hover,.suggestion-item.active{background:var(--green-xlight);color:var(--green-dark)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Results placeholder (unused, kept for compat) */
 
     .next-pickup{background:linear-gradient(135deg,#f0fdf9,#e6fffa);border:1px solid #b2f5ea;border-radius:var(--radius);padding:1.2rem 1.5rem;margin-bottom:1.4rem}
     .next-pickup-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--green-dark);margin-bottom:5px}
@@ -279,8 +245,9 @@
     .legend-item{display:flex;align-items:center;gap:5px}
     .legend-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0}
 
+    /* ACCORDION */
     .schedule-accordion{margin-bottom:1.5rem}
-    .accordion-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 16px;background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;font-weight:700;color:var(--slate);transition:all .15s;user-select:none;width:100%}
+    .accordion-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:14px 16px;background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;font-weight:700;color:var(--slate);transition:all .15s;user-select:none}
     .accordion-header:hover{background:#ecf2f6;border-color:var(--green-light)}
     .accordion-chevron{display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;transition:transform .3s cubic-bezier(.4,0,.2,1);flex-shrink:0;margin-left:10px}
     .schedule-accordion.open .accordion-chevron{transform:rotate(180deg)}
@@ -288,11 +255,12 @@
     .schedule-accordion.open .accordion-content{max-height:2000px}
     .accordion-inner{padding:16px 0;border-top:2px solid #e2e8f0;margin-top:0}
 
+    /* SERVICE SECTION (in booking panel) */
     #service-section{margin-top:2rem}
     .divider{border:none;border-top:2px solid #e2e8f0;margin:2rem 0 1.5rem}
-    .subsection-title,.service-title{font-size:1.08rem;font-weight:800;color:#0f172a;margin-bottom:1.1rem}
+    .subsection-title{font-size:1.08rem;font-weight:800;color:#0f172a;margin-bottom:1.1rem}
     .toggle-group{display:flex;border:2px solid #e2e8f0;border-radius:12px;overflow:visible;width:fit-content;position:relative}
-    .toggle-btn{padding:10px 22px;background:#fff;border:none;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--slate-light);transition:all .15s;border-right:2px solid #e2e8f0;position:relative}
+    .toggle-btn{padding:10px 22px;background:#fff;border:none;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--slate-light);transition:background .15s,color .15s;border-right:2px solid #e2e8f0;position:relative}
     .toggle-btn:last-child{border-right:none}
     .toggle-btn.active{background:var(--green);color:#fff}
     .toggle-btn:hover:not(.active){background:var(--green-xlight);color:var(--green-dark)}
@@ -301,6 +269,7 @@
     .options-col{min-width:180px}
     .options-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--slate-light);margin-bottom:8px}
 
+    /* Date cards */
     #adhoc-dates{display:none;margin-top:1.5rem}
     #adhoc-dates h4{font-size:.88rem;font-weight:700;color:var(--slate);margin-bottom:10px}
     .date-cards{display:flex;flex-wrap:wrap;gap:8px}
@@ -316,12 +285,14 @@
     .dc-dots{display:flex;justify-content:center;gap:3px;flex-wrap:wrap;min-height:10px}
     .dc-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 
+    /* Recurring */
     #recurring-info{display:none;margin-top:1.5rem}
     .recurring-box{background:var(--green-xlight);border:1px solid #b2f5ea;border-radius:var(--radius);padding:1.2rem 1.5rem}
     .recurring-box h4{font-size:.95rem;font-weight:800;color:var(--green-dark);margin-bottom:6px}
     .recurring-box p{font-size:.88rem;color:var(--slate)}
     .recurring-monthly{margin-top:8px;font-size:.82rem;color:var(--slate-light);border-top:1px solid #b2f5ea;padding-top:8px}
 
+    /* Total */
     #total-wrap{display:none;margin-top:1.5rem}
     .total-box{background:#f8fafc;border:2px solid #e2e8f0;border-radius:var(--radius);padding:1.2rem 1.5rem}
     .total-box h4{font-size:.75rem;font-weight:800;color:var(--slate-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
@@ -329,14 +300,16 @@
     .total-item{display:flex;justify-content:space-between;font-size:.88rem;color:var(--slate)}
     .total-hr{border:none;border-top:1px solid #e2e8f0;margin:10px 0}
     .total-final{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:900;color:#0f172a}
-
+    /* ===== Bin placement (Street View pin) ===== */
     #bin-placement-block{margin-top:1.2rem}
     .bin-placement-title{font-size:1rem;font-weight:700;color:var(--slate);margin-bottom:.35rem}
     .bin-placement-optional{font-weight:500;color:var(--slate-light);font-size:.85rem;margin-left:.3rem}
     .bin-placement-help{font-size:.85rem;color:var(--slate-light);background:#f0fdf9;border-left:3px solid var(--green);padding:.6rem .8rem;border-radius:8px;margin-bottom:.7rem;line-height:1.45}
     #bp-streetview{width:100%;height:340px;border-radius:12px;overflow:hidden;background:#e2e8f0;box-shadow:0 2px 6px rgba(0,0,0,.08)}
     @media (max-width:600px){#bp-streetview{height:280px}}
-    #bp-crosshair{position:absolute;top:70%;left:50%;transform:translate(-50%,-50%);pointer-events:none;width:100px;height:100px;z-index:5;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='22' fill='none' stroke='%23ffffff' stroke-width='5'/><circle cx='50' cy='50' r='22' fill='none' stroke='%2371b80c' stroke-width='3.5'/><line x1='50' y1='4' x2='50' y2='24' stroke='%23ffffff' stroke-width='5'/><line x1='50' y1='4' x2='50' y2='24' stroke='%2371b80c' stroke-width='3.5'/><line x1='50' y1='76' x2='50' y2='96' stroke='%23ffffff' stroke-width='5'/><line x1='50' y1='76' x2='50' y2='96' stroke='%2371b80c' stroke-width='3.5'/><line x1='4' y1='50' x2='24' y2='50' stroke='%23ffffff' stroke-width='5'/><line x1='4' y1='50' x2='24' y2='50' stroke='%2371b80c' stroke-width='3.5'/><line x1='76' y1='50' x2='96' y2='50' stroke='%23ffffff' stroke-width='5'/><line x1='76' y1='50' x2='96' y2='50' stroke='%2371b80c' stroke-width='3.5'/><circle cx='50' cy='50' r='4' fill='%2371b80c' stroke='%23ffffff' stroke-width='1.5'/></svg>");background-size:contain;background-repeat:no-repeat;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));animation:bpPulse 1.6s ease-in-out infinite}
+    #bp-crosshair{position:absolute;top:70%;left:50%;transform:translate(-50%,-50%);pointer-events:none;width:100px;height:100px;z-index:5;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='22' fill='none' stroke='%23ffffff' stroke-width='5'/><circle cx='50' cy='50' r='22' fill='none' stroke='%2371b80c' stroke-width='3.5'/><line x1='50' y1='4' x2='50' y2='24' stroke='%23ffffff' stroke-width='5'/><line x1='50' y1='4' x2='50' y2='24' stroke='%2371b80c' stroke-width='3.5'/><line x1='50' y1='76' x2='50' y2='96' stroke='%23ffffff' stroke-width='5'/><line x1='50' y1='76' x2='50' y2='96' stroke='%2371b80c' stroke-width='3.5'/><line x1='4' y1='50' x2='24' y2='50' stroke='%23ffffff' stroke-width='5'/><line x1='4' y1='50' x2='24' y2='50' stroke='%2371b80c' stroke-width='3.5'/><line x1='76' y1='50' x2='96' y2='50' stroke='%23ffffff' stroke-width='5'/><line x1='76' y1='50' x2='96' y2='50' stroke='%2371b80c' stroke-width='3.5'/><circle cx='50' cy='50' r='4' fill='%2371b80c' stroke='%23ffffff' stroke-width='1.5'/></svg>");
+      background-size:contain;background-repeat:no-repeat;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));animation:bpPulse 1.6s ease-in-out infinite}
     @keyframes bpPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.08)}}
     #bp-crosshair.hidden{display:none}
     #bp-status{margin-top:.55rem;font-size:.85rem;color:var(--slate-light);text-align:center;min-height:1.2em}
@@ -348,14 +321,14 @@
     .bp-btn-primary:hover{background:var(--green-dark);border-color:var(--green-dark);color:#fff}
     .bp-unavailable{background:#fff7ed;border:1px dashed #fb923c;color:#9a3412;padding:.75rem 1rem;border-radius:10px;font-size:.88rem;margin-top:1rem}
 
-    .btn-checkout{display:block;width:100%;margin-top:1rem;background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;font-size:1.02rem;font-weight:800;padding:16px;border-radius:14px;border:none;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(113,184,12,.3)}
-    .btn-checkout:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(113,184,12,.45)}
+    .btn-checkout{display:block;width:100%;margin-top:1rem;background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;font-size:1.02rem;font-weight:800;padding:16px;border-radius:14px;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 20px rgba(13,148,136,.3)}
+    .btn-checkout:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(13,148,136,.4)}
     .btn-checkout:disabled{background:#cbd5e0;cursor:not-allowed;transform:none;box-shadow:none}
 
     /* MODAL */
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);overflow-y:auto}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);overflow-y:auto}
     .modal-overlay.open{display:flex}
-    .modal{background:#fff;border-radius:var(--radius-lg);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-xl);animation:slideUp .22s ease}
+    .modal{background:#fff;border-radius:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.25);animation:slideUp .22s ease}
     @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
     .modal-header{background:linear-gradient(135deg,var(--green-dark),var(--green));padding:1.5rem 2rem;color:#fff;border-radius:20px 20px 0 0}
     .modal-header h3{font-size:1.15rem;font-weight:900}
@@ -378,27 +351,76 @@
     .thankyou h3{font-size:1.4rem;font-weight:900;color:#0f172a;margin-bottom:.5rem}
     .thankyou p{color:var(--slate-light);font-size:.95rem;max-width:340px;margin:0 auto}
 
-    /* ===== FOOTER ===== */
-    footer{background:var(--slate-xlight);padding:3rem 2rem 5rem;text-align:center;border-top:1px solid #e2e8f0}
+    /* FOOTER */
+    /* Aggregate rating */
+    .hero-rating{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:1.1rem;flex-wrap:wrap}
+    .hero-rating-stars{color:#fbbf24;font-size:1rem;letter-spacing:1px}
+    .hero-rating-text{color:rgba(255,255,255,.8);font-size:.85rem}
+    .hero-rating-divider{color:rgba(255,255,255,.3);font-size:.85rem}
+
+    /* Guarantee strip */
+    #guarantee{background:linear-gradient(135deg,#0f766e 0%,#0d9488 100%);padding:2.2rem 1.5rem;text-align:center}
+    .guarantee-inner{max-width:700px;margin:0 auto}
+    .guarantee-icon{font-size:2rem;margin-bottom:.5rem}
+    .guarantee-title{font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:.5rem}
+    .guarantee-text{font-size:.92rem;color:rgba(255,255,255,.85);line-height:1.7;max-width:560px;margin:0 auto}
+    .guarantee-text strong{color:#a7f3d0}
+
+    /* Sticky mobile CTA */
+    .sticky-cta{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:#fff;border-top:1px solid #e2e8f0;padding:12px 16px;box-shadow:0 -4px 20px rgba(0,0,0,.1)}
+    .sticky-cta-btn{display:block;background:var(--green);color:#fff;text-align:center;padding:13px;border-radius:12px;font-weight:800;font-size:.95rem;text-decoration:none;transition:background .2s}
+    .sticky-cta-btn:hover{background:var(--green-dark)}
+    .sticky-cta{display:none!important}
+    .sticky-cta.visible{display:block!important}
+
+    /* Reviews carousel — smooth slide transitions */
+    #reviews{background:#f0fdfa;padding:4rem 1.5rem}
+    .reviews-eyebrow{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:.4rem;text-align:center}
+    .reviews-title{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:900;color:#0f172a;letter-spacing:-.4px;text-align:center;margin-bottom:2.2rem}
+    .reviews-carousel{max-width:680px;margin:0 auto;--swiper-theme-color:#71b80c;padding-bottom:50px;cursor:pointer}
+    .swiper-slide{display:flex;align-items:center;justify-content:center}
+    .review-slide{width:100%}
+    .swiper-pagination{bottom:0;position:relative;display:flex;justify-content:center;gap:6px;padding-top:1.4rem}
+    .swiper-pagination-bullet{width:8px;height:8px;border-radius:50%;background:var(--slate-light);opacity:.4;margin:0;cursor:pointer;transition:opacity .3s,background .3s}
+    .swiper-pagination-bullet.swiper-pagination-bullet-active{background:var(--green);opacity:1}
+    .review-card{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.08);padding:2rem 2.2rem;position:relative}
+    .review-stars{color:#f59e0b;font-size:1.3rem;letter-spacing:2px;margin-bottom:1rem}
+    .review-text{font-size:1.05rem;color:#334155;line-height:1.65;font-style:italic;margin-bottom:1.2rem}
+    .review-author{font-size:.88rem;font-weight:700;color:#0f172a}
+
+    /* FAQ */
+    #faq{background:#fff}
+    .faq-list{max-width:720px;margin:2.5rem auto 0;display:flex;flex-direction:column;gap:12px}
+    .faq-item{border:1px solid #e2e8f0;border-radius:14px;overflow:hidden}
+    .faq-q{width:100%;background:none;border:none;text-align:left;padding:1.1rem 1.4rem;font-size:1rem;font-weight:700;color:#0f172a;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;line-height:1.4}
+    .faq-q:hover{background:#f8fafc}
+    .faq-chevron{flex-shrink:0;color:var(--green);font-size:1.2rem;transition:transform .25s}
+    .faq-item.open .faq-chevron{transform:rotate(45deg)}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease;padding:0 1.4rem}
+    .faq-item.open .faq-a{max-height:300px;padding:0 1.4rem 1.2rem}
+    .faq-a p{margin:0;color:var(--slate-light);font-size:.97rem;line-height:1.7}
+    footer{background:var(--slate-xlight);padding:3rem 1.5rem 5rem;text-align:center;border-top:1px solid #e2e8f0}
+    .footer-logo{margin-bottom:.5rem;display:flex;justify-content:center}
+    .footer-logo img{height:28px;width:auto}
     .footer-note{font-size:.8rem;color:var(--slate-light)}
     .footer-note a{color:var(--slate-light)}
 
     @media(max-width:600px){
-      section{padding:3.5rem 1.2rem}
+      .hero{padding:4rem 1.2rem 5.5rem}
+      .hero h1{letter-spacing:-1px}
       .hero-search-inner{flex-wrap:wrap;padding:10px}
       .hero-search-btn{width:100%;text-align:center;border-radius:10px}
       .booking-inner{padding:3rem 1.2rem}
       .week-row{grid-template-columns:1fr repeat(5,34px);font-size:.76rem}
       .modal-body{padding:1.2rem}
       .options-row{gap:1rem}
-      .pricing-grid{grid-template-columns:1fr}
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </head>
 <body>
 
-<!-- ===== NAV ===== -->
+<!-- ===== NAVIGATION BAR (rebuilt) ===== -->
 <nav role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
     <a class="nav-logo" href="/" aria-label="GetMyBin home">
@@ -407,101 +429,166 @@
     <ul class="nav-links">
       <li><a href="/#how">How It Works</a></li>
       <li><a href="/#pricing">Pricing</a></li>
-      <li><a href="/#hero-anchor" class="nav-cta">Get Started</a></li>
+      <li><a href="/#hero-anchor" class="nav-cta">&nbsp;&nbsp;&nbsp;&nbsp;Get Started&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
     </ul>
   </div>
 </nav>
 
-<!-- ===== HERO — full-screen video with overlay ===== -->
+<!-- HERO — address input IS the CTA -->
 <div class="hero" id="hero-anchor">
-  <video class="hero-video-bg" autoplay muted loop playsinline>
-    <source src="/assets/video/hero.mp4" type="video/mp4">
-  </video>
-  <div class="hero-overlay"></div>
   <div class="hero-inner">
-    <div class="hero-badge">📍 Toronto's Bin Service</div>
-    <h1>Bin day,<br><em>handled.</em></h1>
-    <p class="hero-sub">We roll your bins to the curb and back — so you don't have to. Enter your address to see your schedule and get started.</p>
+    <div class="hero-badge">&#128465; Toronto&rsquo;s Bin Service</div>
+    <h1>Never miss<br><em>collection day</em><br>again</h1>
+    <p class="hero-sub">We roll your bins to the curb and back &mdash; so you don&rsquo;t have to.</p>
     <div class="hero-search-wrap">
       <div class="hero-search-box">
         <div class="hero-search-inner">
           <span class="hero-search-icon">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           </span>
-          <input type="text" id="address" placeholder="Start typing your Toronto address…" autocomplete="off" />
-          <button class="hero-search-btn" id="hero-search-btn">Check Schedule →</button>
+          <input type="text" id="address" placeholder="Start typing your Toronto address&hellip;" autocomplete="off" />
+          <button class="hero-search-btn" id="hero-search-btn">Check Schedule &rarr;</button>
         </div>
       </div>
       <div class="suggestions" id="suggestions"></div>
       <div class="hero-rating">
-        <span class="hero-rating-stars">★★★★★</span>
-        <span class="hero-rating-text">5.0 — Loved by Toronto homeowners</span>
-        <span class="hero-rating-divider">·</span>
-        <span class="hero-rating-text">No commitment</span>
+        <span class="hero-rating-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <span class="hero-rating-text"><strong style="color:#fff">5.0</strong> &mdash; Loved by Toronto homeowners</span>
+        <span class="hero-rating-divider">&middot;</span>
+        <span class="hero-rating-text">No commitment required</span>
       </div>
-      <p class="hero-note">📍 Serving Toronto residential addresses</p>
-      <div id="hero-loading"><span class="spinner-sm"></span>Looking up your schedule…</div>
+      <p class="hero-note">&#128205; Serving Toronto residential addresses</p>
+      <div id="hero-loading"><span class="spinner-sm"></span>Looking up your schedule&hellip;</div>
       <div id="hero-error"></div>
     </div>
   </div>
 </div>
 
-<!-- ===== HOW IT WORKS ===== -->
+<!-- HOW IT WORKS -->
 <section id="how">
   <div class="section-inner">
     <div class="section-eyebrow">Simple Process</div>
     <h2 class="section-title">Three steps, zero hassle</h2>
-    <p class="section-desc">We handle everything from start to finish — just enter your address and we take care of the rest.</p>
+    <p class="section-desc">We handle everything from start to finish &mdash; you just enter your address and we take care of the rest.</p>
     <div class="steps">
       <div class="step-card">
         <div class="step-num">1</div>
-        <div class="step-icon">📍</div>
+        <div class="step-icon">&#128205;</div>
         <h3>Enter your address</h3>
         <p>We look up your City of Toronto collection schedule automatically. No forms, no phone calls.</p>
       </div>
       <div class="step-card">
         <div class="step-num">2</div>
-        <div class="step-icon">📋</div>
+        <div class="step-icon">&#128203;</div>
         <h3>Pick your service</h3>
         <p>Choose roll-out, roll-in, or both. Select ad hoc dates or subscribe for recurring service every week.</p>
       </div>
       <div class="step-card">
         <div class="step-num">3</div>
-        <div class="step-icon">✅</div>
+        <div class="step-icon">&#9989;</div>
         <h3>We handle the rest</h3>
-        <p>We roll your bins to the curb the evening before pickup — and bring them back in the afternoon after collection.</p>
+        <p>We roll your bins to the curb the evening before pickup &mdash; and bring them back in the afternoon after collection. You never have to think about it.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== REVIEWS ===== -->
+<!-- REVIEWS -->
 <section id="reviews">
   <div class="section-inner">
     <div class="reviews-eyebrow">What Customers Say</div>
     <h2 class="reviews-title">Toronto homeowners love GetMyBin</h2>
     <div class="swiper reviews-carousel" id="reviewsCarousel">
       <div class="swiper-wrapper">
+      <!-- 1. Skeptic converted -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;Honestly? I rolled my eyes when my neighbour told me about GetMyBin. Paying someone to move bins felt absurd. Six months later I&rsquo;m the one evangelizing it to everyone on my street. It just works &mdash; every single time, without fail.&rdquo;</p>
+          <div class="review-author">Michael T. &mdash; The Beaches</div>
+        </div>
+      </div>
 
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Honestly? I rolled my eyes when my neighbour told me about GetMyBin. Paying someone to move bins felt absurd. Six months later I'm the one evangelizing it to everyone on my street. It just works — every single time, without fail."</p><div class="review-author">Michael T. — The Beaches</div></div></div>
+      <!-- 2. Dual income -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;Two demanding jobs, zero patience for bin schedules. Which week is garbage? Which is recycling? We don&rsquo;t know and we don&rsquo;t care anymore. GetMyBin handles every pickup without fail. Best twelve dollars we spend all month.&rdquo;</p>
+          <div class="review-author">Sarah &amp; Kevin D. &mdash; Leslieville</div>
+        </div>
+      </div>
 
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Two demanding jobs, zero patience for bin schedules. Which week is garbage? Which is recycling? We don't know and we don't care anymore. GetMyBin handles every pickup without fail. Best twelve dollars we spend all month."</p><div class="review-author">Sarah & Kevin D. — Leslieville</div></div></div>
+      <!-- 3. Busy parent -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;Three kids, two jobs, one very chaotic life. GetMyBin showed up every single week without me lifting a finger &mdash; or a bin. My husband still can&rsquo;t figure out how the bins always make it to the curb on time. I&rsquo;m not telling him.&rdquo;</p>
+          <div class="review-author">Lisa M. &mdash; Willowdale</div>
+        </div>
+      </div>
 
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Three kids, two jobs, one very chaotic life. GetMyBin showed up every single week without me lifting a finger — or a bin. My husband still can't figure out how the bins always make it to the curb on time. I'm not telling him."</p><div class="review-author">Lisa M. — Willowdale</div></div></div>
+      <!-- 4. Safety / parents -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;Every January I&rsquo;d lie awake picturing my dad slipping on an icy driveway dragging those bins out at 6am. I found GetMyBin, set it up in 10 minutes, and that weight lifted immediately. They love it, I sleep better. Worth every single penny.&rdquo;</p>
+          <div class="review-author">Priya S. &mdash; North York</div>
+        </div>
+      </div>
 
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Every January I'd lie awake picturing my dad slipping on an icy driveway dragging those bins out at 6am. I found GetMyBin, set it up in 10 minutes, and that weight lifted immediately. They love it, I sleep better. Worth every single penny."</p><div class="review-author">Priya S. — North York</div></div></div>
+      <!-- 5. Gift for mom -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;I&rsquo;ve bought my mom flowers, spa days, fancy dinners. She&rsquo;s always polite. I got her GetMyBin for her birthday half as a joke. She called me four days later, completely serious, and said it was the best gift she&rsquo;d received in years. I&rsquo;ll take it.&rdquo;</p>
+          <div class="review-author">James O. &mdash; North York</div>
+        </div>
+      </div>
 
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"I've bought my mom flowers, spa days, fancy dinners. She's always polite. I got her GetMyBin for her birthday half as a joke. She called me four days later, completely serious, and said it was the best gift she'd received in years."</p><div class="review-author">James O. — North York</div></div></div>
+      <!-- 6. Senior, first person -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;I&rsquo;m 76 and my daughter kept offering to &lsquo;help&rsquo; with the bins, which I knew meant she was worried. I signed up for GetMyBin myself, thank you very much. Simple, reliable, and now she stops fussing. I rather enjoy knowing it&rsquo;s sorted before she even thinks to call.&rdquo;</p>
+          <div class="review-author">Dorothy W. &mdash; Scarborough</div>
+        </div>
+      </div>
 
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"I'm 76 and my daughter kept offering to 'help' with the bins, which I knew meant she was worried. I signed up for GetMyBin myself, thank you very much. Simple, reliable, and now she stops fussing."</p><div class="review-author">Dorothy W. — Scarborough</div></div></div>
+      <!-- 7. Vacation / Florida -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;Six weeks in Florida every February. For years we felt guilty asking the neighbours to deal with the bins. Now we book our flights, set up GetMyBin, and don&rsquo;t think about Toronto once until we land. We handle the margaritas. They handle the bins.&rdquo;</p>
+          <div class="review-author">Sandra P. &mdash; Etobicoke</div>
+        </div>
+      </div>
 
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Six weeks in Florida every February. For years we felt guilty asking the neighbours to deal with the bins. Now we book our flights, set up GetMyBin, and don't think about Toronto once until we land. We handle the margaritas. They handle the bins."</p><div class="review-author">Sandra P. — Etobicoke</div></div></div>
+      <!-- 8. Business traveler -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;I&rsquo;m on a plane two weeks out of every month. Bin day was this low-grade anxiety buzzing in the background &mdash; did I put it out? Did I miss it again? GetMyBin handles every pickup whether I&rsquo;m in Vancouver or Frankfurt. Zero missed collections in nearly a year. That mental clarity is worth far more than the cost.&rdquo;</p>
+          <div class="review-author">Marcus T. &mdash; Etobicoke</div>
+        </div>
+      </div>
 
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"I'm on a plane two weeks out of every month. Bin day was this low-grade anxiety buzzing in the background. GetMyBin handles every pickup whether I'm in Vancouver or Frankfurt. Zero missed collections in nearly a year."</p><div class="review-author">Marcus T. — Etobicoke</div></div></div>
+      <!-- 9. Multi-property landlord -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;Six rental units across three properties. Bin day was a constant headache &mdash; tenants forgetting, missed pickups, neighbour complaints. GetMyBin eliminated all of it overnight. Reliable, professional, and one of the best operational decisions I&rsquo;ve made as a landlord.&rdquo;</p>
+          <div class="review-author">Tony R. &mdash; East York</div>
+        </div>
+      </div>
 
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Six rental units across three properties. Bin day was a constant headache. GetMyBin eliminated all of it overnight. Reliable, professional, and one of the best operational decisions I've made as a landlord."</p><div class="review-author">Tony R. — East York</div></div></div>
-
-      <div class="swiper-slide review-slide"><div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Running an Airbnb on top of three rentals means my calendar is always chaos. Bin day used to mean driving across the city or praying a tenant remembered. GetMyBin took all of that off my plate completely."</p><div class="review-author">David K. — East York</div></div></div>
+      <!-- 10. Airbnb / rental -->
+      <div class="swiper-slide review-slide">
+        <div class="review-card">
+          <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="review-text">&ldquo;Running an Airbnb on top of three rentals means my calendar is always chaos. Bin day used to mean driving across the city or praying a tenant remembered. GetMyBin took all of that off my plate completely. My properties look better, my tenants are happier, and I have one fewer thing eating at my brain.&rdquo;</p>
+          <div class="review-author">David K. &mdash; East York</div>
+        </div>
+      </div>
 
       </div>
       <div class="swiper-pagination"></div>
@@ -509,18 +596,18 @@
   </div>
 </section>
 
-<!-- ===== PRICING ===== -->
+<!-- PRICING -->
 <section id="pricing">
   <div class="section-inner">
     <div class="section-eyebrow">Transparent Pricing</div>
     <h2 class="section-title">Straightforward rates</h2>
-    <p class="section-desc">Per collection event — covers all bins scheduled that day. Roll out and roll in are charged separately.</p>
+    <p class="section-desc">Per collection event &mdash; covers all bins scheduled that day. Roll out and roll in are charged separately.</p>
     <div class="pricing-grid">
       <div class="price-card">
         <div class="price-name">Ad Hoc</div>
         <div class="price-amount">$8.95</div>
         <div class="price-unit">per collection event</div>
-        <div class="price-tagline">"Pick exactly the dates you need"</div>
+        <div class="price-tagline">&ldquo;Pick exactly the dates you need&rdquo;</div>
         <ul class="price-features">
           <li>Choose any upcoming collection dates</li>
           <li>No commitment or subscription</li>
@@ -533,7 +620,7 @@
         <div class="price-name">Recurring</div>
         <div class="price-amount">$5.95</div>
         <div class="price-unit">per collection event</div>
-        <div class="price-tagline">"Every collection day, automatically"</div>
+        <div class="price-tagline">&ldquo;Every collection day, automatically&rdquo;</div>
         <ul class="price-features">
           <li>We show up every week, no reminders needed</li>
           <li>Save 34% vs ad hoc pricing</li>
@@ -543,11 +630,11 @@
       </div>
     </div>
     <p class="tax-note">Plus applicable taxes (13% HST added at checkout)</p>
-    <p class="pricing-note"><strong>Note:</strong> Roll out and roll in are each a separate charge. Both on the same day? That's two events.</p>
+    <p class="pricing-note"><strong>Note:</strong> Roll out and roll in are each a separate charge. Both on the same day? That&rsquo;s two events.</p>
   </div>
 </section>
 
-<!-- ===== FAQ ===== -->
+<!-- FAQ -->
 <section id="faq">
   <div class="section-inner">
     <div class="section-eyebrow">Got Questions?</div>
@@ -555,66 +642,98 @@
     <div class="faq-list">
 
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">Which areas do you cover?<span class="faq-chevron">+</span></button>
-        <div class="faq-a" role="region"><p>We serve all Toronto residential addresses with City of Toronto curbside collection. Not sure if that's you? Type your address above — we'll tell you instantly.</p></div>
+        <button class="faq-q" aria-expanded="false">
+          Which areas do you cover?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>We serve all Toronto residential addresses with City of Toronto curbside collection. Not sure if that&rsquo;s you? Type your address at the top &mdash; we&rsquo;ll tell you instantly.</p>
+        </div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">Which bins do you handle?<span class="faq-chevron">+</span></button>
-        <div class="faq-a" role="region"><p>All of them — garbage, recycling, green bin, and yard waste. Whatever the City collects at your address on your collection day, we handle it.</p></div>
+        <button class="faq-q" aria-expanded="false">
+          Which bins do you handle?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>All of them &mdash; garbage, recycling, green bin, and yard waste. Whatever the City collects at your address on your collection day, we handle it.</p>
+        </div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">When do you roll bins out and back?<span class="faq-chevron">+</span></button>
-        <div class="faq-a" role="region"><p>We roll your bins to the curb the evening before your scheduled collection day and return them to their designated spot the following afternoon after they've been emptied.</p></div>
+        <button class="faq-q" aria-expanded="false">
+          When do you roll out the bins to the curb and when do you roll them back in?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>We roll your bins to the curb the evening before your scheduled collection day and return them to their designated spot the following afternoon after they&rsquo;ve been emptied by the city collection truck.</p>
+        </div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">Do you follow Toronto's holiday schedule?<span class="faq-chevron">+</span></button>
-        <div class="faq-a" role="region"><p>Yes. We follow the City of Toronto's adjusted holiday schedule automatically. If the City moves your collection day, we move with it — no action needed from you.</p></div>
+        <button class="faq-q" aria-expanded="false">
+          Do you follow Toronto&rsquo;s holiday schedule changes?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>Yes. We follow the City of Toronto&rsquo;s adjusted holiday schedule automatically. If the City moves your collection day, we move with it &mdash; no action needed from you.</p>
+        </div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">Can I cancel or pause my recurring service?<span class="faq-chevron">+</span></button>
-        <div class="faq-a" role="region"><p>Cancel anytime — just let us know 48 hours before your next scheduled collection. No contracts, no penalties. <a href="/manage.html">Cancel your service →</a></p></div>
+        <button class="faq-q" aria-expanded="false">
+          Can I cancel or pause my recurring service?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>Cancel anytime &mdash; just let us know 48 hours before your next scheduled collection. No contracts, no penalties. <a href="/manage.html" style="color:#0d9488;font-weight:600;">Cancel your service &rarr;</a></p>
+        </div>
       </div>
 
       <div class="faq-item">
-        <button class="faq-q" aria-expanded="false">What if you miss my scheduled service?<span class="faq-chevron">+</span></button>
-        <div class="faq-a" role="region"><p>If we miss your scheduled service for any reason, you don't pay for that event. Simple as that.</p></div>
+        <button class="faq-q" aria-expanded="false">
+          What if you miss my scheduled service?
+          <span class="faq-chevron">+</span>
+        </button>
+        <div class="faq-a" role="region">
+          <p>If we miss your scheduled service for any reason, you don&rsquo;t pay for that event. Simple as that.</p>
+        </div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ===== GUARANTEE ===== -->
+<!-- GUARANTEE -->
 <section id="guarantee">
   <div class="guarantee-inner">
     <div class="guarantee-icon">🛡️</div>
     <div class="guarantee-title">Our service guarantee</div>
     <p class="guarantee-text">
-      If we miss your scheduled collection, <strong>you don't pay.</strong>
+      If we miss your scheduled collection, <strong>you don&rsquo;t pay.</strong>
       No questions asked.
     </p>
   </div>
 </section>
 
-<!-- ===== BOOKING SECTION (hidden until address confirmed) ===== -->
+<!-- BOOKING SECTION — hidden until address confirmed -->
 <div id="booking-section">
   <div id="booking-anchor"></div>
   <div class="booking-inner">
     <div class="address-confirmed" id="address-confirmed">
-      <div class="ac-icon">📍</div>
+      <div class="ac-icon">&#128205;</div>
       <div class="ac-text">
         <div class="ac-address" id="ac-address-text"></div>
         <div class="ac-day" id="ac-day-text"></div>
       </div>
-      <button class="ac-change" onclick="resetSearch()">✏️ Change Address</button>
+      <button class="ac-change" onclick="resetSearch()">&#9998; Change Address</button>
     </div>
 
+
+
     <div class="next-pickup">
-      <div class="next-pickup-label">📅 Next Collection</div>
+      <div class="next-pickup-label">&#128197; Next Collection</div>
       <div class="next-date" id="next-date"></div>
       <div class="bin-tags" id="next-bins"></div>
     </div>
@@ -629,14 +748,15 @@
           <div class="calendar-section">
             <div class="week-row header">
               <div>Week of</div>
-              <div class="icon-col" title="Green Bin">🟢</div>
-              <div class="icon-col" title="Garbage">⚫</div>
-              <div class="icon-col" title="Recycling">🔵</div>
-              <div class="icon-col" title="Yard Waste">🟡</div>
-              <div class="icon-col" title="Christmas Tree">🎄</div>
+              <div class="icon-col" title="Green Bin">&#x1F7E2;</div>
+              <div class="icon-col" title="Garbage">&#x26AB;</div>
+              <div class="icon-col" title="Recycling">&#x1F535;</div>
+              <div class="icon-col" title="Yard Waste">&#x1F7E1;</div>
+              <div class="icon-col" title="Christmas Tree">&#x1F384;</div>
             </div>
             <div id="schedule-rows"></div>
           </div>
+
           <div class="legend">
             <div class="legend-item"><span class="legend-dot" style="background:#38a169"></span> Green Bin</div>
             <div class="legend-item"><span class="legend-dot" style="background:#4a5568"></span> Garbage</div>
@@ -649,7 +769,7 @@
     </div>
 
     <hr class="divider">
-    <div class="service-title">⚙️ Choose Your Service</div>
+    <div class="service-title">&#9881;&#65039; Choose Your Service</div>
 
     <div class="options-row">
       <div class="options-col">
@@ -686,38 +806,37 @@
       <hr class="divider">
       <div id="bin-placement-block" style="display:none;">
         <div class="bin-placement-title">📍 Show us where to leave your bin <span class="bin-placement-optional">(optional)</span></div>
-        <div class="bin-placement-help">Drag the view to look around. Tap the white arrows or double-click to walk forward. <strong>Aim the green crosshair</strong> at your bin spot — we'll save it when you tap <strong>Go to Checkout</strong>.</div>
+        <div class="bin-placement-help">Drag the view to look around. Tap the white arrows or double-click to walk forward. <strong>Aim the green crosshair</strong> at your bin spot — we’ll save it when you tap <strong>Go to Checkout</strong>.</div>
         <div id="bp-sv-wrap" style="position:relative;">
           <div id="bp-streetview"></div>
           <div id="bp-crosshair" aria-hidden="true"></div>
         </div>
       </div>
       <div id="bin-placement-unavailable" style="display:none;">
-        <div class="bp-unavailable">Street View isn't available for this address — no worries, we'll find your bins. 👍</div>
+        <div class="bp-unavailable">Street View isn’t available for this address — no worries, we’ll find your bins. 👍</div>
       </div>
-      <button class="btn-checkout" id="btn-checkout" disabled>Go to Checkout →</button>
+      <button class="btn-checkout" id="btn-checkout" disabled>Go to Checkout &rarr;</button>
     </div>
   </div>
 </div>
 
-<!-- ===== CHECKOUT MODAL ===== -->
+<!-- CHECKOUT MODAL -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <h3>📋 Order Summary</h3>
+      <h3>&#128203; Order Summary</h3>
       <p>Review your details before confirming</p>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
-<!-- ===== FOOTER ===== -->
+<!-- FOOTER -->
 <footer>
-  <p class="footer-note">Schedule data from <a href="https://www.toronto.ca/services-payments/recycling-organics-garbage/houses/collection-schedule/" target="_blank">City of Toronto Open Data</a> · Toronto, ON</p>
-  <p class="footer-note" style="margin-top:.4rem"><a href="/terms.html">Terms of Service</a> · <a href="/privacy.html">Privacy Policy</a> · <a href="/contact.html">Contact Us</a></p>
+  <p class="footer-note">Schedule data from <a href="https://www.toronto.ca/services-payments/recycling-organics-garbage/houses/collection-schedule/" target="_blank">City of Toronto Open Data</a> &middot; Toronto, ON</p>
+  <p class="footer-note" style="margin-top:.4rem"><a href="/terms.html">Terms of Service</a> &middot; <a href="/privacy.html">Privacy Policy</a> &middot; <a href="/contact.html">Contact Us</a></p>
 </footer>
 
-<!-- ===== SCRIPTS ===== -->
 <script>
 // ===== EMBEDDED SCHEDULE DATA =====
 const CSV_DATA = {"Tuesday1":[{"w":"2026-01-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-13","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-27","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-02-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-10","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-24","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-31","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-05","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-06","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-15","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-29","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-16","g":true,"b":true,"r":true,"y":false,"c":false},{"w":"2025-12-23","g":true,"b":false,"r":false,"y":true,"c":false},{"w":"2025-12-30","g":true,"b":true,"r":true,"y":false,"c":false}],"Tuesday2":[{"w":"2026-01-06","g":true,"b":true,"r":true,"y":false,"c":true},{"w":"2026-01-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-20","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-03","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-17","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-03","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-31","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-22","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-16","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-23","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-30","g":true,"b":false,"r":true,"y":true,"c":false}],"Wednesday1":[{"w":"2026-01-07","g":true,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-14","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-28","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-02-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-11","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-25","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-06","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-16","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-30","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-17","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-24","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-31","g":true,"b":true,"r":false,"y":false,"c":false}],"Wednesday2":[{"w":"2026-01-07","g":true,"b":true,"r":true,"y":false,"c":true},{"w":"2026-01-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-21","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-04","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-18","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-04","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-05","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-23","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-17","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-24","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-31","g":true,"b":false,"r":true,"y":true,"c":false}],"Thursday1":[{"w":"2026-01-02","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-01-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-15","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-29","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-02-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-12","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-26","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-05","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-17","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-31","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-18","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-26","g":true,"b":false,"r":true,"y":true,"c":false}],"Thursday2":[{"w":"2026-01-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-08","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-22","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-05","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-19","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-05","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-06","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-24","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-31","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-18","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-26","g":true,"b":true,"r":false,"y":false,"c":false}],"Friday1":[{"w":"2026-01-03","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-01-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-16","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-30","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-02-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-13","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-27","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-01","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-08","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-15","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-22","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-29","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-05","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-12","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-19","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-31","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-07","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-14","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-21","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-28","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-25","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-02","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-09","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-23","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-06","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-18","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-12-26","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2025-12-19","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-27","g":true,"b":false,"r":true,"y":true,"c":false}],"Friday2":[{"w":"2026-01-03","g":true,"b":false,"r":false,"y":false,"c":false},{"w":"2026-01-09","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-16","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-01-23","g":true,"b":true,"r":false,"y":false,"c":true},{"w":"2026-01-30","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-06","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-02-20","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-02-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-06","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2026-03-13","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-03-20","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-03-27","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-03","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-10","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-04-17","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-04-24","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-01","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-08","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-15","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-05-22","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-05-29","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-05","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-12","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-06-19","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-06-26","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-03","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-10","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-17","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-07-24","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-07-31","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-07","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-14","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-08-21","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-08-28","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-04","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-11","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-09-18","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-09-25","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-02","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-09","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-16","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-10-23","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-10-30","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-06","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-13","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-11-20","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-11-27","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-04","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-11","g":true,"b":true,"r":false,"y":true,"c":false},{"w":"2026-12-18","g":true,"b":false,"r":true,"y":false,"c":false},{"w":"2026-12-26","g":true,"b":true,"r":false,"y":false,"c":false},{"w":"2025-12-19","g":true,"b":false,"r":true,"y":true,"c":false},{"w":"2025-12-27","g":true,"b":true,"r":false,"y":false,"c":false}]};
@@ -1362,6 +1481,312 @@ function formatDateShort(isoStr) {
   const d = new Date(isoStr + 'T00:00:00');
   return d.toLocaleDateString('en-CA', { month:'short', day:'numeric' });
 }
+</script>
+
+<!-- Stripe SDK -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<!-- Custom scripts -->
+<script src="stripe-integration.js"></script>
+<script src="airtable-bookings.js"></script>
+<script src="email-service.js"></script>
+<script src="chat-logger.js"></script>
+<script src="streetview.js"></script>
+
+<!-- Sticky mobile CTA -->
+<div class="sticky-cta" id="sticky-cta">
+  <a href="#hero-anchor" class="sticky-cta-btn" onclick="document.getElementById('sticky-cta').style.display='none'">&#128205; Check my address &rarr;</a>
+</div>
+
+<script>
+// ===== Bin Placement (Street View pin) =====
+// Lives in the booking section where "Your Order" used to be. Becomes visible
+// when the customer makes a billable selection (an ad-hoc date or recurring mode).
+
+let bpPanorama = null;
+let bpBinMarker = null;
+let bpBinLatLng = null;
+let bpBuildingLocation = null;
+let bpInitialPov = null;
+let bpAddress = null;
+let bpMounted = false;
+let bpUnavailable = false;
+
+function resetBinPlacement() {
+  // Called from revealBooking() when a new address is loaded.
+  bpPanorama = null;
+  bpBinMarker = null;
+  bpBinLatLng = null;
+  bpBuildingLocation = null;
+  bpInitialPov = null;
+  bpAddress = null;
+  bpMounted = false;
+  bpUnavailable = false;
+  const block = document.getElementById('bin-placement-block');
+  const unavail = document.getElementById('bin-placement-unavailable');
+  if (block) block.style.display = 'none';
+  if (unavail) unavail.style.display = 'none';
+  const svDiv = document.getElementById('bp-streetview');
+  if (svDiv) svDiv.innerHTML = '';
+  const crosshair = document.getElementById('bp-crosshair');
+  if (crosshair) crosshair.classList.remove('hidden');
+}
+
+// Called from updateTotal() the first time a selection is made.
+async function ensureBinPlacementMounted() {
+  const address = window.currentAddress || (typeof currentAddress !== 'undefined' ? currentAddress : null);
+  if (!address) return;
+
+  // If already mounted for this address, just make sure it's visible (or the unavailable notice is).
+  if (bpMounted && address === bpAddress) {
+    const block = document.getElementById('bin-placement-block');
+    const unavail = document.getElementById('bin-placement-unavailable');
+    if (bpUnavailable) { block.style.display = 'none'; unavail.style.display = 'block'; }
+    else { block.style.display = 'block'; unavail.style.display = 'none'; }
+    return;
+  }
+
+  bpMounted = true;
+  bpAddress = address;
+  bpUnavailable = false;
+
+  if (typeof window.streetView === 'undefined') {
+    console.warn('streetview module not loaded');
+    bpUnavailable = true;
+    document.getElementById('bin-placement-unavailable').style.display = 'block';
+    return;
+  }
+
+  try {
+    await window.streetView.init();
+    let attempts = 0;
+    while (!window.google || !window.google.maps) {
+      await new Promise(r => setTimeout(r, 100));
+      if (++attempts > 50) throw new Error('Maps API not loaded');
+    }
+
+    const geocoder = new google.maps.Geocoder();
+    const svService = new google.maps.StreetViewService();
+
+    geocoder.geocode({ address }, (results, status) => {
+      if (status !== 'OK' || !results[0]) {
+        bpUnavailable = true;
+        document.getElementById('bin-placement-block').style.display = 'none';
+        document.getElementById('bin-placement-unavailable').style.display = 'block';
+        return;
+      }
+      bpBuildingLocation = results[0].geometry.location;
+
+      svService.getPanorama(
+        { location: bpBuildingLocation, radius: 50, source: google.maps.StreetViewSource.OUTDOOR },
+        (panoData, svStatus) => {
+          if (svStatus !== 'OK') {
+            bpUnavailable = true;
+            document.getElementById('bin-placement-block').style.display = 'none';
+            document.getElementById('bin-placement-unavailable').style.display = 'block';
+            return;
+          }
+          const cameraLoc = panoData.location.latLng;
+          const heading = google.maps.geometry.spherical.computeHeading(cameraLoc, bpBuildingLocation);
+          bpInitialPov = { heading, pitch: 0, zoom: 0 };
+
+          const container = document.getElementById('bp-streetview');
+          bpPanorama = new google.maps.StreetViewPanorama(container, {
+            pano: panoData.location.pano,
+            pov: { heading, pitch: 0 },
+            zoom: 0,
+            streetViewControl: false,
+            panControl: false,
+            zoomControl: true,
+            fullscreenControl: true,
+            addressControl: false,
+            clickToGo: true,
+            linksControl: true,
+            motionTracking: false,
+            motionTrackingControl: false
+          });
+
+          // Show the block
+          document.getElementById('bin-placement-block').style.display = 'block';
+          document.getElementById('bin-placement-unavailable').style.display = 'none';
+        }
+      );
+    });
+  } catch (e) {
+    console.error('Street View init failed:', e);
+    bpUnavailable = true;
+    document.getElementById('bin-placement-unavailable').style.display = 'block';
+  }
+}
+
+// Ground-projection: crosshair sits at 70% down the panorama; project a ray from the
+// camera (~2.5m above ground) through the crosshair and find where it hits the ground.
+function bpGetLatLngAtCrosshair() {
+  if (!bpPanorama) return null;
+  const cam = bpPanorama.getPosition();
+  if (!cam) return null;
+  const pov = bpPanorama.getPov();
+  const zoom = bpPanorama.getZoom();
+  const vFovDeg = 90 / Math.pow(2, zoom);
+  const crosshairPitchDeg = pov.pitch - (0.20 * vFovDeg);
+  const cameraHeightM = 2.5;
+  const pitchRad = crosshairPitchDeg * Math.PI / 180;
+  let distance;
+  if (pitchRad >= -0.05) distance = 8;
+  else { distance = cameraHeightM / Math.tan(-pitchRad); distance = Math.max(2, Math.min(distance, 30)); }
+  return google.maps.geometry.spherical.computeOffset(cam, distance, pov.heading);
+}
+
+// Customer side: capture the bin spot silently — no visible marker.
+// The driver view (service_routing2.html) renders the green pin when servicing the stop.
+function bpPlacePin(latLng) {
+  if (!bpPanorama) return;
+  bpBinLatLng = latLng;
+}
+
+function bpUpdateStatus() {
+  // No-op: the status text was removed when the explicit drop/clear buttons were removed.
+  // The crosshair itself is the live status indicator.
+}
+
+function bpGetPlacementData() {
+  if (!bpPanorama) return null;
+  const pov = bpPanorama.getPov();
+  const zoom = bpPanorama.getZoom();
+  const pano = bpPanorama.getPano();
+  const position = bpPanorama.getPosition();
+  return {
+    pano,
+    pov: { heading: pov.heading, pitch: pov.pitch, zoom },
+    cameraLatLng: position ? { lat: position.lat(), lng: position.lng() } : null,
+    binLatLng: bpBinLatLng ? { lat: bpBinLatLng.lat(), lng: bpBinLatLng.lng() } : null,
+    hasPin: !!bpBinLatLng
+  };
+}
+
+// Auto-drop the pin at the crosshair location when checkout is clicked
+function bpAutoDropAtCrosshair() {
+  if (!bpPanorama) return null;
+  const latLng = bpGetLatLngAtCrosshair();
+  if (!latLng) return null;
+  bpPlacePin(latLng);
+  return latLng;
+}
+</script>
+
+<script>
+// Sticky CTA: show when reviews in view, hide when hero visible or booking revealed
+document.addEventListener('DOMContentLoaded', function(){
+  var stickyCta      = document.getElementById('sticky-cta');
+  var heroSection    = document.getElementById('hero-anchor');
+  var reviewsSection = document.getElementById('reviews');
+  var bookingSection = document.getElementById('booking-section');
+  if (!stickyCta) return;
+
+  var heroVisible    = true; // starts visible
+  var bookingRevealed = false;
+
+  function updateSticky() {
+    if (heroVisible || bookingRevealed) {
+      stickyCta.classList.remove('visible');
+    } else {
+      stickyCta.classList.add('visible');
+    }
+  }
+
+  // Watch hero — hide sticky when hero is on screen
+  if (heroSection) {
+    new IntersectionObserver(function(entries){
+      heroVisible = entries[0].isIntersecting;
+      updateSticky();
+    }, { threshold: 0.05 }).observe(heroSection);
+  }
+
+  // Watch reviews — once reached, allow sticky to show (if hero gone)
+  if (reviewsSection) {
+    var reached = false;
+    new IntersectionObserver(function(entries){
+      if (entries[0].isIntersecting && !reached) {
+        reached = true;
+      }
+      // Only update if reviews section has been reached at least once
+      if (reached) updateSticky();
+    }, { threshold: 0.1 }).observe(reviewsSection);
+  }
+
+  // Hide when booking section is revealed
+  if (bookingSection) {
+    new MutationObserver(function(){
+      bookingRevealed = bookingSection.classList.contains('revealed');
+      updateSticky();
+    }).observe(bookingSection, { attributes: true, attributeFilter: ['class'] });
+  }
+});
+
+// FAQ accordion
+document.querySelectorAll('.faq-q').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var item = this.closest('.faq-item');
+    var isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item.open').forEach(function(el){
+      el.classList.remove('open');
+      el.querySelector('.faq-q').setAttribute('aria-expanded','false');
+    });
+    // Open clicked if it was closed
+    if(!isOpen){
+      item.classList.add('open');
+      this.setAttribute('aria-expanded','true');
+    }
+  });
+});
+
+// Swiper carousel - battle-tested, production-ready
+var swiperAutoplayActive = true;
+var swiper = new Swiper('.reviews-carousel', {
+  effect: 'slide',
+  speed: 500,
+  spaceBetween: 0,
+  loop: true,  // Loop to first slide when reaching the end
+  autoplay: {
+    delay: 5000,
+    disableOnInteraction: false
+  },
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+    dynamicBullets: false,
+    type: 'bullets'
+  },
+  grabCursor: true,
+  touchRatio: 1,
+  touchStartForce: 0,
+  threshold: 5,
+  touchEventsTarget: 'container'
+});
+
+// Toggle autoplay on carousel click
+document.querySelector('.reviews-carousel').addEventListener('click', function(e) {
+  // Only toggle if clicking directly on carousel, not on pagination bullets
+  if (e.target.classList.contains('swiper-pagination-bullet')) {
+    return;
+  }
+  if (swiperAutoplayActive) {
+    swiper.autoplay.stop();
+    swiperAutoplayActive = false;
+  } else {
+    swiper.autoplay.start();
+    swiperAutoplayActive = true;
+  }
+});
+
+</script>
+
+<!-- GetMyBin Chat Widget -->
+<script src="/getmybin-chat.js"></script>
+<script>
+  // Initialize chat widget with your OpenAI API key
+  // API key is now handled server-side in /api/chat.php — not exposed to client
 </script>
 </body>
 </html>
