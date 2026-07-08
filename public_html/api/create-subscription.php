@@ -103,7 +103,7 @@ if ($subStatus === 'incomplete' || $subStatus === 'past_due') {
     $ch = curl_init('https://api.stripe.com/v1/invoices/' . $invoiceId . '?expand%5B%5D=payment_intent');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_USERPWD        => STRIPE_SECRET_KEY . ':'.
+        CURLOPT_USERPWD        => STRIPE_SECRET_KEY . ':',
     ]);
     $resp = curl_exec($ch);
     curl_close($ch);
