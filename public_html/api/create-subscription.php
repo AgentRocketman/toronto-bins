@@ -81,8 +81,7 @@ if ($priceResult['code'] >= 400) {
 
 $priceId = $priceResult['body']['id'];
 
-// Step 4: Create Subscription (allow_incomplete: attempt payment immediately,
-// but don't block if 3D Secure is needed — return client_secret for JS confirmation)
+// Step 4: Create Subscription (allow_incomplete: attempt payment immediately)
 $subscriptionResult = stripeRequest('POST', '/subscriptions', [
     'customer'                                                   => $customerId,
     'items[0][price]'                                            => $priceId,
@@ -90,7 +89,6 @@ $subscriptionResult = stripeRequest('POST', '/subscriptions', [
     'payment_behavior'                                          => 'allow_incomplete',
     'payment_settings[payment_method_types][0]'                 => 'card',
     'payment_settings[save_default_payment_method]'             => 'on_subscription',
-    'expand[0]'                                                 => 'latest_invoice.payment_intent',
     'metadata[booking_id]'                                      => $bookingId,
     'metadata[service_type]'                                    => $serviceType,
 ]);
@@ -103,8 +101,20 @@ if ($subscriptionResult['code'] >= 400) {
 
 $subscription  = $subscriptionResult['body'];
 $subscriptionId = $subscription['id'];
-$invoice        = $subscription['latest_invoice'] ?? null;
-$paymentIntent  = $invoice['payment_intent'] ?? null;
+$invoiceId      = $subscription['latest_invoice']; // string ID
+
+// Step 5: Retrieve invoice to get payment_intent (expand didn't work via form-urlencoded)
+$invoiceResult = stripeRequest('GET', "/invoices/$invoiceId", [
+    'expand[0]' => 'payment_intent',
+]);
+
+if ($invoiceResult['code'] >= 400) {
+    $errorMsg = $invoiceResult['body']['error']['message'] ?? 'Failed to retrieve invoice';
+    echo json_encode(['success' => false, 'error' => $errorMsg]);
+    exit;
+}
+
+$paymentIntent = $invoiceResult['body']['payment_intent'] ?? null;
 
 // Check if payment already succeeded or if confirmation is needed
 $paymentStatus = $paymentIntent['status'] ?? 'unknown';

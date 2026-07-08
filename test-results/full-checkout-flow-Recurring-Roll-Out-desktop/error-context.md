@@ -209,7 +209,7 @@ Call log:
 - iframe
 - iframe
 - iframe
-- text: "Error: Could not get payment confirmation secret"
+- text: "Error: Unexpected payment status: unknown"
 - strong: "Test card:"
 - text: "4242 4242 4242 4242 · Exp: any future · CVC: any 3 digits Subtotal $5.95 HST (13%) $0.77 Total to Charge $6.72"
 - button "← Cancel"
