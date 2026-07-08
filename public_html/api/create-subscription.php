@@ -114,48 +114,60 @@ if ($invoiceResult['code'] >= 400) {
 
 $paymentIntent = $invoiceResult['body']['payment_intent'] ?? null;
 
-// DEBUG: dump key invoice fields
-$invBody = $invoiceResult['body'];
-$debugFields = [
-    'status' => $invBody['status'] ?? 'MISSING',
-    'collection_method' => $invBody['collection_method'] ?? 'MISSING',
-    'billing_reason' => $invBody['billing_reason'] ?? 'MISSING',
-    'amount_due' => $invBody['amount_due'] ?? 'MISSING',
-    'amount_paid' => $invBody['amount_paid'] ?? 'MISSING',
-    'charge' => $invBody['charge'] ?? 'NULL',
-    'payment_intent' => $invBody['payment_intent'] ?? 'NULL',
-    'attempted' => $invBody['attempted'] ?? 'MISSING',
-];
+// Check invoice state to determine if payment is done or needs confirmation
+$invBody      = $invoiceResult['body'];
+$invStatus    = $invBody['status'] ?? 'unknown';
+$invCharge    = $invBody['charge'] ?? null;
+$invPaymentIntent = $invBody['payment_intent'] ?? null;
 
-if (!$paymentIntent) {
-    echo json_encode(['success' => false, 'error' => 'No payment_intent', 'debug' => $debugFields]);
+if ($invStatus === 'paid' && $invCharge) {
+    // Payment succeeded immediately — no confirmation needed
+    echo json_encode([
+        'success'        => true,
+        'subscriptionId' => $subscriptionId,
+        'customerId'     => $customerId,
+        'chargeId'       => $invCharge,
+        'prepaid'        => true,
+    ]);
     exit;
 }
 
-// Check if payment already succeeded or if confirmation is needed
-$paymentStatus = $paymentIntent['status'] ?? 'unknown';
-
-if ($paymentStatus === 'succeeded') {
-    // Payment went through immediately — no 3D Secure needed
+if ($invStatus === 'paid') {
     echo json_encode([
-        'success'         => true,
-        'subscriptionId'  => $subscriptionId,
-        'customerId'      => $customerId,
-        'paymentIntentId' => $paymentIntent['id'],
-        'prepaid'         => true,   // JS: skip confirmCardPayment
+        'success'        => true,
+        'subscriptionId' => $subscriptionId,
+        'customerId'     => $customerId,
+        'invoiceStatus'  => $invStatus,
+        'prepaid'        => true,
     ]);
-} elseif (($paymentStatus === 'requires_action' || $paymentStatus === 'requires_confirmation') && !empty($paymentIntent['client_secret'])) {
-    // 3D Secure or confirmation needed — return client_secret for JS to confirm
-    echo json_encode([
-        'success'         => true,
-        'subscriptionId'  => $subscriptionId,
-        'customerId'      => $customerId,
-        'clientSecret'    => $paymentIntent['client_secret'],
-        'paymentIntentId' => $paymentIntent['id'],
-        'prepaid'         => false,  // JS: call confirmCardPayment
-    ]);
-} elseif ($paymentStatus === 'requires_payment_method') {
-    echo json_encode(['success' => false, 'error' => 'Payment method was declined']);
-} else {
-    echo json_encode(['success' => false, 'error' => 'Unexpected payment status: ' . $paymentStatus]);
+    exit;
 }
+
+// Invoice is not paid yet — need a payment intent to confirm
+if ($invPaymentIntent) {
+    $piStatus = $invPaymentIntent['status'] ?? 'unknown';
+    $piSecret = $invPaymentIntent['client_secret'] ?? null;
+    if ($piSecret && ($piStatus === 'requires_action' || $piStatus === 'requires_confirmation' || $piStatus === 'requires_payment_method')) {
+        echo json_encode([
+            'success'        => true,
+            'subscriptionId' => $subscriptionId,
+            'customerId'     => $customerId,
+            'clientSecret'   => $piSecret,
+            'paymentIntentId'=> $invPaymentIntent['id'],
+            'prepaid'        => false,
+        ]);
+        exit;
+    }
+}
+
+// Fallback: return debug info
+$debugFields = [
+    'invoice_status' => $invStatus,
+    'charge' => $invCharge ?? 'NULL',
+    'payment_intent' => $invPaymentIntent ? $invPaymentIntent['id'] : 'NULL',
+    'collection_method' => $invBody['collection_method'] ?? 'MISSING',
+    'attempted' => $invBody['attempted'] ?? 'MISSING',
+    'amount_due' => $invBody['amount_due'] ?? 0,
+    'amount_paid' => $invBody['amount_paid'] ?? 0,
+];
+echo json_encode(['success' => false, 'error' => 'Invoice not paid, no PI: status=' . $invStatus, 'debug' => $debugFields]);
