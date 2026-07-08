@@ -2,8 +2,8 @@
 /**
  * GetMyBin — Recurring Subscription
  * Creates Stripe Customer + Product + Price + Subscription.
- * Uses allow_incomplete so Stripe attempts payment immediately.
- * Returns client_secret for 3D Secure confirmation if needed.
+ * Returns prepaid:true if Stripe charges immediately (no 3DS),
+ * or clientSecret for browser-side 3D Secure confirmation.
  */
 require_once __DIR__ . '/config.php';
 corsHeaders();
@@ -42,132 +42,145 @@ $customerResult = stripeRequest('POST', '/customers', [
     'invoice_settings[default_payment_method]'   => $paymentMethodId,
     'metadata[booking_id]'                       => $bookingId,
 ]);
-
 if ($customerResult['code'] >= 400) {
-    $errorMsg = $customerResult['body']['error']['message'] ?? 'Failed to create customer';
-    echo json_encode(['success' => false, 'error' => $errorMsg]);
+    echo json_encode(['success' => false, 'error' => 'Customer: ' . ($customerResult['body']['error']['message'] ?? 'failed')]);
     exit;
 }
-
 $customerId = $customerResult['body']['id'];
 
 // Step 2: Create Product
 $productResult = stripeRequest('POST', '/products', [
-    'name'                  => $productName,
-    'type'                  => 'service',
+    'name' => $productName,
+    'type' => 'service',
 ]);
-
 if ($productResult['code'] >= 400) {
-    $errorMsg = $productResult['body']['error']['message'] ?? 'Failed to create product';
-    echo json_encode(['success' => false, 'error' => $errorMsg]);
+    echo json_encode(['success' => false, 'error' => 'Product: ' . ($productResult['body']['error']['message'] ?? 'failed')]);
     exit;
 }
-
 $productId = $productResult['body']['id'];
 
 // Step 3: Create Price
 $priceResult = stripeRequest('POST', '/prices', [
-    'product'              => $productId,
-    'currency'             => 'cad',
-    'unit_amount'          => $weeklyAmount,
-    'recurring[interval]'  => 'week',
+    'product'             => $productId,
+    'currency'            => 'cad',
+    'unit_amount'         => $weeklyAmount,
+    'recurring[interval]' => 'week',
 ]);
-
 if ($priceResult['code'] >= 400) {
-    $errorMsg = $priceResult['body']['error']['message'] ?? 'Failed to create price';
-    echo json_encode(['success' => false, 'error' => $errorMsg]);
+    echo json_encode(['success' => false, 'error' => 'Price: ' . ($priceResult['body']['error']['message'] ?? 'failed')]);
     exit;
 }
-
 $priceId = $priceResult['body']['id'];
 
-// Step 4: Create Subscription (allow_incomplete: attempt payment immediately)
+// Step 4: Create Subscription
+// default_incomplete: creates draft invoice (NOT auto-charged).
+// We finalize it ourselves so we can control the confirmation flow.
 $subscriptionResult = stripeRequest('POST', '/subscriptions', [
-    'customer'                                                   => $customerId,
-    'items[0][price]'                                            => $priceId,
-    'default_payment_method'                                    => $paymentMethodId,
-    'payment_behavior'                                          => 'allow_incomplete',
-    'payment_settings[payment_method_types][0]'                 => 'card',
-    'payment_settings[save_default_payment_method]'             => 'on_subscription',
-    'metadata[booking_id]'                                      => $bookingId,
-    'metadata[service_type]'                                    => $serviceType,
+    'customer'                                               => $customerId,
+    'items[0][price]'                                        => $priceId,
+    'default_payment_method'                                => $paymentMethodId,
+    'payment_behavior'                                      => 'default_incomplete',
+    'payment_settings[payment_method_types][0]'             => 'card',
+    'payment_settings[save_default_payment_method]'         => 'on_subscription',
+    'metadata[booking_id]'                                  => $bookingId,
+    'metadata[service_type]'                                => $serviceType,
 ]);
-
 if ($subscriptionResult['code'] >= 400) {
-    $errorMsg = $subscriptionResult['body']['error']['message'] ?? 'Failed to create subscription';
-    echo json_encode(['success' => false, 'error' => $errorMsg]);
+    echo json_encode(['success' => false, 'error' => 'Subscription: ' . ($subscriptionResult['body']['error']['message'] ?? 'failed')]);
     exit;
 }
+$subscriptionId = $subscriptionResult['body']['id'];
+$invoiceId      = $subscriptionResult['body']['latest_invoice']; // string
 
-$subscription  = $subscriptionResult['body'];
-$subscriptionId = $subscription['id'];
-$invoiceId      = $subscription['latest_invoice']; // string ID
-
-// Step 5: Retrieve invoice to get payment_intent (expand didn't work via form-urlencoded)
-$invoiceResult = stripeRequest('GET', "/invoices/$invoiceId?expand[]=payment_intent");
-
+// Step 5: Retrieve invoice (no expand — just check status)
+$invoiceResult = stripeRequest('GET', "/invoices/$invoiceId");
 if ($invoiceResult['code'] >= 400) {
-    $errorMsg = $invoiceResult['body']['error']['message'] ?? 'Failed to retrieve invoice';
-    echo json_encode(['success' => false, 'error' => $errorMsg]);
+    echo json_encode(['success' => false, 'error' => 'Invoice fetch: ' . ($invoiceResult['body']['error']['message'] ?? 'failed')]);
     exit;
 }
 
-$paymentIntent = $invoiceResult['body']['payment_intent'] ?? null;
+$invStatus = $invoiceResult['body']['status'] ?? 'unknown';
 
-// Check invoice state to determine if payment is done or needs confirmation
-$invBody      = $invoiceResult['body'];
-$invStatus    = $invBody['status'] ?? 'unknown';
-$invCharge    = $invBody['charge'] ?? null;
-$invPaymentIntent = $invBody['payment_intent'] ?? null;
-
-if ($invStatus === 'paid' && $invCharge) {
-    // Payment succeeded immediately — no confirmation needed
-    echo json_encode([
-        'success'        => true,
-        'subscriptionId' => $subscriptionId,
-        'customerId'     => $customerId,
-        'chargeId'       => $invCharge,
-        'prepaid'        => true,
-    ]);
-    exit;
-}
-
+// Step 6: If invoice already paid (charge succeeded immediately), done
 if ($invStatus === 'paid') {
     echo json_encode([
         'success'        => true,
         'subscriptionId' => $subscriptionId,
         'customerId'     => $customerId,
-        'invoiceStatus'  => $invStatus,
         'prepaid'        => true,
+        'invoiceStatus'  => $invStatus,
     ]);
     exit;
 }
 
-// Invoice is not paid yet — need a payment intent to confirm
-if ($invPaymentIntent) {
-    $piStatus = $invPaymentIntent['status'] ?? 'unknown';
-    $piSecret = $invPaymentIntent['client_secret'] ?? null;
-    if ($piSecret && ($piStatus === 'requires_action' || $piStatus === 'requires_confirmation' || $piStatus === 'requires_payment_method')) {
+// Step 7: Invoice is a draft — finalize it to create PaymentIntent
+$finalizeResult = stripeRequest('POST', "/invoices/$invoiceId/finalize", []);
+if ($finalizeResult['code'] >= 400) {
+    echo json_encode(['success' => false, 'error' => 'Finalize: ' . ($finalizeResult['body']['error']['message'] ?? 'failed')]);
+    exit;
+}
+
+// Step 8: Retrieve finalized invoice with payment_intent
+$invResult2 = stripeRequest('GET', "/invoices/$invoiceId");
+if ($invResult2['code'] >= 400) {
+    echo json_encode(['success' => false, 'error' => 'Invoice fetch 2: ' . ($invResult2['body']['error']['message'] ?? 'failed')]);
+    exit;
+}
+
+$invBody2       = $invResult2['body'];
+$invStatus2     = $invBody2['status'] ?? 'unknown';
+$paymentIntent  = $invBody2['payment_intent'] ?? null;
+
+// If finalized and paid, no confirmation needed
+if ($invStatus2 === 'paid') {
+    echo json_encode([
+        'success'        => true,
+        'subscriptionId' => $subscriptionId,
+        'customerId'     => $customerId,
+        'prepaid'        => true,
+        'invoiceStatus'  => $invStatus2,
+    ]);
+    exit;
+}
+
+// If the invoice has a payment_intent (as an expanded object), use it
+if (is_array($paymentIntent) && !empty($paymentIntent['client_secret'])) {
+    echo json_encode([
+        'success'         => true,
+        'subscriptionId'  => $subscriptionId,
+        'customerId'      => $customerId,
+        'clientSecret'    => $paymentIntent['client_secret'],
+        'paymentIntentId' => $paymentIntent['id'],
+        'prepaid'         => false,
+    ]);
+    exit;
+}
+
+// If payment_intent is a string (ID), look it up
+$piString = $paymentIntent;
+if (is_string($piString) && $piString) {
+    $piResult = stripeRequest('GET', "/payment_intents/$piString");
+    if ($piResult['code'] < 400 && !empty($piResult['body']['client_secret'])) {
         echo json_encode([
-            'success'        => true,
-            'subscriptionId' => $subscriptionId,
-            'customerId'     => $customerId,
-            'clientSecret'   => $piSecret,
-            'paymentIntentId'=> $invPaymentIntent['id'],
-            'prepaid'        => false,
+            'success'         => true,
+            'subscriptionId'  => $subscriptionId,
+            'customerId'      => $customerId,
+            'clientSecret'    => $piResult['body']['client_secret'],
+            'paymentIntentId' => $piResult['body']['id'],
+            'prepaid'         => false,
         ]);
         exit;
     }
 }
 
-// Fallback: return debug info
-$debugFields = [
-    'invoice_status' => $invStatus,
-    'charge' => $invCharge ?? 'NULL',
-    'payment_intent' => $invPaymentIntent ? $invPaymentIntent['id'] : 'NULL',
-    'collection_method' => $invBody['collection_method'] ?? 'MISSING',
-    'attempted' => $invBody['attempted'] ?? 'MISSING',
-    'amount_due' => $invBody['amount_due'] ?? 0,
-    'amount_paid' => $invBody['amount_paid'] ?? 0,
-];
-echo json_encode(['success' => false, 'error' => 'Invoice not paid, no PI: status=' . $invStatus, 'debug' => $debugFields]);
+// Last resort: debug info
+echo json_encode([
+    'success' => false,
+    'error'   => 'Invoice finalized but no client_secret found',
+    'debug'   => [
+        'invoiceStatus'     => $invStatus2,
+        'paymentIntentType' => gettype($paymentIntent),
+        'paymentIntentVal'  => is_string($paymentIntent) ? $paymentIntent : (is_array($paymentIntent) ? 'array[status=' . ($paymentIntent['status'] ?? '?') . ']' : 'null'),
+        'invKeys'           => array_keys($invBody2),
+    ],
+]);
