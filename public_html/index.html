@@ -39,18 +39,18 @@
     .nav-links{display:flex;align-items:center;gap:36px;list-style:none;margin:0;padding:0}
     .nav-links a{color:var(--slate);text-decoration:none;font-size:.93rem;font-weight:600;transition:color .2s;white-space:nowrap;padding:8px 0}
     .nav-links a:hover{color:var(--green)}
-    .nav-cta{
-      background:var(--green);color:#fff;padding:10px 28px;border-radius:99px;
-      font-weight:700;font-size:.9rem;transition:all .2s;box-shadow:0 2px 8px rgba(113,184,12,.25);
+    .nav-links .nav-cta{
+      background:var(--green);color:#fff;padding:8px 14px;border-radius:99px;
+      font-weight:700;font-size:.9rem;transition:all .2s;box-shadow:0 2px 8px rgba(113,184,12,.25);display:inline-block;
     }
-    .nav-cta:hover{background:var(--green-dark);color:#fff;transform:translateY(-1px);box-shadow:0 4px 16px rgba(113,184,12,.35)}
+    .nav-links .nav-cta:hover{background:var(--green-dark);color:#fff;transform:translateY(-1px);box-shadow:0 4px 16px rgba(113,184,12,.35)}
 
     @media (max-width:767px){
       .nav-inner{padding:0 16px;height:60px;gap:8px}
       .nav-logo img{height:32px}
       .nav-links{gap:16px}
       .nav-links a{font-size:.82rem}
-      .nav-cta{padding:8px 22px;font-size:.82rem}
+      .nav-links .nav-cta{padding:6px 12px;font-size:.82rem;display:inline-block}
     }
 
     /* ===== HERO — full-width video with text overlay ===== */
