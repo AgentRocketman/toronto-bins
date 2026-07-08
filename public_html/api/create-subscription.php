@@ -116,6 +116,23 @@ if ($invoiceResult['code'] >= 400) {
 
 $paymentIntent = $invoiceResult['body']['payment_intent'] ?? null;
 
+// DEBUG: dump raw invoice keys to see what Stripe returns
+$debugInvoiceKeys = array_keys($invoiceResult['body']);
+
+if (!$paymentIntent) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'No payment_intent on invoice. Invoice keys: ' . implode(', ', $debugInvoiceKeys),
+        'debug' => [
+            'invoiceId' => $invoiceId,
+            'invoiceKeys' => $debugInvoiceKeys,
+            'has_payment_intent' => isset($invoiceResult['body']['payment_intent']),
+            'payment_intent_val' => $invoiceResult['body']['payment_intent'] ?? 'NULL',
+        ],
+    ]);
+    exit;
+}
+
 // Check if payment already succeeded or if confirmation is needed
 $paymentStatus = $paymentIntent['status'] ?? 'unknown';
 
