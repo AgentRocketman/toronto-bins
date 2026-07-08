@@ -114,20 +114,21 @@ if ($invoiceResult['code'] >= 400) {
 
 $paymentIntent = $invoiceResult['body']['payment_intent'] ?? null;
 
-// DEBUG: dump raw invoice keys to see what Stripe returns
-$debugInvoiceKeys = array_keys($invoiceResult['body']);
+// DEBUG: dump key invoice fields
+$invBody = $invoiceResult['body'];
+$debugFields = [
+    'status' => $invBody['status'] ?? 'MISSING',
+    'collection_method' => $invBody['collection_method'] ?? 'MISSING',
+    'billing_reason' => $invBody['billing_reason'] ?? 'MISSING',
+    'amount_due' => $invBody['amount_due'] ?? 'MISSING',
+    'amount_paid' => $invBody['amount_paid'] ?? 'MISSING',
+    'charge' => $invBody['charge'] ?? 'NULL',
+    'payment_intent' => $invBody['payment_intent'] ?? 'NULL',
+    'attempted' => $invBody['attempted'] ?? 'MISSING',
+];
 
 if (!$paymentIntent) {
-    echo json_encode([
-        'success' => false,
-        'error' => 'No payment_intent on invoice. Invoice keys: ' . implode(', ', $debugInvoiceKeys),
-        'debug' => [
-            'invoiceId' => $invoiceId,
-            'invoiceKeys' => $debugInvoiceKeys,
-            'has_payment_intent' => isset($invoiceResult['body']['payment_intent']),
-            'payment_intent_val' => $invoiceResult['body']['payment_intent'] ?? 'NULL',
-        ],
-    ]);
+    echo json_encode(['success' => false, 'error' => 'No payment_intent', 'debug' => $debugFields]);
     exit;
 }
 
