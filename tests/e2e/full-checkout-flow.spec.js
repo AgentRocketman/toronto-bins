@@ -38,11 +38,17 @@ async function runCheckout(page, serviceType, planType, name) {
   // Fill Stripe card
   await fillStripeCard(page);
 
+  // Set up console error capture BEFORE payment
+  const consoleErrors = [];
+  page.on('console', msg => {
+    if (msg.type() === 'error') consoleErrors.push(msg.text());
+  });
+
   // Submit payment
   await page.locator('#pay-btn').click();
   await page.waitForTimeout(3000);
 
-  // Check if payment failed (error message shown instead of confirmation)
+  // Check if payment failed
   const errorText = await page.locator('#card-errors').textContent().catch(() => '');
   const paymentFailed = errorText && errorText.includes('Error');
 
@@ -71,6 +77,12 @@ async function runCheckout(page, serviceType, planType, name) {
     return { bookingId, address };
   } else {
     console.log(`  ❌ Payment error: ${errorText.trim()}`);
+    if (consoleErrors.length > 0) {
+      console.log(`  🐛 Console errors: ${consoleErrors.join(' | ')}`);
+    }
+    // Also capture the card-errors div text for the full Stripe error
+    const fullError = await page.locator('#card-errors').innerText().catch(() => '');
+    console.log(`  🔍 Full error: ${fullError}`);
     return null;
   }
 }

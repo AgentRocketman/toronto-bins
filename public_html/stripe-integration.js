@@ -89,8 +89,7 @@ async function processBookingPayment(bookingData) {
     });
 
     if (error) {
-      showPaymentError(error.message);
-      return false;
+      return { success: false, error: error.message };
     }
 
     const pmId = paymentMethod.id;
@@ -112,19 +111,18 @@ async function processBookingPayment(bookingData) {
       });
       const subData = await subRes.json();
       if (!subData.success) {
-        showPaymentError(subData.error || 'Subscription failed');
-        return false;
+        const errMsg = subData.error || 'Subscription failed';
+        console.error('❌ Subscription API error:', JSON.stringify(subData));
+        return { success: false, error: errMsg };
       }
 
       // Confirm first invoice payment (always required for new subscriptions)
       const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(subData.clientSecret);
       if (confirmError) {
-        showPaymentError(confirmError.message);
-        return false;
+        return { success: false, error: confirmError.message };
       }
       if (paymentIntent.status !== 'succeeded') {
-        showPaymentError('Payment not completed. Status: ' + paymentIntent.status);
-        return false;
+        return { success: false, error: 'Payment not completed. Status: ' + paymentIntent.status };
       }
 
       bookingData.stripeSubscriptionId = subData.subscriptionId;
@@ -151,19 +149,16 @@ async function processBookingPayment(bookingData) {
         // 3D Secure required
         const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(chargeData.clientSecret);
         if (confirmError) {
-          showPaymentError(confirmError.message);
-          return false;
+          return { success: false, error: confirmError.message };
         }
         if (paymentIntent.status !== 'succeeded') {
-          showPaymentError('Payment not completed. Status: ' + paymentIntent.status);
-          return false;
+          return { success: false, error: 'Payment not completed. Status: ' + paymentIntent.status };
         }
         bookingData.stripePaymentId = paymentIntent.id;
       } else if (chargeData.success) {
         bookingData.stripePaymentId = chargeData.paymentIntentId;
       } else {
-        showPaymentError(chargeData.error || 'Payment failed');
-        return false;
+        return { success: false, error: chargeData.error || 'Payment failed' };
       }
       console.log('✅ Ad hoc charge succeeded:', bookingData.stripePaymentId);
     }
@@ -190,8 +185,7 @@ async function processBookingPayment(bookingData) {
 
   } catch (err) {
     console.error('Payment processing error:', err);
-    showPaymentError(err.message);
-    return false;
+    return { success: false, error: err.message };
   }
 }
 

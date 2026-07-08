@@ -1328,7 +1328,8 @@ async function processPayment() {
     if (result && result.success) {
       showPaymentSuccess(result.bookingId, booking, result.savedLocation, result.ordersCount || 0);
     } else {
-      throw new Error(result?.error || 'Payment failed');
+      // result could be boolean false (legacy) or { success: false, error: '...' }
+      throw new Error((result && result.error) || 'Payment failed');
     }
   } catch (err) {
     const errorDiv = document.getElementById('card-errors');
