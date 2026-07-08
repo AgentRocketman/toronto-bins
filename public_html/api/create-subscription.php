@@ -1,7 +1,9 @@
 <?php
 /**
  * GetMyBin — Recurring Subscription
- * Creates a Stripe Customer + Product + Price + weekly Subscription
+ * Creates Stripe Customer + Product + Price + Subscription.
+ * Uses allow_incomplete so Stripe attempts payment immediately.
+ * Returns client_secret for 3D Secure confirmation if needed.
  */
 require_once __DIR__ . '/config.php';
 corsHeaders();
@@ -53,8 +55,6 @@ $customerId = $customerResult['body']['id'];
 $productResult = stripeRequest('POST', '/products', [
     'name'                  => $productName,
     'type'                  => 'service',
-    'metadata[booking_id]'  => $bookingId,
-    'metadata[service]'     => $serviceType,
 ]);
 
 if ($productResult['code'] >= 400) {
@@ -81,12 +81,13 @@ if ($priceResult['code'] >= 400) {
 
 $priceId = $priceResult['body']['id'];
 
-// Step 4: Create Subscription (references the Price)
+// Step 4: Create Subscription (allow_incomplete: attempt payment immediately,
+// but don't block if 3D Secure is needed — return client_secret for JS confirmation)
 $subscriptionResult = stripeRequest('POST', '/subscriptions', [
     'customer'                                                   => $customerId,
     'items[0][price]'                                            => $priceId,
     'default_payment_method'                                    => $paymentMethodId,
-    'payment_behavior'                                          => 'default_incomplete',
+    'payment_behavior'                                          => 'allow_incomplete',
     'payment_settings[payment_method_types][0]'                 => 'card',
     'payment_settings[save_default_payment_method]'             => 'on_subscription',
     'expand[0]'                                                 => 'latest_invoice.payment_intent',
@@ -102,16 +103,33 @@ if ($subscriptionResult['code'] >= 400) {
 
 $subscription  = $subscriptionResult['body'];
 $subscriptionId = $subscription['id'];
-$clientSecret   = $subscription['latest_invoice']['payment_intent']['client_secret'] ?? null;
+$invoice        = $subscription['latest_invoice'] ?? null;
+$paymentIntent  = $invoice['payment_intent'] ?? null;
 
-if (!$clientSecret) {
-    echo json_encode(['success' => false, 'error' => 'Could not get payment confirmation secret']);
-    exit;
+// Check if payment already succeeded or if confirmation is needed
+$paymentStatus = $paymentIntent['status'] ?? 'unknown';
+
+if ($paymentStatus === 'succeeded') {
+    // Payment went through immediately — no 3D Secure needed
+    echo json_encode([
+        'success'         => true,
+        'subscriptionId'  => $subscriptionId,
+        'customerId'      => $customerId,
+        'paymentIntentId' => $paymentIntent['id'],
+        'prepaid'         => true,   // JS: skip confirmCardPayment
+    ]);
+} elseif (($paymentStatus === 'requires_action' || $paymentStatus === 'requires_confirmation') && !empty($paymentIntent['client_secret'])) {
+    // 3D Secure or confirmation needed — return client_secret for JS to confirm
+    echo json_encode([
+        'success'         => true,
+        'subscriptionId'  => $subscriptionId,
+        'customerId'      => $customerId,
+        'clientSecret'    => $paymentIntent['client_secret'],
+        'paymentIntentId' => $paymentIntent['id'],
+        'prepaid'         => false,  // JS: call confirmCardPayment
+    ]);
+} elseif ($paymentStatus === 'requires_payment_method') {
+    echo json_encode(['success' => false, 'error' => 'Payment method was declined']);
+} else {
+    echo json_encode(['success' => false, 'error' => 'Unexpected payment status: ' . $paymentStatus]);
 }
-
-echo json_encode([
-    'success'        => true,
-    'subscriptionId' => $subscriptionId,
-    'customerId'     => $customerId,
-    'clientSecret'   => $clientSecret,
-]);

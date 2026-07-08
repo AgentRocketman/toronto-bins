@@ -116,19 +116,28 @@ async function processBookingPayment(bookingData) {
         return { success: false, error: errMsg };
       }
 
-      // Confirm first invoice payment (always required for new subscriptions)
-      const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(subData.clientSecret);
-      if (confirmError) {
-        return { success: false, error: confirmError.message };
+      if (subData.prepaid) {
+        // Payment succeeded immediately (no 3D Secure needed)
+        bookingData.stripeSubscriptionId = subData.subscriptionId;
+        bookingData.stripeCustomerId     = subData.customerId;
+        bookingData.stripePaymentId      = subData.paymentIntentId;
+        console.log('✅ Stripe subscription created (prepaid):', subData.subscriptionId);
+      } else if (subData.clientSecret) {
+        // 3D Secure or confirmation needed
+        const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(subData.clientSecret);
+        if (confirmError) {
+          return { success: false, error: confirmError.message };
+        }
+        if (paymentIntent.status !== 'succeeded') {
+          return { success: false, error: 'Payment not completed. Status: ' + paymentIntent.status };
+        }
+        bookingData.stripeSubscriptionId = subData.subscriptionId;
+        bookingData.stripeCustomerId     = subData.customerId;
+        bookingData.stripePaymentId      = paymentIntent.id;
+        console.log('✅ Stripe subscription created (confirmed):', subData.subscriptionId);
+      } else {
+        return { success: false, error: 'No client secret and payment not prepaid' };
       }
-      if (paymentIntent.status !== 'succeeded') {
-        return { success: false, error: 'Payment not completed. Status: ' + paymentIntent.status };
-      }
-
-      bookingData.stripeSubscriptionId = subData.subscriptionId;
-      bookingData.stripeCustomerId     = subData.customerId;
-      bookingData.stripePaymentId      = paymentIntent.id;
-      console.log('✅ Stripe subscription created:', subData.subscriptionId);
 
     } else {
       // --- Ad hoc: create one-time PaymentIntent ---
