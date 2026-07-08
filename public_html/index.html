@@ -228,8 +228,8 @@
     .faq-q:hover{background:#f8fafc}
     .faq-chevron{flex-shrink:0;color:var(--green);font-size:1.3rem;transition:transform .25s;font-weight:300}
     .faq-item.open .faq-chevron{transform:rotate(45deg)}
-    .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease;padding:0 1.5rem}
-    .faq-item.open .faq-a{max-height:300px;padding:0 1.5rem 1.3rem}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1),padding .4s ease;padding:0 1.5rem}
+    .faq-item.open .faq-a{padding:0 1.5rem 1.3rem}
     .faq-a p{margin:0;color:var(--slate-light);font-size:.95rem;line-height:1.7}
     .faq-a a{color:var(--teal);font-weight:600;text-decoration:underline}
 
@@ -250,14 +250,14 @@
     .booking-inner{max-width:860px;margin:0 auto;padding:5rem 2rem}
     .address-confirmed{
       background:linear-gradient(135deg,var(--green-dark),var(--green));
-      border-radius:var(--radius);padding:1.5rem 1.8rem;color:#fff;margin-bottom:2.5rem;
-      display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+      border-radius:var(--radius);padding:1.2rem 1.5rem;color:#fff;margin-bottom:2.5rem;
       box-shadow:0 6px 24px rgba(113,184,12,.25);
     }
-    .ac-icon{font-size:2rem;flex-shrink:0}
+    .ac-address{font-size:1.25rem;font-weight:800;margin-bottom:8px;line-height:1.3}
+    .ac-row{display:flex;align-items:center;gap:12px}
+    .ac-icon{font-size:1.6rem;flex-shrink:0}
     .ac-text{flex:1;min-width:0}
-    .ac-address{font-size:1.05rem;font-weight:800;margin-bottom:2px}
-    .ac-day{font-size:.88rem;opacity:.85}
+    .ac-day{font-size:.85rem;opacity:.85}
     .ac-change{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:.78rem;font-weight:700;padding:7px 15px;border-radius:99px;cursor:pointer;transition:background .15s;white-space:nowrap;flex-shrink:0}
     .ac-change:hover{background:rgba(255,255,255,.3)}
 
@@ -612,12 +612,14 @@
   <div id="booking-anchor"></div>
   <div class="booking-inner">
     <div class="address-confirmed" id="address-confirmed">
-      <div class="ac-icon">📍</div>
-      <div class="ac-text">
-        <div class="ac-address" id="ac-address-text"></div>
-        <div class="ac-day" id="ac-day-text"></div>
+      <div class="ac-address" id="ac-address-text"></div>
+      <div class="ac-row">
+        <div class="ac-icon">📍</div>
+        <div class="ac-text">
+          <div class="ac-day" id="ac-day-text"></div>
+        </div>
+        <button class="ac-change" onclick="resetSearch()">✏️ Change Address</button>
       </div>
-      <button class="ac-change" onclick="resetSearch()">✏️ Change Address</button>
     </div>
 
     <div class="next-pickup">
@@ -1615,17 +1617,27 @@ document.addEventListener('DOMContentLoaded', function(){
 document.querySelectorAll('.faq-q').forEach(function(btn){
   btn.addEventListener('click', function(){
     var item = this.closest('.faq-item');
+    var answer = item.querySelector('.faq-a');
     var isOpen = item.classList.contains('open');
     // Close all
     document.querySelectorAll('.faq-item.open').forEach(function(el){
       el.classList.remove('open');
+      el.querySelector('.faq-a').style.maxHeight = '0';
       el.querySelector('.faq-q').setAttribute('aria-expanded','false');
     });
     // Open clicked if it was closed
     if(!isOpen){
       item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
       this.setAttribute('aria-expanded','true');
     }
+  });
+});
+
+// Auto-resize FAQ answers on window resize
+window.addEventListener('resize',function(){
+  document.querySelectorAll('.faq-item.open .faq-a').forEach(function(a){
+    a.style.maxHeight = a.scrollHeight + 'px';
   });
 });
 

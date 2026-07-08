@@ -31,7 +31,7 @@ define('STRIPE_API_BASE',   'https://api.stripe.com/v1');
 // ============================================================
 // OPENAI (server-side only — never sent to client)
 // ============================================================
-define('OPENAI_API_KEY', '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');
+define('OPENAI_API_KEY', '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');
 
 // ============================================================
 // GOOGLE MAPS (server-side only — exposed via /api/maps-key.php)
