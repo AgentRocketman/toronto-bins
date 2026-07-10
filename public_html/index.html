@@ -436,7 +436,7 @@
           <span class="hero-search-icon">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           </span>
-          <input type="text" id="address" placeholder="Start typing your Toronto address…" autocomplete="off" />
+          <input type="text" id="address" placeholder="Start typing your Toronto address…" autocomplete="off" autofocus />
           <button class="hero-search-btn" id="hero-search-btn">Check Schedule →</button>
         </div>
       </div>
@@ -682,6 +682,7 @@
     <div id="adhoc-dates">
       <h4>Select collection dates (tap to toggle):</h4>
       <div class="date-cards" id="date-cards"></div>
+      <p id="adhoc-desc" style="display:none;margin-top:12px;font-size:.88rem;color:var(--slate);line-height:1.5"></p>
     </div>
 
     <div id="recurring-info">
@@ -1006,6 +1007,8 @@ document.getElementById('service-toggle').addEventListener('click', function(e) 
   this.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   serviceType = btn.dataset.val;
+  if (planType === 'recurring') buildRecurringInfo();
+  if (planType === 'adhoc') buildAdhocDesc();
   updateTotal();
 });
 
@@ -1023,6 +1026,7 @@ function showPlanUI() {
   if (planType === 'adhoc') {
     document.getElementById('adhoc-dates').style.display = 'block';
     document.getElementById('recurring-info').style.display = 'none';
+    buildAdhocDesc();
   } else {
     document.getElementById('adhoc-dates').style.display = 'none';
     document.getElementById('recurring-info').style.display = 'block';
@@ -1103,14 +1107,45 @@ function buildRecurringInfo() {
   if (!currentCalendarName) return;
   const match = currentCalendarName.match(/^([A-Za-z]+)/);
   const dayName = match ? match[1] : 'collection day';
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const dayIdx = days.indexOf(dayName);
+  const dayBefore = days[(dayIdx + 6) % 7];
   const eventsPerMonth = 4;
   const serviceMultiplier = serviceType === 'both' ? 2 : 1;
   const monthlyTotal = (PRICE_RECURRING * eventsPerMonth * serviceMultiplier).toFixed(2);
   const serviceLabel = serviceType === 'rollout' ? 'Roll Out' : serviceType === 'rollin' ? 'Roll In' : 'Roll Out + Roll In';
   const eventPrice = (PRICE_RECURRING * serviceMultiplier).toFixed(2);
   document.getElementById('recurring-title').textContent = 'Every ' + dayName + ' \u2014 ' + serviceLabel;
-  document.getElementById('recurring-desc').textContent = 'We\'ll handle your bins on every ' + dayName + ' collection day, automatically. $' + eventPrice + '/week.';
-  document.getElementById('recurring-monthly').textContent = 'Estimated monthly: ~$' + monthlyTotal + '/month (' + (serviceMultiplier * eventsPerMonth) + ' service events \xd7 $' + eventPrice + ')'
+  let desc;
+  if (serviceType === 'rollout') {
+    desc = 'We\'ll roll out your bin on ' + dayBefore + ' evening before ' + dayName + '\'s collection. $' + eventPrice + '/week.';
+  } else if (serviceType === 'rollin') {
+    desc = 'We\'ll roll in your bin after ' + dayName + '\'s collection. $' + eventPrice + '/week.';
+  } else {
+    desc = 'We\'ll roll out your bin on ' + dayBefore + ' evening and roll it back in after ' + dayName + '\'s collection. $' + eventPrice + '/week.';
+  }
+  document.getElementById('recurring-desc').textContent = desc;
+  document.getElementById('recurring-monthly').textContent = 'Estimated monthly: ~$' + monthlyTotal + '/month (' + eventsPerMonth + ' weeks \xd7 $' + eventPrice + ')'
+}
+
+function buildAdhocDesc() {
+  const descEl = document.getElementById('adhoc-desc');
+  if (selectedDates.size === 0) { descEl.style.display = 'none'; return; }
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const first = [...selectedDates].sort()[0];
+  const d = new Date(first + 'T12:00:00');
+  const colDay = days[d.getDay()];
+  const dayBefore = days[(d.getDay() + 6) % 7];
+  let desc;
+  if (serviceType === 'rollout') {
+    desc = 'We\'ll roll out your bin on ' + dayBefore + ' evening before each ' + colDay + ' collection.';
+  } else if (serviceType === 'rollin') {
+    desc = 'We\'ll roll in your bin after each ' + colDay + ' collection.';
+  } else {
+    desc = 'We\'ll roll out your bin on ' + dayBefore + ' evening and roll it back in after each ' + colDay + ' collection.';
+  }
+  descEl.textContent = desc;
+  descEl.style.display = 'block';
 }
 
 // ===== Running total =====
@@ -1129,6 +1164,9 @@ function updateTotal() {
 
   wrap.style.display = 'block';
   btn.disabled = false;
+
+  if (planType === 'adhoc' && selectedDates.size > 0) buildAdhocDesc();
+  else document.getElementById('adhoc-desc').style.display = 'none';
 
   // Make sure the Street View block is mounted (lazily, first time we have a selection)
   ensureBinPlacementMounted();
