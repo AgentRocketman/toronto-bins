@@ -300,7 +300,8 @@
     .subsection-title,.service-title{font-size:1.08rem;font-weight:800;color:#0f172a;margin-bottom:1.1rem}
     .toggle-group{display:flex;border:2px solid #e2e8f0;border-radius:12px;overflow:visible;width:fit-content;position:relative}
     .toggle-btn{padding:10px 22px;background:#fff;border:none;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--slate-light);transition:all .15s;border-right:2px solid #e2e8f0;position:relative}
-    .toggle-btn:last-child{border-right:none}
+    .toggle-btn:first-child{border-radius:12px 0 0 12px}
+    .toggle-btn:last-child{border-right:none;border-radius:0 12px 12px 0}
     .toggle-btn.active{background:var(--green);color:#fff}
     .toggle-btn:hover:not(.active){background:var(--green-xlight);color:var(--green-dark)}
     .save-badge{position:absolute;top:-8px;right:-55px;background:#d4af37;color:#0f172a;font-size:.65rem;font-weight:900;padding:3px 8px;border-radius:12px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;z-index:10}
@@ -722,7 +723,7 @@
 
 <!-- ===== FOOTER ===== -->
 <footer>
-  <p class="footer-note">Schedule data from <a href="https://www.toronto.ca/services-payments/recycling-organics-garbage/houses/collection-schedule/" target="_blank">City of Toronto Open Data</a> · Toronto, ON</p>
+  <p class="footer-note">Schedule data from <a href="https://www.toronto.ca/services-payments/recycling-organics-garbage/houses/collection-schedule/" target="_blank">City of Toronto Open Data</a></p>
   <p class="footer-note" style="margin-top:.4rem"><a href="/terms.html">Terms of Service</a> · <a href="/privacy.html">Privacy Policy</a> · <a href="/contact.html">Contact Us</a></p>
 </footer>
 
