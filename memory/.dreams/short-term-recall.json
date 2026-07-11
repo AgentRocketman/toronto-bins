@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-07T19:18:28.017Z",
+  "updatedAt": "2026-07-11T02:11:29.259Z",
   "entries": {
     "memory:memory/2026-06-27.md:247:268": {
       "key": "memory:memory/2026-06-27.md:247:268",
@@ -106,19 +106,21 @@
       "endLine": 405,
       "source": "memory",
       "snippet": "- `api/agents/run.php`: removed `createApproval()`, replaced with `triggerNextStage()` for auto-cascade. Added simple verdict parsing to auto-iterate when `code_reviewer`, `security_auditor`, or `performance_auditor` outputs a rejecting verdict. - `api/agent-status/webhook.php`: auto-advances on Builder / async success; auto-iterates on failure via `mcAutoIterateOnFailure()`. - `api/projects/patch-functions.php`: added `MC_MAX_AUTO_ITERATIONS = 5`, `mcFindRootProjectId()`, `mcCountFamilyPatches()`, `mcAutoIterateOnFailure()`. - `api/projects/create.php` + `update.php`: removed all auto-approve flag writes (`auto_scout`, `auto_architect`, etc.) and `auto_deploy`. - `api/projects/get.php` + `d",
-      "recallCount": 2,
+      "recallCount": 3,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 3,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T03:46:55.039Z",
-      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
+      "lastRecalledAt": "2026-07-10T16:03:29.580Z",
       "queryHashes": [
         "f8a7b28b6724",
-        "e4b3c2b183f8"
+        "e4b3c2b183f8",
+        "99f16a67b525"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-10"
       ],
       "conceptTags": [
         "api/agents/run.php",
@@ -169,23 +171,25 @@
       "endLine": 31,
       "source": "memory",
       "snippet": "# 2026-06-12 — Testing Infrastructure & CurbIn v2 ## Hostinger MCP Setup - **Status:** Connected via API token (JuxzmiZ7ml4AAfv8GtBg5IBelbva8ZDsfg0u2GMcfd5ffe1c) - **Plan purchased:** Business Web Hosting (annual, $203.88) - **Order ID:** 1009510349 - **Datacenter:** Boston (closest to Toronto) - **Domain:** agentrocketman.com (active, DNS configured) - **Email:** support@agentrocketman.com (username: Yuserbsme, password: AgentEmail1!) - **IMAP/SMTP:** imap.hostinger.com:993, smtp.hostinger.com:465 (TLS) - **Himalaya config:** ~/.config/himalaya/config.toml (ready but IMAP not yet activated by Hostinger backend) - **Website:** Still provisioning on Hostinger (API hasn't returned it yet, but",
-      "recallCount": 6,
+      "recallCount": 7,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 6,
+      "totalScore": 7,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T04:44:03.947Z",
-      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-09T14:07:38.285Z",
       "queryHashes": [
         "4448bfbac301",
         "c28c6ad52629",
         "70380bd32bcd",
         "4863b0ccfd56",
         "7a949d74f8b3",
-        "cc373728c2cc"
+        "cc373728c2cc",
+        "40616ccb6ca6"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-09"
       ],
       "conceptTags": [
         "203.88",
@@ -205,22 +209,24 @@
       "endLine": 81,
       "source": "memory",
       "snippet": "- Removed 1.6s mystery wait - Added instant \"Scrolling to your schedule...\" feedback with spinner - Uses `transitionend` event for smart timing - Fallback 1.6s timeout for robustness - Works consistently on first AND subsequent clicks 3. **Dynamic recurring info** — Text now updates reactively when switching service types (Opus fix) 4. **Accordion** — Collapsible \"Upcoming Schedule\" (started session) 5. **Pricing** — Fixed recurring \"Both\" service to show $11.90/event 6. **Autocomplete scroll** — Fixed first-click scroll behavior ### Final Status: - ✅ GitHub Pages live: https://agentrocketman.github.io/toronto-bins/ - ✅ All UX issues resolved - ✅ Badge, scroll, pricing, recur",
-      "recallCount": 5,
+      "recallCount": 6,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 5,
+      "totalScore": 6,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T04:44:03.947Z",
-      "lastRecalledAt": "2026-07-07T19:18:28.017Z",
+      "lastRecalledAt": "2026-07-09T14:07:38.285Z",
       "queryHashes": [
         "4448bfbac301",
         "c28c6ad52629",
         "4863b0ccfd56",
         "f91bb3ba8175",
-        "24c7d318528b"
+        "24c7d318528b",
+        "40616ccb6ca6"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-09"
       ],
       "conceptTags": [
         "1.6s",
@@ -568,18 +574,20 @@
       "endLine": 55,
       "source": "memory",
       "snippet": "1. Use browser (targetId of an existing tab, or open one) to `fetch('https://agentrocketman.com/assistant/api/debug-updates.php', { headers: { 'X-Auth-Token': 'curbin-assistant-dev-2026' }})` 2. Find all unreplied PWA requests (entries without `.reply`). 3. For each one, compose a short natural reply and POST to `https://agentrocketman.com/assistant/api/reply.php` with: - Header `X-Hook-Auth: curbin-hook-auth-2026` - Body `{\"request_id\": \"<id>\", \"reply\": \"<text>\"}` 4. Then reply to Chris normally. ### Guardrails - Skip requests older than ~30 minutes (Chris has moved on). - Skip requests with obviously mistranscribed / gibberish text unless clear intent. - Keep PWA replies short (1–2",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:44:11.260Z",
-      "lastRecalledAt": "2026-07-07T06:44:11.260Z",
+      "lastRecalledAt": "2026-07-10T16:03:29.580Z",
       "queryHashes": [
-        "a5cefdaadcf9"
+        "a5cefdaadcf9",
+        "99f16a67b525"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-10"
       ],
       "conceptTags": [
         "x-auth-token",
@@ -821,20 +829,22 @@
       "endLine": 91,
       "source": "memory",
       "snippet": "### New Airtable columns (added via API) - Bookings table `Calendar Name` — singleLineText — id `fldJfSyti34WAvtIS` - Orders table `Calendar Name` — singleLineText — id `fldNcNrPtIbu2trwV` ### Test on dev 1. https://agentrocketman.com → enter address → pick a date → checkout. - No bin checkbox panel should appear. Customer flow is identical to before the feature was added. 2. Confirm in Airtable: the Booking has `Calendar Name` set; each Order row has `Calendar Name`, `Bins To Roll` (e.g. \"Green, Recycling\"), and `Bins JSON`. 3. Log into employee dashboard → check the stop card shows colored bin chips. ### Coding Via Claude Code CLI (Anthropic billing). Spec at `/tmp/bin-rip-spe",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T12:42:55.356Z",
-      "lastRecalledAt": "2026-07-07T12:57:22.562Z",
+      "lastRecalledAt": "2026-07-11T02:11:29.259Z",
       "queryHashes": [
         "944f601047a1",
         "d82fd5ac4124",
-        "24c714612573"
+        "24c714612573",
+        "98e3e17eeb3d"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-11"
       ],
       "conceptTags": [
         "agentrocketman.com",
@@ -887,18 +897,20 @@
       "endLine": 83,
       "source": "memory",
       "snippet": "- `Bins JSON` — multilineText — id `fldwM1IRNMMjNXzCq` - **Orders** (tblGhNRi3ENwVpNty): - `Bins To Roll` — singleLineText — id `fldyV2i6x1GFmytqP` - `Bins JSON` — multilineText — id `fldv3jxInlxBr0zaE` Bookings + chips on driver dashboard now fully wired end-to-end on dev. ## Bin Checkbox UI Ripped — bins now fully automatic ✅ 2026-06-24 03:17 UTC Customer was right — checkboxes made checkout cumbersome, and the recurring path let you check \"Christmas Tree\" on a weekly subscription (paradox). ### Changes - `index.html`: removed all bin-selection UI + state + helpers (-84 lines). Booking payload now carries `binsByDate` (computed from selectedDates + Toronto schedule) for ad-ho",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T12:42:55.356Z",
-      "lastRecalledAt": "2026-07-07T12:42:55.356Z",
+      "lastRecalledAt": "2026-07-10T16:03:29.580Z",
       "queryHashes": [
-        "944f601047a1"
+        "944f601047a1",
+        "99f16a67b525"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-10"
       ],
       "conceptTags": [
         "end-to-end",
@@ -1543,18 +1555,20 @@
       "endLine": 38,
       "source": "memory",
       "snippet": "# Session Notes — 2026-06-18 ## Chat Analytics System — COMPLETE ✅ Built **comprehensive chat logging & analytics dashboard** for GetMyBin: ### **Backend Infrastructure** - `/api/config.php` — Centralized config (Airtable keys, OpenAI key, helpers) - `/api/log-chat.php` — Logs Q&A to Airtable ChatLogs table - `/api/summarize-chats.php` — Queries Airtable, summarizes via OpenAI server-side - `/api/chat.php` — **NEW** Handles chat messages securely (no exposed API key) ### **Frontend** - `/chat-logger.js` — Captures sessionId, timestamps, IP, browser, device - `/admin/chat_analytics.html` → **RENAMED TO** `/admin/chat_analytics.html` - Features: - Date range pickers (top) - Top 5 issue",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T16:34:11.553Z",
-      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
+      "lastRecalledAt": "2026-07-09T14:07:38.285Z",
       "queryHashes": [
-        "e4b3c2b183f8"
+        "e4b3c2b183f8",
+        "40616ccb6ca6"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-09"
       ],
       "conceptTags": [
         "openai",
@@ -1605,18 +1619,20 @@
       "endLine": 173,
       "source": "memory",
       "snippet": "- `/api/chat.php` — **NEW** Handles chat messages securely (no exposed API key) ### **Frontend** - `/chat-logger.js` — Captures sessionId, timestamps, IP, browser, device - `/admin/chat_analytics.html` → **RENAMED TO** `/admin/chat_analytics.html` - Features: - Date range pickers (top) - Top 5 issues summary (OpenAI-generated from selected date range) - Session count & message count stats - Harmonica sessions with full chat history (Q→A chronologically) - Only one harmonica open at a time - Sessions sorted chronologically - Combined label: \"Chat History / # Messages:\" ### **Airtable Integration** - Table: `ChatLogs` (tblChatLogs) — Not yet created in Airtable - Fields: sessio",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T16:34:11.553Z",
-      "lastRecalledAt": "2026-07-07T16:34:11.553Z",
+      "lastRecalledAt": "2026-07-09T14:07:38.285Z",
       "queryHashes": [
-        "e4b3c2b183f8"
+        "e4b3c2b183f8",
+        "40616ccb6ca6"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-09"
       ],
       "conceptTags": [
         "openai",
@@ -2000,6 +2016,161 @@
         "pending",
         "completed",
         "displaying"
+      ]
+    },
+    "memory:memory/2026-06-14.md:216:249": {
+      "key": "memory:memory/2026-06-14.md:216:249",
+      "path": "memory/2026-06-14.md",
+      "startLine": 216,
+      "endLine": 249,
+      "source": "memory",
+      "snippet": "2. **Rewrite dynamic section** - Either fix subagent code or build from scratch (recommend fresh build) 3. **Test thoroughly** - Before redeployment via Hostinger API 4. **Decision:** Keep dynamic version OR revert to hardcoded (ask user) ## Key Learning - **Deployment method:** Hostinger API (not FTP/SSH) is the most reliable path forward - **Subagent code quality:** Generated files need thorough testing before deployment # 2026-06-14 — Service Routing Merge & Deployment ## Status: DEPLOYMENT ATTEMPTED ✅ - Attempted deployment of merged service-routing file via Hostinger API - Deploy call returned: `{\"deploy\":{\"status\":\"success\",\"data\":{\"message\":\"Request accepted\"}}}` - Archive: `/tmp/cu",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-08T13:08:16.729Z",
+      "lastRecalledAt": "2026-07-08T13:08:16.729Z",
+      "queryHashes": [
+        "2c27e3adbeb9"
+      ],
+      "recallDays": [
+        "2026-07-08"
+      ],
+      "conceptTags": [
+        "ftp/ssh",
+        "service-routing",
+        "tmp/cu",
+        "rewrite",
+        "dynamic",
+        "section",
+        "either",
+        "fix"
+      ]
+    },
+    "memory:memory/2026-06-14.md:94:129": {
+      "key": "memory:memory/2026-06-14.md:94:129",
+      "path": "memory/2026-06-14.md",
+      "startLine": 94,
+      "endLine": 129,
+      "source": "memory",
+      "snippet": "**Date picker not triggering Airtable reload** — when user changes date, page still shows hardcoded fallback data instead of loading from Airtable. **Root cause:** In `loadOrdersForDate()`, the function properly: - Clears containers - Shows loading spinner - Calls `fetchOrdersFromAirtable(date)` - BUT: Initial hardcoded data may be persisting or Airtable fetch may be failing silently **Next debugging steps:** 1. Check browser console for fetch errors 2. Verify Airtable API response is actually arriving 3. Check if `currentStops` array is being properly cleared/replaced 4. Inspect network tab to confirm API calls are being made ## Files Modified This Turn - Attempted deployment of merged v",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-08T13:08:16.729Z",
+      "lastRecalledAt": "2026-07-08T13:08:16.729Z",
+      "queryHashes": [
+        "2c27e3adbeb9"
+      ],
+      "recallDays": [
+        "2026-07-08"
+      ],
+      "conceptTags": [
+        "network",
+        "cleared/replaced",
+        "date",
+        "picker",
+        "not",
+        "triggering",
+        "airtable",
+        "reload"
+      ]
+    },
+    "memory:memory/2026-06-14.md:241:282": {
+      "key": "memory:memory/2026-06-14.md:241:282",
+      "path": "memory/2026-06-14.md",
+      "startLine": 241,
+      "endLine": 282,
+      "source": "memory",
+      "snippet": "2. Verify Airtable API response is actually arriving 3. Check if `currentStops` array is being properly cleared/replaced 4. Inspect network tab to confirm API calls are being made ## Files Modified This Turn - Attempted deployment of merged version with all features - Ready for testing at https://agentrocketman.com/service-routing.html ## What Works ✅ - Order form → Stripe → Airtable save (end-to-end confirmed) - Tracker.html real-time monitor - Airtable API integration (code is in place) - Deployment via Hostinger API (reliable method established) ## What Needs Testing 🧪 - Date picker triggering fresh Airtable load - Map markers updating with new orders - Car icon position tracking on n",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-08T13:08:16.729Z",
+      "lastRecalledAt": "2026-07-08T13:08:16.729Z",
+      "queryHashes": [
+        "2c27e3adbeb9"
+      ],
+      "recallDays": [
+        "2026-07-08"
+      ],
+      "conceptTags": [
+        "network",
+        "cleared/replaced",
+        "end-to-end",
+        "tracker.html",
+        "real-time",
+        "verify",
+        "airtable",
+        "api"
+      ]
+    },
+    "memory:memory/2026-06-28.md:191:233": {
+      "key": "memory:memory/2026-06-28.md:191:233",
+      "path": "memory/2026-06-28.md",
+      "startLine": 191,
+      "endLine": 233,
+      "source": "memory",
+      "snippet": "- Verified live styles present. --- ## Mission Control — Fix Inline Patch Accordion Collapsing on Refresh (01:33 UTC) **Bug:** Expanding inline patches accordion collapsed after ~1s because `renderProjects()` rebuilds the grid every 2s and lost the open state. **Fix:** - Added `expandedPatches: {}` to dashboard state. - Badge click toggles class and records parentId in `state.expandedPatches`. - After each card render, if `state.expandedPatches[p.id]` is true, re-add `.open` to the inline list. **Deployment:** `deploy-final.sh agentrocketman.com` + hostinger-deploy.mjs. --- ## Mission Control — Active Patches Show as Cards (01:44 UTC) **Requested:** Active/running quick_fix patches s",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-09T14:07:38.285Z",
+      "lastRecalledAt": "2026-07-09T14:07:38.285Z",
+      "queryHashes": [
+        "40616ccb6ca6"
+      ],
+      "recallDays": [
+        "2026-07-09"
+      ],
+      "conceptTags": [
+        "state.expandedpatches",
+        "p.id",
+        "re-add",
+        "deploy-final.sh",
+        "agentrocketman.com",
+        "hostinger-deploy.mjs",
+        "active/running",
+        "quick-fix"
+      ]
+    },
+    "memory:memory/2026-07-09.md:1:12": {
+      "key": "memory:memory/2026-07-09.md:1:12",
+      "path": "memory/2026-07-09.md",
+      "startLine": 1,
+      "endLine": 12,
+      "source": "memory",
+      "snippet": "# 2026-07-09 ## Agentado.ai — First Discussion - **First mention** of agentado.ai — Chris's new idea for a real estate agent SaaS platform - **Core vision:** Real estate agents paste a realtor.ca link → service turns still images into 3D tours / live video. Also offers AI web chat for property Q&A, appointment booking, and other agent tools. - Reviewed Google Cloud's \"1,302 real-world gen AI use cases\" document for best-fit ideas - Picked top 3 ideas and saved to `projects/agentado-ideas.md`: 1. Gen Media Property Studio (images → 3D tours & video) 2. 24/7 Property Concierge Chat Agent 3. Agent Copilot (listing descriptions, CMA automation, scheduling, docs) - Chris wants these saved",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-10T16:03:29.580Z",
+      "lastRecalledAt": "2026-07-10T16:03:29.580Z",
+      "queryHashes": [
+        "99f16a67b525"
+      ],
+      "recallDays": [
+        "2026-07-10"
+      ],
+      "conceptTags": [
+        "agentado.ai",
+        "realtor.ca",
+        "real-world",
+        "best-fit",
+        "projects/agentado-ideas.md",
+        "24/7",
+        "first",
+        "discussion"
       ]
     }
   }

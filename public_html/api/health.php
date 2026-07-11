@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-$bin_pics_dir = __DIR__ . '/../bin-pics';
+$bin_pics_dir = dirname(__DIR__, 2) . '/bin-pics-data';
 $bin_pics_exists = is_dir($bin_pics_dir);
 $bin_pics_writable = $bin_pics_exists && is_writable($bin_pics_dir);
 

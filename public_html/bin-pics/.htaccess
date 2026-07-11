@@ -1,6 +1,8 @@
-# Allow image files
-<FilesMatch "\.(jpe?g|png|gif|webp)$">
-    Allow from all
-</FilesMatch>
-# Block listing
+# Route / to the gallery page
+RewriteEngine On
+RewriteRule ^$ index.php [L]
+# Proxy image/file requests to external storage
+RewriteCond %{REQUEST_URI} !^/bin-pics/index\.php [NC]
+RewriteRule ^(.+\.(jpe?g|png|gif|webp))$ /api/serve-binpic.php?f=$1 [L,QSA]
+# Block direct listing of server directory
 Options -Indexes

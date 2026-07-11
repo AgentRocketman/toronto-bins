@@ -1,35 +1,41 @@
 #!/bin/bash
 
-# Final Deployment Script - Backup → Deploy → Restore
+# Deployment Script - Graphify → Deploy
 # Usage: bash deploy-final.sh agentrocketman.com
 #        bash deploy-final.sh getmybin.com
+#
+# Bin-pics images are stored EXTERNALLY at /data/.openclaw/workspace/bin-pics-data/
+# — they survive deploys, no backup/restore needed.
 
 DOMAIN=${1:-agentrocketman.com}
-BACKUP_ZIP="/tmp/bin-pics-backup-$(date +%s).zip"
 DEPLOY_TAR="/tmp/deploy-$(date +%s).tar.gz"
 SOURCE_DIR="/data/.openclaw/workspace/public_html"
 
 echo "════════════════════════════════════════════════════════════"
-echo "🚀 DEPLOY WITH IMAGE BACKUP & RESTORE"
+echo "🚀 DEPLOY"
 echo "════════════════════════════════════════════════════════════"
 echo ""
 echo "Domain: $DOMAIN"
 echo "Time: $(date)"
 echo ""
 
-# STEP 1: Backup images from server
+# STEP 1: Refresh knowledge graph (incremental, free for code-only changes)
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📸 STEP 1: Backing up images from server..."
+echo "🧠 STEP 1: Updating Graphify knowledge graph..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-curl -s "https://$DOMAIN/api/backup-images.php?action=backup" -o "$BACKUP_ZIP"
+export OPENAI_API_KEY="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"
+export OPENAI_BASE_URL="https://openrouter.ai/api/v1"
+export GRAPHIFY_VIZ_NODE_LIMIT=25000
 
-if [ -s "$BACKUP_ZIP" ]; then
-    BACKUP_SIZE=$(du -h "$BACKUP_ZIP" | cut -f1)
-    echo "✅ Backup successful ($BACKUP_SIZE)"
+cd /data/.openclaw/workspace
+if graphify update . 2>&1; then
+    echo "✅ Graph updated"
+    mkdir -p "$SOURCE_DIR/graphify"
+    cp -f graphify-out/graph.html graphify-out/GRAPH_REPORT.md graphify-out/graph.json "$SOURCE_DIR/graphify/" 2>/dev/null
+    echo "✅ Graph files staged for deployment"
 else
-    echo "⚠️  No images to backup (first deploy or empty bin-pics)"
-    echo "   Continuing..."
+    echo "⚠️  Graph update had warnings (non-fatal, continuing)"
 fi
 
 echo ""
@@ -46,24 +52,9 @@ echo "✅ Archive created ($DEPLOY_SIZE)"
 echo "   Path: $DEPLOY_TAR"
 
 echo ""
-echo "🌐 Deploying to Hostinger..."
-echo "   Note: Agent will call the Hostinger API deploy function"
-echo "   Archive path: $DEPLOY_TAR"
-echo "   This will wipe the server and unpack the new code."
-
-echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "✅ Ready for deployment!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "After Hostinger deployment completes, restore images:"
-echo ""
-if [ -s "$BACKUP_ZIP" ]; then
-    echo "  curl -F 'zip=@$BACKUP_ZIP' 'https://$DOMAIN/api/backup-images.php?action=restore'"
-    echo ""
-    echo "  Backup file will expire. Keep until restore is confirmed."
-else
-    echo "  (No images to restore)"
-fi
-
+echo "Note: Bin-pics images survive deploys (external storage)."
 echo ""

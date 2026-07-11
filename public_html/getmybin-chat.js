@@ -144,6 +144,7 @@
   background: #e8f5e0; color: #222;
   border-bottom-left-radius: 4px;
 }
+.gmb-bubble a { color: #0d9488; text-decoration: underline; }
 
 /* ── Typing indicator ── */
 .gmb-typing { display: flex; gap: 5px; padding: 10px 14px; }
@@ -248,8 +249,8 @@ Service Overview:
 - Professional, reliable service - no missed collections
 
 Pricing:
-- Recurring subscription: $5.95/week per event (billed weekly)
-- Ad-hoc/one-time service: $8.95 per event
+- Recurring subscription: $6.95/week per event (billed weekly)
+- Ad-hoc/one-time service: $9.95 per event
 - Tax: 13% HST added at checkout (Ontario)
 
 ⚠️ CRITICAL - Two Separate Charges ALWAYS:
@@ -257,29 +258,29 @@ Pricing:
 - Roll in back to property = 1 separate charge
 - This applies to BOTH recurring AND ad-hoc services
 - Each event is billed independently
-- Example: Recurring service with both events = $5.95 + $5.95 = $11.90/week (plus tax)
-- Example: Ad-hoc with both events = $8.95 + $8.95 = $17.90 one-time (plus tax)
+- Example: Recurring service with both events = $6.95 + $6.95 = $13.90/week (plus tax)
+- Example: Ad-hoc with both events = $9.95 + $9.95 = $19.90 one-time (plus tax)
 
 Current Promotion:
 - New customers: Get your first rollout for just $1 (recurring subscription only)
 - The $1 offer is for the first rollout/roll-in
-- After the first week, it automatically converts to regular $5.95/week pricing
-- You can cancel anytime with one-click cancellation
+- After the first week, it automatically converts to regular $6.95/week pricing
+- You can cancel anytime — tell users to visit ./manage.html (no login required)
 
 How It Works:
 1. Check your collection schedule on our website
 2. Sign up for recurring or book ad-hoc service
-3. The evening before pickup day: we roll your bins out to the curb/street (Event #1 - $5.95 recurring / $8.95 ad-hoc)
-4. Collection day afternoon: after the city truck has emptied your bins, we roll them back to your property (Event #2 - $5.95 recurring / $8.95 ad-hoc)
+3. The evening before pickup day: we roll your bins out to the curb/street (Event #1 - $6.95 recurring / $9.95 ad-hoc)
+4. Collection day afternoon: after the city truck has emptied your bins, we roll them back to your property (Event #2 - $6.95 recurring / $9.95 ad-hoc)
 5. Each event is charged separately - you choose which events you need
 6. Track everything through your online dashboard
 
 Billing Model: Both roll-out and roll-in are independent charges whether you're on recurring or ad-hoc. Choose the service level that fits your needs
 
 Subscription Management:
-- Cancel anytime with one-click (no penalties, no customer service calls needed)
-- Change your service plan in your account
-- Pause/resume as needed
+- Manage your service at ./manage.html — no login required
+- Cancel, pause, or resume anytime
+- Change your service plan
 - Payment is automatic via Stripe
 
 Service Areas:
@@ -420,6 +421,10 @@ Tone & Style:
     });
   }
 
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   /* ─── Add a chat bubble ─────────────────────────────────────── */
   function addBubble(text, role) {
     const wrap = document.createElement('div');
@@ -427,6 +432,15 @@ Tone & Style:
     const bubble = document.createElement('div');
     bubble.className = 'gmb-bubble';
     bubble.textContent = text;
+    // Convert plain-text URLs to clickable links, escape everything else
+    bubble.innerHTML = escapeHtml(text).replace(
+      /(https?:\/\/[^\s<>]+|\bwww\.[^\s<>]+|\/\.?[\w.\/-]+)/gi,
+      function(url) {
+        var href = url;
+        if (/^www\./i.test(url)) href = 'https://' + url;
+        return '<a href="' + href + '" target="_blank" rel="noopener">' + url + '</a>';
+      }
+    );
     wrap.appendChild(bubble);
     el.messages.appendChild(wrap);
     scrollToBottom();

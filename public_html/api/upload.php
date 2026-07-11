@@ -37,19 +37,10 @@ try {
         throw new Exception('Upload error: ' . $file['error']);
     }
 
-    // Create bin-pics directory if it doesn't exist
-    $upload_dir = __DIR__ . '/../bin-pics';
+    // External dir: outside public_html so deploys don't wipe it
+    $upload_dir = dirname(__DIR__, 2) . '/bin-pics-data';
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0755, true);
-        // Write .htaccess so images are served correctly
-        file_put_contents($upload_dir . '/.htaccess',
-            "# Allow image files\n" .
-            "<FilesMatch \"\\.(jpe?g|png|gif|webp)$\">\n" .
-            "    Allow from all\n" .
-            "</FilesMatch>\n" .
-            "# Block listing\n" .
-            "Options -Indexes\n"
-        );
     }
 
     // Generate unique filename
