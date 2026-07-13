@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-11T02:11:29.259Z",
+  "updatedAt": "2026-07-13T14:14:13.653Z",
   "entries": {
     "memory:memory/2026-06-27.md:247:268": {
       "key": "memory:memory/2026-06-27.md:247:268",
@@ -106,21 +106,23 @@
       "endLine": 405,
       "source": "memory",
       "snippet": "- `api/agents/run.php`: removed `createApproval()`, replaced with `triggerNextStage()` for auto-cascade. Added simple verdict parsing to auto-iterate when `code_reviewer`, `security_auditor`, or `performance_auditor` outputs a rejecting verdict. - `api/agent-status/webhook.php`: auto-advances on Builder / async success; auto-iterates on failure via `mcAutoIterateOnFailure()`. - `api/projects/patch-functions.php`: added `MC_MAX_AUTO_ITERATIONS = 5`, `mcFindRootProjectId()`, `mcCountFamilyPatches()`, `mcAutoIterateOnFailure()`. - `api/projects/create.php` + `update.php`: removed all auto-approve flag writes (`auto_scout`, `auto_architect`, etc.) and `auto_deploy`. - `api/projects/get.php` + `d",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T03:46:55.039Z",
-      "lastRecalledAt": "2026-07-10T16:03:29.580Z",
+      "lastRecalledAt": "2026-07-13T14:03:45.701Z",
       "queryHashes": [
         "f8a7b28b6724",
         "e4b3c2b183f8",
-        "99f16a67b525"
+        "99f16a67b525",
+        "4f0338f84f08"
       ],
       "recallDays": [
         "2026-07-07",
-        "2026-07-10"
+        "2026-07-10",
+        "2026-07-13"
       ],
       "conceptTags": [
         "api/agents/run.php",
@@ -140,18 +142,20 @@
       "endLine": 102,
       "source": "memory",
       "snippet": "**Gateway config (`openclaw.json`):** - Provider `api` must be one of: `openai-completions | openai-responses | openai-codex-responses | anthropic-messages | google-generative-ai | github-copilot | bedrock-converse-stream | ollama | azure-openai-responses` - OpenRouter uses `openai-completions` (NOT `openai-chat`) - Each model needs `id` AND `name` **Agent models.json (`/data/.openclaw/agents/main/agent/models.json`):** - Per-model schema: `id`, `name`, `contextWindow`, `maxTokens`, `input: [\"text\"]`, `reasoning: bool`, `compat: {supportsDeveloperRole, supportsReasoningEffort, supportsStore}`, `cost: {cacheRead, cacheWrite, input, output}` ### Nexos billing proxy (DISCOVERED) - Provider `n",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T03:46:55.039Z",
-      "lastRecalledAt": "2026-07-07T03:46:55.039Z",
+      "lastRecalledAt": "2026-07-13T14:03:45.701Z",
       "queryHashes": [
-        "f8a7b28b6724"
+        "f8a7b28b6724",
+        "4f0338f84f08"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-13"
       ],
       "conceptTags": [
         "gateway",
@@ -479,20 +483,22 @@
       "endLine": 293,
       "source": "memory",
       "snippet": "- **Service routing auth:** Modified to accept either employee token OR admin token - **Password change:** Frontend validation + server-side verification via Airtable lookup ### Deployment Status: - ✅ All files deployed to agentrocketman.com - ✅ Admin login working - ✅ Dashboard graph showing completed + pending orders - ✅ Date range selection working - ✅ Refresh button loads new date range ### What's NOT Persisted (Demo Mode): - Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Ai",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T06:22:48.782Z",
-      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-11T13:13:31.178Z",
       "queryHashes": [
         "70380bd32bcd",
         "7a949d74f8b3",
-        "cc373728c2cc"
+        "cc373728c2cc",
+        "a248d93f8d57"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-11"
       ],
       "conceptTags": [
         "server-side",
@@ -930,19 +936,23 @@
       "endLine": 126,
       "source": "memory",
       "snippet": "- Logo: 30px left margin (ALL screens), vertically centered, 1.8x scale (mobile), 1.3x scale (Chrome desktop), 1x scale (Safari desktop) - Links: How It Works, Pricing, Get Started button - Mobile link spacing: .6rem between all links (equal spacing) - Mobile logo: margin-top -5px (moved up slightly) - Color: Green (#71b80c) throughout - Favicon: Green wheelie bin (PNG, transparent background) **All Pages Unified:** ✅ index.html - Homepage ✅ contact.html - Contact page ✅ privacy.html - Privacy policy ✅ terms.html - Terms of service All 4 pages have IDENTICAL navigation with same styling, spacing, and functionality. **Total Commits This Session: 15+ 1. fb3571d - Session memory + favicon 2.",
-      "recallCount": 2,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 5,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T12:42:55.356Z",
-      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "lastRecalledAt": "2026-07-11T13:17:57.403Z",
       "queryHashes": [
         "944f601047a1",
-        "4863b0ccfd56"
+        "4863b0ccfd56",
+        "d31b919eadb9",
+        "ec5ad0e42d34",
+        "5934db6b8b05"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-11"
       ],
       "conceptTags": [
         "1.8x",
@@ -1024,18 +1034,23 @@
       "endLine": 33,
       "source": "memory",
       "snippet": "# 2026-06-16 - GetMyBin Rebrand & Navigation Refinement ## GetMyBin Rebrand - COMPLETE ✅ - **Old brand:** CurbIn → **New brand:** GetMyBin - **Color change:** Old #A4D233 → New vibrant green #71b80c (56+ instances) - **Logos added:** 5 new logos (bin icons, transparent, white backgrounds) - All HTML, JS, PHP, email templates updated - Full rebrand deployed to agentrocketman.com ✓ ## Navigation Bar Refinements - **Height:** Reduced from 205px → 102px (50% slimmer on desktop), 40px → 60px (mobile) - **Background:** Semi-transparent → Solid white (#fff) - **Logo positioning:** - Added 20px left margin (final) - 1.5x scale (transform:scale(1.5)) - Overflow:hidden to prevent top/bottom s",
-      "recallCount": 1,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 5,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T12:42:55.446Z",
-      "lastRecalledAt": "2026-07-07T12:42:55.446Z",
+      "lastRecalledAt": "2026-07-11T13:17:57.403Z",
       "queryHashes": [
-        "4863b0ccfd56"
+        "4863b0ccfd56",
+        "a248d93f8d57",
+        "d31b919eadb9",
+        "ec5ad0e42d34",
+        "5934db6b8b05"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-11"
       ],
       "conceptTags": [
         "agentrocketman.com",
@@ -1055,18 +1070,20 @@
       "endLine": 175,
       "source": "memory",
       "snippet": "- Deployed via `node hostinger-deploy.mjs agentrocketman.com /tmp/deploy-1782607986.tar.gz`. - Verified live: `pipeline.html` contains the new placeholder text. **Next:** Need real test by rejecting an approval with comments. --- ## Mission Control — Delete Button + Patch Archiving (01:13 UTC) **Requested:** Delete project button + hide old patches behind a \"Patches\" link. **Implementation:** - Created `public_html/mission-control/api/projects/delete.php`: - Accepts POST `{project_id}`. - Loads project by ID via `airtableRequest('GET', table, [], id)`. - Deletes project record via `airtableRequest('DELETE', table, [], id)`. - Cleans up matching approval records. - **Fix applie",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T13:01:07.568Z",
-      "lastRecalledAt": "2026-07-07T13:01:07.568Z",
+      "lastRecalledAt": "2026-07-13T14:14:13.653Z",
       "queryHashes": [
-        "e9c3edf34d1b"
+        "e9c3edf34d1b",
+        "c04c7c5e69c7"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-13"
       ],
       "conceptTags": [
         "hostinger-deploy.mjs",
@@ -1149,20 +1166,22 @@
       "endLine": 157,
       "source": "memory",
       "snippet": "- Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Airtable 2. Add admin user management UI in admin panel 3. Add more analytics/metrics to dashboard 4. Security: Remove `setup-admins-table.php` after first run # 2026-06-19 — Session Log ## Completed Features ### 1. Mobile Navigation Landscape Optimization ✅ - Added media query for landscape orientation (`@media (max-height: 500px) and (orientation: landscape)`) - Hamburger menu (☰) appears in landscape to save vertical space - Re",
-      "recallCount": 3,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 3,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T13:01:07.568Z",
-      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-11T13:13:31.178Z",
       "queryHashes": [
         "e9c3edf34d1b",
         "7a949d74f8b3",
-        "cc373728c2cc"
+        "cc373728c2cc",
+        "a248d93f8d57"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-11"
       ],
       "conceptTags": [
         "analytics/metrics",
@@ -1746,18 +1765,20 @@
       "endLine": 105,
       "source": "memory",
       "snippet": "### Credentials & Configuration - **Airtable API Token:** patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd - **Airtable Base:** \"Curbin\" (apptYNRJTXwItvied) - **ServiceStops Table:** tbl7r5OBk0L7Epnro - **Google Maps API:** AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI - **Server:** PHP 8.3.30, Apache 2.4, cURL enabled ### Architecture Decisions - **PHP over Node.js** — Hostinger shared hosting limitation - **Embedded credentials** — Simpler for shared hosting (no .env support) - **Haversine distance** — Local calculation, no API cost - **CORS via .htaccess** — Works on all Apache versions - **localStorage** — Worker name persistence across sessions ### Document",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T17:15:14.794Z",
-      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-11T13:13:31.178Z",
       "queryHashes": [
-        "cc373728c2cc"
+        "cc373728c2cc",
+        "a248d93f8d57"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-11"
       ],
       "conceptTags": [
         "8.3.30",
@@ -1777,18 +1798,20 @@
       "endLine": 241,
       "source": "memory",
       "snippet": "- 06:34 UTC — Archive packaged and uploaded to Hostinger - 06:40 UTC — Health check passing, PHP 8.3 confirmed - 06:40 UTC — Discovered base ID mismatch - 16:26 UTC — Airtable base ID corrected, ServiceStops table created - 16:27 UTC — Full end-to-end testing completed - All tests passing, production ready ### Credentials & Configuration - **Airtable API Token:** patxbDkv88pOMXmYx.c7e5fd7974954e3a674087090835d11dd69504f3912f0ef86c3c59f1e91febdd - **Airtable Base:** \"Curbin\" (apptYNRJTXwItvied) - **ServiceStops Table:** tbl7r5OBk0L7Epnro - **Google Maps API:** AIzaSyCzfj1D1eF01IDHwCMGqt4O4XU1ncouSRI - **Server:** PHP 8.3.30, Apache 2.4, cURL enabled ### Architecture Decisions - **PHP over N",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T17:15:14.794Z",
-      "lastRecalledAt": "2026-07-07T17:15:14.794Z",
+      "lastRecalledAt": "2026-07-11T13:13:31.178Z",
       "queryHashes": [
-        "cc373728c2cc"
+        "cc373728c2cc",
+        "a248d93f8d57"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-11"
       ],
       "conceptTags": [
         "8.3",
@@ -2149,18 +2172,20 @@
       "endLine": 12,
       "source": "memory",
       "snippet": "# 2026-07-09 ## Agentado.ai — First Discussion - **First mention** of agentado.ai — Chris's new idea for a real estate agent SaaS platform - **Core vision:** Real estate agents paste a realtor.ca link → service turns still images into 3D tours / live video. Also offers AI web chat for property Q&A, appointment booking, and other agent tools. - Reviewed Google Cloud's \"1,302 real-world gen AI use cases\" document for best-fit ideas - Picked top 3 ideas and saved to `projects/agentado-ideas.md`: 1. Gen Media Property Studio (images → 3D tours & video) 2. 24/7 Property Concierge Chat Agent 3. Agent Copilot (listing descriptions, CMA automation, scheduling, docs) - Chris wants these saved",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-10T16:03:29.580Z",
-      "lastRecalledAt": "2026-07-10T16:03:29.580Z",
+      "lastRecalledAt": "2026-07-13T14:03:45.701Z",
       "queryHashes": [
-        "99f16a67b525"
+        "99f16a67b525",
+        "4f0338f84f08"
       ],
       "recallDays": [
-        "2026-07-10"
+        "2026-07-10",
+        "2026-07-13"
       ],
       "conceptTags": [
         "agentado.ai",
@@ -2171,6 +2196,164 @@
         "24/7",
         "first",
         "discussion"
+      ]
+    },
+    "memory:memory/2026-06-16.md:120:152": {
+      "key": "memory:memory/2026-06-16.md:120:152",
+      "path": "memory/2026-06-16.md",
+      "startLine": 120,
+      "endLine": 152,
+      "source": "memory",
+      "snippet": "# 2026-06-16 - GetMyBin Rebrand & Navigation Refinement ## GetMyBin Rebrand - COMPLETE ✅ - **Old brand:** CurbIn → **New brand:** GetMyBin - **Color change:** Old #A4D233 → New vibrant green #71b80c (56+ instances) - **Logos added:** 5 new logos (bin icons, transparent, white backgrounds) - All HTML, JS, PHP, email templates updated - Full rebrand deployed to agentrocketman.com ✓ ## Navigation Bar Refinements - **Height:** Reduced from 205px → 102px (50% slimmer on desktop), 40px → 60px (mobile) - **Background:** Semi-transparent → Solid white (#fff) - **Logo positioning:** - Added 20px left margin (final) - 1.5x scale (transform:scale(1.5)) - Overflow:hidden to prevent top/bottom s",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 4,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-11T13:13:31.178Z",
+      "lastRecalledAt": "2026-07-11T13:17:57.403Z",
+      "queryHashes": [
+        "a248d93f8d57",
+        "d31b919eadb9",
+        "ec5ad0e42d34",
+        "5934db6b8b05"
+      ],
+      "recallDays": [
+        "2026-07-11"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "semi-transparent",
+        "1.5x",
+        "1.5",
+        "top/bottom",
+        "getmybin",
+        "rebrand",
+        "navigation"
+      ]
+    },
+    "memory:memory/2026-06-28.md:1:34": {
+      "key": "memory:memory/2026-06-28.md:1:34",
+      "path": "memory/2026-06-28.md",
+      "startLine": 1,
+      "endLine": 34,
+      "source": "memory",
+      "snippet": "# 2026-06-28 — Memory Flush ## Mission Control — State Snapshot ### Builder Runner - **Version:** v1.8-direct-deploy (last PID 48978) - **Path:** `/data/.openclaw/workspace/builder-runner.py` - **Long-polls:** `/api/runner-queue.php?wait=25` - **Direct deploy:** tars `public_html`, calls `node /data/.openclaw/workspace/hostinger-deploy.mjs`, posts to `deploy.php` with internal_secret to mark deployed (~8–12s total) - **Quick Fix:** Haiku 4.5, `--max-turns 15`, allowed tools include `Bash(git:*)`, no BUILDER_BRIEF.md/REQUIREMENTS.md, slim PATCH_INFO.md - **Failure reports:** use `terminal_reason` + Claude output tail (no stale parent BUILDER_REPORT.md) - **Success report:** only if mtime <1",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-13T14:14:13.653Z",
+      "lastRecalledAt": "2026-07-13T14:14:13.653Z",
+      "queryHashes": [
+        "c04c7c5e69c7"
+      ],
+      "recallDays": [
+        "2026-07-13"
+      ],
+      "conceptTags": [
+        "v1.8-direct-deploy",
+        "long-polls",
+        "api/runner-queue.php",
+        "public-html",
+        "deploy.php",
+        "internal-secret",
+        "4.5",
+        "max-turns"
+      ]
+    },
+    "memory:memory/2026-06-27.md:177:204": {
+      "key": "memory:memory/2026-06-27.md:177:204",
+      "path": "memory/2026-06-27.md",
+      "startLine": 177,
+      "endLine": 204,
+      "source": "memory",
+      "snippet": "- **Quick Fix**: `[builder, smoke_test, deploy]` — Haiku, no context files, all auto-approved. - **Bug Fix**: `[builder, code_reviewer, smoke_test, deploy]` — Sonnet, thorough review. - **Add Feature**: `[scout, architect, builder, code_reviewer, smoke_test, deploy]` — Sonnet. - **Full**: all stages incl. optional toggles. ### Stage-to-Auto-Field Map (in webhook.php + createApproval) - `scout` → `auto_scout` - `code_reviewer` → `auto_code_auditor` (legacy name) - `smoke_test` → `auto_smoke_test` - `security` → `auto_security` - `performance` → `auto_performance` - Quick Fix forces ALL above to ON automatically in patch.php. ### Last Known Issue (Investigation Cut Off by Compaction) **User",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-13T14:14:13.653Z",
+      "lastRecalledAt": "2026-07-13T14:14:13.653Z",
+      "queryHashes": [
+        "c04c7c5e69c7"
+      ],
+      "recallDays": [
+        "2026-07-13"
+      ],
+      "conceptTags": [
+        "smoke-test",
+        "auto-approved",
+        "code-reviewer",
+        "stage-to-auto-field",
+        "webhook.php",
+        "auto-scout",
+        "auto-code-auditor",
+        "auto-smoke-test"
+      ]
+    },
+    "memory:memory/2026-06-28.md:166:200": {
+      "key": "memory:memory/2026-06-28.md:166:200",
+      "path": "memory/2026-06-28.md",
+      "startLine": 166,
+      "endLine": 200,
+      "source": "memory",
+      "snippet": "**Deployment:** - `deploy-final.sh agentrocketman.com` + `node hostinger-deploy.mjs agentrocketman.com /tmp/deploy-1782609209.tar.gz`. - Verified live HTML contains new delete/patches elements. **Next:** Test deleting a real project + verifying patch archive. --- ## Mission Control — Inline Patch Expansion (01:27 UTC) **Requested:** Remove \"Show patches\" checkbox; expand patches inline under the parent project when clicking \"Patches (N)\" badge. **Implementation:** - Updated `public_html/mission-control/dashboard.html`: - Removed the \"Show patches\" checkbox from header and `showPatches` state. - Root project grid now always hides patch projects. - Added `.inline-patches-list` conta",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-13T14:14:13.653Z",
+      "lastRecalledAt": "2026-07-13T14:14:13.653Z",
+      "queryHashes": [
+        "c04c7c5e69c7"
+      ],
+      "recallDays": [
+        "2026-07-13"
+      ],
+      "conceptTags": [
+        "deploy-final.sh",
+        "agentrocketman.com",
+        "hostinger-deploy.mjs",
+        "tmp/deploy-1782609209.tar.gz",
+        "delete/patches",
+        "inline-patches-list",
+        "deployment",
+        "final.sh"
+      ]
+    },
+    "memory:memory/2026-06-27.md:196:218": {
+      "key": "memory:memory/2026-06-27.md:196:218",
+      "path": "memory/2026-06-27.md",
+      "startLine": 196,
+      "endLine": 218,
+      "source": "memory",
+      "snippet": "Was mid-read of `builder-runner.py` `deploy_build_to_live()` function (around line 372-432) when compaction hit. Function copies `build_dir/output/` to `PUBLIC_HTML / deploy_path`, preserves `config.php`, uses `subprocess.run([\"cp\", ...])`, and queues a deploy job picked up by an OpenClaw cron using hostinger-api. **Hypothesis**: 65s = OpenClaw cron pickup interval (~30-60s) + hostinger-api upload time. Not the cp itself. ### Sample Quick Fix Project IDs (for diffing) - v1.1 `recDZeVn8PrYtwMjF` (recovered) - v1.4 `rec2WQ4vHEaCMEc9Q` - v1.6 `reciX6mu51P1WiiIw` - v1.7 `recRj3OSRCxa8lySM` - v1.9 `rec6zIEoxrMxr9Fhd` (pre-Haiku — 2m 19s baseline) - URL Shortener parent: `recjMPAzE1CMk5inB`, dep",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-13T14:14:13.653Z",
+      "lastRecalledAt": "2026-07-13T14:14:13.653Z",
+      "queryHashes": [
+        "c04c7c5e69c7"
+      ],
+      "recallDays": [
+        "2026-07-13"
+      ],
+      "conceptTags": [
+        "mid-read",
+        "builder-runner.py",
+        "deploy-build-to-live",
+        "372-432",
+        "build-dir/output",
+        "public-html",
+        "deploy-path",
+        "config.php"
       ]
     }
   }

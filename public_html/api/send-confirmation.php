@@ -35,7 +35,7 @@ if (!$toEmail) { echo json_encode(['success'=>false,'error'=>'No customer email'
 $SMTP_HOST = 'smtp.hostinger.com';
 $SMTP_PORT = 465;
 $SMTP_USER = 'support@getmybin.com';
-$SMTP_PASS = 'AgentEmail1!';
+$SMTP_PASS = 'd133-xzus-dhae-h2au';
 
 // Format service type
 if ($serviceType === 'both') {
@@ -125,8 +125,8 @@ $html .= <<<HTML
     </div>
     <div style="background:#f9f9f9;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
       <p style="margin:0;">© 2026 GetMyBin · Toronto Bin Collection Service</p>
-      <p style="margin:4px 0 0;"><a href="https://agentrocketman.com" style="color:#71b80c;text-decoration:none;">agentrocketman.com</a></p>
-      <p style="margin:8px 0 0;"><a href="https://agentrocketman.com/manage.html" style="color:#94a3b8;text-decoration:none;font-size:11px;">Need to cancel? Visit agentrocketman.com/manage</a></p>
+      <p style="margin:4px 0 0;"><a href="https://getmybin.com" style="color:#71b80c;text-decoration:none;">GetMyBin</a></p>
+      <p style="margin:8px 0 0;"><a href="https://getmybin.com/manage.html" style="color:#94a3b8;text-decoration:none;font-size:11px;">Need to cancel? Visit getmybin.com/manage</a></p>
     </div>
   </div>
 </body>
@@ -178,11 +178,13 @@ function smtpSend($host, $port, $user, $pass, $from, $to, $subject, $html) {
     $send("RCPT TO:<$to>");      $read();
     $send("DATA");               $read();
 
-    $msg  = "From: GetMyBin <$from>\r\n";
+    $msg  = "Date: " . date('r') . "\r\n";
+    $msg .= "From: GetMyBin <$from>\r\n";
     $msg .= "To: $to\r\n";
     $msg .= "Subject: $subject\r\n";
     $msg .= "MIME-Version: 1.0\r\n";
     $msg .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $msg .= "Content-Transfer-Encoding: 8bit\r\n";
     $msg .= "\r\n";
     $msg .= $html . "\r\n";
     $msg .= ".\r\n";

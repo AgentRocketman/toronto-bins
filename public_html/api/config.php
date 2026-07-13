@@ -52,7 +52,7 @@ define('ADMIN_PASSWORD', 'GetMyBinAdmin2026!');
 define('SMTP_HOST',     'smtp.hostinger.com');
 define('SMTP_PORT',     465);
 define('SMTP_USER',     'support@getmybin.com');
-define('SMTP_PASS',     'AgentEmail1!');
+define('SMTP_PASS',     'd133-xzus-dhae-h2au');
 define('SUPPORT_EMAIL', 'support@getmybin.com');
 
 // ============================================================
@@ -256,10 +256,11 @@ function sendSmtpEmail($to, $toName, $subject, $html) {
     $send('MAIL FROM: <' . SMTP_USER . '>'); $read();
     $send('RCPT TO: <' . $to . '>'); $read();
     $send('DATA'); $read();
-    $msg  = 'From: GetMyBin <' . SMTP_USER . ">\r\n";
+    $msg  = 'Date: ' . date('r') . "\r\n";
+    $msg .= 'From: GetMyBin <' . SMTP_USER . ">\r\n";
     $msg .= "To: $toName <$to>\r\n";
     $msg .= "Subject: $subject\r\n";
-    $msg .= "MIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n";
+    $msg .= "MIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n";
     $msg .= $html . "\r\n.\r\n";
     $send($msg); $read();
     $send('QUIT');

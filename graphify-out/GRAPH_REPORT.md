@@ -1,21 +1,24 @@
-# Graph Report - workspace  (2026-07-11)
+# Graph Report - workspace  (2026-07-13)
 
 ## Corpus Check
-- 885 files · ~1,018,117 words
+- 891 files · ~1,029,372 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8712 nodes · 8880 edges · 944 communities (697 shown, 247 thin omitted)
+- 8744 nodes · 8907 edges · 950 communities (701 shown, 249 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 74 edges (avg confidence: 0.67)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `05b5f70b`
+- Built from commit: `6892c758`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Type Reference Collection
+- config.php
+- deploy-agentado.sh
+- 2026-07-13
 - Node.js Package Management
 - Credit Union Website
 - Builder Runner Management
@@ -682,11 +685,15 @@
 - **URL Shortening Flow** — builds_url-shortener-v1-9-fix_output_api_shorten.php, builds_url-shortener-v1-9-fix_output_data_urls.json, builds_url-shortener-v1-9-fix_output_api_helpers.php [EXTRACTED 0.75]
 - **Analytics Flow** — builds_url-shortener-v1-9-fix_output_api_stats.php, builds_url-shortener-v1-9-fix_output_data_stats.json, builds_url-shortener-v1-9-fix_output_api_helpers.php [EXTRACTED 0.75]
 
-## Communities (944 total, 247 thin omitted)
+## Communities (950 total, 249 thin omitted)
 
 ### Community 3 - "Type Reference Collection"
 Cohesion: 0.50
-Nodes (4): Positioning:, Recommended Business Model for a New Canadian Entrant, Revenue Model: Hybrid Credit + Optional Subscription, Unit Economics Target:
+Nodes (4): 1. Business Model Comparison, 2. Lead Quality vs. Volume Trade-off, 3. Canada-Specific Landscape, Common Patterns Across All Platforms
+
+### Community 9 - "2026-07-13"
+Cohesion: 0.09
+Nodes (21): 2026-07-13, Agent Photo Extraction (PHP scraper fix), 🖼️ Agent Photo — lowres → highres URL Swap, 🎬 Agentado End Card — Built & Deployed (2026-07-13), Agentado Video Overlay Fix, 🐛 Beds Regex Fix — "5+1" Format (2026-07-13 evening), Brokerage parsing bug (fixed), Chris's preferences remembered (+13 more)
 
 ### Community 41 - "Node.js Package Management"
 Cohesion: 0.05
@@ -1758,7 +1765,7 @@ Nodes (16): 10. v1.9 (quick_fix), 11. v1.10 (quick_fix), 12. v1.11 (quick_fix), 
 
 ### Community 1173 - "SYNTHESIS & STRATEGIC RECOMMENDATIONS"
 Cohesion: 0.09
-Nodes (21): 1. AI for Posting Ads (Demand Generation), 1. Business Model Comparison, 2. AI for Harvesting Leads (Homeowner Acquisition), 2. Lead Quality vs. Volume Trade-off, 3. AI for Qualifying Leads (The Core Differentiator), 3. Canada-Specific Landscape, 4. AI for Selling to Contractors (Growth & Retention), AI Agent Cost Estimates: (+13 more)
+Nodes (21): 1. AI for Posting Ads (Demand Generation), 2. AI for Harvesting Leads (Homeowner Acquisition), 3. AI for Qualifying Leads (The Core Differentiator), 4. AI for Selling to Contractors (Growth & Retention), AI Agent Cost Estimates:, Best Lead Capture Strategies, Core Infrastructure:, Final Strategic Summary (+13 more)
 
 ### Community 1174 - "Domain Name Generator - Setup Guide"
 Cohesion: 0.12
@@ -2213,24 +2220,24 @@ Cohesion: 0.67
 Nodes (3): Deployment Readiness, Deployment Steps, ✅ Production Ready
 
 ## Knowledge Gaps
-- **4990 isolated node(s):** `builder-runner-watchdog.sh script`, `elements`, `elements`, `elements`, `elements` (+4985 more)
+- **5009 isolated node(s):** `builder-runner-watchdog.sh script`, `elements`, `elements`, `elements`, `elements` (+5004 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **247 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **249 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Session Log: 2026-06-13 (UPDATED)` connect `Session Log: 2026-06-13 (UPDATED)` to `v8: GEOLOCATION + PROXIMITY SORTING + SEQUENCE NUMBERS (Late Evening)`, `v15-v17: NAVIGATION REFINEMENTS (Evening Final)`, `CURRENT PRODUCTION STATE (v14)`, `Implementation Summary`, `Session Log: 2026-06-13 (UPDATED)`?**
   _High betweenness centrality (0.000) - this node is a cross-community bridge._
-- **Why does `Implementation Summary` connect `Implementation Summary` to `Session Log: 2026-06-13 (UPDATED)`?**
+- **Why does `Session Log: 2026-06-13 (UPDATED)` connect `Session Log: 2026-06-13 (UPDATED)` to `Implementation Summary`, `Session Log: 2026-06-13 (UPDATED)`?**
   _High betweenness centrality (0.000) - this node is a cross-community bridge._
 - **What connects `builder-runner-watchdog.sh script`, `Authenticate against Mission Control and return cookie string.`, `Heartbeat both locally and POST to Mission Control so dashboard can see it.` to the rest of the system?**
-  _5005 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _5024 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `2026-07-13` be split into smaller, more focused modules?**
+  _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._
 - **Should `Node.js Package Management` be split into smaller, more focused modules?**
   _Cohesion score 0.05 - nodes in this community are weakly interconnected._
 - **Should `Credit Union Website` be split into smaller, more focused modules?**
   _Cohesion score 0.05405405405405406 - nodes in this community are weakly interconnected._
 - **Should `Builder Runner Management` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
-- **Should `Node.js Package Management` be split into smaller, more focused modules?**
-  _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._

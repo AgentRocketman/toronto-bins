@@ -115,6 +115,7 @@ function parseMarkdown(string $md, string $url): array {
         'price' => '',
         'beds' => '',
         'baths' => '',
+        'sqft' => '',
         'description' => '',
         'agentName' => '',
         'agentRole' => '',
@@ -152,21 +153,31 @@ function parseMarkdown(string $md, string $url): array {
         $result['price'] = $pm[0];
     }
 
-    // ── Beds / Baths ──
-    if (preg_match('/(\d+)\s*Bedrooms?/i', $md, $bd)) {
-        $result['beds'] = $bd[1];
-    } elseif (preg_match('/(\d+)\s+Bed\b/i', $md, $bd)) {
+    // ââ Beds / Baths: handle "5 + 1 Beds" patterns ââ
+    if (preg_match('/(\d+\s*\+\s*\d+|\d+)\s+Beds?\b/i', $md, $bd)) {
         $result['beds'] = $bd[1];
     }
-    if (preg_match('/(\d+)\s*Bathrooms?/i', $md, $bt)) {
-        $result['baths'] = $bt[1];
-    } elseif (preg_match('/(\d+)\s+Bath\b/i', $md, $bt)) {
+    if (preg_match('/(\d+\s*\+\s*\d+|\d+)\s+Baths?\b/i', $md, $bt)) {
         $result['baths'] = $bt[1];
     }
+    // ── Square Footage: "2500 - 3000 sqft" patterns ──
+    if (preg_match('/Square Footage\s*\n+([\d,\s\.\-\x{2013}\x{2014}]+?\s*sq\s*ft)\b/iu', $md, $sf)) {
+        $result['sqft'] = trim($sf[1]);
+    } elseif (preg_match('/([\d,\.]+\s*[\-\x{2013}\x{2014}]\s*[\d,\.]+)\s*sq\s*ft/i', $md, $sf2)) {
+        $result['sqft'] = $sf2[1] . ' sqft';
+    } elseif (preg_match('/(\d[\d,\.]*)\s*sq\s*ft/i', $md, $sf3)) {
+        $result['sqft'] = $sf3[1] . ' sqft';
+    }
+
 
     // ── Description: block after "## Listing Description" until next "## " ──
     if (preg_match('/## Listing Description\s*\n+(.+?)(?=\n##\s)/s', $md, $dm)) {
         $result['description'] = trim(preg_replace('/\s+/', ' ', $dm[1]));
+    }
+
+    // ── Agent photo: [![]](photo_url)](agent_link) — inline image inside markdown link ──
+    if (preg_match('/\[!\[\]\(([^)]+)\)\]\(\/agent\/\d+\//', $md, $photoMd)) {
+        $result['agentPhoto'] = str_replace('/lowres/', '/highres/', $photoMd[1]);
     }
 
     // ── Agent info: markdown link pattern [Name\nRole](/agent/...) ──
@@ -283,11 +294,13 @@ try {
         'price' => $result['price'],
         'beds' => $result['beds'],
         'baths' => $result['baths'],
+        'sqft' => $result['sqft'],
         'description' => $result['description'],
         'agent' => [
             'name' => $result['agentName'],
             'role' => $result['agentRole'],
             'phone' => $result['agentPhone'],
+            'photo' => $result['agentPhoto'] ?? null,
             'website' => $result['agentWebsite'],
         ],
         'brokerage' => [

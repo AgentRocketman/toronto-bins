@@ -41,7 +41,7 @@ $BOOKINGS_TABLE    = 'tblKMhGnYjsH0z7Lj';
 $SMTP_HOST = 'smtp.hostinger.com';
 $SMTP_PORT = 465;
 $SMTP_USER = 'support@getmybin.com';
-$SMTP_PASS = 'AgentEmail1!';
+$SMTP_PASS = 'd133-xzus-dhae-h2au';
 
 // ── Look up customer by address in Airtable ──────────────────────────────────
 function lookupCustomer($address, $key, $base, $table) {
@@ -82,7 +82,7 @@ $imageBlock = '';
 if ($imageUrl) {
     // Make absolute if relative
     if (strpos($imageUrl, 'http') !== 0) {
-        $imageUrl = 'https://agentrocketman.com' . $imageUrl;
+        $imageUrl = 'https://getmybin.com' . $imageUrl;
     }
     $imageBlock = "
       <div style='text-align:center;margin:24px 0;'>
@@ -116,7 +116,7 @@ $html = <<<HTML
     </div>
     <div style="background:#f9f9f9;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
       <p style="margin:0;">© 2026 GetMyBin · Toronto Bin Collection Service</p>
-      <p style="margin:4px 0 0;"><a href="https://agentrocketman.com" style="color:#71b80c;text-decoration:none;">agentrocketman.com</a></p>
+      <p style="margin:4px 0 0;"><a href="https://getmybin.com" style="color:#71b80c;text-decoration:none;">GetMyBin</a></p>
     </div>
   </div>
 </body>
@@ -155,12 +155,13 @@ function smtpSend($host, $port, $user, $pass, $from, $to, $subject, $html) {
     $send("RCPT TO:<$to>");      $read();
     $send("DATA");               $read();
 
-    $boundary = md5(uniqid());
-    $msg  = "From: GetMyBin <$from>\r\n";
+    $msg  = "Date: " . date('r') . "\r\n";
+    $msg .= "From: GetMyBin <$from>\r\n";
     $msg .= "To: $to\r\n";
     $msg .= "Subject: $subject\r\n";
     $msg .= "MIME-Version: 1.0\r\n";
     $msg .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $msg .= "Content-Transfer-Encoding: 8bit\r\n";
     $msg .= "\r\n";
     $msg .= $html . "\r\n";
     $msg .= ".\r\n";
