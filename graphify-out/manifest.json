@@ -3815,8 +3815,8 @@
     "semantic_hash": "2a0687c6d9f0bd04b6c860500e62defa"
   },
   "memory/.dreams/short-term-recall.json": {
-    "mtime": 1783952053.7933304,
-    "ast_hash": "689a20eddced3019506b5dccca2247b1",
+    "mtime": 1784065110.3853014,
+    "ast_hash": "c85dceea83ea61a4bdda9b052b22baca",
     "semantic_hash": ""
   },
   "openclaw-with-webhook.json": {
@@ -4695,8 +4695,8 @@
     "semantic_hash": ""
   },
   "MEMORY.md": {
-    "mtime": 1783449657.901501,
-    "ast_hash": "3a7930400604e79ed98fb9e6b3ebe8e1",
+    "mtime": 1784057964.0697904,
+    "ast_hash": "88cafc3c992e8723b65e636e4516bd9f",
     "semantic_hash": ""
   },
   "PROJECT_LOG.md": {
@@ -9035,8 +9035,8 @@
     "semantic_hash": ""
   },
   "tunnel-url.txt": {
-    "mtime": 1783401389.7947454,
-    "ast_hash": "968d7ef8a7ef831f6eac698aadb7a7f3",
+    "mtime": 1784064461.4582438,
+    "ast_hash": "54acd5f0d35152d81e89d2c54d6f811b",
     "semantic_hash": ""
   },
   "graphify/worked/mixed-corpus/raw/attention_notes.md": {
@@ -9490,7 +9490,7 @@
     "semantic_hash": ""
   },
   "public_html/agentado/index.html": {
-    "mtime": 1783981437.0957549,
+    "mtime": 1784050567.4782517,
     "ast_hash": "337d81e9362911768c347f124862b60c",
     "semantic_hash": ""
   },
@@ -9500,13 +9500,558 @@
     "semantic_hash": ""
   },
   "public_html/agentado/api/realtor-scrape.php": {
-    "mtime": 1783977595.018998,
-    "ast_hash": "56afd613c6aa13e1a530386c16e34b55",
+    "mtime": 1784057426.4786782,
+    "ast_hash": "637f5b3570275928e45be12e88268211",
     "semantic_hash": ""
   },
   "memory/2026-07-13.md": {
-    "mtime": 1783976573.1729813,
-    "ast_hash": "4d22aeffcdd1374604093777f0e9b956",
+    "mtime": 1783982208.1878126,
+    "ast_hash": "38ae3529028578571feb58cf43f9d7b1",
+    "semantic_hash": ""
+  },
+  "memory/2026-07-14.md": {
+    "mtime": 1784064661.275392,
+    "ast_hash": "f3876fb8155bffa3926396d78ac6a811",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/checkout.php": {
+    "mtime": 1784057443.8347776,
+    "ast_hash": "7aae95f825b8d0a8ef4c27934a98cf13",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/generate.php": {
+    "mtime": 1784064771.6200166,
+    "ast_hash": "e80b2a0944ce9726c8917e2048b78cd8",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/generate_ai_walkthrough.py": {
+    "mtime": 1784051181.797569,
+    "ast_hash": "c6c733dc1e30f46251088106b2f98532",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/generate_kenburns.py": {
+    "mtime": 1784051131.2212956,
+    "ast_hash": "b25e586e9ebffa6394525386ffbfe92f",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/generate_overlays.py": {
+    "mtime": 1784051096.1011057,
+    "ast_hash": "16f842b0b31ca615634a090929aee971",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/generate_preview.py": {
+    "mtime": 1784063225.4711401,
+    "ast_hash": "70f0eb8879dae95b9429a282a8e94d23",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/preview.php": {
+    "mtime": 1784063798.826436,
+    "ast_hash": "bcc3528be92a0187df609375871a3914",
+    "semantic_hash": ""
+  },
+  "01.jpg": {
+    "mtime": 1784003537.7432315,
+    "ast_hash": "c4fb5b6d73fd6912f822c9da094cd674",
+    "semantic_hash": ""
+  },
+  "02.jpg": {
+    "mtime": 1784003537.7512314,
+    "ast_hash": "ae039f964f206bfc5525c32da84e17b3",
+    "semantic_hash": ""
+  },
+  "03.jpg": {
+    "mtime": 1784003537.7552316,
+    "ast_hash": "1ab0beb32be26e47ebf4499039efdae7",
+    "semantic_hash": ""
+  },
+  "04.jpg": {
+    "mtime": 1784003537.7632315,
+    "ast_hash": "0535d4d3dbfb3bd379256a12d2153c9b",
+    "semantic_hash": ""
+  },
+  "contact_card.png": {
+    "mtime": 1784007313.4441354,
+    "ast_hash": "e391d35010b266ba118e49aa27b6c9e6",
+    "semantic_hash": ""
+  },
+  "listing-photo-01.jpg": {
+    "mtime": 1783996642.1800601,
+    "ast_hash": "c4fb5b6d73fd6912f822c9da094cd674",
+    "semantic_hash": ""
+  },
+  "lower_third_bg.png": {
+    "mtime": 1784007313.4481354,
+    "ast_hash": "dc92031afaa6b79e4fbeeac85d2e2e82",
+    "semantic_hash": ""
+  },
+  "public_html/test-photo-01.jpg": {
+    "mtime": 1784002747.4545677,
+    "ast_hash": "c4fb5b6d73fd6912f822c9da094cd674",
+    "semantic_hash": ""
+  },
+  "agentado-real-final.mp4": {
+    "mtime": 1784008337.873856,
+    "ast_hash": "8515d41877a809e6b8ef8348f675fd33",
+    "semantic_hash": ""
+  },
+  "agentado-style-final.mp4": {
+    "mtime": 1784007758.066617,
+    "ast_hash": "84823788bd0c5f227525e765568bb1ce",
+    "semantic_hash": ""
+  },
+  "clip_01.mp4": {
+    "mtime": 1784003835.4970827,
+    "ast_hash": "e696bf464c6b0f1b04d6c3ba814c4d6c",
+    "semantic_hash": ""
+  },
+  "clip_02.mp4": {
+    "mtime": 1784003830.3370512,
+    "ast_hash": "ba5f4cd9b1e3c51f20646e19b226a688",
+    "semantic_hash": ""
+  },
+  "clip_03.mp4": {
+    "mtime": 1784003832.5490649,
+    "ast_hash": "8765e46a54569630cff6ba1f24089a9f",
+    "semantic_hash": ""
+  },
+  "final-walkthrough.mp4": {
+    "mtime": 1784007439.3248348,
+    "ast_hash": "4182a2a9e3d7b6c1b3f1a49a6e8f1d3d",
+    "semantic_hash": ""
+  },
+  "guarded-walkthrough.mp4": {
+    "mtime": 1784005866.004359,
+    "ast_hash": "fb2d6baacbdb64d478cd5994a1041534",
+    "semantic_hash": ""
+  },
+  "guarded_clip_01.mp4": {
+    "mtime": 1784005834.2482023,
+    "ast_hash": "e2ca121e442bdda1fedb530019debc93",
+    "semantic_hash": ""
+  },
+  "guarded_clip_02.mp4": {
+    "mtime": 1784005836.2722123,
+    "ast_hash": "a68c9058723102ecc641e60c6b7f5311",
+    "semantic_hash": ""
+  },
+  "guarded_clip_03.mp4": {
+    "mtime": 1784005838.7882247,
+    "ast_hash": "7b2ce261e6f922b52a9cd2d1895eda33",
+    "semantic_hash": ""
+  },
+  "k2-crossfade.mp4": {
+    "mtime": 1784006230.2462287,
+    "ast_hash": "fa502b438e7292c4ac304787ff6d05eb",
+    "semantic_hash": ""
+  },
+  "k2_clip_01.mp4": {
+    "mtime": 1784006182.9299798,
+    "ast_hash": "c046c36b33ccb209e903e6a6c8e9c73f",
+    "semantic_hash": ""
+  },
+  "k2_clip_02.mp4": {
+    "mtime": 1784006184.665989,
+    "ast_hash": "bcf4242e23acf8a883d53b7c2d2a9735",
+    "semantic_hash": ""
+  },
+  "k2_clip_03.mp4": {
+    "mtime": 1784006186.1419966,
+    "ast_hash": "b762efe78da12fedfd1c27ac7d1c1ed7",
+    "semantic_hash": ""
+  },
+  "k2_clip_04.mp4": {
+    "mtime": 1784006188.5300093,
+    "ast_hash": "162e4d69df5917a1e3ce4deeb93fb38f",
+    "semantic_hash": ""
+  },
+  "kling-master-test.mp4": {
+    "mtime": 1784002003.1982346,
+    "ast_hash": "5a1fc74876ea8e8bd8da992e464cb81e",
+    "semantic_hash": ""
+  },
+  "kling-standard-test.mp4": {
+    "mtime": 1784001924.0497572,
+    "ast_hash": "f9afffcd7a4732c0d9a99100dc000a90",
+    "semantic_hash": ""
+  },
+  "kling-test-01.mp4": {
+    "mtime": 1784003027.4321613,
+    "ast_hash": "7b02e199dec5697436190f7558f6424e",
+    "semantic_hash": ""
+  },
+  "kling2-crossfade.mp4": {
+    "mtime": 1784006658.3285286,
+    "ast_hash": "e439eef36431c37ef091bc583903d16e",
+    "semantic_hash": ""
+  },
+  "kling2-walkthrough.mp4": {
+    "mtime": 1784006310.6386545,
+    "ast_hash": "92cc70344fa7a9b0aaebfee03ed32c90",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/demo-ai.mp4": {
+    "mtime": 1784051277.206085,
+    "ast_hash": "8515d41877a809e6b8ef8348f675fd33",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/demo-kenburns.mp4": {
+    "mtime": 1784051277.202085,
+    "ast_hash": "50d3b7e88ac271c4622a13567de8148e",
+    "semantic_hash": ""
+  },
+  "together-walkthrough.mp4": {
+    "mtime": 1784004832.1309896,
+    "ast_hash": "189cb57c959985a4ac9f2e4b4b0c51d2",
+    "semantic_hash": ""
+  },
+  "together_clip_01.mp4": {
+    "mtime": 1784004769.486624,
+    "ast_hash": "c5c5d3973fcfb9f4d467daf8e8f0b549",
+    "semantic_hash": ""
+  },
+  "together_clip_02.mp4": {
+    "mtime": 1784004771.030633,
+    "ast_hash": "4e4f437cf26c13b9ec7ca01e42f08158",
+    "semantic_hash": ""
+  },
+  "together_clip_03.mp4": {
+    "mtime": 1784004771.718637,
+    "ast_hash": "2d37f96c5313587e15d5eed4d0879d31",
+    "semantic_hash": ""
+  },
+  "walkthrough-29994252.mp4": {
+    "mtime": 1784003870.9452987,
+    "ast_hash": "2103439f4f2e7f9c0b72cdc82ef63e40",
+    "semantic_hash": ""
+  },
+  "agentado-preview-server.py": {
+    "mtime": 1784064743.6038651,
+    "ast_hash": "ce5acf63f6364dd2557ed39c68124ce9",
+    "semantic_hash": ""
+  },
+  "claude-or": {
+    "mtime": 1784054664.0009916,
+    "ast_hash": "8acbbb0df5c6c91f09b3d0a65e4e0d7a",
+    "semantic_hash": ""
+  },
+  "deepclaude": {
+    "mtime": 1784054825.150392,
+    "ast_hash": "cea454b3477b5b88c8da03bb2c5409a5",
+    "semantic_hash": ""
+  },
+  "openrouter-proxy.py": {
+    "mtime": 1784054175.8657758,
+    "ast_hash": "69512251879b2c45cda513e5bbe76b73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/serve.php": {
+    "mtime": 1784061298.115983,
+    "ast_hash": "0837fb3d6e2a8f00ff643146e6aee4f5",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/tunnel-config.php": {
+    "mtime": 1784064891.68443,
+    "ast_hash": "29e3a36d58b92c25229b7a83b5030372",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/tunnel-update.php": {
+    "mtime": 1784060600.9957836,
+    "ast_hash": "21f5fc93e516d38239b11916b09c0b96",
+    "semantic_hash": ""
+  },
+  "tunnel-preview-keepalive.sh": {
+    "mtime": 1784061066.0066006,
+    "ast_hash": "d776c628c930997b6ce3690b25401ad6",
+    "semantic_hash": ""
+  },
+  "preview-tunnel-url.txt": {
+    "mtime": 1784060869.025406,
+    "ast_hash": "1cfa76e068fc2af77d59c412a6adf651",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/test-video.html": {
+    "mtime": 1784061901.9155111,
+    "ast_hash": "9b352d1f1cb684ff52a90b050e7c26f3",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_03b6977b18d54bb0.mp4": {
+    "mtime": 1784061592.9937146,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_05bbd270946e446f.mp4": {
+    "mtime": 1784061372.4444215,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_06f788732ec04b23.mp4": {
+    "mtime": 1784059902.4119077,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_0943b814d81847b3.mp4": {
+    "mtime": 1784064082.476066,
+    "ast_hash": "743baab5ad6d5aa8d3a11ce18a966ac4",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_0c01ff76648f45b1.mp4": {
+    "mtime": 1784061282.0238879,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_12209aa83df44e1a.mp4": {
+    "mtime": 1784059680.3147016,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_1475165969d94cca.mp4": {
+    "mtime": 1784063931.8872006,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_177ebe91539d4eb4.mp4": {
+    "mtime": 1784061981.9239748,
+    "ast_hash": "8a6df6c276c6fd47985f2b65138379d3",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_1c6e98b4072e47e1.mp4": {
+    "mtime": 1784061596.3697343,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_215db9bd435c4eae.mp4": {
+    "mtime": 1784061811.238985,
+    "ast_hash": "595c3753b47422afa9bd4cafd0dcfb96",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_21bb2b06341a4812.mp4": {
+    "mtime": 1784063784.0343509,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_266d3aef835f4a1e.mp4": {
+    "mtime": 1784060511.315282,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_318cbd66735f479c.mp4": {
+    "mtime": 1784059696.0827866,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_321d0e110f894598.mp4": {
+    "mtime": 1784061719.1384497,
+    "ast_hash": "8a6df6c276c6fd47985f2b65138379d3",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_341fe05c586c4d60.mp4": {
+    "mtime": 1784063843.0626903,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_350caae77ead4095.mp4": {
+    "mtime": 1784062305.2258427,
+    "ast_hash": "595c3753b47422afa9bd4cafd0dcfb96",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_401de9f3d4ad4deb.mp4": {
+    "mtime": 1784060212.1216154,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_581e3b31a2af422a.mp4": {
+    "mtime": 1784061958.8878412,
+    "ast_hash": "595c3753b47422afa9bd4cafd0dcfb96",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_5d87b9e8b1ca489a.mp4": {
+    "mtime": 1784061479.2850492,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_60f3f384fdb54c81.mp4": {
+    "mtime": 1784060281.1219985,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_623ca6f314a748a9.mp4": {
+    "mtime": 1784059357.028995,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_68a52d74e0524d0a.mp4": {
+    "mtime": 1784062569.4073656,
+    "ast_hash": "595c3753b47422afa9bd4cafd0dcfb96",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_6a66c6c774554949.mp4": {
+    "mtime": 1784062157.828992,
+    "ast_hash": "595c3753b47422afa9bd4cafd0dcfb96",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_6d7588ab2b91486b.mp4": {
+    "mtime": 1784060114.9770772,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_821519e7d2754f0d.mp4": {
+    "mtime": 1784059447.885467,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_8561ab22356840c1.mp4": {
+    "mtime": 1784060033.5846279,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_89a1d7913f0e4d56.mp4": {
+    "mtime": 1784063473.3725655,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_8d16bf020df84488.mp4": {
+    "mtime": 1784060091.4769473,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_b0461c02d67947a3.mp4": {
+    "mtime": 1784062879.7451518,
+    "ast_hash": "595c3753b47422afa9bd4cafd0dcfb96",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_b4df478e90034bf7.mp4": {
+    "mtime": 1784060789.6129165,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_c13aabd772d64371.mp4": {
+    "mtime": 1784061459.7369347,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_d31e2b9372bd4ca1.mp4": {
+    "mtime": 1784060058.5647657,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_d3e614e7a3604d3f.mp4": {
+    "mtime": 1784061216.091497,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_d41df43c271245da.mp4": {
+    "mtime": 1784061010.450266,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_d59cf76fb1754e22.mp4": {
+    "mtime": 1784060017.7365408,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_def8e771c48148b7.mp4": {
+    "mtime": 1784060203.6855686,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_dfb7c70f8faf4cfa.mp4": {
+    "mtime": 1784059773.5592055,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_dff508cf13e74094.mp4": {
+    "mtime": 1784061122.5429394,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_e985384a9c8a47e8.mp4": {
+    "mtime": 1784062110.584719,
+    "ast_hash": "595c3753b47422afa9bd4cafd0dcfb96",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_f034002878db487c.mp4": {
+    "mtime": 1784060340.4543288,
+    "ast_hash": "b6c3d863041c7cd91b16ee45cb8d80c6",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_f0e46676f4ac4052.mp4": {
+    "mtime": 1784063902.1390297,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_f2b0bfc2f31040b9.mp4": {
+    "mtime": 1784063908.451066,
+    "ast_hash": "9ad4b13eb17cd4402e2e00c5010104fb",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_f8ebc98484694610.mp4": {
+    "mtime": 1784059793.895316,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_knowngood.mp4": {
+    "mtime": 1784062241.4734747,
+    "ast_hash": "b4ef21593e88f3078de3bc419a48d59c",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_simple.mp4": {
+    "mtime": 1784062275.2296696,
+    "ast_hash": "c73a190bef2d81c8019c7c9909fb34d8",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_testgood.mp4": {
+    "mtime": 1784061591.4977057,
+    "ast_hash": "d651922f685626f941cf11ba88e22a73",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/api/video/tunnel-url.txt": {
+    "mtime": 1784064461.4582438,
+    "ast_hash": "54acd5f0d35152d81e89d2c54d6f811b",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_38e00c700479435d.mp4": {
+    "mtime": 1784064451.5341868,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_6494df859e254355.mp4": {
+    "mtime": 1784064518.042569,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_83b9946fdde14eaa.mp4": {
+    "mtime": 1784064426.4340425,
+    "ast_hash": "352fc8ceb0d2f8c6858845821681bec4",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_8f8e51a53ac74f07.mp4": {
+    "mtime": 1784064611.3231049,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/videos/gen_0f4b89bf51ba4bd5.mp4": {
+    "mtime": 1784064825.0161936,
+    "ast_hash": "c2f7880eed7512183e300326850319fa",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_69d6ba65fca148d3.mp4": {
+    "mtime": 1784064980.828769,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_992cc4390df449a7.mp4": {
+    "mtime": 1784064904.5564773,
+    "ast_hash": "4a357344edc0b273f04ec7e81083c7b9",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/output/previews/prev_dbf2e13adf284275.mp4": {
+    "mtime": 1784064905.1884794,
+    "ast_hash": "cccc477516a6c5fc98063ecd8eb5dfbf",
+    "semantic_hash": ""
+  },
+  "public_html/agentado/index3.html": {
+    "mtime": 1784065602.9116027,
+    "ast_hash": "337d81e9362911768c347f124862b60c",
     "semantic_hash": ""
   }
 }

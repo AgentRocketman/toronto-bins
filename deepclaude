@@ -1,0 +1,15 @@
+#!/bin/bash
+# deepclaude wrapper — auto-loads OpenRouter key, defaults to OpenRouter backend
+# Usage: deepclaude -p "task" --model sonnet
+#        deepclaude -b or             # OpenRouter + DeepSeek V4 Pro (default)
+#        deepclaude -b anthropic      # Normal Claude Code (if needed)
+
+# Auto-load OpenRouter key from openclaw.json
+if [ -z "$OPENROUTER_API_KEY" ]; then
+    export OPENROUTER_API_KEY=$(python3 -c "import json; print(json.load(open('/data/.openclaw/openclaw.json'))['env']['OPENROUTER_API_KEY'])")
+fi
+
+# Default to OpenRouter (not DeepSeek direct, which needs a separate API key)
+export CHEAPCLAUDE_DEFAULT_BACKEND="or"
+
+exec /tmp/deepclaude/deepclaude.sh "$@"

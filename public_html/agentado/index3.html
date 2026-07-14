@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentado — AI Walkthrough Generator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #14141f;
+      --border: #2a2a3a;
+      --text: #e8e8f0;
+      --muted: #8888a0;
+      --accent: #7c5ce7;
+      --accent-glow: #a78bfa;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --radius: 16px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      padding: 48px 24px 24px;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent-glow), #c084fc, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
+
+    main { width: 100%; max-width: 660px; padding: 0 24px 80px; }
+
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface);
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(124, 92, 231, 0.06);
+    }
+    .upload-zone .icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .upload-zone h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .upload-zone p { color: var(--muted); font-size: 0.85rem; }
+
+    .preview-section { display: none; margin-top: 24px; }
+    .preview-section.active { display: block; }
+    .preview-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+    }
+    .preview-header h3 { font-size: 1rem; }
+    .preview-header button {
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      padding: 6px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;
+    }
+    .preview-header button:hover { border-color: var(--danger); color: var(--danger); }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+    .grid .thumb {
+      aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; position: relative;
+      background: var(--surface); border: 1px solid var(--border);
+    }
+    .grid .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .grid .thumb .remove {
+      position: absolute; top: 4px; right: 4px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(0,0,0,0.7); color: #fff; border: none;
+      cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .grid .thumb:hover .remove { opacity: 1; }
+
+    .options { margin-top: 24px; display: none; }
+    .options.active { display: block; }
+
+    .option-group {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+    }
+    .option-group > label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 12px; }
+    .option-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .option-pill {
+      flex: 1; min-width: 70px; text-align: center;
+      padding: 10px 6px; border: 2px solid var(--border); border-radius: 12px;
+      cursor: pointer; transition: all 0.2s;
+      background: transparent; color: var(--text); font-size: 0.8rem;
+    }
+    .option-pill:hover { border-color: var(--accent); }
+    .option-pill.selected { border-color: var(--accent); background: rgba(124, 92, 231, 0.12); }
+    .option-pill .pill-icon { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+    .option-pill .pill-label { font-weight: 500; }
+
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px;
+    }
+    .toggle-row span { font-weight: 600; font-size: 0.9rem; }
+    .toggle {
+      width: 48px; height: 28px; background: var(--border);
+      border-radius: 14px; position: relative; cursor: pointer; transition: background 0.2s;
+    }
+    .toggle.on { background: var(--accent); }
+    .toggle::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform 0.2s;
+    }
+    .toggle.on::after { transform: translateX(20px); }
+
+    .generate-btn {
+      width: 100%; padding: 16px; border: none; border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      color: #fff; font-size: 1.05rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; margin-top: 8px;
+    }
+    .generate-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 24px rgba(124,92,231,0.3); }
+    .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .progress-card {
+      display: none; margin-top: 16px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center;
+    }
+    .progress-card.active { display: block; }
+    .progress-bar-wrap { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin: 16px 0; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-glow)); border-radius: 3px; transition: width 0.3s; width: 0%; }
+    .progress-card .status-text { font-weight: 600; margin-bottom: 4px; }
+    .progress-card .status-sub { color: var(--muted); font-size: 0.85rem; }
+
+    .result-card {
+      display: none; margin-top: 16px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center;
+    }
+    .result-card.active { display: block; }
+    .result-card .check { font-size: 2.5rem; color: var(--success); margin-bottom: 8px; }
+    .result-card video { width: 100%; border-radius: 10px; margin: 16px 0; }
+    .result-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn-outline {
+      padding: 10px 24px; border: 1px solid var(--border); border-radius: 10px;
+      background: transparent; color: var(--text); cursor: pointer; font-size: 0.9rem;
+      transition: all 0.2s; text-decoration: none;
+    }
+    .btn-outline:hover { border-color: var(--accent); background: rgba(124,92,231,0.08); }
+    .btn-primary {
+      padding: 10px 24px; border: none; border-radius: 10px;
+      background: var(--accent); color: #fff; cursor: pointer; font-size: 0.9rem; font-weight: 600;
+    }
+
+    /* Realtor URL input */
+    .realtor-section { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: none; }
+    .realtor-section.active { display: block; }
+    .realtor-section h3 { font-size: 0.95rem; margin-bottom: 4px; }
+    .realtor-section .sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; }
+    .realtor-row { display: flex; gap: 10px; }
+    .realtor-row input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 0.9rem; }
+    .realtor-row input:focus { outline: none; border-color: var(--accent); }
+    .realtor-row button { padding: 10px 20px; background: var(--accent); color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .realtor-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .realtor-status { margin-top: 8px; font-size: 0.8rem; }
+
+    .listing-info {
+      display: none; margin-top: 16px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px;
+    }
+    .listing-info.active { display: block; }
+    .listing-info .li-addr { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+    .listing-info .li-price { font-size: 1.3rem; font-weight: 700; color: #22c55e; margin-bottom: 4px; }
+    .listing-info .li-meta { color: var(--muted); font-size: 0.85rem; margin-bottom: 8px; }
+    .listing-info .li-desc { color: var(--muted); font-size: 0.82rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .error-banner {
+      background: rgba(239,68,68,0.1); border: 1px solid var(--danger);
+      border-radius: var(--radius); padding: 16px; margin-top: 16px;
+      color: var(--danger); text-align: center; display: none;
+    }
+    .error-banner.active { display: block; }
+
+    footer { text-align: center; color: var(--muted); font-size: 0.78rem; padding: 32px 24px; }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.5rem; }
+      .grid { grid-template-columns: repeat(3, 1fr); }
+      .option-pill { min-width: 60px; padding: 8px 4px; font-size: 0.72rem; }
+      .option-pill .pill-icon { font-size: 1rem; }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/pixi.js@8/dist/pixi.min.js"></script>
+  <script type="module">
+    import * as MB from 'https://cdn.jsdelivr.net/npm/mediabunny@1/+esm';
+    window.Mediabunny = MB;
+  </script>
+</head>
+<body>
+  <header>
+    <h1>🎥 Agentado</h1>
+    <p>Upload photos → AI cinematic walkthrough video</p>
+  </header>
+
+  <main>
+    <div class="upload-zone" id="uploadZone">
+      <div class="icon">📸</div>
+      <h3>Drop your photos here</h3>
+      <p>or click to browse · 5–20 images · JPG/PNG/WebP</p>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple hidden>
+    </div>
+
+    <div class="preview-section" id="previewSection">
+      <div class="preview-header">
+        <h3 id="photoCount">0 photos</h3>
+        <button onclick="clearAll()">✕ Clear all</button>
+      </div>
+      <div class="grid" id="previewGrid"></div>
+    </div>
+
+    <!-- Realtor.ca URL import -->
+    <div class="realtor-section" id="realtorSection">
+      <h3>🔗 Or paste a realtor.ca listing</h3>
+      <p class="sub">We'll grab the photos automatically</p>
+      <div class="realtor-row">
+        <input type="url" id="realtorUrl" placeholder="https://www.realtor.ca/real-estate/..." />
+        <button id="realtorFetchBtn" onclick="fetchRealtorPhotos()">Fetch Photos</button>
+      </div>
+      <div class="realtor-status" id="realtorStatus"></div>
+    </div>
+
+    <!-- Listing info (populated from realtor.ca) -->
+    <div class="listing-info" id="listingInfo">
+      <div class="li-price" id="liPrice"></div>
+      <div class="li-addr" id="liAddr"></div>
+      <div class="li-meta" id="liMeta"></div>
+      <div class="li-desc" id="liDesc"></div>
+    </div>
+
+    <div class="options" id="options">
+      <!-- STYLE PRESETS -->
+      <div class="option-group">
+        <label>🎬 Style Preset</label>
+        <div class="option-row" id="styleOptions">
+          <div class="option-pill selected" data-style="cinematic">
+            <span class="pill-icon">🎥</span><span class="pill-label">Cinematic</span>
+          </div>
+          <div class="option-pill" data-style="dramatic">
+            <span class="pill-icon">🎭</span><span class="pill-label">Dramatic</span>
+          </div>
+          <div class="option-pill" data-style="energetic">
+            <span class="pill-icon">⚡</span><span class="pill-label">Energetic</span>
+          </div>
+          <div class="option-pill" data-style="glide">
+            <span class="pill-icon">🛝</span><span class="pill-label">Glide</span>
+          </div>
+          <div class="option-pill" data-style="vintage">
+            <span class="pill-icon">📷</span><span class="pill-label">Vintage</span>
+          </div>
+          <div class="option-pill" data-style="smooth">
+            <span class="pill-icon">🌊</span><span class="pill-label">Smooth</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRANSITION TYPE -->
+      <div class="option-group">
+        <label>🔄 Transition Between Photos</label>
+        <div class="option-row" id="transitionOptions">
+          <div class="option-pill selected" data-trans="whippan">
+            <span class="pill-label">Whip Pan</span>
+          </div>
+          <div class="option-pill" data-trans="snapzoom">
+            <span class="pill-label">Snap Zoom</span>
+          </div>
+          <div class="option-pill" data-trans="spinpop">
+            <span class="pill-label">Spin Pop</span>
+          </div>
+          <div class="option-pill" data-trans="bounce">
+            <span class="pill-label">Bounce</span>
+          </div>
+          <div class="option-pill" data-trans="flash">
+            <span class="pill-label">Flash</span>
+          </div>
+          <div class="option-pill" data-trans="random">
+            <span class="pill-label">🎲 Random</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FRAMING -->
+      <div class="option-group">
+        <label>🖼 Picture Framing</label>
+        <div class="option-row" id="framingOptions">
+          <div class="option-pill selected" data-frame="letterbox">
+            <span class="pill-label">📺 Letterbox</span>
+          </div>
+          <div class="option-pill" data-frame="blurfill">
+            <span class="pill-label">✨ Blur Fill</span>
+          </div>
+          <div class="option-pill" data-frame="fill">
+            <span class="pill-label">🔍 Fill</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- READY COMBOS -->
+      <div class="option-group">
+        <label>🎯 Quick Combo Presets</label>
+        <div class="option-row" id="comboOptions">
+          <div class="option-pill" data-combo="tiktok">
+            <span class="pill-icon">🏠</span><span class="pill-label">TikTok Tour</span>
+          </div>
+          <div class="option-pill" data-combo="luxury">
+            <span class="pill-icon">💎</span><span class="pill-label">Luxury</span>
+          </div>
+          <div class="option-pill" data-combo="brand">
+            <span class="pill-icon">🎬</span><span class="pill-label">Brand Promo</span>
+          </div>
+          <div class="option-pill" data-combo="hyper">
+            <span class="pill-icon">🔥</span><span class="pill-label">Hyper Reel</span>
+          </div>
+          <div class="option-pill" data-combo="dream">
+            <span class="pill-icon">✨</span><span class="pill-label">Dreamy</span>
+          </div>
+          <div class="option-pill" data-combo="wildcard">
+            <span class="pill-icon">🎲</span><span class="pill-label">Wildcard</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADDRESS OVERLAY -->
+      <div class="option-group" id="addressOverlayGroup" style="display:none;">
+        <label>📍 Address Overlay</label>
+        <div class="option-row" id="addressOverlayOptions">
+          <div class="option-pill" data-overlay="none"><span class="pill-label">🚫 None</span></div>
+          <div class="option-pill selected" data-overlay="both"><span class="pill-label">✨ Full</span></div>
+          <div class="option-pill" data-overlay="intro"><span class="pill-label">📋 Intro Only</span></div>
+          <div class="option-pill" data-overlay="bar"><span class="pill-label">📌 Bar Only</span></div>
+        </div>
+      </div>
+
+      <!-- REALTOR INFO OVERLAY -->
+      <div class="option-group" id="realtorOverlayGroup" style="display:none;">
+        <label>🏠 Realtor Info Overlay</label>
+        <div class="option-row" id="realtorOverlayOptions">
+          <div class="option-pill" data-overlay="none"><span class="pill-label">🚫 None</span></div>
+          <div class="option-pill selected" data-overlay="both"><span class="pill-label">✨ Full</span></div>
+          <div class="option-pill" data-overlay="intro"><span class="pill-label">📋 Intro Only</span></div>
+          <div class="option-pill" data-overlay="bar"><span class="pill-label">📌 Bar Only</span></div>
+        </div>
+      </div>
+
+      <!-- DURATION -->
+      <div class="option-group">
+        <label>⏱ Clip Duration</label>
+        <div class="option-row" id="durationOptions">
+          <div class="option-pill selected" data-dur="3"><span class="pill-label">3 sec</span></div>
+          <div class="option-pill" data-dur="4"><span class="pill-label">4 sec</span></div>
+          <div class="option-pill" data-dur="5"><span class="pill-label">5 sec</span></div>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <span>📱 TikTok / Reel version too (9:16)</span>
+        <div class="toggle" id="tiktokToggle" onclick="toggleTikTok()"></div>
+      </div>
+    </div>
+
+    <button class="generate-btn" id="generateBtn" disabled onclick="generate()">
+      ✨ Generate Walkthrough
+    </button>
+
+    <div class="progress-card" id="progressCard">
+      <div class="status-text" id="statusText">Rendering...</div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+      <div class="status-sub" id="statusSub">Preparing...</div>
+    </div>
+
+    <div class="error-banner" id="errorBanner"></div>
+
+    <div class="result-card" id="resultCard">
+      <div class="check">✅</div>
+      <h3>Your walkthrough is ready!</h3>
+      <video id="resultVideo" controls playsinline></video>
+      <div class="result-actions">
+        <a class="btn-primary" id="downloadBtn" href="#" download>⬇ Download Walkthrough</a>
+        <button class="btn-outline" onclick="resetAll()">🔄 Make another</button>
+      </div>
+      <div id="tiktokResult" style="margin-top: 16px; display: none;">
+        <h4 style="margin-bottom:8px;">📱 TikTok / Reel version</h4>
+        <video id="tiktokVideo" controls playsinline></video>
+        <a class="btn-primary" id="tiktokDownloadBtn" href="#" download style="margin-top:8px; display:inline-block;">⬇ Download Reel</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>Powered by Agentado</footer>
+
+  <script>
+    const MAX_PHOTOS = 20, MIN_PHOTOS = 5;
+    let photos = [], selectedStyle = 'cinematic', selectedTransition = 'whippan', clipDuration = 3, includeTikTok = false;
+    let selectedFraming = 'letterbox', selectedAddressOverlay = 'both', selectedRealtorOverlay = 'both';
+    let blurredBgCache = {}; // keyed by image index for Blur Fill mode
+    let listingInfo = null; // { address, price, beds, baths, description, title, agent: {name, role, phone, website}, brokerage: {name, address} } from realtor.ca
+
+    const $ = id => document.getElementById(id);
+    const uploadZone = $('uploadZone'), fileInput = $('fileInput');
+    const previewSection = $('previewSection'), previewGrid = $('previewGrid'), photoCount = $('photoCount');
+    const options = $('options'), generateBtn = $('generateBtn');
+    const progressCard = $('progressCard'), statusText = $('statusText'), statusSub = $('statusSub'), progressBar = $('progressBar');
+    const errorBanner = $('errorBanner'), resultCard = $('resultCard'), resultVideo = $('resultVideo'), downloadBtn = $('downloadBtn');
+    const tiktokResult = $('tiktokResult'), tiktokVideo = $('tiktokVideo'), tiktokDownloadBtn = $('tiktokDownloadBtn');
+
+    // --- UPLOAD ---
+    uploadZone.addEventListener('click', () => fileInput.click());
+    uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+    uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+    fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+    function handleFiles(files) {
+      const valid = Array.from(files).filter(f => f.type.startsWith('image/'));
+      if (photos.length + valid.length > MAX_PHOTOS) { showError(`Max ${MAX_PHOTOS} photos.`); return; }
+      valid.forEach(f => addPhoto(f)); updateUI();
+    }
+    function addPhoto(file) {
+      const id = Date.now() + Math.random(), url = URL.createObjectURL(file);
+      photos.push({ id, file, url });
+      const div = document.createElement('div'); div.className = 'thumb'; div.dataset.id = id;
+      div.innerHTML = `<img src="${url}" alt=""><button class="remove" onclick="removePhoto('${id}')">✕</button>`;
+      previewGrid.appendChild(div);
+    }
+    function removePhoto(id) {
+      const idx = photos.findIndex(p => p.id == id);
+      if (idx >= 0) { if (photos[idx].url && photos[idx].url.startsWith('blob:')) URL.revokeObjectURL(photos[idx].url); photos.splice(idx, 1); }
+      previewGrid.querySelector(`[data-id="${id}"]`)?.remove(); updateUI();
+    }
+    function clearAll() { photos.forEach(p => { if (p.url && p.url.startsWith('blob:')) URL.revokeObjectURL(p.url); }); photos = []; previewGrid.innerHTML = ''; updateUI(); }
+    function updateUI() {
+      photoCount.textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''}`;
+      previewSection.classList.toggle('active', photos.length > 0);
+      options.classList.toggle('active', photos.length > 0);
+      generateBtn.disabled = photos.length < MIN_PHOTOS;
+      toggleRealtorSection();
+      generateBtn.textContent = photos.length >= MIN_PHOTOS ? '✨ Generate Walkthrough'
+        : photos.length > 0 ? `✨ Add ${MIN_PHOTOS - photos.length} more` : '✨ Generate Walkthrough';
+    }
+
+    // --- SELECTIONS ---
+    document.querySelectorAll('#styleOptions .option-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('#styleOptions .option-pill').forEach(x => x.classList.remove('selected'));
+        p.classList.add('selected'); selectedStyle = p.dataset.style;
+        clearComboHighlight();
+      });
+    });
+    document.querySelectorAll('#transitionOptions .option-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('#transitionOptions .option-pill').forEach(x => x.classList.remove('selected'));
+        p.classList.add('selected'); selectedTransition = p.dataset.trans;
+        clearComboHighlight();
+      });
+    });
+    document.querySelectorAll('#durationOptions .option-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('#durationOptions .option-pill').forEach(x => x.classList.remove('selected'));
+        p.classList.add('selected'); clipDuration = parseInt(p.dataset.dur);
+        clearComboHighlight();
+      });
+    });
+
+    // --- FRAMING SELECTION ---
+    document.querySelectorAll('#framingOptions .option-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('#framingOptions .option-pill').forEach(x => x.classList.remove('selected'));
+        p.classList.add('selected'); selectedFraming = p.dataset.frame;
+      });
+    });
+
+    // --- OVERLAY SELECTIONS ---
+    document.querySelectorAll('#addressOverlayOptions .option-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('#addressOverlayOptions .option-pill').forEach(x => x.classList.remove('selected'));
+        p.classList.add('selected'); selectedAddressOverlay = p.dataset.overlay;
+      });
+    });
+    document.querySelectorAll('#realtorOverlayOptions .option-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('#realtorOverlayOptions .option-pill').forEach(x => x.classList.remove('selected'));
+        p.classList.add('selected'); selectedRealtorOverlay = p.dataset.overlay;
+      });
+    });
+
+    // --- PRE-RENDER BLURRED BACKGROUNDS (for Blur Fill mode) ---
+    function preRenderBlurred(imgs) {
+      blurredBgCache = {};
+      const drawCanvas = document.createElement('canvas');
+      drawCanvas.width = 480; drawCanvas.height = 270;
+      const blurCanvas = document.createElement('canvas');
+      blurCanvas.width = 480; blurCanvas.height = 270;
+      const drawCtx = drawCanvas.getContext('2d');
+      const blurCtx = blurCanvas.getContext('2d');
+      imgs.forEach((img, i) => {
+        // Step 1: draw image covering the small canvas
+        const ia = img.width / img.height;
+        const ca = drawCanvas.width / drawCanvas.height;
+        let dw, dh;
+        if (ia > ca) { dh = drawCanvas.height; dw = dh * ia; }
+        else { dw = drawCanvas.width; dh = dw / ia; }
+        drawCtx.drawImage(img, -dw/2 + drawCanvas.width/2, -dh/2 + drawCanvas.height/2, dw, dh);
+        // Step 2: blur — draw from drawCanvas onto blurCanvas with blur filter
+        blurCtx.filter = 'blur(10px)';
+        blurCtx.drawImage(drawCanvas, 0, 0);
+        blurCtx.filter = 'none';
+        // Step 3: dim — draw blurred result back with brightness
+        drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+        drawCtx.filter = 'brightness(0.4)';
+        drawCtx.drawImage(blurCanvas, 0, 0);
+        drawCtx.filter = 'none';
+        // Step 4: copy to cache
+        const out = document.createElement('canvas');
+        out.width = drawCanvas.width; out.height = drawCanvas.height;
+        out.getContext('2d').drawImage(drawCanvas, 0, 0);
+        blurredBgCache[i] = out;
+        drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+        blurCtx.clearRect(0, 0, blurCanvas.width, blurCanvas.height);
+      });
+    }
+
+    // --- COMBOS --- map name → [style, transition, duration]
+    const COMBOS = {
+      tiktok:   ['energetic', 'whippan',  3],
+      luxury:   ['dramatic',  'flash',    4],
+      brand:    ['cinematic', 'spinpop',  4],
+      hyper:    ['energetic', 'bounce',   3],
+      dream:    ['smooth',    'snapzoom', 5],
+      wildcard: ['cinematic', 'random',   3],
+    };
+    const COMBO_STYLES = {}; for (const [k,v] of Object.entries(COMBOS)) COMBO_STYLES[k] = v[0];
+
+    function clearComboHighlight() {
+      document.querySelectorAll('#comboOptions .option-pill').forEach(p => p.classList.remove('selected'));
+    }
+
+    document.querySelectorAll('#comboOptions .option-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        const [sty, trans, dur] = COMBOS[p.dataset.combo];
+        // Apply style
+        document.querySelectorAll('#styleOptions .option-pill').forEach(x => { x.classList.remove('selected'); if (x.dataset.style === sty) x.classList.add('selected'); });
+        selectedStyle = sty;
+        // Apply transition
+        document.querySelectorAll('#transitionOptions .option-pill').forEach(x => { x.classList.remove('selected'); if (x.dataset.trans === trans) x.classList.add('selected'); });
+        selectedTransition = trans;
+        // Apply duration
+        document.querySelectorAll('#durationOptions .option-pill').forEach(x => { x.classList.remove('selected'); if (parseInt(x.dataset.dur) === dur) x.classList.add('selected'); });
+        clipDuration = dur;
+        // Highlight combo
+        clearComboHighlight(); p.classList.add('selected');
+      });
+    });
+    function toggleTikTok() { includeTikTok = !includeTikTok; $('tiktokToggle').classList.toggle('on', includeTikTok); }
+
+    function showError(msg) { errorBanner.textContent = msg; errorBanner.classList.add('active'); progressCard.classList.remove('active'); generateBtn.disabled = false; }
+    function updateProgress(text, pct) { progressCard.classList.add('active'); statusText.textContent = text; statusSub.textContent = `${Math.round(pct)}%`; progressBar.style.width = `${pct}%`; }
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    function loadImage(url) { return new Promise((resolve, reject) => { const img = new Image(); img.onload = () => resolve(img); img.onerror = () => reject(new Error('Failed to load image')); img.src = url; }); }
+    function ease(t, curve) {
+      if (curve === 'ease-in-out') return t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+      if (curve === 'ease-out') return 1 - Math.pow(1-t, 3);
+      if (curve === 'ease-in') return t*t*t;
+      if (curve === 'spring') {
+        // Elastic spring: overshoots 1 then settles back
+        if (t === 0 || t === 1) return t;
+        return Math.pow(2, -10*t) * Math.sin((t - 0.075) * (2*Math.PI) / 0.3) + 1;
+      }
+      if (curve === 'bounce-out') {
+        const n1=7.5625, d1=2.75;
+        if (t<1/d1) return n1*t*t;
+        if (t<2/d1) { t-=1.5/d1; return n1*t*t+0.75; }
+        if (t<2.5/d1) { t-=2.25/d1; return n1*t*t+0.9375; }
+        t-=2.625/d1; return n1*t*t+0.984375;
+      }
+      return t;
+    }
+
+    // --- STYLE DEFINITIONS ---
+    // zoomRange: starts < 1.0 to show more of the photo (heads visible!), zooms in to 1.0–1.05
+    // transFrames: transition duration in frames (shorter = snappier = more modern)
+    // rotation: subtle rotation during clip for kinetic energy
+    // brightness: slight brightness bump for that commercial "pop"
+    const STYLES = {
+      cinematic:  { zoomRange:[0.90,1.02], panAmount:0.04, transFrames:18, fps:30, motionCurve:'ease-in-out', vignette:0, tint:null, grain:0, rotation:0.005, brightness:1.0 },
+      dramatic:   { zoomRange:[0.85,1.05], panAmount:0.07, transFrames:22, fps:30, motionCurve:'ease-in-out', vignette:0.3, tint:null, grain:0, rotation:0.008, brightness:1.08 },
+      energetic:  { zoomRange:[0.88,1.08], panAmount:0.10, transFrames:10, fps:30, motionCurve:'ease-out', vignette:0, tint:null, grain:0, rotation:0.012, brightness:1.05 },
+      glide:      { zoomRange:[0.92,1.01], panAmount:0.18, transFrames:12, fps:30, motionCurve:'ease-out', vignette:0, tint:null, grain:0, rotation:0, brightness:1.02 },
+      vintage:    { zoomRange:[0.90,1.03], panAmount:0.03, transFrames:25, fps:24, motionCurve:'ease-in-out', vignette:0.2, tint:'sepia', grain:0.05, rotation:0.003, brightness:0.95 },
+      smooth:     { zoomRange:[0.93,1.02], panAmount:0.02, transFrames:30, fps:30, motionCurve:'ease-in-out', vignette:0.05, tint:null, grain:0, rotation:0.004, brightness:1.0 },
+    };
+
+    // --- PAN DIRECTIONS ---
+    const PAN_DIRS = [
+      {x:-1,y:0},{x:1,y:0},{x:0,y:-1},{x:0,y:1},
+      {x:-1,y:-1},{x:1,y:-1},{x:-1,y:1},{x:1,y:1},
+      {x:-0.5,y:0.3},{x:0.5,y:-0.3},{x:-0.3,y:-0.5},{x:0.3,y:0.5},
+    ];
+    function panFor(i, total) {
+      if (selectedStyle === 'glide') {
+        // Glide: alternate left→right for even i, right→left for odd
+        return i % 2 === 0 ? {x:-1,y:0} : {x:1,y:0};
+      }
+      // Zigzag: first→LR, second→RL, third→TB, etc.
+      const cycle = Math.floor(i / 2) % 4;
+      const dirs = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+      return dirs[cycle];
+    }
+
+// --- PIXIJS + MEDIABUNNY RENDERING ENGINE ---
+
+    const ALL_TRANSITIONS = ['whippan', 'snapzoom', 'spinpop', 'bounce', 'flash'];
+
+    async function supportsMP4() {
+      try {
+        if (typeof VideoEncoder === 'undefined' || !window.Mediabunny) return false;
+        const support = await VideoEncoder.isConfigSupported({
+          codec: 'avc1.42001E', width: 64, height: 64, bitrate: 1e6, framerate: 30,
+        });
+        return !!support.supported;
+      } catch { return false; }
+    }
+
+    // Cover-fit dimensions
+    function coverFit(img, cw, ch) {
+      const ia = img.width / img.height, ca = cw / ch;
+      if (ia > ca) return { w: ch * ia, h: ch };
+      return { w: cw, h: cw / ia };
+    }
+
+    // Set a PixiJS sprite to full Ken Burns state for one frame
+    function setSpriteKB(sprite, img, cw, ch, zoom, panX, panY, rot, brightness) {
+      const fit = coverFit(img, cw, ch);
+      sprite.texture = PIXI.Texture.from(img);
+      sprite.anchor.set(0.5);
+      sprite.scale.set((fit.w * zoom) / img.width, (fit.h * zoom) / img.height);
+      sprite.x = cw/2 + panX;
+      sprite.y = ch/2 + panY;
+      sprite.rotation = rot;
+      sprite.alpha = 1;
+      // Brightness via ColorMatrixFilter
+      if (brightness && brightness !== 1) {
+        if (!sprite._bm) {
+          sprite._bm = new PIXI.ColorMatrixFilter();
+          sprite._bm.brightness(brightness, false);
+        }
+        if (!sprite.filters) sprite.filters = [sprite._bm];
+        else if (!sprite.filters.includes(sprite._bm)) sprite.filters = [sprite._bm, ...sprite.filters];
+      }
+    }
+
+    // Sepia filter
+    const SEPIA_MATRIX = [0.393,0.769,0.189,0,0, 0.349,0.686,0.168,0,0, 0.272,0.534,0.131,0,0, 0,0,0,1,0];
+    function addSepia(sprite) {
+      if (!sprite._sf) { sprite._sf = new PIXI.ColorMatrixFilter(); sprite._sf.matrix = SEPIA_MATRIX; }
+      if (!sprite.filters) sprite.filters = [sprite._sf];
+      else if (!sprite.filters.includes(sprite._sf)) sprite.filters.push(sprite._sf);
+    }
+
+    // Create vignette overlay sprite
+    // ── Icon drawing helpers (simple canvas shapes) ──
+    function drawBedIcon(ctx, x, y, s) {
+      const w = s, h = s * 0.7;
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      // Mattress
+      ctx.beginPath();
+      ctx.roundRect(x - w/2, y - h/2, w, h, s*0.08);
+      ctx.fill();
+      // Pillow
+      ctx.beginPath();
+      ctx.roundRect(x - w/2 + s*0.06, y - h/2 + s*0.04, s*0.25, h - s*0.08, s*0.06);
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.fill();
+    }
+    function drawBathIcon(ctx, x, y, s) {
+      const w = s, h = s * 0.65;
+      ctx.beginPath();
+      ctx.moveTo(x - w/2, y - h/2);
+      ctx.lineTo(x + w/2, y - h/2);
+      ctx.lineTo(x + w/2, y + h/2);
+      ctx.arcTo(x + w/2 - s*0.3, y + h/2 + s*0.05, x + w/2 - s*0.4, y + h/2, s*0.3);
+      ctx.lineTo(x - w/2 + s*0.4, y + h/2);
+      ctx.arcTo(x - w/2, y + h/2 + s*0.05, x - w/2, y + h/2, s*0.3);
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+      ctx.lineWidth = s * 0.06;
+      ctx.stroke();
+      // Faucet circle
+      ctx.beginPath();
+      ctx.arc(x, y - h/2 + s*0.12, s*0.06, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fill();
+    }
+    function drawSqftIcon(ctx, x, y, s) {
+      const w = s, h = s * 0.75;
+      // Outer grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+      ctx.lineWidth = s * 0.06;
+      ctx.strokeRect(x - w/2, y - h/2, w, h);
+      // Cross lines
+      ctx.beginPath();
+      ctx.moveTo(x, y - h/2); ctx.lineTo(x, y + h/2);
+      ctx.moveTo(x - w/2, y); ctx.lineTo(x + w/2, y);
+      ctx.lineWidth = s * 0.04;
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.stroke();
+    }
+
+
+    function makeVignette(w, h, strength) {
+      if (strength <= 0) return null;
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      const grad = ctx.createRadialGradient(w/2, h/2, Math.min(w,h)*0.42, w/2, h/2, Math.min(w,h)*0.75);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(1, `rgba(0,0,0,${strength})`);
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+      return PIXI.Sprite.from(c);
+    }
+
+    // Grain texture
+    function makeGrain(w, h, intensity) {
+      if (intensity <= 0) return null;
+      const c = document.createElement('canvas'); c.width = 256; c.height = 256;
+      const ctx = c.getContext('2d');
+      const id = ctx.createImageData(256, 256);
+      for (let i = 0; i < id.data.length; i += 4) {
+        const n = (Math.random() - 0.5) * 255 * intensity * 2;
+        id.data[i] = id.data[i+1] = id.data[i+2] = 128 + n;
+        id.data[i+3] = 30;
+      }
+      ctx.putImageData(id, 0, 0);
+      const s = PIXI.Sprite.from(c);
+      s.width = w; s.height = h;
+      return s;
+    }
+
+    // Apply transition effect directly to two sprites
+    function applyTransition(fromS, toS, progress, transType, cw, ch) {
+      const t = ease(progress, 'ease-out');
+      // Clear filters from previous transition frames
+      fromS.filters = (fromS.filters || []).filter(f => f === fromS._bm || f === fromS._sf);
+      toS.filters = (toS.filters || []).filter(f => f === toS._bm || f === toS._sf);
+
+      switch (transType) {
+        case 'whippan': {
+          const blur = Math.max(0, 10 * (1 - Math.abs(t - 0.5) * 2));
+          if (blur > 0.5) {
+            const bf = new PIXI.BlurFilter({ strength: blur, quality: 2 });
+            fromS.filters = [...fromS.filters, bf];
+          }
+          fromS.x = cw/2 - cw * t * 1.5;
+          fromS.alpha = 1 - t;
+          toS.x = cw/2 + cw * (1 - t) * 1.5;
+          toS.alpha = t;
+          break;
+        }
+        case 'snapzoom': {
+          if (progress < 0.4) {
+            const p = ease(progress / 0.4, 'ease-in');
+            fromS.scale.set(fromS.scale.x * (1 + p * 0.5), fromS.scale.y * (1 + p * 0.5));
+            fromS.alpha = 1 - p * 0.5;
+            if (p > 0.1) fromS.filters = [...fromS.filters, new PIXI.BlurFilter({ strength: p*8, quality: 2 })];
+            toS.alpha = 0;
+          } else if (progress < 0.55) {
+            fromS.alpha = 0; toS.alpha = 0;
+          } else {
+            const p = ease((progress - 0.55) / 0.45, 'ease-out');
+            toS.scale.set(toS.scale.x * (0.7 + p * 0.3), toS.scale.y * (0.7 + p * 0.3));
+            toS.alpha = p;
+            if (p < 0.5) toS.filters = [...toS.filters, new PIXI.BlurFilter({ strength: (1-p)*5, quality: 2 })];
+            fromS.alpha = 0;
+          }
+          break;
+        }
+        case 'spinpop': {
+          fromS.rotation += t * 0.4;
+          fromS.scale.set(fromS.scale.x * (1 - t * 0.25), fromS.scale.y * (1 - t * 0.25));
+          fromS.alpha = 1 - t;
+          toS.rotation = (1-t) * (-0.4);
+          toS.scale.set(toS.scale.x * (0.6 + t * 0.4), toS.scale.y * (0.6 + t * 0.4));
+          toS.alpha = t;
+          break;
+        }
+        case 'bounce': {
+          const bt = ease(progress, 'bounce-out');
+          if (progress < 0.45) {
+            const p = progress / 0.45;
+            fromS.scale.set(fromS.scale.x * (1 + p * 0.2), fromS.scale.y * (1 + p * 0.2));
+            fromS.alpha = 1 - p;
+            if (p > 0.2) fromS.filters = [...fromS.filters, new PIXI.BlurFilter({ strength: p*4, quality: 2 })];
+            toS.alpha = 0;
+          } else {
+            const p = (progress - 0.45) / 0.55;
+            toS.scale.set(toS.scale.x * (0.3 + bt * 0.7), toS.scale.y * (0.3 + bt * 0.7));
+            toS.alpha = Math.min(1, p * 2);
+            fromS.alpha = 0;
+          }
+          break;
+        }
+        case 'flash': {
+          if (progress < 0.3) {
+            fromS.alpha = 1; toS.alpha = 0;
+          } else if (progress < 0.5) {
+            fromS.alpha = 0.3 * (1 - (progress-0.3)/0.2);
+            toS.alpha = 0;
+          } else {
+            const p = ease((progress - 0.5) / 0.5, 'ease-out');
+            toS.scale.set(toS.scale.x * (1.08 - p * 0.08), toS.scale.y * (1.08 - p * 0.08));
+            toS.alpha = p;
+            fromS.alpha = 0;
+          }
+          break;
+        }
+      }
+    }
+
+    // --- PROPERTY INFO OVERLAYS ---
+    function makePriceIntro(info, cw, ch) {
+      if (!info || !info.address) return null;
+      const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+      const ctx = c.getContext('2d');
+      const grad = ctx.createLinearGradient(0, ch*0.55, 0, ch);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(0.3, 'rgba(0,0,0,0.6)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.9)');
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, cw, ch);
+
+      // Price — bold green with dark drop shadow for readability
+      if (info.price) {
+        const fs = Math.round(cw * 0.068);
+        const priceX = cw/2, priceY = ch*0.58;
+        ctx.font = `800 ${fs}px -apple-system, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        // Drop shadow — dark offset below
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillText(info.price, priceX + 3, priceY + 3);
+        // Bright green on top — clean, no glow
+        ctx.fillStyle = '#22c55e';
+        ctx.fillText(info.price, priceX, priceY);
+      }
+
+      // Address
+      const addrFS = Math.round(cw * 0.032);
+      ctx.font = `600 ${addrFS}px -apple-system, system-ui, sans-serif`;
+      ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center';
+      const addrLines = wrapText(ctx, info.address, cw*0.85);
+      const addrY = info.price ? ch*0.58 + addrFS*1.6 : ch*0.62;
+      addrLines.forEach((line, i) => ctx.fillText(line, cw/2, addrY + i*addrFS*1.05));
+
+      // Property stat labels (beds / baths / sqft) — text only, centered, equal spacing
+      const statLabels = [];
+      if (info.beds) statLabels.push(info.beds + ' BED');
+      if (info.baths) statLabels.push(info.baths + ' BATH');
+      if (info.sqft) statLabels.push(info.sqft);
+      if (statLabels.length > 0) {
+        const labelFS = Math.round(cw * 0.022);
+        ctx.font = `500 ${labelFS}px -apple-system, system-ui, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.textAlign = 'center';
+        const sep = '  ·  ';
+        const sepW = ctx.measureText(sep).width;
+        const widths = statLabels.map(l => ctx.measureText(l).width);
+        const totalW = widths.reduce((a, b) => a + b, 0) + sepW * (statLabels.length - 1);
+        let x = (cw - totalW) / 2;
+        const labelY = addrY + (addrLines.length-1)*addrFS*1.05 + addrFS*1.6;
+        statLabels.forEach((label, i) => {
+          ctx.fillText(label, x + widths[i]/2, labelY);
+          x += widths[i] + sepW;
+        });
+      }
+
+      // Purple accent line
+      const hasLabels = (info.beds || info.baths || info.sqft);
+      const lastTextY = hasLabels
+        ? addrY + (addrLines.length-1)*addrFS*1.05 + addrFS*1.6 + Math.round(cw * 0.022)
+        : addrY + (addrLines.length-1)*addrFS*1.05 + addrFS*0.8;
+      ctx.strokeStyle = 'rgba(124,92,231,0.6)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(cw*0.35, lastTextY); ctx.lineTo(cw*0.65, lastTextY); ctx.stroke();
+      return PIXI.Sprite.from(c);
+    }
+
+    function makeRealtorIntro(info, cw, ch) {
+      // Second intro disabled — stats now live on the first slide
+      return null;
+    }
+
+
+    // ── Bottom bar: address + property stats — persists throughout video ──
+    function makeBottomBar(info, cw, ch) {
+      if (!info) return null;
+      const hasAddr = info.address && info.address.length > 0;
+      if (!hasAddr) return null;
+
+      const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+      const ctx = c.getContext('2d');
+      const barH = Math.round(ch * 0.06);
+      const padX = Math.round(cw * 0.03);
+
+      // Background gradient
+      const grad = ctx.createLinearGradient(0, ch - barH, 0, ch);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(0.3, 'rgba(0,0,0,0.5)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.72)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, ch - barH, cw, barH);
+
+      // Single line with tiered separators: price • stats · stats | address
+      const parts = [];
+      if (info.price) parts.push({ text: info.price, color: '#22c55e' });
+      if (info.beds) parts.push({ text: info.beds + ' BED', color: 'rgba(255,255,255,0.6)' });
+      if (info.baths) parts.push({ text: info.baths + ' BATH', color: 'rgba(255,255,255,0.6)' });
+      if (info.sqft) parts.push({ text: info.sqft, color: 'rgba(255,255,255,0.6)' });
+      parts.push({ text: info.address, color: 'rgba(255,255,255,0.75)' });
+
+      const fs = Math.round(cw * 0.015);
+      ctx.font = `500 ${fs}px -apple-system, system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+
+      // Tiered separators: • after price, · between stats, | before address
+      const seps = [];
+      for (let i = 0; i < parts.length - 1; i++) {
+        if (i === parts.length - 2) seps.push('  |  ');        // before address: pipe
+        else if (i === 0 && info.price) seps.push('  •  ');    // after price: bullet
+        else seps.push(' · ');                                  // between stats: middot
+      }
+
+      // Measure
+      const widths = parts.map(p => ctx.measureText(p.text).width);
+      const sepWidths = seps.map(s => ctx.measureText(s).width);
+      let totalW = widths.reduce((a, b) => a + b, 0) + sepWidths.reduce((a, b) => a + b, 0);
+
+      // If too wide, truncate address
+      const maxTotal = cw - padX * 2;
+      if (totalW > maxTotal) {
+        let addrText = info.address, addrW = widths[widths.length - 1];
+        const beforeAddr = totalW - addrW;
+        const availW = maxTotal - beforeAddr;
+        while (addrW > availW && addrText.length > 10) {
+          addrText = addrText.slice(0, -1);
+          addrW = ctx.measureText(addrText + '…').width;
+        }
+        if (addrText !== info.address) addrText += '…';
+        parts[parts.length - 1].text = addrText;
+        widths[widths.length - 1] = addrW;
+        totalW = beforeAddr + addrW;
+      }
+
+      // Draw centered
+      let x = (cw - totalW) / 2;
+      const textY = ch - barH * 0.35;
+      parts.forEach((p, i) => {
+        ctx.fillStyle = p.color;
+        ctx.fillText(p.text, x + widths[i]/2, textY);
+        x += widths[i] + (seps[i] ? sepWidths[i] : 0);
+      });
+
+      return PIXI.Sprite.from(c);
+    }
+
+
+    // ── End card: agent photo + full contact info ──
+    async function makeEndCard(info, cw, ch) {
+      if (!info || !info.agent || !info.agent.name) return null;
+
+      const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+      const ctx = c.getContext('2d');
+
+      // Dark gradient background with subtle purple accent
+      const bgGrad = ctx.createRadialGradient(cw*0.35, ch*0.5, 0, cw*0.5, ch*0.5, cw*0.9);
+      bgGrad.addColorStop(0, '#1f1b2e');
+      bgGrad.addColorStop(1, '#0a0a0f');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, cw, ch);
+
+      // Subtle accent line at top
+      ctx.strokeStyle = 'rgba(124,92,231,0.5)';
+      ctx.lineWidth = Math.round(cw * 0.002);
+      ctx.beginPath();
+      ctx.moveTo(cw*0.2, ch*0.08);
+      ctx.lineTo(cw*0.8, ch*0.08);
+      ctx.stroke();
+
+      // REALTOR.CA badge top-right
+      const badgeFS = Math.round(cw * 0.016);
+      ctx.font = `600 ${badgeFS}px -apple-system, system-ui, sans-serif`;
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.textAlign = 'right';
+      ctx.fillText('REALTOR.CA', cw*0.95, ch*0.12);
+
+      const photoSize = Math.round(ch * 0.38);
+      const photoX = cw * 0.15;
+      const photoY = ch * 0.5;
+      const textX = cw * 0.42;
+
+      // Agent photo (loaded async) — circular crop
+      if (info.agent.photo) {
+        try {
+          const img = await loadImage(info.agent.photo);
+          const scale = photoSize / Math.max(img.width, img.height);
+          const dw = img.width * scale, dh = img.height * scale;
+          const dx = photoX - dw/2, dy = photoY - dh/2;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(photoX, photoY, photoSize/2, 0, Math.PI*2);
+          ctx.clip();
+          ctx.drawImage(img, dx, dy, dw, dh);
+          ctx.restore();
+
+          // Subtle ring around photo
+          ctx.beginPath();
+          ctx.arc(photoX, photoY, photoSize/2 + 3, 0, Math.PI*2);
+          ctx.strokeStyle = 'rgba(124,92,231,0.4)';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+        } catch(e) {
+          // Fallback: no photo, just show text
+          console.warn('Agent photo load failed:', e);
+        }
+      }
+
+      // Contact info (right side)
+      const nameFS = Math.round(cw * 0.038);
+      ctx.font = `700 ${nameFS}px -apple-system, system-ui, sans-serif`;
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
+      ctx.fillText(info.agent.name, textX, ch*0.35);
+
+      if (info.agent.role) {
+        const roleFS = Math.round(cw * 0.022);
+        ctx.font = `400 ${roleFS}px -apple-system, system-ui, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.fillText(info.agent.role, textX, ch*0.35 + nameFS*1.3);
+      }
+
+      // Brokerage name
+      if (info.brokerage && info.brokerage.name) {
+        const bkFS = Math.round(cw * 0.018);
+        ctx.font = `400 ${bkFS}px -apple-system, system-ui, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        let bkText = info.brokerage.name;
+        const maxBkW = cw - textX - cw*0.05;
+        while (ctx.measureText(bkText).width > maxBkW && bkText.length > 10) bkText = bkText.slice(0,-1);
+        ctx.fillText(bkText, textX, ch*0.35 + (info.agent.role ? nameFS*2.3 : nameFS*1.5));
+      }
+
+      // Phone — prominent, green
+      if (info.agent.phone) {
+        const phoneFS = Math.round(cw * 0.03);
+        ctx.font = `600 ${phoneFS}px -apple-system, system-ui, sans-serif`;
+        ctx.fillStyle = '#22c55e';
+        ctx.fillText('📞 ' + info.agent.phone, textX, ch*0.68);
+      }
+
+      // Website
+      if (info.agent.website) {
+        const webFS = Math.round(cw * 0.017);
+        ctx.font = `400 ${webFS}px -apple-system, system-ui, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        let webText = info.agent.website.replace(/^https?:\/\//, '').replace(/\/$/, '');
+        ctx.fillText(webText, textX, ch*0.73);
+      }
+
+      // Brokerage address
+      if (info.brokerage && info.brokerage.address) {
+        const addrFS = Math.round(cw * 0.014);
+        ctx.font = `400 ${addrFS}px -apple-system, system-ui, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.fillText('📍 ' + info.brokerage.address, textX, ch*0.80);
+      }
+
+      return PIXI.Sprite.from(c);
+    }
+
+    // Helper: load image from URL
+    function loadImage(url) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = url;
+      });
+    }
+
+    function wrapText(ctx, text, maxWidth) {
+      const words = text.split(' ');
+      const lines = []; let line = '';
+      for (const w of words) {
+        const test = line ? line + ' ' + w : w;
+        if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = w; }
+        else line = test;
+      }
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    // --- MAIN PIXIJS RENDER PIPELINE ---
+    // useMP4=false → MediaRecorder WebM fallback (Firefox/Safari)
+    async function renderVideoPixi(imgs, style, canvas, onProgress, useMP4, info, addrMode, infoMode) {
+      const cw = canvas.width, ch = canvas.height;
+
+      // Init PixiJS
+      const app = new PIXI.Application();
+      await app.init({ canvas, width: cw, height: ch, background: '#000000', antialias: true, autoStart: false, resolution: 1 });
+      // Always use app.canvas for capture ─ PixiJS may create its own internally
+      const renderCanvas = app.canvas;
+
+      // Two reusable sprites
+      const sA = new PIXI.Sprite(); const sB = new PIXI.Sprite();
+      sA.anchor.set(0.5); sB.anchor.set(0.5);
+      sA.visible = false; sB.visible = false;
+      app.stage.addChild(sA, sB);
+
+      // Blur fill sprites (behind main sprites)
+      let bgA = null, bgB = null;
+      if (selectedFraming === 'blurfill') {
+        bgA = new PIXI.Sprite(); bgB = new PIXI.Sprite();
+        bgA.anchor.set(0.5); bgB.anchor.set(0.5);
+        bgA.x = bgB.x = cw/2; bgA.y = bgB.y = ch/2;
+        bgA.visible = false; bgB.visible = false;
+        app.stage.addChildAt(bgA, 0);
+        app.stage.addChildAt(bgB, 1);
+      }
+
+      // Vignette + grain overlays
+      const vignette = makeVignette(cw, ch, style.vignette);
+      if (vignette) app.stage.addChild(vignette);
+      const grain = makeGrain(cw, ch, style.grain);
+      if (grain) { grain.alpha = style.grain; app.stage.addChild(grain); }
+
+      // Flash overlay rect
+      const flashRect = new PIXI.Graphics();
+      flashRect.rect(0, 0, cw, ch);
+      flashRect.fill({ color: 0xffffff, alpha: 0 });
+      flashRect.alpha = 0;
+      app.stage.addChild(flashRect);
+
+      // --- Property info overlays (two-phase intro) ---
+      const hasInfo = info && (info.beds || info.baths || info.description || (info.agent && info.agent.name));
+      const addrIntro = info && info.address && (addrMode === 'intro' || addrMode === 'both');
+      const addrBar = info && info.address && (addrMode === 'bar' || addrMode === 'both');
+      const riIntro = hasInfo && (infoMode === 'intro' || infoMode === 'both');
+      const riBar = hasInfo && (infoMode === 'bar' || infoMode === 'both');
+
+      // Compute intro timing
+      const PHASE_DUR = 3.0, PHASE_GAP = 0.3;
+      let addrIntroEnd = 0, riIntroStart = 0, riIntroEnd = 0, firstClipDur = -1;
+      if (addrIntro) { addrIntroEnd = PHASE_DUR; }
+      if (riIntro) {
+        riIntroStart = addrIntroEnd + (addrIntro ? PHASE_GAP : 0);
+        riIntroEnd = riIntroStart + PHASE_DUR;
+      }
+      const introTotal = Math.max(addrIntroEnd, riIntroEnd);
+      // First clip must be at least as long as the combined intro
+      if (introTotal > 0) firstClipDur = Math.max(clipDuration, introTotal + 0.5);
+
+      // Create overlay sprites
+      let priceIntro = null, realtorIntro = null, bottomBar = null;
+      if (addrIntro) { priceIntro = makePriceIntro(info, cw, ch); if (priceIntro) { priceIntro.alpha = 0; app.stage.addChild(priceIntro); } }
+      if (riIntro) { realtorIntro = makeRealtorIntro(info, cw, ch); if (realtorIntro) { realtorIntro.alpha = 0; app.stage.addChild(realtorIntro); } }
+      if (addrBar || riBar) { bottomBar = makeBottomBar(info, cw, ch); if (bottomBar) { bottomBar.alpha = 0; app.stage.addChild(bottomBar); } }
+
+      // End card (agent photo + full contact info, shown after all photo clips)
+      const END_CARD_DUR = 4.0;
+      let endCard = null;
+      if (info && info.agent && info.agent.name) {
+        // Proxy agent photo through img-proxy to avoid CORS issues with canvas
+        const proxyBase = 'https://agentrocketman.com/agentado/api/img-proxy.php?u=';
+        const infoProxy = {...info, agent: {...info.agent,
+          photo: info.agent && info.agent.photo ? proxyBase + encodeURIComponent(info.agent.photo) : null
+        }};
+        endCard = await makeEndCard(infoProxy, cw, ch);
+        if (endCard) { endCard.alpha = 0; endCard.visible = false; app.stage.addChild(endCard); }
+      }
+
+      const fps = style.fps;
+      const framesPerClip = clipDuration * fps;
+      const tf = style.transFrames;
+      const totalClips = imgs.length + (endCard ? 1 : 0);
+      const photoCount = imgs.length;
+
+      // Build clip lengths array (first clip may be extended for intro)
+      const clipLen = [];
+      for (let c = 0; c < photoCount; c++) {
+        const base = c === photoCount - 1 ? framesPerClip : framesPerClip - tf;
+        clipLen.push(c === 0 && firstClipDur > 0 ? Math.round(firstClipDur * fps) - tf : base);
+      }
+      // Add end card clip
+      if (endCard) {
+        clipLen.push(Math.round(END_CARD_DUR * fps));
+      }
+      let totalFrames = 0;
+      for (let c = 0; c < totalClips; c++) totalFrames += clipLen[c];
+
+      // Random transition pre-generation
+      const pairTransitions = [];
+      for (let c = 0; c < totalClips - 1; c++)
+        pairTransitions.push(ALL_TRANSITIONS[Math.floor(Math.random() * ALL_TRANSITIONS.length)]);
+
+      // Video output setup
+
+      // Pre-render first frame so canvas isn't black when capture starts
+      setSpriteKB(sA, imgs[0], cw, ch, style.zoomRange[0], 0, 0, 0, style.brightness);
+      sA.visible = true;
+      app.renderer.render(app.stage);
+      let videoOut;
+      if (useMP4 && window.Mediabunny) {
+        const MB = window.Mediabunny;
+        const output = new MB.Output({ format: new MB.Mp4OutputFormat(), target: new MB.BufferTarget() });
+        const vs = new MB.CanvasSource(renderCanvas, { codec: 'avc', bitrate: 8000000 });
+        output.addVideoTrack(vs);
+        await output.start();
+        videoOut = { type: 'mp4', source: vs, output };
+      } else {
+        const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm;codecs=vp8';
+        const chunks = [];
+        const stream = renderCanvas.captureStream(fps);
+        const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 10000000 });
+        rec.ondataavailable = e => chunks.push(e.data);
+        rec.start();
+        videoOut = { type: 'webm', recorder: rec, chunks, mime };
+      }
+
+      for (let f = 0; f < totalFrames; f++) {
+        // Locate clip + frame-in-clip using precomputed lengths
+        let clipIdx = 0, frameInClip = f, acc = 0;
+        for (let c = 0; c < totalClips; c++) {
+          acc += clipLen[c];
+          if (f < acc) { clipIdx = c; frameInClip = clipLen[c] - (acc - f); break; }
+        }
+        // clipIdx now holds the clip index, frameInClip holds position within that clip
+        if (f >= acc) { clipIdx = totalClips - 1; frameInClip = clipLen[totalClips-1] - 1; }
+
+        const currentS = (clipIdx % 2 === 0) ? sA : sB;
+        const nextS = (clipIdx % 2 === 0) ? sB : sA;
+        const clen = clipLen[clipIdx];
+        const isTransition = clipIdx < photoCount - 1 && frameInClip >= clen - tf;
+        const isEndCard = endCard && clipIdx >= photoCount;
+        const clipProgress = isTransition ? 1 : Math.min(frameInClip / Math.max(clen - tf, 1), 1);
+
+        if (isEndCard) {
+          // End card clip: show end card, hide photo sprites
+          currentS.visible = false;
+          nextS.visible = false;
+          if (bgA) { bgA.visible = false; bgB.visible = false; }
+          // Only fade in if arriving cold (not already near-visible from crossfade)
+          if (endCard.alpha < 0.5) {
+            const fadeIn = 0.5;
+            const endT = frameInClip / (END_CARD_DUR * fps);
+            if (endT < fadeIn / END_CARD_DUR) endCard.alpha = endT * END_CARD_DUR / fadeIn;
+            else endCard.alpha = 1;
+          } else {
+            endCard.alpha = 1;
+          }
+          endCard.visible = true;
+          if (priceIntro) priceIntro.alpha = 0;
+          if (realtorIntro) realtorIntro.alpha = 0;
+          flashRect.alpha = 0;
+        } else {
+          // Compute Ken Burns state
+        const t = ease(Math.min(clipProgress, 1), style.motionCurve);
+        let zs = style.zoomRange[0], ze = style.zoomRange[1];
+        if (selectedFraming === 'fill') { const off = 1.0 - zs; zs += off; ze += off; }
+        const zoom = zs + (ze - zs) * t;
+        const pan = panFor(clipIdx, totalClips);
+        const panX = pan.x * style.panAmount * cw * t;
+        const panY = pan.y * style.panAmount * ch * t;
+        const rot = (style.rotation || 0) * Math.sin(t * Math.PI);
+
+        // Reset flash
+        flashRect.alpha = 0;
+
+        // Crossfade from last photo to end card
+        if (endCard && clipIdx === photoCount - 1 && frameInClip >= clen - tf) {
+          const transProgress = (frameInClip - (clen - tf)) / tf;
+          setSpriteKB(currentS, imgs[clipIdx], cw, ch, zoom, panX, panY, rot, style.brightness);
+          if (style.tint === 'sepia') addSepia(currentS);
+          currentS.visible = true;
+          currentS.alpha = 1 - transProgress;
+          nextS.visible = false;
+          if (bgA) { bgA.visible = false; bgB.visible = false; }
+          endCard.alpha = transProgress;
+          endCard.visible = true;
+        } else if (isTransition) {
+          const transProgress = (frameInClip - (clen - tf)) / tf;
+          const transType = selectedTransition === 'random' ? pairTransitions[clipIdx] : selectedTransition;
+
+          // Set from sprite at end-of-clip Ken Burns state
+          setSpriteKB(currentS, imgs[clipIdx], cw, ch, zoom, panX, panY, rot, style.brightness);
+          if (style.tint === 'sepia') addSepia(currentS);
+          currentS.visible = true;
+
+          // Set to sprite at start-of-next-clip Ken Burns state
+          const nextPan = panFor(clipIdx+1, totalClips);
+          setSpriteKB(nextS, imgs[clipIdx+1], cw, ch, style.zoomRange[0], 0, 0, 0, style.brightness);
+          if (style.tint === 'sepia') addSepia(nextS);
+          nextS.visible = true;
+
+          // Blur fill backgrounds
+          if (bgA && blurredBgCache[clipIdx]) {
+            const bgCur = (clipIdx % 2 === 0) ? bgA : bgB;
+            bgCur.texture = PIXI.Texture.from(blurredBgCache[clipIdx]);
+            bgCur.width = cw; bgCur.height = ch;
+            bgCur.visible = true;
+            if ((clipIdx % 2 === 0) ? bgB : bgA) (clipIdx % 2 === 0 ? bgB : bgA).visible = false;
+          }
+
+          applyTransition(currentS, nextS, transProgress, transType, cw, ch);
+
+          // Flash overlay
+          if (transType === 'snapzoom' && transProgress >= 0.4 && transProgress < 0.55) {
+            const p = (transProgress - 0.4) / 0.15;
+            flashRect.alpha = Math.sin(p * Math.PI) * 0.9;
+          }
+          if (transType === 'flash' && transProgress >= 0.3 && transProgress < 0.5) {
+            const p = (transProgress - 0.3) / 0.2;
+            flashRect.alpha = Math.sin(p * Math.PI) * 0.85;
+          }
+        } else {
+          // Normal playback
+          setSpriteKB(currentS, imgs[clipIdx], cw, ch, zoom, panX, panY, rot, style.brightness);
+          if (style.tint === 'sepia') addSepia(currentS);
+          currentS.visible = true;
+          currentS.alpha = 1;
+          nextS.visible = false;
+
+          // Blur fill background
+          if (bgA && blurredBgCache[clipIdx]) {
+            const bgCur = (clipIdx % 2 === 0) ? bgA : bgB;
+            bgCur.texture = PIXI.Texture.from(blurredBgCache[clipIdx]);
+            bgCur.width = cw; bgCur.height = ch;
+            bgCur.visible = true;
+            (clipIdx % 2 === 0 ? bgB : bgA).visible = false;
+          } else if (bgA) {
+            bgA.visible = false; bgB.visible = false;
+          }
+        }
+        } // end !isEndCard
+
+        // Property info overlay animation (intro only on first clip, bars throughout)
+        const currentTime = f / fps;
+        if (clipIdx === 0) {
+          // Intro overlays on first clip only
+          if (priceIntro) {
+            const fadeIn = 0.5, fadeOut = 0.5;
+            if (currentTime <= fadeIn) priceIntro.alpha = currentTime / fadeIn;
+            else if (currentTime <= addrIntroEnd - fadeOut) priceIntro.alpha = 1;
+            else if (currentTime <= addrIntroEnd) priceIntro.alpha = 1 - (currentTime - (addrIntroEnd - fadeOut)) / fadeOut;
+            else priceIntro.alpha = 0;
+          }
+          if (realtorIntro) {
+            const fadeIn = 0.5, fadeOut = 0.5;
+            if (currentTime <= riIntroStart) realtorIntro.alpha = 0;
+            else if (currentTime <= riIntroStart + fadeIn) realtorIntro.alpha = (currentTime - riIntroStart) / fadeIn;
+            else if (currentTime <= riIntroEnd - fadeOut) realtorIntro.alpha = 1;
+            else if (currentTime <= riIntroEnd) realtorIntro.alpha = 1 - (currentTime - (riIntroEnd - fadeOut)) / fadeOut;
+            else realtorIntro.alpha = 0;
+          }
+        } else {
+          if (priceIntro) priceIntro.alpha = 0;
+          if (realtorIntro) realtorIntro.alpha = 0;
+        }
+
+        // Bottom bar (visible after intro on clip 0, or from start on clip 1+)
+        const barStart = clipIdx === 0 ? Math.max(addrIntroEnd, riIntroEnd) : 0;
+        const barFade = 0.3;
+        if (bottomBar) {
+          // Guard against double-fade: keep solid during end card AND during
+          // the crossfade from last photo TO end card (where barEndFade may fire)
+          const crossfadingToEndCard = endCard && clipIdx === photoCount - 1 && frameInClip >= clen - tf;
+          if (isEndCard || crossfadingToEndCard) {
+            bottomBar.alpha = 1;
+          } else {
+            const t = currentTime;
+            const barEndFade = (totalFrames - 1) / fps - 1.0;
+          if (t < barStart) bottomBar.alpha = 0;
+          else if (t < barStart + barFade) bottomBar.alpha = (t - barStart) / barFade;
+          else if (t < barEndFade) bottomBar.alpha = 1;
+          else if (t < barEndFade + 1.0) bottomBar.alpha = 1 - (t - barEndFade);
+          else bottomBar.alpha = 0;
+          }
+        }
+
+        // Render!
+        app.renderer.render(app.stage);
+
+        // Capture
+        if (videoOut.type === 'mp4') {
+          await videoOut.source.add(f / fps, 1 / fps);
+        } else {
+          await sleep(1000 / fps);
+        }
+
+        if (f % Math.max(Math.ceil(totalFrames/40), 1) === 0)
+          onProgress(10 + (f/totalFrames) * 80);
+      }
+
+      if (videoOut.type === 'mp4') {
+        await videoOut.output.finalize();
+        const blob = new Blob([videoOut.output.target.buffer], { type: 'video/mp4' });
+        app.destroy(true, { children: true, texture: true });
+        return blob;
+      } else {
+        videoOut.recorder.stop();
+        const done = new Promise(r => { videoOut.recorder.onstop = r; });
+        await done;
+        const blob = new Blob(videoOut.chunks, { type: videoOut.mime });
+        app.destroy(true, { children: true, texture: true });
+        return blob;
+      }
+    }
+
+    // --- GENERATE ---
+    async function generate() {
+      if (photos.length < MIN_PHOTOS) return;
+
+      progressCard.classList.remove('active'); resultCard.classList.remove('active');
+      errorBanner.classList.remove('active'); generateBtn.disabled = true;
+      progressBar.style.width = '0%';
+
+      const style = STYLES[selectedStyle];
+
+      try {
+        updateProgress('Loading images...', 5);
+        const imgs = await Promise.all(photos.map(p => loadImage(p.url)));
+
+        if (selectedFraming === 'blurfill') {
+          updateProgress('Preparing blur fills...', 7);
+          preRenderBlurred(imgs);
+        }
+
+        updateProgress('Checking encoder...', 8);
+        const useMP4 = await supportsMP4();
+
+        const c16x9 = document.createElement('canvas');
+        c16x9.width = 1920; c16x9.height = 1080;
+
+        updateProgress(useMP4 ? 'Rendering MP4...' : 'Rendering WebM...', 10);
+        const blob16x9 = await renderVideoPixi(imgs, style, c16x9,
+          pct => updateProgress(useMP4 ? 'Rendering MP4...' : 'Rendering WebM...', pct), useMP4,
+          listingInfo, selectedAddressOverlay, selectedRealtorOverlay);
+
+        updateProgress('Finalizing...', 93);
+        const ext = useMP4 ? 'mp4' : 'webm';
+        const url16x9 = URL.createObjectURL(blob16x9);
+        resultVideo.src = url16x9;
+        downloadBtn.href = url16x9;
+        downloadBtn.download = `walkthrough-16x9.${ext}`;
+        resultCard.classList.add('active');
+        progressCard.classList.remove('active');
+
+        if (includeTikTok) {
+          updateProgress('Rendering Reel...', 15);
+          const c9x16 = document.createElement('canvas');
+          c9x16.width = 1080; c9x16.height = 1920;
+          const blob9x16 = await renderVideoPixi(imgs, style, c9x16,
+            pct => updateProgress('Rendering Reel...', 15 + pct*0.8), useMP4,
+            listingInfo, selectedAddressOverlay, selectedRealtorOverlay);
+          const url9x16 = URL.createObjectURL(blob9x16);
+          tiktokResult.style.display = 'block';
+          tiktokVideo.src = url9x16;
+          tiktokDownloadBtn.href = url9x16;
+          tiktokDownloadBtn.download = `reel-9x16.${ext}`;
+        } else {
+          tiktokResult.style.display = 'none';
+        }
+
+        updateProgress('Done!', 100);
+        generateBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        showError(err.message || 'Rendering failed. Try fewer or smaller images.');
+      }
+    }
+
+    // --- REALTOR.CA URL IMPORT ---
+    const realtorSection = document.getElementById('realtorSection');
+    const realtorUrlInput = document.getElementById('realtorUrl');
+    const realtorFetchBtn = document.getElementById('realtorFetchBtn');
+    const realtorStatus = document.getElementById('realtorStatus');
+
+    // Show realtor section on page load (always visible when upload zone is shown)
+    function toggleRealtorSection() {
+      realtorSection.classList.toggle('active', photos.length < MIN_PHOTOS);
+    }
+
+    async function fetchRealtorPhotos() {
+      const url = realtorUrlInput.value.trim();
+      if (!url) { realtorStatus.textContent = 'Please paste a realtor.ca URL'; realtorStatus.style.color = 'var(--danger)'; return; }
+      if (!url.includes('realtor.ca/real-estate/')) {
+        realtorStatus.textContent = 'Must be a realtor.ca listing URL';
+        realtorStatus.style.color = 'var(--danger)'; return;
+      }
+
+      realtorFetchBtn.disabled = true;
+      realtorStatus.textContent = 'Fetching photos...';
+      realtorStatus.style.color = 'var(--muted)';
+
+      try {
+        const res = await fetch('/agentado/api/realtor-scrape.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          realtorStatus.textContent = data.error || 'No photos found';
+          realtorStatus.style.color = 'var(--danger)';
+          realtorFetchBtn.disabled = false;
+          return;
+        }
+
+        realtorStatus.textContent = `Found ${data.count} photos. Loading...`;
+
+        // Store listing info
+        listingInfo = {
+          title: data.title || '',
+          address: data.address || '',
+          price: data.price || '',
+          beds: data.beds || '',
+          baths: data.baths || '',
+          sqft: data.sqft || '',
+          description: data.description || '',
+          agent: data.agent || { name: '', role: '', phone: '', website: '' },
+          brokerage: data.brokerage || { name: '', address: '' },
+        };
+        showListingInfo();
+
+        // Limit to MAX_PHOTOS
+        const toLoad = data.photos.slice(0, MAX_PHOTOS);
+        let loaded = 0;
+        for (const imgUrl of toLoad) {
+          if (photos.length >= MAX_PHOTOS) break;
+          try {
+            const img = await loadImage(imgUrl);
+            const id = 'realtor-' + Date.now() + '-' + loaded;
+            photos.push({ id, file: null, url: imgUrl });
+            const div = document.createElement('div'); div.className = 'thumb'; div.dataset.id = id;
+            div.innerHTML = `<img src="${imgUrl}" alt=""><button class="remove" onclick="removePhoto('${id}')">✕</button>`;
+            previewGrid.appendChild(div);
+            loaded++;
+          } catch (e) {
+            console.warn('Failed to load image:', imgUrl, e);
+          }
+        }
+
+        realtorStatus.textContent = `✅ Added ${loaded} photo${loaded !== 1 ? 's' : ''}${data.title ? ' from: ' + data.title : ''}`;
+        realtorStatus.style.color = 'var(--success)';
+        updateUI();
+      } catch (err) {
+        console.error(err);
+        realtorStatus.textContent = 'Network error. Try again.';
+        realtorStatus.style.color = 'var(--danger)';
+      }
+      realtorFetchBtn.disabled = false;
+    }
+
+    // Paste listener — auto-populate from clipboard
+    realtorUrlInput.addEventListener('paste', () => {
+      setTimeout(() => {
+        const val = realtorUrlInput.value.trim();
+        if (val.includes('realtor.ca/real-estate/')) fetchRealtorPhotos();
+      }, 100);
+    });
+
+    function showListingInfo() {
+      if (!listingInfo || !listingInfo.address) return;
+      $('liPrice').textContent = listingInfo.price || '';
+      $('liAddr').textContent = listingInfo.address;
+      const meta = [];
+      if (listingInfo.beds) meta.push(listingInfo.beds + ' bed');
+      if (listingInfo.baths) meta.push(listingInfo.baths + ' bath');
+      if (listingInfo.agent && listingInfo.agent.name) meta.push('Agent: ' + listingInfo.agent.name);
+      $('liMeta').textContent = meta.join(' · ');
+      $('liDesc').textContent = listingInfo.description || '';
+      $('listingInfo').classList.add('active');
+      // Show overlay options since we have listing data
+      $('addressOverlayGroup').style.display = 'block';
+      // Always show realtor overlay — agent info is scraped independently
+      if (listingInfo.agent && listingInfo.agent.name) {
+        $('realtorOverlayGroup').style.display = 'block';
+      }
+    }
+
+    function resetAll() {
+      resultCard.classList.remove('active'); progressCard.classList.remove('active');
+      errorBanner.classList.remove('active'); clearAll(); generateBtn.disabled = true;
+      listingInfo = null;
+      $('listingInfo').classList.remove('active');
+      $('addressOverlayGroup').style.display = 'none';
+      $('realtorOverlayGroup').style.display = 'none';
+    }
+
+    // Show realtor section on load
+    toggleRealtorSection();
+  </script>
+</body>
+</html>

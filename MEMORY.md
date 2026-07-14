@@ -1,5 +1,10 @@
 # MEMORY.md - Long-Term Memory
 
+## Claude Code — PERMISSION REQUIRED (2026-07-14)
+**Do NOT use Claude Code (`claude-or`, `deepclaude`, etc.) unless Chris explicitly gives permission.**
+- I can do most coding tasks directly for ~$0.03 vs deepclaude's $1.14 (38x cheaper)
+- Only use Claude Code for large multi-file autonomous builds if Chris approves
+
 ## Deployment Rule (CRITICAL) — 2026-06-28
 **ONLY deploy to dev (agentrocketman.com) unless Chris explicitly says "deploy to prod".**
 - Dev: `agentrocketman.com` — test all changes here first
@@ -117,11 +122,22 @@ If the agent goes silent for >2 min and the gateway appears stuck:
 - Stay focused on exactly what was asked
 - If you see issues elsewhere, ask first before fixing
 
+## Claude Code via OpenRouter — SOLVED ✅ (2026-07-14)
+**No proxy needed!** Just 4 env vars:
+```bash
+export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
+export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
+export ANTHROPIC_DEFAULT_SONNET_MODEL="anthropic/claude-sonnet-4-6"
+export ANTHROPIC_DEFAULT_HAIKU_MODEL="anthropic/claude-haiku-4-5"
+export ANTHROPIC_DEFAULT_OPUS_MODEL="anthropic/claude-opus-4-7"
+```
+Convenience script: `/data/.openclaw/workspace/claude-or`
+Tested: chat ✅, Read tool ✅, multi-turn agent loop ✅, $0.03/turn with Sonnet
+
 ## Token Optimization Strategy (ACTIVE)
 - **Planning/design:** Nexos (Opus) — keep brief
-- **Coding:** Claude Code CLI (`claude -p "..."`) — Anthropic billing
-  - **Default model for Claude Code: Claude Sonnet 4.6**.
-  - Use `--model claude-sonnet-4-6` on every `claude -p` invocation unless Chris explicitly asks for a different model.
+- **Coding:** Claude Code CLI (`claude -p "..."`) via OpenRouter (above env vars)
+  - **Default model: `--model sonnet`** (Claude Sonnet 4.6 via OpenRouter).
 - **Deploy/git:** Direct — minimal cost
 - **Background:** DISABLED (heartbeat off, no cron, no auto-updates)
 

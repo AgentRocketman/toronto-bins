@@ -1,0 +1,14 @@
+#!/bin/bash
+# claude-or — Claude Code via OpenRouter (no proxy needed!)
+# Usage: claude-or -p "your task" --model sonnet
+
+API_KEY=$(python3 -c "import json; print(json.load(open('/data/.openclaw/openclaw.json'))['env']['OPENROUTER_API_KEY'])")
+
+export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
+export ANTHROPIC_AUTH_TOKEN="$API_KEY"
+export ANTHROPIC_API_KEY="$API_KEY"
+export ANTHROPIC_DEFAULT_OPUS_MODEL="anthropic/claude-opus-4-7"
+export ANTHROPIC_DEFAULT_SONNET_MODEL="anthropic/claude-sonnet-4-6"
+export ANTHROPIC_DEFAULT_HAIKU_MODEL="anthropic/claude-haiku-4-5"
+
+exec claude "$@"

@@ -1,16 +1,16 @@
-# Graph Report - workspace  (2026-07-13)
+# Graph Report - workspace  (2026-07-14)
 
 ## Corpus Check
-- 891 files · ~1,029,372 words
+- 907 files · ~1,105,291 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 8744 nodes · 8907 edges · 950 communities (701 shown, 249 thin omitted)
+- 8870 nodes · 9033 edges · 981 communities (727 shown, 254 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 74 edges (avg confidence: 0.67)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6892c758`
+- Built from commit: `f15c95f8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,6 +19,28 @@
 - config.php
 - deploy-agentado.sh
 - 2026-07-13
+- 🎬 Free Cinematic Walkthrough Option — DepthFlow
+- How AI Agents Could Transform This Business
+- Session — 2026-07-14 20:57 UTC — generate.php Fix + yuvj420p Format Bug
+- claude-or
+- 🎬 Free Cinematic Walkthrough Option — DepthFlow
+- Admin Panel & Dashboard — UPDATED ✅ (2026-06-19)
+- Session — 2026-07-14 20:15 UTC — Agentado Debugging Continue
+- openrouter-proxy.py
+- 🔍 Competitor Research — Trolto.com
+- 🎬 DepthFlow CPU Parallax Renderer — Built and Tested (02:00 UTC)
+- 🛠️ Agentado Rewrite + Bug Fix (2026-07-14 19:50 UTC)
+- 🎬 CPU Parallax Renderer — v3/v4 Progress (continued)
+- 🎬 Veo 3 Video Generation
+- Common Patterns Across All Platforms
+- 🔥 ACTIVE MODEL: DeepSeek V4 Pro (via OpenRouter) — 2026-07-07
+- 🎙️ PWA Bridges — Drain-on-Trigger (2026-07-07)
+- deepclaude
+- Mission Control Pipeline Redesign (2026-06-28) — CONSOLIDATED
+- Current Projects
+- Airtable Credentials
+- tunnel-preview-keepalive.sh
+- Session — 2026-07-14 21:30 UTC — Agentado Preview Generation: Root Cause + Fix
 - Node.js Package Management
 - Credit Union Website
 - Builder Runner Management
@@ -656,8 +678,8 @@
 6. `Prior Patches on this Project` - 34 edges
 7. `Prior Patches on this Project` - 33 edges
 8. `Prior Patches on this Project` - 32 edges
-9. `Prior Patches on this Project` - 31 edges
-10. `Prior Patches on this Project` - 30 edges
+9. `MEMORY.md - Long-Term Memory` - 31 edges
+10. `Prior Patches on this Project` - 31 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Two Bins Version 2` --references--> `GetMyBin AI Chat Widget`  [EXTRACTED]
@@ -685,15 +707,83 @@
 - **URL Shortening Flow** — builds_url-shortener-v1-9-fix_output_api_shorten.php, builds_url-shortener-v1-9-fix_output_data_urls.json, builds_url-shortener-v1-9-fix_output_api_helpers.php [EXTRACTED 0.75]
 - **Analytics Flow** — builds_url-shortener-v1-9-fix_output_api_stats.php, builds_url-shortener-v1-9-fix_output_data_stats.json, builds_url-shortener-v1-9-fix_output_api_helpers.php [EXTRACTED 0.75]
 
-## Communities (950 total, 249 thin omitted)
+## Communities (981 total, 254 thin omitted)
 
-### Community 3 - "Type Reference Collection"
+### Community 9 - "2026-07-13"
+Cohesion: 0.07
+Nodes (27): 2026-07-13, Agent Photo Extraction (PHP scraper fix), 🖼️ Agent Photo — lowres → highres URL Swap, 🎬 Agentado End Card — Built & Deployed (2026-07-13), Agentado Video Overlay Fix, 🐛 Beds Regex Fix — "5+1" Format (2026-07-13 evening), Brokerage parsing bug (fixed), Chris confirmed "Looks good!" (+19 more)
+
+### Community 10 - "🎬 Free Cinematic Walkthrough Option — DepthFlow"
+Cohesion: 0.25
+Nodes (7): 2026-07-14, Agentado's Gap, ❌ CPU Parallax Renderer — ABANDONED, Technical Assessment, 🔍 Trolto Video Generation Technology — Follow-up (continued 00:47 UTC), 💰 Veo vs Kling Pricing — Verified (2026-07-14), What Trolto Claims
+
+### Community 18 - "Session — 2026-07-14 20:57 UTC — generate.php Fix + yuvj420p Format Bug"
+Cohesion: 0.22
+Nodes (9): Files Changed This Turn, Fix: generate.php Tunnel Routing, Fix: Python Server Dual Mode, Fix: serve.php PHP Video Proxy, Fix: yuvj420p → yuv420p Format Bug, Known Issue: Deploy Wipes Generated Videos, Problem, Session — 2026-07-14 20:57 UTC — generate.php Fix + yuvj420p Format Bug (+1 more)
+
+### Community 19 - "claude-or"
+Cohesion: 0.25
+Nodes (7): claude-or script, ANTHROPIC_API_KEY, ANTHROPIC_AUTH_TOKEN, ANTHROPIC_BASE_URL, ANTHROPIC_DEFAULT_HAIKU_MODEL, ANTHROPIC_DEFAULT_OPUS_MODEL, ANTHROPIC_DEFAULT_SONNET_MODEL
+
+### Community 20 - "🎬 Free Cinematic Walkthrough Option — DepthFlow"
+Cohesion: 0.25
+Nodes (8): Difference from Ken Burns, 🎬 Free Cinematic Walkthrough Option — DepthFlow, Free Hosting Options, Integration Plan, Next Step, Recommendation: DepthFlow, What This WILL Do, What This Won't Do
+
+### Community 21 - "Admin Panel & Dashboard — UPDATED ✅ (2026-06-19)"
+Cohesion: 0.25
+Nodes (8): Admin Panel & Dashboard — UPDATED ✅ (2026-06-19), Dashboard Features:, Mobile Navigation (Responsive Design):, Order Cancellation Page (`/admin/cancel-order.html`):, Order Details Page (`/admin/order-details.html?orderId=recXXXX`):, Order Status Logic (Date-Based):, Refund Window (48-Hour Rule) — UPDATED ✅, Service Routing (Driver Schedule) — UPDATED ✅
+
+### Community 22 - "Session — 2026-07-14 20:15 UTC — Agentado Debugging Continue"
+Cohesion: 0.29
+Nodes (7): Current State, Files Modified This Turn, Next Steps (for next session), Root Cause Found, Session — 2026-07-14 20:15 UTC — Agentado Debugging Continue, Solution Built, State
+
+### Community 23 - "openrouter-proxy.py"
+Cohesion: 0.38
+Nodes (4): build_fwd(), P, Anthropic → OpenRouter slug, rev_model()
+
+### Community 24 - "🔍 Competitor Research — Trolto.com"
+Cohesion: 0.33
+Nodes (6): 🔍 Competitor Research — Trolto.com, Confirmed, Inferred, Pricing, Product Suite, Strategic Notes
+
+### Community 25 - "🎬 DepthFlow CPU Parallax Renderer — Built and Tested (02:00 UTC)"
+Cohesion: 0.33
+Nodes (6): CPU-Based Parallax Renderer — Working, 🎬 DepthFlow CPU Parallax Renderer — Built and Tested (02:00 UTC), DepthFlow on Hostinger — Failed, File Locations, Outstanding, Two Iterations — Invisible → Visible
+
+### Community 26 - "🛠️ Agentado Rewrite + Bug Fix (2026-07-14 19:50 UTC)"
+Cohesion: 0.40
+Nodes (5): 🛠️ Agentado Rewrite + Bug Fix (2026-07-14 19:50 UTC), Agentado Scraper Bug — 4 Fixes, Claude Code Experiment — Expensive Lesson, Current State, Subdomain Setup
+
+### Community 27 - "🎬 CPU Parallax Renderer — v3/v4 Progress (continued)"
+Cohesion: 0.40
+Nodes (5): 🎬 CPU Parallax Renderer — v3/v4 Progress (continued), File Locations (updated), First Real Listing Test — 78 Cormier Heights (29994252), v3 — Cranked Intensity, v4 — Alternating Zoom In/Out
+
+### Community 28 - "🎬 Veo 3 Video Generation"
+Cohesion: 0.40
+Nodes (5): Google Provider Failures, Next Step, Setup, 🎬 Veo 3 Video Generation, Veo Pricing (per second)
+
+### Community 29 - "Common Patterns Across All Platforms"
 Cohesion: 0.50
 Nodes (4): 1. Business Model Comparison, 2. Lead Quality vs. Volume Trade-off, 3. Canada-Specific Landscape, Common Patterns Across All Platforms
 
-### Community 9 - "2026-07-13"
-Cohesion: 0.09
-Nodes (21): 2026-07-13, Agent Photo Extraction (PHP scraper fix), 🖼️ Agent Photo — lowres → highres URL Swap, 🎬 Agentado End Card — Built & Deployed (2026-07-13), Agentado Video Overlay Fix, 🐛 Beds Regex Fix — "5+1" Format (2026-07-13 evening), Brokerage parsing bug (fixed), Chris's preferences remembered (+13 more)
+### Community 30 - "🔥 ACTIVE MODEL: DeepSeek V4 Pro (via OpenRouter) — 2026-07-07"
+Cohesion: 0.50
+Nodes (4): 🔥 ACTIVE MODEL: DeepSeek V4 Pro (via OpenRouter) — 2026-07-07, Alternate models, Config pattern that WORKED (don't manually configure providers), Note
+
+### Community 31 - "🎙️ PWA Bridges — Drain-on-Trigger (2026-07-07)"
+Cohesion: 0.50
+Nodes (4): 🎙️ PWA Bridges — Drain-on-Trigger (2026-07-07), Text chat bridge (`/chat/`) — https://agentrocketman.com/chat/  (built 2026-07-07), The reflex (every Telegram interaction with Chris), Voice bridge (`/assistant/`) — https://agentrocketman.com/assistant/
+
+### Community 33 - "Mission Control Pipeline Redesign (2026-06-28) — CONSOLIDATED"
+Cohesion: 0.67
+Nodes (3): Add Feature (✨), Mission Control Pipeline Redesign (2026-06-28) — CONSOLIDATED, Quick Fix (🔧)
+
+### Community 34 - "Current Projects"
+Cohesion: 0.67
+Nodes (3): CurbIn v2 (LIVE — Production Ready), Current Projects, Infrastructure
+
+### Community 40 - "Session — 2026-07-14 21:30 UTC — Agentado Preview Generation: Root Cause + Fix"
+Cohesion: 0.20
+Nodes (10): Deploy Wipes Note, Files Modified This Session, New Tunnel, Photo Download Fix, Python Server — agentado-preview-server.py (:18900), Remaining: generate.php, Session — 2026-07-14 21:30 UTC — Agentado Preview Generation: Root Cause + Fix, The Fix — Base64 Video in JSON Response (+2 more)
 
 ### Community 41 - "Node.js Package Management"
 Cohesion: 0.05
@@ -744,8 +834,8 @@ Cohesion: 0.18
 Nodes (13): checkCache(), checkNamecheapAvailability(), generateDomainNames(), generateFallbackDomains(), performAvailabilityCheck(), queueAvailabilityChecks(), saveGeneration(), updateGenerationStatus() (+5 more)
 
 ### Community 154 - "Graph Backup Management"
-Cohesion: 0.04
-Nodes (47): 🔥 ACTIVE MODEL: DeepSeek V4 Pro (via OpenRouter) — 2026-07-07, Add Feature (✨), Admin Panel & Dashboard — UPDATED ✅ (2026-06-19), Admin Panel Login System — UPDATED ✅ (2026-06-19), Airtable Credentials, Alternate models, Bin Placement (Street View pin) — 2026-06-18 ✅, Chat Logging & Analytics System — COMPLETE ✅ (2026-06-18) (+39 more)
+Cohesion: 0.08
+Nodes (25): Admin Panel Login System — UPDATED ✅ (2026-06-19), Bin Placement (Street View pin) — 2026-06-18 ✅, Chat Logging & Analytics System — COMPLETE ✅ (2026-06-18), Claude Code — PERMISSION REQUIRED (2026-07-14), Claude Code via OpenRouter — SOLVED ✅ (2026-07-14), Coding Assistant Default Model Rule, Critical Bug Fix — api/config.php (2026-06-18) 🔥, CurbIn Email System - COMPLETE ✅ (+17 more)
 
 ### Community 155 - "Terraform Code Extraction"
 Cohesion: 0.04
@@ -2220,24 +2310,24 @@ Cohesion: 0.67
 Nodes (3): Deployment Readiness, Deployment Steps, ✅ Production Ready
 
 ## Knowledge Gaps
-- **5009 isolated node(s):** `builder-runner-watchdog.sh script`, `elements`, `elements`, `elements`, `elements` (+5004 more)
+- **5074 isolated node(s):** `builder-runner-watchdog.sh script`, `elements`, `elements`, `elements`, `elements` (+5069 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **249 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **254 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Session Log: 2026-06-13 (UPDATED)` connect `Session Log: 2026-06-13 (UPDATED)` to `v8: GEOLOCATION + PROXIMITY SORTING + SEQUENCE NUMBERS (Late Evening)`, `v15-v17: NAVIGATION REFINEMENTS (Evening Final)`, `CURRENT PRODUCTION STATE (v14)`, `Implementation Summary`, `Session Log: 2026-06-13 (UPDATED)`?**
-  _High betweenness centrality (0.000) - this node is a cross-community bridge._
-- **Why does `Session Log: 2026-06-13 (UPDATED)` connect `Session Log: 2026-06-13 (UPDATED)` to `Implementation Summary`, `Session Log: 2026-06-13 (UPDATED)`?**
-  _High betweenness centrality (0.000) - this node is a cross-community bridge._
 - **What connects `builder-runner-watchdog.sh script`, `Authenticate against Mission Control and return cookie string.`, `Heartbeat both locally and POST to Mission Control so dashboard can see it.` to the rest of the system?**
-  _5024 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _5091 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `2026-07-13` be split into smaller, more focused modules?**
-  _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07142857142857142 - nodes in this community are weakly interconnected._
 - **Should `Node.js Package Management` be split into smaller, more focused modules?**
   _Cohesion score 0.05 - nodes in this community are weakly interconnected._
 - **Should `Credit Union Website` be split into smaller, more focused modules?**
   _Cohesion score 0.05405405405405406 - nodes in this community are weakly interconnected._
 - **Should `Builder Runner Management` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
+- **Should `Node.js Package Management` be split into smaller, more focused modules?**
+  _Cohesion score 0.058823529411764705 - nodes in this community are weakly interconnected._
+- **Should `PHP Function Extraction` be split into smaller, more focused modules?**
+  _Cohesion score 0.09425287356321839 - nodes in this community are weakly interconnected._

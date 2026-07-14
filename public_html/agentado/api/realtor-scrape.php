@@ -282,7 +282,8 @@ try {
     if (empty($result['images'])) throw new Exception('No images found.');
 
     $photos = array_slice($result['images'], 0, 33);
-    $proxyBase = 'https://agentrocketman.com/agentado/api/img-proxy.php?u=';
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $proxyBase = "{$scheme}://{$_SERVER['HTTP_HOST']}/api/img-proxy.php?u=";
     $photos = array_map(function($u) use ($proxyBase) {
         return $proxyBase . urlencode($u);
     }, $photos);

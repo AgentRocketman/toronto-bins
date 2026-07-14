@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-13T14:14:13.653Z",
+  "updatedAt": "2026-07-14T21:38:30.282Z",
   "entries": {
     "memory:memory/2026-06-27.md:247:268": {
       "key": "memory:memory/2026-06-27.md:247:268",
@@ -9,18 +9,20 @@
       "endLine": 268,
       "source": "memory",
       "snippet": "4. ✅ **Discovered the built-in `openrouter` plugin** at `/usr/local/lib/node_modules/openclaw/dist/extensions/openrouter/` 5. ✅ Removed all manual config, enabled the plugin + set `OPENROUTER_API_KEY` env var 6. ✅ Plugin auto-resolved `openrouter/moonshotai/kimi-k2.7-code` dynamically. Switch worked. ### Gateway hang (real outage) During the OpenRouter wiring, multiple back-to-back SIGUSR1 restarts left the gateway stuck. I went silent for several minutes. Chris recovered me via: 1. Hostinger panel → container shell 2. `openclaw doctor` 3. Manual `openclaw gateway restart` Then I came back online on Kimi K2.7 Code as the active model. ### Notable observations - OpenRouter free tier is es",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T01:50:07.406Z",
-      "lastRecalledAt": "2026-07-07T01:50:07.406Z",
+      "lastRecalledAt": "2026-07-14T18:46:14.806Z",
       "queryHashes": [
-        "1cf338e0d6bf"
+        "1cf338e0d6bf",
+        "1e65a2a2ecba"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-14"
       ],
       "conceptTags": [
         "gateway",
@@ -284,21 +286,23 @@
       "endLine": 19,
       "source": "memory",
       "snippet": "# 2026-06-10 ## Logo Update - Updated CurbIn site with new curbin wordmark logo (logo.jpg) - Replaced text-based nav and footer logos with image - Committed and pushed to GitHub Pages: `64eb441` ## Token Optimization (major) - Chris asked to minimize Nexos token burn - Installed Claude Code CLI (`@anthropic-ai/claude-code` v2.1.170) with Chris's Anthropic API key - All coding work now routes through Claude Code → Anthropic billing, not Nexos - Disabled heartbeat (set `every: \"0\"` in config) - Confirmed zero cron jobs, zero auto-updates - Documented strategy in MEMORY.md, TOOLS.md, USER.md ## Key Decision - **Permanent rule:** Never use Nexos subagents for coding. Always use `claude -p` wi",
-      "recallCount": 4,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 4,
+      "totalScore": 5,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T04:44:03.947Z",
-      "lastRecalledAt": "2026-07-07T06:53:12.805Z",
+      "lastRecalledAt": "2026-07-14T18:38:22.200Z",
       "queryHashes": [
         "4448bfbac301",
         "c28c6ad52629",
         "70380bd32bcd",
-        "e917bd1e5fdb"
+        "e917bd1e5fdb",
+        "3689f4ad2929"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-14"
       ],
       "conceptTags": [
         "logo.jpg",
@@ -1166,22 +1170,24 @@
       "endLine": 157,
       "source": "memory",
       "snippet": "- Password change endpoint validates but doesn't actually update Airtable (requires database transaction handling) - Admin creation endpoint exists but not fully wired to persist new passwords ### Next Steps If Needed: 1. Implement actual password persistence in Airtable 2. Add admin user management UI in admin panel 3. Add more analytics/metrics to dashboard 4. Security: Remove `setup-admins-table.php` after first run # 2026-06-19 — Session Log ## Completed Features ### 1. Mobile Navigation Landscape Optimization ✅ - Added media query for landscape orientation (`@media (max-height: 500px) and (orientation: landscape)`) - Hamburger menu (☰) appears in landscape to save vertical space - Re",
-      "recallCount": 4,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 4,
+      "totalScore": 5,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T13:01:07.568Z",
-      "lastRecalledAt": "2026-07-11T13:13:31.178Z",
+      "lastRecalledAt": "2026-07-14T21:38:30.282Z",
       "queryHashes": [
         "e9c3edf34d1b",
         "7a949d74f8b3",
         "cc373728c2cc",
-        "a248d93f8d57"
+        "a248d93f8d57",
+        "0d6a3d23b463"
       ],
       "recallDays": [
         "2026-07-07",
-        "2026-07-11"
+        "2026-07-11",
+        "2026-07-14"
       ],
       "conceptTags": [
         "analytics/metrics",
@@ -1481,18 +1487,20 @@
       "endLine": 320,
       "source": "memory",
       "snippet": "- Added `gestureHandling: 'greedy'` to all Google Maps instances - Maps now scroll/pan with ONE finger instead of requiring two - Applied to: - Service routing page (service-routing.html) - Driver service routing page (service_routing2.html) - Order details Street View (order-details.html) ### 3. Granular Refund Controls ✅ - **Removed:** \"Actions\" section from order details page - **Added:** \"Refund Entire Booking\" button in Booking section - Refunds whole booking + cancels all orders - Processes Stripe refund automatically - **Added:** Individual \"🗑️ Refund\" buttons next to each order in Related Orders section - Refund just that specific order - Keep other orders active -",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-07T14:53:14.560Z",
-      "lastRecalledAt": "2026-07-07T14:53:14.560Z",
+      "lastRecalledAt": "2026-07-14T21:38:30.282Z",
       "queryHashes": [
-        "e32968b29bae"
+        "e32968b29bae",
+        "0d6a3d23b463"
       ],
       "recallDays": [
-        "2026-07-07"
+        "2026-07-07",
+        "2026-07-14"
       ],
       "conceptTags": [
         "scroll/pan",
@@ -2172,20 +2180,23 @@
       "endLine": 12,
       "source": "memory",
       "snippet": "# 2026-07-09 ## Agentado.ai — First Discussion - **First mention** of agentado.ai — Chris's new idea for a real estate agent SaaS platform - **Core vision:** Real estate agents paste a realtor.ca link → service turns still images into 3D tours / live video. Also offers AI web chat for property Q&A, appointment booking, and other agent tools. - Reviewed Google Cloud's \"1,302 real-world gen AI use cases\" document for best-fit ideas - Picked top 3 ideas and saved to `projects/agentado-ideas.md`: 1. Gen Media Property Studio (images → 3D tours & video) 2. 24/7 Property Concierge Chat Agent 3. Agent Copilot (listing descriptions, CMA automation, scheduling, docs) - Chris wants these saved",
-      "recallCount": 2,
+      "recallCount": 4,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 2,
+      "totalScore": 4,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-10T16:03:29.580Z",
-      "lastRecalledAt": "2026-07-13T14:03:45.701Z",
+      "lastRecalledAt": "2026-07-14T19:06:32.575Z",
       "queryHashes": [
         "99f16a67b525",
-        "4f0338f84f08"
+        "4f0338f84f08",
+        "f454f993c505",
+        "8021ec61f399"
       ],
       "recallDays": [
         "2026-07-10",
-        "2026-07-13"
+        "2026-07-13",
+        "2026-07-14"
       ],
       "conceptTags": [
         "agentado.ai",
@@ -2354,6 +2365,515 @@
         "public-html",
         "deploy-path",
         "config.php"
+      ]
+    },
+    "memory:memory/2026-07-14.md:49:82": {
+      "key": "memory:memory/2026-07-14.md:49:82",
+      "path": "memory/2026-07-14.md",
+      "startLine": 49,
+      "endLine": 82,
+      "source": "memory",
+      "snippet": "- Trolto: Generative animation of scene elements + cinematic fly-throughs - These are fundamentally different approaches --- ## 🎬 Free Cinematic Walkthrough Option — DepthFlow Chris asked for a free way to achieve cinematic walkthroughs in Agentado. ### Recommendation: DepthFlow - **What**: Open-source Python + GLSL shader video generator - **What it does**: Takes a photo → depth map estimation → 3D parallax fly-through video with true depth perception (foreground moves faster than background) - **Output**: Up to 8K, smooth camera movement - **License**: Commercial use allowed - **Stars**: ~1.5k on GitHub, active project - **Repo**: `patricktrainer/depthflow` on GitHub ### Difference f",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 4,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T04:14:37.436Z",
+      "lastRecalledAt": "2026-07-14T19:06:32.575Z",
+      "queryHashes": [
+        "464d89657696",
+        "e1ebf754085d",
+        "f454f993c505",
+        "8021ec61f399"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "fly-throughs",
+        "open-source",
+        "fly-through",
+        "1.5k",
+        "patricktrainer/depthflow",
+        "trolto",
+        "generative",
+        "animation"
+      ]
+    },
+    "memory:memory/2026-07-14.md:29:59": {
+      "key": "memory:memory/2026-07-14.md:29:59",
+      "path": "memory/2026-07-14.md",
+      "startLine": 29,
+      "endLine": 59,
+      "source": "memory",
+      "snippet": "- They're broader than Agentado — full marketing suite, not just video - \"Done for you\" positioning — AI creates everything automatically - All JS ecosystem (React + Supabase + Render) — same language family as Agentado --- ## 🔍 Trolto Video Generation Technology — Follow-up (continued 00:47 UTC) ### What Trolto Claims - HousingWire article: \"unlike competitors that simply zoom in and out of still images, Trolto's AI adds ultra-smooth pans and flyby effects… It can even animate details in your listing photos\" (e.g., fountain water flowing, curtains moving) - They call it \"proprietary AI\" — never disclose the specific model/engine ### Technical Assessment Trolto's \"animate details\" capabi",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 4,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T04:14:37.436Z",
+      "lastRecalledAt": "2026-07-14T19:06:32.575Z",
+      "queryHashes": [
+        "464d89657696",
+        "e1ebf754085d",
+        "f454f993c505",
+        "8021ec61f399"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "follow-up",
+        "ultra-smooth",
+        "e.g",
+        "model/engine",
+        "they're",
+        "broader",
+        "agentado",
+        "full"
+      ]
+    },
+    "memory:memory/2026-07-14.md:1:36": {
+      "key": "memory:memory/2026-07-14.md:1:36",
+      "path": "memory/2026-07-14.md",
+      "startLine": 1,
+      "endLine": 36,
+      "source": "memory",
+      "snippet": "# 2026-07-14 ## 🔍 Competitor Research — Trolto.com Chris asked me to investigate trolto.com's tech stack. Here's what I found: ### Confirmed - **Frontend**: React + MUI (Material UI) + Emotion CSS - **Router**: TanStack Router (file-based, code-split per route) - **Hosting**: Render.com (`x-render-origin-server: Render`) + Cloudflare CDN - **Storage/Auth/DB**: Supabase — all assets served from Supabase Storage, likely using Supabase Auth + PostgreSQL ### Inferred - **Video generation**: Likely Remotion (React → video server-side) + FFmpeg — the most common pattern for React-native video products - **AI**: OpenAI or Claude for content generation (blog posts, social captions, listing desc",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 4,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T04:14:37.436Z",
+      "lastRecalledAt": "2026-07-14T19:06:32.575Z",
+      "queryHashes": [
+        "464d89657696",
+        "e1ebf754085d",
+        "f454f993c505",
+        "8021ec61f399"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "openai",
+        "router",
+        "trolto.com",
+        "file-based",
+        "code-split",
+        "render.com",
+        "x-render-origin-server",
+        "storage/auth/db"
+      ]
+    },
+    "memory:memory/2026-07-13.md:1:40": {
+      "key": "memory:memory/2026-07-13.md:1:40",
+      "path": "memory/2026-07-13.md",
+      "startLine": 1,
+      "endLine": 40,
+      "source": "memory",
+      "snippet": "# 2026-07-13 ## Oxylabs Realtor Scraper — Completed ✅ Fully migrated realtor.ca scraping from Apify to Oxylabs AI Studio. Three listings now working: | Listing | Agent | Brokerage | |---|---|---| | 29994252 (Wasserman) | Daniel Wasserman (Salesperson) | Forest Hill Real Estate Inc. | | 29990528 (Ebbrell) | Frances Ebbrell (Salesperson) | REMAX Boardwalk Realty | | 29783482 (Mifsud) | Sandra Mifsud (Broker) | One Percent Realty Ltd. | ### Key decisions - Oxylabs API: two-step flow (`POST /scrape` → poll `GET /scrape/run/data`) - Response format: clean markdown (not HTML) — parsing is simpler and more reliable - Oxylabs bypasses BOTH Cloudflare AND Incapsula (Apify couldn't bypass Incapsu",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T04:14:37.436Z",
+      "lastRecalledAt": "2026-07-14T04:14:37.436Z",
+      "queryHashes": [
+        "464d89657696"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "realtor.ca",
+        "two-step",
+        "scrape/run/data",
+        "oxylabs",
+        "realtor",
+        "scraper",
+        "completed",
+        "fully"
+      ]
+    },
+    "memory:memory/2026-07-13.md:25:62": {
+      "key": "memory:memory/2026-07-13.md:25:62",
+      "path": "memory/2026-07-13.md",
+      "startLine": 25,
+      "endLine": 62,
+      "source": "memory",
+      "snippet": "### Markdown structure discovered ``` [![NAME logo](url) NAME Brokerage ADDR1 ADDR2](/office/firm/NUM/slug) ``` ## Agentado Video Overlay Fix Chris reported address bar and agent bar overlapping at bottom. - **Solution**: Combined both into single `makeBottomBar()` function — address left-aligned, agent info right-aligned, subtle center divider - Single semi-transparent gradient bar instead of two overlapping bars - Deployed to agentrocketman.com ## Git - `6892c75`: Switched realtor scraper from Apify to Oxylabs (two new files, full rewrite) ## Chris's preferences remembered - Wants to test before further changes — ship what works, iterate after - Cost-conscious about API token usage",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T04:14:37.436Z",
+      "lastRecalledAt": "2026-07-14T19:06:32.575Z",
+      "queryHashes": [
+        "464d89657696",
+        "f454f993c505",
+        "8021ec61f399"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "office/firm/num/slug",
+        "left-aligned",
+        "right-aligned",
+        "semi-transparent",
+        "agentrocketman.com",
+        "cost-conscious",
+        "markdown",
+        "structure"
+      ]
+    },
+    "memory:memory/2026-07-13.md:57:86": {
+      "key": "memory:memory/2026-07-13.md:57:86",
+      "path": "memory/2026-07-13.md",
+      "startLine": 57,
+      "endLine": 86,
+      "source": "memory",
+      "snippet": "- **Fix regex**: `'/\\[!\\[\\]\\(([^)]+)\\)\\]\\(\\/agent\\/\\d+\\//'` — specifically targets the agent-link-wrapped photo pattern - **Example URL**: `https://cdn.realtor.ca/individuals/TS638851890600000000/lowres/1168643.jpg` ### Frontend: `makeEndCard(info, cw, ch)` function - Dark gradient background with purple accent - Agent photo: circular, left side, proxied through `img-proxy.php` to avoid CORS - Agent name: large bold white text - Role: subtitle - Phone: green, prominent (📞) - Website URL - Brokerage name + address - Fallback gracefully if photo fails to load (just shows text info) ### PixiJS Render Pipeline Integration - `END_CARD_DUR = 4.0` seconds - End card sprite created after overlay",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T04:14:37.436Z",
+      "lastRecalledAt": "2026-07-14T04:14:37.436Z",
+      "queryHashes": [
+        "464d89657696"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "agent-link-wrapped",
+        "img-proxy.php",
+        "end-card-dur",
+        "4.0",
+        "fix",
+        "regex",
+        "specifically",
+        "targets"
+      ]
+    },
+    "memory:memory/2026-07-14.md:75:104": {
+      "key": "memory:memory/2026-07-14.md:75:104",
+      "path": "memory/2026-07-14.md",
+      "startLine": 75,
+      "endLine": 104,
+      "source": "memory",
+      "snippet": "### Integration Plan ``` Current pipeline: Photos → Ken Burns pan/zoom → Agentado overlays → Video Proposed: Photos → DepthFlow parallax clips → Agentado overlays → Video ``` Existing overlay pipeline (price intro, stats, end card, agent photo) stays intact. Only the animation engine changes. ### What This Won't Do Trolto's \"animate details\" (flowing fountain, swaying curtains) requires generative image-to-video AI. Even cheap open models (Wan 2.1, CogVideoX) need beefy GPUs and cost ~$0.05-0.10/video on RunPod. Not viable for free tier at scale. ### What This WILL Do Dramatic camera fly-throughs with real depth perception, seamless loops, artifact-free edges — a significant upgrad",
+      "recallCount": 3,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T05:39:08.828Z",
+      "lastRecalledAt": "2026-07-14T19:06:32.575Z",
+      "queryHashes": [
+        "e1ebf754085d",
+        "f454f993c505",
+        "8021ec61f399"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "pan/zoom",
+        "image-to-video",
+        "2.1",
+        "0.05-0.10/video",
+        "fly-throughs",
+        "artifact-free",
+        "integration",
+        "plan"
+      ]
+    },
+    "memory:memory/2026-07-13.md:116:150": {
+      "key": "memory:memory/2026-07-13.md:116:150",
+      "path": "memory/2026-07-13.md",
+      "startLine": 116,
+      "endLine": 150,
+      "source": "memory",
+      "snippet": "- Glow effect: `ctx.shadowColor = '#22c55e'`, `shadowBlur = 8` - Address follows below price with beds/baths info ## 🎬 Final Video Flow (as of evening 2026-07-13) 1. **Slide 1** (Price intro): Bold glowing green price + address + beds/baths 2. **Slide 2** (Realtor intro): Large beds/baths + description snippet 3. **Photos**: Ken Burns pan/zoom with address-only bottom bar 4. **End card** (4s): Agent photo (highres, circular) + name + role + phone (green) + website + brokerage — full business card feel Agent/brokerage info lives EXCLUSIVELY on the end card. Cleaner throughout. ## File: `public_html/agentado/index.html` - `makePriceIntro()` — lines ~792-820 - `makeRealtorIntro()` — line",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T05:39:08.828Z",
+      "lastRecalledAt": "2026-07-14T05:39:08.828Z",
+      "queryHashes": [
+        "e1ebf754085d"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "ctx.shadowcolor",
+        "beds/baths",
+        "pan/zoom",
+        "address-only",
+        "agent/brokerage",
+        "public-html/agentado/index.html",
+        "792-820",
+        "glow"
+      ]
+    },
+    "memory:memory/2026-07-13.md:99:123": {
+      "key": "memory:memory/2026-07-13.md:99:123",
+      "path": "memory/2026-07-13.md",
+      "startLine": 99,
+      "endLine": 123,
+      "source": "memory",
+      "snippet": "**Root cause**: The `barEndFade` timer in the overlay engine (`(totalFrames - 1) / fps - 1.0`) was calculated including end card frames, so it fired DURING the end card. The overlay code's bottom bar fade-out was overriding the end card's `alpha = 1` setting, causing the bottom bar to fade out mid-end-card (visible as brightness shift). **Fix**: Added `if (isEndCard)` guard in bottom bar animation — skips fade-out and keeps `bottomBar.alpha = 1` during end card frames. ## 🎨 Design: Agent/Brokerage Removed from Opening & Bottom Bar **Chris's decision**: With the end card showing full agent contact info, having agent name + brokerage in the opening overlay and bottom bar is redundant. **C",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T05:39:08.828Z",
+      "lastRecalledAt": "2026-07-14T05:39:08.828Z",
+      "queryHashes": [
+        "e1ebf754085d"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "1.0",
+        "fade-out",
+        "mid-end-card",
+        "bottombar.alpha",
+        "agent/brokerage",
+        "root",
+        "cause",
+        "barendfade"
+      ]
+    },
+    "memory:memory/2026-06-28.md:342:368": {
+      "key": "memory:memory/2026-06-28.md:342:368",
+      "path": "memory/2026-06-28.md",
+      "startLine": 342,
+      "endLine": 368,
+      "source": "memory",
+      "snippet": "- **Add Feature:** `scout → architect → builder → code_reviewer → smoke_test → deploy`. - Removed Bug Fix mode and consolidated Reviewer, Code Auditor, and Tester stages. - Per-stage AI model selection added to Pipeline page info cards (global defaults, inherited by new projects). - Default stage models set: - Scout: Claude Sonnet 4.6 - Architect: Claude Sonnet 4.6 - Designer: Claude Sonnet 4.6 - Builder: Kimi K2.7 Code - Code Reviewer: Claude Haiku 4.5 - Smoke Test: Kimi K2.7 Code - Security Auditor: Claude Opus 4.7 - Performance Auditor: Claude Sonnet 4.6 - Timeline model dropdowns removed from `dashboard.html`. - Default chat model restored to Kimi K2.7 Code (OpenRoute",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T18:38:22.200Z",
+      "lastRecalledAt": "2026-07-14T18:38:22.200Z",
+      "queryHashes": [
+        "3689f4ad2929"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "code-reviewer",
+        "smoke-test",
+        "per-stage",
+        "4.6",
+        "k2.7",
+        "4.5",
+        "4.7",
+        "dashboard.html"
+      ]
+    },
+    "memory:memory/2026-06-28.md:51:79": {
+      "key": "memory:memory/2026-06-28.md:51:79",
+      "path": "memory/2026-06-28.md",
+      "startLine": 51,
+      "endLine": 79,
+      "source": "memory",
+      "snippet": "- `hasAllowlist = Boolean(cfg.agents.defaults.models)` — **presence of `models` map creates implicit allowlist** - Builder: `buildAllowedModelSet({ cfg, catalog, defaultProvider, defaultModel, agentId })` in `model-selection-CAAffjMN.js` - Key normalization: `modelKey(provider, model)` in `model-selection-shared-BOD321LE.js` - **Suspected cause:** key normalization mismatch between how `openrouter/moonshotai/kimi-k2.7-code` is stored vs. how the explicit key is parsed/normalized at lookup time. Need to inspect `normalizeModelRef`/`parseModelRef` to confirm. ### OpenRouter free tier — DEAD All `:free` slugs return \"use paid version instead\": - `deepseek/deepseek-chat-v3.1:free` - `google/gem",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T18:46:14.806Z",
+      "lastRecalledAt": "2026-07-14T18:46:14.806Z",
+      "queryHashes": [
+        "1e65a2a2ecba"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "router",
+        "cfg.agents.defaults.models",
+        "model-selection-caaffjmn.js",
+        "parsed/normalized",
+        "deepseek/deepseek-chat-v3.1",
+        "google/gem",
+        "hasallowlist",
+        "boolean"
+      ]
+    },
+    "memory:memory/2026-07-14.md:118:145": {
+      "key": "memory:memory/2026-07-14.md:118:145",
+      "path": "memory/2026-07-14.md",
+      "startLine": 118,
+      "endLine": 145,
+      "source": "memory",
+      "snippet": "- Smoothstep easing on all movement curves - Streaming to FFmpeg (no in-memory frame buffer) **Results**: 70% pixels changed >3 units, 46% >10 units, max shift 255px. 3 seconds @ 30fps rendered in ~37 seconds (plus ~20s depth estimation). Output: 1080×1920, ~400KB H.264. ### File Locations - `/var/tmp/depthflow-test/parallax_render.py` — CPU renderer script - `/var/tmp/depthflow-test/output/cpu_parallax.mp4` — output video - `/tmp/agentado_depthflow.ipynb` — Colab notebook (deployed to `agentrocketman.com/agentado/depthflow-test.ipynb`) ### Outstanding - Chris hasn't responded to the v2 video yet (showed the visible parallax render) - Decision needed: CPU rendering (~1 min/photo, subtle e",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T18:46:14.806Z",
+      "lastRecalledAt": "2026-07-14T18:46:14.806Z",
+      "queryHashes": [
+        "1e65a2a2ecba"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "in-memory",
+        "h.264",
+        "tmp/agentado-depthflow.ipynb",
+        "min/photo",
+        "smoothstep",
+        "easing",
+        "all",
+        "movement"
+      ]
+    },
+    "memory:memory/2026-06-13.md:227:279": {
+      "key": "memory:memory/2026-06-13.md:227:279",
+      "path": "memory/2026-06-13.md",
+      "startLine": 227,
+      "endLine": 279,
+      "source": "memory",
+      "snippet": "- ✅ API endpoints live and tested - ✅ Image storage working - ✅ Airtable sync verified - ✅ Error handling implemented - ✅ CORS configured - ✅ Security validation in place - ✅ Documentation complete - ✅ End-to-end flow validated - ✅ Worker tracking implemented - ✅ Route optimization working --- ## What's Working NOW **Service Routing App** — https://agentrocketman.com/service-routing.html - ✅ Load map with all 8 addresses - ✅ Click checkbox → mark complete (green + checkmark) - ✅ Instant sync to Airtable - ✅ Update worker name → synced to all new records - ✅ Image upload buttons ready (saves to /bin-pics/) - ✅ Date picker for scheduling **Backend API** — /api/ folder on agentrocketman.com",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T18:46:14.806Z",
+      "lastRecalledAt": "2026-07-14T18:46:14.806Z",
+      "queryHashes": [
+        "1e65a2a2ecba"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "end-to-end",
+        "bin-pics",
+        "agentrocketman.com",
+        "api",
+        "endpoints",
+        "live",
+        "tested",
+        "image"
+      ]
+    },
+    "memory:memory/2026-06-16.md:25:60": {
+      "key": "memory:memory/2026-06-16.md:25:60",
+      "path": "memory/2026-06-16.md",
+      "startLine": 25,
+      "endLine": 60,
+      "source": "memory",
+      "snippet": "- Mobile: Logo left margin 20px, extra padding to prevent cropping on edges - All color refs updated: --teal → --green (CSS variables) ## Commits Made (in order) - 5371420: Full GetMyBin rebrand (logos, text, colors) - 8a2aa34 through fe15153: 20+ nav refinement commits - Final commit: fe15153 (Contact link removal + 20px logo margin) ## Current Live State - **Domain:** https://agentrocketman.com ✓ - **All features working:** Address search, booking, Stripe, email confirmations, Airtable integration - **Desktop & mobile:** Fully responsive, nav bar clean and professional - **Logo:** Prominent, well-positioned, no overflow issues ## Contact Page Navigation Update (Latest) - **File:** `/da",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T21:38:30.282Z",
+      "lastRecalledAt": "2026-07-14T21:38:30.282Z",
+      "queryHashes": [
+        "0d6a3d23b463"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "well-positioned",
+        "mobile",
+        "logo",
+        "left",
+        "margin",
+        "20px",
+        "extra"
+      ]
+    },
+    "memory:memory/2026-06-16.md:144:179": {
+      "key": "memory:memory/2026-06-16.md:144:179",
+      "path": "memory/2026-06-16.md",
+      "startLine": 144,
+      "endLine": 179,
+      "source": "memory",
+      "snippet": "- Mobile: Logo left margin 20px, extra padding to prevent cropping on edges - All color refs updated: --teal → --green (CSS variables) ## Commits Made (in order) - 5371420: Full GetMyBin rebrand (logos, text, colors) - 8a2aa34 through fe15153: 20+ nav refinement commits - Final commit: fe15153 (Contact link removal + 20px logo margin) ## Current Live State - **Domain:** https://agentrocketman.com ✓ - **All features working:** Address search, booking, Stripe, email confirmations, Airtable integration - **Desktop & mobile:** Fully responsive, nav bar clean and professional - **Logo:** Prominent, well-positioned, no overflow issues ## Contact Page Navigation Update (Latest) - **File:** `/da",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T21:38:30.282Z",
+      "lastRecalledAt": "2026-07-14T21:38:30.282Z",
+      "queryHashes": [
+        "0d6a3d23b463"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "agentrocketman.com",
+        "well-positioned",
+        "mobile",
+        "logo",
+        "left",
+        "margin",
+        "20px",
+        "extra"
+      ]
+    },
+    "memory:memory/2026-06-16.md:341:368": {
+      "key": "memory:memory/2026-06-16.md:341:368",
+      "path": "memory/2026-06-16.md",
+      "startLine": 341,
+      "endLine": 368,
+      "source": "memory",
+      "snippet": "- ✅ Applied to all main pages: - index.html ✅ - contact.html ✅ - privacy.html ✅ - terms.html ✅ **Pages with updated navigation:** ``` index.html Button: &nbsp;&nbsp;&nbsp;&nbsp;Get Started&nbsp;&nbsp;&nbsp;&nbsp; contact.html Button: &nbsp;&nbsp;&nbsp;&nbsp;Get Started&nbsp;&nbsp;&nbsp;&nbsp; privacy.html Button: &nbsp;&nbsp;&nbsp;&nbsp;Get Started&nbsp;&nbsp;&nbsp;&nbsp; terms.html Button: &nbsp;&nbsp;&nbsp;&nbsp;Get Started&nbsp;&nbsp;&nbsp;&nbsp; manage.html (no CTA button - cancel page) service-routing.html (simplified nav - service tracking page) index2.html (reference/clean rebuild version) ``` **Final Session Commits:**",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-07-14T21:38:30.282Z",
+      "lastRecalledAt": "2026-07-14T21:38:30.282Z",
+      "queryHashes": [
+        "0d6a3d23b463"
+      ],
+      "recallDays": [
+        "2026-07-14"
+      ],
+      "conceptTags": [
+        "index.html",
+        "contact.html",
+        "privacy.html",
+        "terms.html",
+        "manage.html",
+        "service-routing.html",
+        "index2.html",
+        "reference/clean"
       ]
     }
   }
