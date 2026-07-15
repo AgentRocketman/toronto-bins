@@ -1426,8 +1426,6 @@
     // --- MAIN PIXIJS RENDER PIPELINE ---
     // useMP4=false → MediaRecorder WebM fallback (Firefox/Safari)
     async function renderVideoPixi(imgs, style, canvas, onProgress, useMP4, info, addrMode, infoMode, subtitles, audioBuffer) {
-      // Force WebM path when voice-over audio is present (Mediabunny audio not yet supported)
-      if (audioBuffer) useMP4 = false;
       const cw = canvas.width, ch = canvas.height;
 
       // Init PixiJS
@@ -1571,7 +1569,21 @@
         const output = new MB.Output({ format: new MB.Mp4OutputFormat(), target: new MB.BufferTarget() });
         const vs = new MB.CanvasSource(renderCanvas, { codec: 'avc', bitrate: 8000000 });
         output.addVideoTrack(vs);
+
+        // Add voice-over audio track if provided
+        let audioSource = null;
+        if (audioBuffer) {
+          audioSource = new MB.AudioBufferSource({ codec: 'aac', bitrate: 128000 });
+          output.addAudioTrack(audioSource);
+        }
+
         await output.start();
+
+        // Feed the audio buffer to the encoder (blocks until encoding is queued)
+        if (audioSource) {
+          await audioSource.add(audioBuffer);
+        }
+
         videoOut = { type: 'mp4', source: vs, output };
       } else {
         const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm;codecs=vp8';
@@ -2001,7 +2013,6 @@
 
         // Generate voice-over audio if enabled and we have subtitles
         let audioBuffer = null;
-        let renderUseMP4 = useMP4;
         if (showVoiceOver && subtitles && subtitles.length > 0) {
           updateProgress('Generating voice-over...', 11);
           try {
@@ -2010,8 +2021,7 @@
               const voiceText = allPhrases.join('. ') + '.';
               const voiceId = $('voiceSelect').value;
               audioBuffer = await fetchTTS(voiceText, voiceId);
-              renderUseMP4 = false; // Force WebM: audio mixing not yet supported in Mediabunny MP4 path
-              console.log('Voice-over ready:', audioBuffer.duration.toFixed(1) + 's,', allPhrases.length, 'phrases, forcing WebM');
+              console.log('Voice-over ready:', audioBuffer.duration.toFixed(1) + 's,', allPhrases.length, 'phrases');
             }
           } catch (e) {
             console.warn('Voice-over generation failed, continuing without audio:', e.message);
@@ -2019,13 +2029,13 @@
           }
         }
 
-        updateProgress(renderUseMP4 ? 'Rendering MP4...' : 'Rendering WebM...', 10);
+        updateProgress(useMP4 ? 'Rendering MP4...' : 'Rendering WebM...', 10);
         const blob16x9 = await renderVideoPixi(imgs, style, c16x9,
-          pct => updateProgress(renderUseMP4 ? 'Rendering MP4...' : 'Rendering WebM...', pct), renderUseMP4,
+          pct => updateProgress(useMP4 ? 'Rendering MP4...' : 'Rendering WebM...', pct), useMP4,
           listingInfo, selectedAddressOverlay, selectedRealtorOverlay, subtitles, audioBuffer);
 
         updateProgress('Finalizing...', 93);
-        const ext = renderUseMP4 ? 'mp4' : 'webm';
+        const ext = useMP4 ? 'mp4' : 'webm';
         const url16x9 = URL.createObjectURL(blob16x9);
         resultVideo.src = url16x9;
         downloadBtn.href = url16x9;
@@ -2038,7 +2048,7 @@
           const c9x16 = document.createElement('canvas');
           c9x16.width = 1080; c9x16.height = 1920;
           const blob9x16 = await renderVideoPixi(imgs, style, c9x16,
-            pct => updateProgress('Rendering Reel...', 15 + pct*0.8), renderUseMP4,
+            pct => updateProgress('Rendering Reel...', 15 + pct*0.8), useMP4,
             listingInfo, selectedAddressOverlay, selectedRealtorOverlay, subtitles, audioBuffer);
           const url9x16 = URL.createObjectURL(blob9x16);
           tiktokResult.style.display = 'block';
