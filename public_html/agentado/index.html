@@ -2422,7 +2422,7 @@
     // Show realtor section on page load (always visible when upload zone is shown)
     function toggleRealtorSection() {
       // Always show the URL input — it's the primary way to import listings
-      realtorSection.classList.add('active');
+      document.getElementById('realtorSection').classList.add('active');
     }
 
     async function fetchRealtorPhotos() {
