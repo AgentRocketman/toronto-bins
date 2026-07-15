@@ -2421,7 +2421,8 @@
 
     // Show realtor section on page load (always visible when upload zone is shown)
     function toggleRealtorSection() {
-      realtorSection.classList.toggle('active', photos.length < MIN_PHOTOS);
+      // Always show the URL input — it's the primary way to import listings
+      realtorSection.classList.add('active');
     }
 
     async function fetchRealtorPhotos() {
