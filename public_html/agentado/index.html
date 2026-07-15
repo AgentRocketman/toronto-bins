@@ -279,62 +279,6 @@
     </div>
 
     <div class="options" id="options">
-      <!-- STYLE PRESETS -->
-      <div class="option-group">
-        <label>🎬 Style Preset</label>
-        <div class="option-row" id="styleOptions">
-          <div class="option-pill selected" data-style="cinematic">
-            <span class="pill-icon">🎥</span><span class="pill-label">Cinematic</span>
-          </div>
-          <div class="option-pill" data-style="dramatic">
-            <span class="pill-icon">🎭</span><span class="pill-label">Dramatic</span>
-          </div>
-          <div class="option-pill" data-style="energetic">
-            <span class="pill-icon">⚡</span><span class="pill-label">Energetic</span>
-          </div>
-          <div class="option-pill" data-style="glide">
-            <span class="pill-icon">🛝</span><span class="pill-label">Glide</span>
-          </div>
-          <div class="option-pill" data-style="vintage">
-            <span class="pill-icon">📷</span><span class="pill-label">Vintage</span>
-          </div>
-          <div class="option-pill" data-style="smooth">
-            <span class="pill-icon">🌊</span><span class="pill-label">Smooth</span>
-          </div>
-          <div class="option-pill" data-style="dynamic">
-            <span class="pill-icon">🎯</span><span class="pill-label">Dynamic</span>
-          </div>
-          <div class="option-pill" data-style="auto">
-            <span class="pill-icon">🎬</span><span class="pill-label">Auto</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- TRANSITION TYPE -->
-      <div class="option-group">
-        <label>🔄 Transition Between Photos</label>
-        <div class="option-row" id="transitionOptions">
-          <div class="option-pill selected" data-trans="whippan">
-            <span class="pill-label">Whip Pan</span>
-          </div>
-          <div class="option-pill" data-trans="snapzoom">
-            <span class="pill-label">Snap Zoom</span>
-          </div>
-          <div class="option-pill" data-trans="spinpop">
-            <span class="pill-label">Spin Pop</span>
-          </div>
-          <div class="option-pill" data-trans="bounce">
-            <span class="pill-label">Bounce</span>
-          </div>
-          <div class="option-pill" data-trans="flash">
-            <span class="pill-label">Flash</span>
-          </div>
-          <div class="option-pill" data-trans="random">
-            <span class="pill-label">🎲 Random</span>
-          </div>
-        </div>
-      </div>
-
       <!-- FRAMING -->
       <div class="option-group">
         <label>🖼 Picture Framing</label>
@@ -371,31 +315,6 @@
           </div>
           <div class="option-pill" data-frame="slide">
             <span class="pill-label">⬅️ Slide</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- READY COMBOS -->
-      <div class="option-group">
-        <label>🎯 Quick Combo Presets</label>
-        <div class="option-row" id="comboOptions">
-          <div class="option-pill" data-combo="tiktok">
-            <span class="pill-icon">🏠</span><span class="pill-label">TikTok Tour</span>
-          </div>
-          <div class="option-pill" data-combo="luxury">
-            <span class="pill-icon">💎</span><span class="pill-label">Luxury</span>
-          </div>
-          <div class="option-pill" data-combo="brand">
-            <span class="pill-icon">🎬</span><span class="pill-label">Brand Promo</span>
-          </div>
-          <div class="option-pill" data-combo="hyper">
-            <span class="pill-icon">🔥</span><span class="pill-label">Hyper Reel</span>
-          </div>
-          <div class="option-pill" data-combo="dream">
-            <span class="pill-icon">✨</span><span class="pill-label">Dreamy</span>
-          </div>
-          <div class="option-pill" data-combo="wildcard">
-            <span class="pill-icon">🎲</span><span class="pill-label">Wildcard</span>
           </div>
         </div>
       </div>
@@ -470,7 +389,7 @@
 
   <script>
     const MIN_PHOTOS = 5;
-    let photos = [], selectedStyle = 'cinematic', selectedTransition = 'whippan', clipDuration = 3, includeTikTok = false;
+    let photos = [], selectedStyle = 'auto', clipDuration = 3, includeTikTok = false;
     let selectedFraming = 'letterbox', selectedAddressOverlay = 'both', selectedRealtorOverlay = 'both';
     let blurredBgCache = {}; // keyed by image index for Blur Fill mode
     let reflectBgCache = {}; // for Reflect mode
@@ -571,25 +490,10 @@
     });
 
     // --- SELECTIONS ---
-    document.querySelectorAll('#styleOptions .option-pill').forEach(p => {
-      p.addEventListener('click', () => {
-        document.querySelectorAll('#styleOptions .option-pill').forEach(x => x.classList.remove('selected'));
-        p.classList.add('selected'); selectedStyle = p.dataset.style;
-        clearComboHighlight();
-      });
-    });
-    document.querySelectorAll('#transitionOptions .option-pill').forEach(p => {
-      p.addEventListener('click', () => {
-        document.querySelectorAll('#transitionOptions .option-pill').forEach(x => x.classList.remove('selected'));
-        p.classList.add('selected'); selectedTransition = p.dataset.trans;
-        clearComboHighlight();
-      });
-    });
     document.querySelectorAll('#durationOptions .option-pill').forEach(p => {
       p.addEventListener('click', () => {
         document.querySelectorAll('#durationOptions .option-pill').forEach(x => x.classList.remove('selected'));
         p.classList.add('selected'); clipDuration = parseInt(p.dataset.dur);
-        clearComboHighlight();
       });
     });
 
@@ -690,37 +594,6 @@
       });
     }
 
-    // --- COMBOS --- map name → [style, transition, duration]
-    const COMBOS = {
-      tiktok:   ['energetic', 'whippan',  3],
-      luxury:   ['dramatic',  'flash',    4],
-      brand:    ['cinematic', 'spinpop',  4],
-      hyper:    ['energetic', 'bounce',   3],
-      dream:    ['smooth',    'snapzoom', 5],
-      wildcard: ['cinematic', 'random',   3],
-    };
-    const COMBO_STYLES = {}; for (const [k,v] of Object.entries(COMBOS)) COMBO_STYLES[k] = v[0];
-
-    function clearComboHighlight() {
-      document.querySelectorAll('#comboOptions .option-pill').forEach(p => p.classList.remove('selected'));
-    }
-
-    document.querySelectorAll('#comboOptions .option-pill').forEach(p => {
-      p.addEventListener('click', () => {
-        const [sty, trans, dur] = COMBOS[p.dataset.combo];
-        // Apply style
-        document.querySelectorAll('#styleOptions .option-pill').forEach(x => { x.classList.remove('selected'); if (x.dataset.style === sty) x.classList.add('selected'); });
-        selectedStyle = sty;
-        // Apply transition
-        document.querySelectorAll('#transitionOptions .option-pill').forEach(x => { x.classList.remove('selected'); if (x.dataset.trans === trans) x.classList.add('selected'); });
-        selectedTransition = trans;
-        // Apply duration
-        document.querySelectorAll('#durationOptions .option-pill').forEach(x => { x.classList.remove('selected'); if (parseInt(x.dataset.dur) === dur) x.classList.add('selected'); });
-        clipDuration = dur;
-        // Highlight combo
-        clearComboHighlight(); p.classList.add('selected');
-      });
-    });
     function toggleTikTok() { includeTikTok = !includeTikTok; $('tiktokToggle').classList.toggle('on', includeTikTok); }
 
     function showError(msg) { errorBanner.textContent = msg; errorBanner.classList.add('active'); progressCard.classList.remove('active'); generateBtn.disabled = false; }
@@ -1576,11 +1449,6 @@
       let totalFrames = 0;
       for (let c = 0; c < totalClips; c++) totalFrames += clipLen[c];
 
-      // Random transition pre-generation
-      const pairTransitions = [];
-      for (let c = 0; c < totalClips - 1; c++)
-        pairTransitions.push(ALL_TRANSITIONS[Math.floor(Math.random() * ALL_TRANSITIONS.length)]);
-
       // Video output setup
 
       // Pre-render first frame so canvas isn't black when capture starts
@@ -1702,7 +1570,7 @@
         } else if (isTransition) {
           const transProgress = (frameInClip - (clen - tf)) / tf;
           // Per-clip transition type (auto/dynamic mode may override)
-          let transType = selectedTransition === 'random' ? pairTransitions[clipIdx] : selectedTransition;
+          let transType = 'crossfade'; // fallback, overridden by dynamicMotions below
           if (dynamicMotions && dynamicMotions[clipIdx] && dynamicMotions[clipIdx].transition) {
             transType = dynamicMotions[clipIdx].transition;
           }
