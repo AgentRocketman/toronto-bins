@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = json_decode(file_get_contents('php://input'), true);
 $text    = trim($input['text'] ?? '');
-$voiceId = trim($input['voice_id'] ?? 'pNInz6obpgDQGcFmaJgB'); // default: Adam
+$voiceId = trim($input['voice_id'] ?? '21m00Tcm4TlvDq8ikWAM'); // default: Rachel
 
 if (!$text || strlen($text) < 1) {
     http_response_code(400);
@@ -31,7 +31,7 @@ if (!$text || strlen($text) < 1) {
 require_once __DIR__ . '/../../api/config.php'; // for path consistency
 
 // ElevenLabs API key (hardcoded — not in shared config to avoid accidental exposure)
-define('ELEVENLABS_API_KEY', 'sk_2d92db8936ed1e04ca0ac9bbd236e2e540c0c74d49fea9ec');
+define('ELEVENLABS_API_KEY', 'sk_1b300ca925e3778885f4a8595960423130fe660c3e2d5082');
 
 // Cache: store in a temp dir keyed by md5(text + voice_id)
 $cacheDir = __DIR__ . '/../output/tts-cache';
@@ -60,7 +60,7 @@ curl_setopt_array($ch, [
     ],
     CURLOPT_POSTFIELDS => json_encode([
         'text'               => $text,
-        'model_id'           => 'eleven_turbo_v2',
+        'model_id'           => 'eleven_multilingual_v2',
         'voice_settings'     => [
             'stability'          => 0.50,
             'similarity_boost'   => 0.75,
