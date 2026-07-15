@@ -146,7 +146,7 @@
     .progress-card.active { display: block; }
     .progress-bar-wrap { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin: 16px 0; overflow: hidden; }
     .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-glow)); border-radius: 3px; transition: width 0.3s; width: 0%; }
-    .progress-card .status-text { font-weight: 600; margin-bottom: 4px; }
+    .progress-card .status-text { font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; justify-content: center; }
     .progress-card .status-sub { color: var(--muted); font-size: 0.85rem; }
 
     .result-card {
@@ -178,7 +178,13 @@
     .realtor-row input:focus { outline: none; border-color: var(--accent); }
     .realtor-row button { padding: 10px 20px; background: var(--accent); color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; white-space: nowrap; }
     .realtor-row button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .realtor-status { margin-top: 8px; font-size: 0.8rem; }
+    .realtor-status { margin-top: 8px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
+    .realtor-status .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .listing-info {
       display: none; margin-top: 16px; background: var(--surface);
@@ -278,91 +284,12 @@
       </div>
     </div>
 
-    <div class="options" id="options">
-      <!-- FRAMING -->
-      <div class="option-group">
-        <label>🖼 Picture Framing</label>
-        <div class="option-row" id="framingOptions">
-          <div class="option-pill selected" data-frame="letterbox">
-            <span class="pill-label">📺 Letterbox</span>
-          </div>
-          <div class="option-pill" data-frame="blurfill">
-            <span class="pill-label">✨ Blur Fill</span>
-          </div>
-          <div class="option-pill" data-frame="fill">
-            <span class="pill-label">🔍 Fill</span>
-          </div>
-          <div class="option-pill" data-frame="gradient">
-            <span class="pill-label">🌓 Gradient</span>
-          </div>
-          <div class="option-pill" data-frame="vignette">
-            <span class="pill-label">🔘 Vignette Fill</span>
-          </div>
-          <div class="option-pill" data-frame="reflect">
-            <span class="pill-label">🪞 Reflect</span>
-          </div>
-          <div class="option-pill" data-frame="motionblur">
-            <span class="pill-label">💨 Motion Blur</span>
-          </div>
-          <div class="option-pill" data-frame="pano">
-            <span class="pill-label">🎬 Pano Pan</span>
-          </div>
-          <div class="option-pill" data-frame="smart">
-            <span class="pill-label">🎯 Smart Center</span>
-          </div>
-          <div class="option-pill" data-frame="split">
-            <span class="pill-label">✂️ Split</span>
-          </div>
-          <div class="option-pill" data-frame="slide">
-            <span class="pill-label">⬅️ Slide</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ADDRESS OVERLAY -->
-      <div class="option-group" id="addressOverlayGroup" style="display:none;">
-        <label>📍 Address Overlay</label>
-        <div class="option-row" id="addressOverlayOptions">
-          <div class="option-pill" data-overlay="none"><span class="pill-label">🚫 None</span></div>
-          <div class="option-pill selected" data-overlay="both"><span class="pill-label">✨ Full</span></div>
-          <div class="option-pill" data-overlay="intro"><span class="pill-label">📋 Intro Only</span></div>
-          <div class="option-pill" data-overlay="bar"><span class="pill-label">📌 Bar Only</span></div>
-        </div>
-      </div>
-
-      <!-- REALTOR INFO OVERLAY -->
-      <div class="option-group" id="realtorOverlayGroup" style="display:none;">
-        <label>🏠 Realtor Info Overlay</label>
-        <div class="option-row" id="realtorOverlayOptions">
-          <div class="option-pill" data-overlay="none"><span class="pill-label">🚫 None</span></div>
-          <div class="option-pill selected" data-overlay="both"><span class="pill-label">✨ Full</span></div>
-          <div class="option-pill" data-overlay="intro"><span class="pill-label">📋 Intro Only</span></div>
-          <div class="option-pill" data-overlay="bar"><span class="pill-label">📌 Bar Only</span></div>
-        </div>
-      </div>
-
-      <!-- DURATION -->
-      <div class="option-group">
-        <label>⏱ Clip Duration</label>
-        <div class="option-row" id="durationOptions">
-          <div class="option-pill selected" data-dur="3"><span class="pill-label">3 sec</span></div>
-          <div class="option-pill" data-dur="4"><span class="pill-label">4 sec</span></div>
-          <div class="option-pill" data-dur="5"><span class="pill-label">5 sec</span></div>
-        </div>
-      </div>
-
-      <div class="toggle-row">
-        <span>📱 TikTok / Reel version too (9:16)</span>
-        <div class="toggle" id="tiktokToggle" onclick="toggleTikTok()"></div>
-      </div>
-    </div>
-
     <button class="generate-btn" id="generateBtn" disabled onclick="generate()">
       ✨ Generate Walkthrough
     </button>
 
     <div class="progress-card" id="progressCard">
-      <div class="status-text" id="statusText">Rendering...</div>
+      <div class="status-text" id="statusText"><span class="spinner"></span>Rendering...</div>
       <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
       <div class="status-sub" id="statusSub">Preparing...</div>
     </div>
@@ -489,35 +416,8 @@
       dragSrcId = null;
     });
 
-    // --- SELECTIONS ---
-    document.querySelectorAll('#durationOptions .option-pill').forEach(p => {
-      p.addEventListener('click', () => {
-        document.querySelectorAll('#durationOptions .option-pill').forEach(x => x.classList.remove('selected'));
-        p.classList.add('selected'); clipDuration = parseInt(p.dataset.dur);
-      });
-    });
-
-    // --- FRAMING SELECTION ---
-    document.querySelectorAll('#framingOptions .option-pill').forEach(p => {
-      p.addEventListener('click', () => {
-        document.querySelectorAll('#framingOptions .option-pill').forEach(x => x.classList.remove('selected'));
-        p.classList.add('selected'); selectedFraming = p.dataset.frame;
-      });
-    });
-
-    // --- OVERLAY SELECTIONS ---
-    document.querySelectorAll('#addressOverlayOptions .option-pill').forEach(p => {
-      p.addEventListener('click', () => {
-        document.querySelectorAll('#addressOverlayOptions .option-pill').forEach(x => x.classList.remove('selected'));
-        p.classList.add('selected'); selectedAddressOverlay = p.dataset.overlay;
-      });
-    });
-    document.querySelectorAll('#realtorOverlayOptions .option-pill').forEach(p => {
-      p.addEventListener('click', () => {
-        document.querySelectorAll('#realtorOverlayOptions .option-pill').forEach(x => x.classList.remove('selected'));
-        p.classList.add('selected'); selectedRealtorOverlay = p.dataset.overlay;
-      });
-    });
+    // All animation/framing/duration settings are hardcoded in auto mode.
+    // No UI selections needed.
 
     // --- PRE-RENDER BLURRED BACKGROUNDS (for Blur Fill mode) ---
     function preRenderBlurred(imgs) {
@@ -594,10 +494,15 @@
       });
     }
 
-    function toggleTikTok() { includeTikTok = !includeTikTok; $('tiktokToggle').classList.toggle('on', includeTikTok); }
 
     function showError(msg) { errorBanner.textContent = msg; errorBanner.classList.add('active'); progressCard.classList.remove('active'); generateBtn.disabled = false; }
-    function updateProgress(text, pct) { progressCard.classList.add('active'); statusText.textContent = text; statusSub.textContent = `${Math.round(pct)}%`; progressBar.style.width = `${pct}%`; }
+    function updateProgress(text, pct) {
+      progressCard.classList.add('active');
+      const spinner = text === 'Done!' ? '✅' : '<span class="spinner"></span>';
+      statusText.innerHTML = spinner + ' ' + text;
+      statusSub.textContent = `${Math.round(pct)}%`;
+      progressBar.style.width = `${pct}%`;
+    }
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
     function loadImage(url) { return new Promise((resolve, reject) => { const img = new Image(); img.onload = () => resolve(img); img.onerror = () => reject(new Error('Failed to load image')); img.src = url; }); }
     function ease(t, curve) {
@@ -1756,7 +1661,7 @@
       if (selectedStyle === 'auto') { savedFraming = selectedFraming; selectedFraming = 'letterbox'; }
 
       try {
-        updateProgress('Loading images...', 5);
+        updateProgress('Loading listing info...', 5);
         const imgs = await Promise.all(photos.map(p => loadImage(p.url)));
 
         // Dynamic motion choreography (analyzes each image, assigns best-fit animation)
@@ -1903,7 +1808,7 @@
       }
 
       realtorFetchBtn.disabled = true;
-      realtorStatus.textContent = 'Fetching photos...';
+      realtorStatus.innerHTML = '<span class="spinner"></span> Loading listing info...';
       realtorStatus.style.color = 'var(--muted)';
 
       try {
@@ -2004,12 +1909,6 @@
         $('editBrokerageAddr').value = listingInfo.brokerage.address || '';
       }
       $('listingInfo').classList.add('active');
-      // Show overlay options since we have listing data
-      $('addressOverlayGroup').style.display = 'block';
-      // Always show realtor overlay — agent info is scraped independently
-      if (listingInfo.agent && listingInfo.agent.name) {
-        $('realtorOverlayGroup').style.display = 'block';
-      }
     }
 
     // Sync editable listing fields back to listingInfo on change
@@ -2033,8 +1932,6 @@
       errorBanner.classList.remove('active'); clearAll(); generateBtn.disabled = true;
       listingInfo = null;
       $('listingInfo').classList.remove('active');
-      $('addressOverlayGroup').style.display = 'none';
-      $('realtorOverlayGroup').style.display = 'none';
       // Clear editable inputs
       ['editPrice','editAddr','editDesc','editAgentName','editAgentRole','editAgentPhone','editAgentWebsite','editBrokerageName','editBrokerageAddr'].forEach(id => { $(id).value = ''; });
       $('agentPhoto').src = ''; $('agentPhoto').style.display = 'none';
