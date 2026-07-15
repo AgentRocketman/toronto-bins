@@ -329,8 +329,17 @@
       </div>
 
       <div class="toggle-row">
-        <span>🎵 Background music <span class="soon-tag">soon</span></span>
+        <span>🎵 Background music</span>
         <div class="toggle" id="togMusic" onclick="toggleMusic()"></div>
+      </div>
+      <div class="voice-selector" id="musicSelector" style="display:none">
+        <select id="musicSelect" onchange="onMusicChange()">
+          <option value="elegant-piano">🎹 Elegant Piano — warm, sophisticated</option>
+          <option value="upbeat-modern">🎸 Upbeat Modern — bright &amp; fresh</option>
+          <option value="chill-ambient">🌿 Chill Ambient — relaxed atmosphere</option>
+          <option value="cinematic">🎬 Cinematic — sweeping &amp; grand</option>
+          <option value="none">🔇 No Music</option>
+        </select>
       </div>
 
       <div class="toggle-row">
@@ -407,7 +416,8 @@
     function togglePriceBar() { showPriceBar = !showPriceBar; $('togPriceBar').classList.toggle('on', showPriceBar); syncOverlayModes(); }
     function toggleContactSlide() { showContactSlide = !showContactSlide; $('togContactSlide').classList.toggle('on', showContactSlide); syncOverlayModes(); }
     function toggleSubtitles() { showSubtitles = !showSubtitles; $('togSubtitles').classList.toggle('on', showSubtitles); }
-    function toggleMusic() { showMusic = !showMusic; $('togMusic').classList.toggle('on', showMusic); }
+    function toggleMusic() { showMusic = !showMusic; $('togMusic').classList.toggle('on', showMusic); $('musicSelector').style.display = showMusic ? 'block' : 'none'; }
+    function onMusicChange() {} // no-op — just tracks user selection
     function toggleVoice() {
       showVoiceOver = !showVoiceOver;
       $('togVoice').classList.toggle('on', showVoiceOver);
@@ -1361,6 +1371,57 @@
       return audioBuffer;
     }
 
+// --- BACKGROUND MUSIC ---
+    // Music track manifest — MP3 files hosted statically on the server
+    const MUSIC_TRACKS = {
+      'elegant-piano': { file: '/agentado/music/elegant-piano.mp3', label: 'Elegant Piano' },
+      'upbeat-modern': { file: '/agentado/music/upbeat-modern.mp3', label: 'Upbeat Modern' },
+      'chill-ambient': { file: '/agentado/music/chill-ambient.mp3', label: 'Chill Ambient' },
+      'cinematic':   { file: '/agentado/music/cinematic.mp3',   label: 'Cinematic' },
+    };
+
+    // Fetch a music track, decode to AudioBuffer
+    async function fetchMusic(musicId) {
+      const track = MUSIC_TRACKS[musicId];
+      if (!track) return null;
+      const resp = await fetch(track.file);
+      if (!resp.ok) throw new Error(`Music fetch failed: ${resp.status}`);
+      const arrayBuffer = await resp.arrayBuffer();
+      const audioCtx = new AudioContext();
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+      await audioCtx.close();
+      return audioBuffer;
+    }
+
+    // Mix voice-over + background music into a single AudioBuffer (voice full vol, music ducked)
+    async function mixAudio(voiceBuffer, musicBuffer, musicGain = 0.12) {
+      const sr = voiceBuffer.sampleRate;
+      const voiceLen = voiceBuffer.length;
+      const musicLen = Math.min(musicBuffer.length, voiceLen); // trim music to voice length
+      const length = voiceLen; // output matches voice duration
+      const channels = Math.min(voiceBuffer.numberOfChannels, musicBuffer.numberOfChannels, 2);
+
+      const offline = new OfflineAudioContext(channels, length, sr);
+
+      // Voice — full volume
+      const voiceSrc = offline.createBufferSource();
+      voiceSrc.buffer = voiceBuffer;
+      voiceSrc.connect(offline.destination);
+
+      // Music — ducked, trimmed to voice length
+      const musicSrc = offline.createBufferSource();
+      musicSrc.buffer = musicBuffer;
+      const gainNode = offline.createGain();
+      gainNode.gain.value = musicGain;
+      musicSrc.connect(gainNode);
+      gainNode.connect(offline.destination);
+
+      voiceSrc.start(0);
+      musicSrc.start(0, 0, voiceLen / sr);
+
+      return await offline.startRendering();
+    }
+
 // --- SUBTITLE GENERATION ---
     // Calls AI rewrite endpoint to transform raw description → engaging narrative phrases.
     // Returns flat array of strings (no per-photo grouping). Falls back to raw text chunking.
@@ -2064,6 +2125,29 @@
           } catch (e) {
             console.warn('Voice-over generation failed, continuing without audio:', e.message);
             audioBuffer = null;
+          }
+        }
+
+        // Fetch and mix background music if enabled
+        const selectedMusic = $('musicSelect').value;
+        if (showMusic && selectedMusic !== 'none') {
+          updateProgress('Mixing background music...', 12);
+          try {
+            const musicBuffer = await fetchMusic(selectedMusic);
+            if (musicBuffer && audioBuffer) {
+              // Voice + music: mix together with music ducked
+              audioBuffer = await mixAudio(audioBuffer, musicBuffer);
+              console.log('Music mixed:', selectedMusic, '→', audioBuffer.duration.toFixed(1) + 's');
+            } else if (musicBuffer && phrases) {
+              // Music only (no voice-over): just use the music track
+              // Trim to estimated video duration
+              audioBuffer = musicBuffer;
+              console.log('Music only (no voice-over):', selectedMusic, '→', audioBuffer.duration.toFixed(1) + 's');
+            } else if (musicBuffer) {
+              audioBuffer = musicBuffer;
+            }
+          } catch (e) {
+            console.warn('Background music failed, continuing without:', e.message);
           }
         }
 
