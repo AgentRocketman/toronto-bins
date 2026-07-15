@@ -311,7 +311,7 @@
       </div>
 
       <div class="toggle-row">
-        <span>💬 AI video-optimized subtitles <span class="soon-tag">soon</span></span>
+        <span>💬 AI video-optimized subtitles</span>
         <div class="toggle" id="togSubtitles" onclick="toggleSubtitles()"></div>
       </div>
 
@@ -1316,9 +1316,50 @@
       return lines;
     }
 
+// --- SUBTITLE GENERATION ---
+    function generateSubtitles(description, numPhotos) {
+      if (!description || !description.trim()) return null;
+
+      // Clean and break into natural sentences
+      const text = description.replace(/\s+/g, ' ').trim();
+      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).map(s => s.trim());
+      if (sentences.length === 0) return null;
+
+      // Break each sentence into 3-4 word chunks (deterministic: 3 words per chunk)
+      const allChunks = [];
+      for (const sentence of sentences) {
+        const words = sentence.split(/\s+/);
+        let i = 0;
+        while (i < words.length) {
+          // Take 3 words normally, 4 for the final chunk of the sentence if it fits better
+          const remaining = words.length - i;
+          const chunkSize = (remaining >= 3 && remaining <= 4) ? remaining : Math.min(3, remaining);
+          allChunks.push(words.slice(i, i + chunkSize).join(' '));
+          i += chunkSize;
+        }
+      }
+
+      if (allChunks.length === 0) return null;
+
+      // Distribute chunks across photos as evenly as possible
+      const chunksPerPhoto = Math.max(1, Math.ceil(allChunks.length / numPhotos));
+      const subtitles = [];
+      for (let p = 0; p < numPhotos; p++) {
+        const start = p * chunksPerPhoto;
+        const end = Math.min(start + chunksPerPhoto, allChunks.length);
+        if (start < allChunks.length) {
+          subtitles.push(allChunks.slice(start, end));
+        } else {
+          subtitles.push([]);
+        }
+      }
+      return subtitles;
+    }
+
+
     // --- MAIN PIXIJS RENDER PIPELINE ---
     // useMP4=false → MediaRecorder WebM fallback (Firefox/Safari)
-    async function renderVideoPixi(imgs, style, canvas, onProgress, useMP4, info, addrMode, infoMode) {
+    async function renderVideoPixi(imgs, style, canvas, onProgress, useMP4, info, addrMode, infoMode, subtitles) {
       const cw = canvas.width, ch = canvas.height;
 
       // Init PixiJS
@@ -1392,10 +1433,36 @@
       if (riIntro) { realtorIntro = makeRealtorIntro(info, cw, ch); if (realtorIntro) { realtorIntro.alpha = 0; app.stage.addChild(realtorIntro); } }
       if (addrBar || riBar) { bottomBar = makeBottomBar(info, cw, ch); if (bottomBar) { bottomBar.alpha = 0; app.stage.addChild(bottomBar); } }
 
+      // Subtitle text sprite (PixiJS Text, positioned bottom-center)
+      let subtitleText = null;
+      if (subtitles) {
+        const subFontSize = Math.round(ch * 0.028);
+        subtitleText = new PIXI.Text('', {
+          fontFamily: '-apple-system, system-ui, sans-serif',
+          fontSize: subFontSize,
+          fontWeight: '600',
+          fill: '#ffffff',
+          stroke: '#000000',
+          strokeThickness: Math.round(subFontSize * 0.12),
+          dropShadow: true,
+          dropShadowColor: '#000000',
+          dropShadowBlur: 6,
+          dropShadowDistance: 2,
+          align: 'center',
+          wordWrap: true,
+          wordWrapWidth: cw * 0.8,
+        });
+        subtitleText.anchor.set(0.5, 0.5);
+        subtitleText.x = cw / 2;
+        subtitleText.y = ch * 0.78;
+        subtitleText.alpha = 0;
+        app.stage.addChild(subtitleText);
+      }
+
       // End card (agent photo + full contact info, shown after all photo clips)
       const END_CARD_DUR = 4.0;
       let endCard = null;
-      if (info && info.agent && info.agent.name) {
+      if (info && info.agent && info.agent.name && infoMode !== 'none') {
         // Proxy agent photo through img-proxy to avoid CORS issues with canvas
         const proxyBase = location.origin + '/api/img-proxy.php?u=';
         const infoProxy = {...info, agent: {...info.agent,
@@ -1688,6 +1755,34 @@
           }
         }
 
+        // --- Subtitle rendering ---
+        if (subtitleText && subtitles && clipIdx < photoCount) {
+          const clipChunks = subtitles[clipIdx];
+          if (clipChunks && clipChunks.length > 0) {
+            const nChunks = clipChunks.length;
+            const chunkDuration = clen / nChunks;
+            const chunkIdx = Math.min(Math.floor(frameInClip / chunkDuration), nChunks - 1);
+            const chunkLocal = (frameInClip - chunkIdx * chunkDuration) / chunkDuration; // 0..1
+            const FADE_IN = 0.18, FADE_OUT = 0.22;
+            let chunkAlpha = 1;
+            if (chunkLocal < FADE_IN) chunkAlpha = chunkLocal / FADE_IN;
+            else if (chunkLocal > 1 - FADE_OUT) chunkAlpha = (1 - chunkLocal) / FADE_OUT;
+
+            // Update text only on first frame of each chunk to avoid repeated setText
+            let prevChunk = subtitleText._lastChunk || -1;
+            if (chunkIdx !== prevChunk || frameInClip === 0) {
+              subtitleText.text = clipChunks[chunkIdx];
+              subtitleText._lastChunk = chunkIdx;
+            }
+            subtitleText.alpha = chunkAlpha;
+            subtitleText.visible = true;
+          } else {
+            subtitleText.visible = false;
+          }
+        } else if (subtitleText) {
+          subtitleText.visible = false;
+        }
+
         // Render!
         app.renderer.render(app.stage);
 
@@ -1819,10 +1914,13 @@
         const c16x9 = document.createElement('canvas');
         c16x9.width = 1920; c16x9.height = 1080;
 
+        updateProgress('Generating subtitles...', 10);
+        const subtitles = showSubtitles ? generateSubtitles(listingInfo?.description || '', imgs.length) : null;
+
         updateProgress(useMP4 ? 'Rendering MP4...' : 'Rendering WebM...', 10);
         const blob16x9 = await renderVideoPixi(imgs, style, c16x9,
           pct => updateProgress(useMP4 ? 'Rendering MP4...' : 'Rendering WebM...', pct), useMP4,
-          listingInfo, selectedAddressOverlay, selectedRealtorOverlay);
+          listingInfo, selectedAddressOverlay, selectedRealtorOverlay, subtitles);
 
         updateProgress('Finalizing...', 93);
         const ext = useMP4 ? 'mp4' : 'webm';
@@ -1839,7 +1937,7 @@
           c9x16.width = 1080; c9x16.height = 1920;
           const blob9x16 = await renderVideoPixi(imgs, style, c9x16,
             pct => updateProgress('Rendering Reel...', 15 + pct*0.8), useMP4,
-            listingInfo, selectedAddressOverlay, selectedRealtorOverlay);
+            listingInfo, selectedAddressOverlay, selectedRealtorOverlay, subtitles);
           const url9x16 = URL.createObjectURL(blob9x16);
           tiktokResult.style.display = 'block';
           tiktokVideo.src = url9x16;
