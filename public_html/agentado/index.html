@@ -1320,38 +1320,59 @@
     }
 
 // --- SUBTITLE GENERATION ---
-    function generateSubtitles(description, numPhotos) {
+    // Calls AI rewrite endpoint to transform raw description → engaging subtitle phrases,
+    // then distributes them across photos. Falls back to raw text chunking on error.
+    async function generateSubtitles(description, numPhotos) {
       if (!description || !description.trim()) return null;
 
-      // Clean and break into natural sentences
-      const text = description.replace(/\s+/g, ' ').trim();
-      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).map(s => s.trim());
-      if (sentences.length === 0) return null;
+      let phrases = null;
 
-      // Break each sentence into 3-4 word chunks (deterministic: 3 words per chunk)
-      const allChunks = [];
-      for (const sentence of sentences) {
-        const words = sentence.split(/\s+/);
-        let i = 0;
-        while (i < words.length) {
-          // Take 3 words normally, 4 for the final chunk of the sentence if it fits better
-          const remaining = words.length - i;
-          const chunkSize = (remaining >= 3 && remaining <= 4) ? remaining : Math.min(3, remaining);
-          allChunks.push(words.slice(i, i + chunkSize).join(' '));
-          i += chunkSize;
+      // Try AI rewrite first
+      try {
+        const resp = await fetch('/agentado/api/subtitles-rewrite.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ description: description.trim() }),
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.phrases && Array.isArray(data.phrases) && data.phrases.length > 0) {
+            phrases = data.phrases;
+          }
+        }
+      } catch (e) {
+        // Silently fall back to raw text
+        console.warn('Subtitle AI rewrite failed, using raw description:', e.message);
+      }
+
+      // Fallback: split raw description if AI didn't produce phrases
+      if (!phrases) {
+        const text = description.replace(/\s+/g, ' ').trim();
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).map(s => s.trim());
+        if (sentences.length === 0) return null;
+        phrases = [];
+        for (const sentence of sentences) {
+          const words = sentence.split(/\s+/);
+          let i = 0;
+          while (i < words.length) {
+            const remaining = words.length - i;
+            const chunkSize = (remaining >= 3 && remaining <= 4) ? remaining : Math.min(3, remaining);
+            phrases.push(words.slice(i, i + chunkSize).join(' '));
+            i += chunkSize;
+          }
         }
       }
 
-      if (allChunks.length === 0) return null;
+      if (!phrases || phrases.length === 0) return null;
 
-      // Distribute chunks across photos as evenly as possible
-      const chunksPerPhoto = Math.max(1, Math.ceil(allChunks.length / numPhotos));
+      // Distribute phrases across photos as evenly as possible
+      const chunksPerPhoto = Math.max(1, Math.ceil(phrases.length / numPhotos));
       const subtitles = [];
       for (let p = 0; p < numPhotos; p++) {
         const start = p * chunksPerPhoto;
-        const end = Math.min(start + chunksPerPhoto, allChunks.length);
-        if (start < allChunks.length) {
-          subtitles.push(allChunks.slice(start, end));
+        const end = Math.min(start + chunksPerPhoto, phrases.length);
+        if (start < phrases.length) {
+          subtitles.push(phrases.slice(start, end));
         } else {
           subtitles.push([]);
         }
@@ -1916,7 +1937,7 @@
         c16x9.width = 1920; c16x9.height = 1080;
 
         updateProgress('Generating subtitles...', 10);
-        const subtitles = showSubtitles ? generateSubtitles(listingInfo?.description || '', imgs.length) : null;
+        const subtitles = showSubtitles ? await generateSubtitles(listingInfo?.description || '', imgs.length) : null;
 
         updateProgress(useMP4 ? 'Rendering MP4...' : 'Rendering WebM...', 10);
         const blob16x9 = await renderVideoPixi(imgs, style, c16x9,
