@@ -90,6 +90,8 @@
       opacity: 0; transition: opacity 0.15s;
     }
     .grid .thumb:hover .remove { opacity: 1; }
+    .grid .thumb.dragging { opacity: 0.4; transform: scale(0.95); }
+    .grid .thumb.drag-over { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
 
     .options { margin-top: 24px; display: none; }
     .options.active { display: block; }
@@ -186,7 +188,21 @@
     .listing-info .li-addr { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
     .listing-info .li-price { font-size: 1.3rem; font-weight: 700; color: #22c55e; margin-bottom: 4px; }
     .listing-info .li-meta { color: var(--muted); font-size: 0.85rem; margin-bottom: 8px; }
-    .listing-info .li-desc { color: var(--muted); font-size: 0.82rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .listing-info .li-desc { color: #fff; font-size: 0.82rem; line-height: 1.4; min-height: 2.8em; }
+    .listing-info .li-desc textarea { color: #fff; resize: vertical; font-size: 0.82rem; }
+    .li-contact-row { display: flex; gap: 16px; align-items: flex-start; margin-top: 8px; }
+    .li-contact-photo { flex: 0 0 88px; width: 88px; aspect-ratio: 1; border-radius: 12px; object-fit: contain; background: var(--bg); border: 1px solid var(--border); }
+    .li-contact-fields { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 16px; }
+    .li-contact-fields input { font-size: 0.85rem; font-weight: 500; }
+    @media (max-width: 480px) { .li-contact-fields { grid-template-columns: 1fr; } }
+    .listing-info input, .listing-info textarea { 
+      width: 100%; background: transparent; border: 1px solid transparent; border-radius: 4px;
+      color: inherit; font: inherit; padding: 2px 4px; margin: -2px -4px; transition: border-color 0.15s;
+    }
+    .listing-info input:hover, .listing-info textarea:hover { border-color: var(--border); }
+    .listing-info input:focus, .listing-info textarea:focus { border-color: var(--accent); outline: none; background: var(--bg); }
+    .listing-info .li-price input { font-size: 1.3rem; font-weight: 700; color: #22c55e; }
+    .listing-info .li-addr input { font-weight: 700; font-size: 1.05rem; }
 
     .error-banner {
       background: rgba(239,68,68,0.1); border: 1px solid var(--danger);
@@ -220,7 +236,7 @@
     <div class="upload-zone" id="uploadZone">
       <div class="icon">📸</div>
       <h3>Drop your photos here</h3>
-      <p>or click to browse · 5–20 images · JPG/PNG/WebP</p>
+      <p>or click to browse · min 5 images · JPG/PNG/WebP</p>
       <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple hidden>
     </div>
 
@@ -243,12 +259,23 @@
       <div class="realtor-status" id="realtorStatus"></div>
     </div>
 
-    <!-- Listing info (populated from realtor.ca) -->
+    <!-- Listing info (populated from realtor.ca - editable) -->
     <div class="listing-info" id="listingInfo">
-      <div class="li-price" id="liPrice"></div>
-      <div class="li-addr" id="liAddr"></div>
+      <div class="li-price" id="liPrice"><input type="text" id="editPrice" placeholder="Price" /></div>
+      <div class="li-addr" id="liAddr"><input type="text" id="editAddr" placeholder="Address" /></div>
       <div class="li-meta" id="liMeta"></div>
-      <div class="li-desc" id="liDesc"></div>
+      <div class="li-desc" id="liDesc"><textarea id="editDesc" rows="10" placeholder="Description"></textarea></div>
+      <div class="li-contact-row">
+        <img class="li-contact-photo" id="agentPhoto" src="" alt="Agent photo" style="display:none" />
+        <div class="li-contact-fields">
+          <input type="text" id="editAgentName" placeholder="Agent name" />
+          <input type="text" id="editAgentRole" placeholder="Role" />
+          <input type="text" id="editAgentPhone" placeholder="Phone" />
+          <input type="text" id="editAgentWebsite" placeholder="Website" />
+          <input type="text" id="editBrokerageName" placeholder="Brokerage" />
+          <input type="text" id="editBrokerageAddr" placeholder="Brokerage address" />
+        </div>
+      </div>
     </div>
 
     <div class="options" id="options">
@@ -273,6 +300,12 @@
           </div>
           <div class="option-pill" data-style="smooth">
             <span class="pill-icon">🌊</span><span class="pill-label">Smooth</span>
+          </div>
+          <div class="option-pill" data-style="dynamic">
+            <span class="pill-icon">🎯</span><span class="pill-label">Dynamic</span>
+          </div>
+          <div class="option-pill" data-style="auto">
+            <span class="pill-icon">🎬</span><span class="pill-label">Auto</span>
           </div>
         </div>
       </div>
@@ -314,6 +347,30 @@
           </div>
           <div class="option-pill" data-frame="fill">
             <span class="pill-label">🔍 Fill</span>
+          </div>
+          <div class="option-pill" data-frame="gradient">
+            <span class="pill-label">🌓 Gradient</span>
+          </div>
+          <div class="option-pill" data-frame="vignette">
+            <span class="pill-label">🔘 Vignette Fill</span>
+          </div>
+          <div class="option-pill" data-frame="reflect">
+            <span class="pill-label">🪞 Reflect</span>
+          </div>
+          <div class="option-pill" data-frame="motionblur">
+            <span class="pill-label">💨 Motion Blur</span>
+          </div>
+          <div class="option-pill" data-frame="pano">
+            <span class="pill-label">🎬 Pano Pan</span>
+          </div>
+          <div class="option-pill" data-frame="smart">
+            <span class="pill-label">🎯 Smart Center</span>
+          </div>
+          <div class="option-pill" data-frame="split">
+            <span class="pill-label">✂️ Split</span>
+          </div>
+          <div class="option-pill" data-frame="slide">
+            <span class="pill-label">⬅️ Slide</span>
           </div>
         </div>
       </div>
@@ -412,10 +469,13 @@
   <footer>Powered by Agentado</footer>
 
   <script>
-    const MAX_PHOTOS = 20, MIN_PHOTOS = 5;
+    const MIN_PHOTOS = 5;
     let photos = [], selectedStyle = 'cinematic', selectedTransition = 'whippan', clipDuration = 3, includeTikTok = false;
     let selectedFraming = 'letterbox', selectedAddressOverlay = 'both', selectedRealtorOverlay = 'both';
     let blurredBgCache = {}; // keyed by image index for Blur Fill mode
+    let reflectBgCache = {}; // for Reflect mode
+    let motionBgCache = {};  // for Motion Blur mode
+    let imgFocalPoints = null; // focal points for Smart Center mode
     let listingInfo = null; // { address, price, beds, baths, description, title, agent: {name, role, phone, website}, brokerage: {name, address} } from realtor.ca
 
     const $ = id => document.getElementById(id);
@@ -435,13 +495,13 @@
 
     function handleFiles(files) {
       const valid = Array.from(files).filter(f => f.type.startsWith('image/'));
-      if (photos.length + valid.length > MAX_PHOTOS) { showError(`Max ${MAX_PHOTOS} photos.`); return; }
+
       valid.forEach(f => addPhoto(f)); updateUI();
     }
     function addPhoto(file) {
       const id = Date.now() + Math.random(), url = URL.createObjectURL(file);
       photos.push({ id, file, url });
-      const div = document.createElement('div'); div.className = 'thumb'; div.dataset.id = id;
+      const div = document.createElement('div'); div.className = 'thumb'; div.dataset.id = id; div.draggable = true;
       div.innerHTML = `<img src="${url}" alt=""><button class="remove" onclick="removePhoto('${id}')">✕</button>`;
       previewGrid.appendChild(div);
     }
@@ -460,6 +520,55 @@
       generateBtn.textContent = photos.length >= MIN_PHOTOS ? '✨ Generate Walkthrough'
         : photos.length > 0 ? `✨ Add ${MIN_PHOTOS - photos.length} more` : '✨ Generate Walkthrough';
     }
+
+    // --- DRAG-AND-DROP REORDER ---
+    let dragSrcId = null;
+    previewGrid.addEventListener('dragstart', e => {
+      const thumb = e.target.closest('.thumb');
+      if (!thumb) return;
+      dragSrcId = thumb.dataset.id;
+      thumb.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', dragSrcId);
+    });
+    previewGrid.addEventListener('dragend', e => {
+      const thumb = e.target.closest('.thumb');
+      if (thumb) thumb.classList.remove('dragging');
+      previewGrid.querySelectorAll('.thumb').forEach(t => t.classList.remove('drag-over'));
+      dragSrcId = null;
+    });
+    previewGrid.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const thumb = e.target.closest('.thumb');
+      if (!thumb || thumb.dataset.id === dragSrcId) return;
+      // Highlight the target
+      previewGrid.querySelectorAll('.thumb').forEach(t => t.classList.remove('drag-over'));
+      thumb.classList.add('drag-over');
+    });
+    previewGrid.addEventListener('drop', e => {
+      e.preventDefault();
+      previewGrid.querySelectorAll('.thumb').forEach(t => t.classList.remove('drag-over'));
+      const target = e.target.closest('.thumb');
+      if (!target || !dragSrcId || target.dataset.id === dragSrcId) return;
+
+      const srcIdx = photos.findIndex(p => p.id == dragSrcId);
+      const dstIdx = photos.findIndex(p => p.id == target.dataset.id);
+      if (srcIdx < 0 || dstIdx < 0) return;
+
+      // Reorder array
+      const [moved] = photos.splice(srcIdx, 1);
+      photos.splice(dstIdx, 0, moved);
+
+      // Reorder DOM — insert src element before or after target
+      const srcEl = previewGrid.querySelector(`[data-id="${dragSrcId}"]`);
+      const dstEl = previewGrid.querySelector(`[data-id="${target.dataset.id}"]`);
+      if (srcEl && dstEl) {
+        if (srcIdx < dstIdx) dstEl.after(srcEl);
+        else dstEl.before(srcEl);
+      }
+      dragSrcId = null;
+    });
 
     // --- SELECTIONS ---
     document.querySelectorAll('#styleOptions .option-pill').forEach(p => {
@@ -509,6 +618,8 @@
     // --- PRE-RENDER BLURRED BACKGROUNDS (for Blur Fill mode) ---
     function preRenderBlurred(imgs) {
       blurredBgCache = {};
+      reflectBgCache = {};
+      motionBgCache = {};
       const drawCanvas = document.createElement('canvas');
       drawCanvas.width = 480; drawCanvas.height = 270;
       const blurCanvas = document.createElement('canvas');
@@ -523,22 +634,59 @@
         if (ia > ca) { dh = drawCanvas.height; dw = dh * ia; }
         else { dw = drawCanvas.width; dh = dw / ia; }
         drawCtx.drawImage(img, -dw/2 + drawCanvas.width/2, -dh/2 + drawCanvas.height/2, dw, dh);
-        // Step 2: blur — draw from drawCanvas onto blurCanvas with blur filter
+        
+        // --- Blur Fill (existing) ---
         blurCtx.filter = 'blur(10px)';
         blurCtx.drawImage(drawCanvas, 0, 0);
         blurCtx.filter = 'none';
-        // Step 3: dim — draw blurred result back with brightness
         drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
         drawCtx.filter = 'brightness(0.4)';
         drawCtx.drawImage(blurCanvas, 0, 0);
         drawCtx.filter = 'none';
-        // Step 4: copy to cache
-        const out = document.createElement('canvas');
-        out.width = drawCanvas.width; out.height = drawCanvas.height;
-        out.getContext('2d').drawImage(drawCanvas, 0, 0);
-        blurredBgCache[i] = out;
+        const bOut = document.createElement('canvas');
+        bOut.width = drawCanvas.width; bOut.height = drawCanvas.height;
+        bOut.getContext('2d').drawImage(drawCanvas, 0, 0);
+        blurredBgCache[i] = bOut;
         drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
         blurCtx.clearRect(0, 0, blurCanvas.width, blurCanvas.height);
+        
+        // --- Reflect Fill: mirror edges ---
+        const rC = document.createElement('canvas');
+        rC.width = 480; rC.height = 270;
+        const rCtx = rC.getContext('2d');
+        // Draw original centered
+        rCtx.drawImage(img, -dw/2 + 240, -dh/2 + 135, dw, dh);
+        // Get image data for edge reflection strips
+        rCtx.save();
+        rCtx.filter = 'brightness(0.35) saturate(0.6)';
+        rCtx.drawImage(img, -dw/2 + 240, -dh/2 + 135, dw, dh);
+        rCtx.restore();
+        // Overlay centered image bright
+        rCtx.filter = 'brightness(0.9)';
+        rCtx.drawImage(img, -dw/2 + 240, -dh/2 + 135, dw, dh);
+        rCtx.filter = 'none';
+        reflectBgCache[i] = rC;
+        
+        // --- Motion Blur Fill: directional horizontal blur ---
+        const mC = document.createElement('canvas');
+        mC.width = 480; mC.height = 270;
+        const mCtx = mC.getContext('2d');
+        // Draw multiple offset copies horizontally for motion blur effect
+        const offsets = [-30,-20,-12,-6,0,6,12,20,30];
+        const alpha = [0.08,0.10,0.13,0.18,0.35,0.18,0.13,0.10,0.08];
+        mCtx.globalAlpha = 1;
+        mCtx.drawImage(img, -dw/2 + 240, -dh/2 + 135, dw, dh);
+        mCtx.globalCompositeOperation = 'source-atop';
+        for (let o = 0; o < offsets.length; o++) {
+          mCtx.globalAlpha = alpha[o];
+          mCtx.drawImage(img, -dw/2 + 240 + offsets[o], -dh/2 + 135, dw, dh);
+        }
+        mCtx.globalAlpha = 1;
+        mCtx.globalCompositeOperation = 'source-over';
+        mCtx.filter = 'brightness(0.35)';
+        mCtx.drawImage(mC, 0, 0);
+        mCtx.filter = 'none';
+        motionBgCache[i] = mC;
       });
     }
 
@@ -610,6 +758,8 @@
       glide:      { zoomRange:[0.92,1.01], panAmount:0.18, transFrames:12, fps:30, motionCurve:'ease-out', vignette:0, tint:null, grain:0, rotation:0, brightness:1.02 },
       vintage:    { zoomRange:[0.90,1.03], panAmount:0.03, transFrames:25, fps:24, motionCurve:'ease-in-out', vignette:0.2, tint:'sepia', grain:0.05, rotation:0.003, brightness:0.95 },
       smooth:     { zoomRange:[0.93,1.02], panAmount:0.02, transFrames:30, fps:30, motionCurve:'ease-in-out', vignette:0.05, tint:null, grain:0, rotation:0.004, brightness:1.0 },
+      dynamic:    { zoomRange:[0.95,1.05], panAmount:0.05, transFrames:20, fps:30, motionCurve:'ease-in-out', vignette:0.08, tint:null, grain:0, rotation:0.005, brightness:1.02 },
+      auto:       { zoomRange:[1.0,1.0],  panAmount:0.05, transFrames:20, fps:30, motionCurve:'ease-in-out', vignette:0,    tint:null, grain:0, rotation:0,     brightness:1.0  },
     };
 
     // --- PAN DIRECTIONS ---
@@ -619,8 +769,8 @@
       {x:-0.5,y:0.3},{x:0.5,y:-0.3},{x:-0.3,y:-0.5},{x:0.3,y:0.5},
     ];
     function panFor(i, total) {
-      if (selectedStyle === 'glide') {
-        // Glide: alternate left→right for even i, right→left for odd
+      if (selectedStyle === 'glide' || selectedStyle === 'dynamic') {
+        // Glide/Dynamic: alternate left→right for even i, right→left for odd
         return i % 2 === 0 ? {x:-1,y:0} : {x:1,y:0};
       }
       // Zigzag: first→LR, second→RL, third→TB, etc.
@@ -629,7 +779,140 @@
       return dirs[cycle];
     }
 
-// --- PIXIJS + MEDIABUNNY RENDERING ENGINE ---
+// ── DYNAMIC MOTION CHOREOGRAPHY ──
+// Per-image analysis → best-fit animation + variable timing
+
+    const MOTIONS = {
+      'zoom-in':      { zs:0.95, ze:1.08, px:0, py:0, pam:0.03, rotation:0.002 },
+      'zoom-out':     { zs:1.06, ze:0.94, px:0, py:0, pam:0.03, rotation:-0.002 },
+      'pan-left':     { zs:0.93, ze:1.02, px:-1, py:0, pam:0.10, rotation:0.001 },
+      'pan-right':    { zs:0.93, ze:1.02, px:1, py:0, pam:0.10, rotation:0.001 },
+      'pan-up':       { zs:0.93, ze:1.02, px:0, py:-1, pam:0.08, rotation:0 },
+      'pan-down':     { zs:0.93, ze:1.02, px:0, py:1, pam:0.08, rotation:0 },
+      'dolly-zoom':   { zs:1.02, ze:0.86, px:0.7, py:0.3, pam:0.06, rotation:0.007 },
+      'reveal-left':  { zs:1.10, ze:0.95, px:-1, py:0, pam:0.13, rotation:0 },
+      'reveal-right': { zs:1.10, ze:0.95, px:1, py:0, pam:0.13, rotation:0 },
+      'reveal-top':   { zs:1.10, ze:0.95, px:0, py:-1, pam:0.10, rotation:0 },
+      'linger':       { zs:0.97, ze:1.02, px:0, py:0, pam:0.015, rotation:0.001 },
+      'drift-left':   { zs:0.96, ze:1.04, px:-0.5, py:-0.3, pam:0.08, rotation:0.004 },
+      'drift-right':  { zs:0.96, ze:1.04, px:0.5, py:-0.2, pam:0.08, rotation:-0.004 },
+      'drift-up':     { zs:0.97, ze:1.03, px:0.2, py:-0.6, pam:0.07, rotation:0.002 },
+    };
+
+    const IMG_PATTERNS = {
+      wide:     { motions: ['pan-left','pan-right','reveal-left','reveal-right','dolly-zoom'], dur:[2.2,3.5] },
+      standard: { motions: ['zoom-in','zoom-out','drift-left','drift-right','dolly-zoom'], dur:[3.0,4.5] },
+      portrait: { motions: ['pan-up','pan-down','zoom-in','linger','reveal-top'], dur:[2.5,4.0] },
+      detail:   { motions: ['linger','zoom-in','zoom-out','drift-left','drift-up'], dur:[3.5,5.5] },
+    };
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function randRange(lo, hi) { return lo + Math.random() * (hi - lo); }
+
+    function analyzeImage(img) {
+      const w = img.width, h = img.height;
+      const aspect = w / h;
+      // Sample brightness distribution at low res
+      const c = document.createElement('canvas');
+      c.width = 200; c.height = 150;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0, 200, 150);
+      const data = ctx.getImageData(0, 0, 200, 150).data;
+      let sum = 0, sumSq = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        const v = data[i]*0.299 + data[i+1]*0.587 + data[i+2]*0.114;
+        sum += v; sumSq += v * v;
+      }
+      const count = data.length / 4;
+      const avg = sum / count;
+      const contrast = Math.sqrt(Math.max(0, sumSq / count - avg * avg)) / 255;
+      // Classify
+      let type = 'standard';
+      if (aspect > 1.65) type = 'wide';
+      else if (aspect < 0.8) type = 'portrait';
+      if (contrast > 0.38) type = (aspect < 1.3) ? 'detail' : 'standard';
+      const fp = findFocalPoint(img);
+      return { type, aspect, contrast, fx: fp.x, fy: fp.y };
+    }
+
+    let dynamicMotions = null; // per-clip motion data when dynamic style active
+
+// ── AUTO CINEMATIC SCENE SCRIPT (Google-Recommended Ken Burns) ──
+// 10 professionally scripted scenes; cycles for >10 photos
+// All other effects are ignored when "auto" style is selected.
+
+    const AUTO_SCENES = [
+      // Scene 1: Grand Exterior Arrival — Jib Crane Reveal
+      { zs:1.08, ze:1.00, px:0, py:-1, panAmount:0.06, rotation:0, duration:5.0,
+        transition:'crossfade', desc:'Grand Exterior' },
+      // Scene 2: Foyer Welcome — Push-In Dolly
+      { zs:1.00, ze:1.07, px:0, py:0, panAmount:0.01, rotation:0, duration:4.5,
+        transition:'instant', desc:'Foyer Welcome' },
+      // Scene 3: Great Room Vaulted Ceilings — Pedestal Lift
+      { zs:1.02, ze:1.02, px:0, py:-1, panAmount:0.12, rotation:0, duration:5.5,
+        transition:'crossfade', desc:'Great Room' },
+      // Scene 4: Chef's Kitchen — Motorized Slider (L→R)
+      { zs:1.02, ze:1.08, px:1, py:0, panAmount:0.06, rotation:0, duration:7.0,
+        transition:'flash', desc:"Chef's Kitchen" },
+      // Scene 5: Kitchen Focal Point — Parallax Push (BL→TR)
+      { zs:1.02, ze:1.09, px:1, py:-1, panAmount:0.04, rotation:0.001, duration:4.0,
+        transition:'crossfade', desc:'Kitchen Focal' },
+      // Scene 6: Formal Dining — Slow Pull-Back Dolly Out
+      { zs:1.10, ze:1.02, px:0, py:0, panAmount:0.02, rotation:-0.001, duration:5.0,
+        transition:'blurcrossfade', desc:'Formal Dining' },
+      // Scene 7: Primary Bedroom — Steadicam Pass
+      { zs:1.00, ze:1.06, px:0.3, py:0, panAmount:0.05, rotation:0.001, duration:5.0,
+        transition:'flash', desc:'Primary Bedroom' },
+      // Scene 8: Spa Bathroom — Low-Angle Jib (pan down)
+      { zs:1.04, ze:1.08, px:0, py:1, panAmount:0.06, rotation:0, duration:4.5,
+        transition:'crossfade', desc:'Spa Bathroom' },
+      // Scene 9: Outdoor Living Patio — Wide Slider (R→L)
+      { zs:1.00, ze:1.00, px:-1, py:0, panAmount:0.18, rotation:0, duration:5.5,
+        transition:'crossfade', desc:'Outdoor Living' },
+      // Scene 10: Twilight Farewell — Ascending Drone/Jib
+      { zs:1.08, ze:1.00, px:0, py:-1, panAmount:0.08, rotation:0, duration:6.0,
+        transition:'fadeblack', desc:'Twilight Farewell' },
+    ];
+
+    function generateDynamicMotions(imgs) {
+      const analyses = imgs.map(img => analyzeImage(img));
+      const motions = [];
+      let lastMotion = '', lastPx = 0;
+      for (let i = 0; i < analyses.length; i++) {
+        const a = analyses[i];
+        const pool = IMG_PATTERNS[a.type].motions;
+        // Prefer complementary direction to previous clip
+        let candidates = pool.filter(m => m !== lastMotion);
+        if (!candidates.length) candidates = pool;
+        const oppCands = candidates.filter(m => lastPx !== 0 && MOTIONS[m].px === -lastPx);
+        if (oppCands.length && Math.random() < 0.55) candidates = oppCands;
+        const pattern = pick(candidates);
+        const m = MOTIONS[pattern];
+        const dur = randRange(IMG_PATTERNS[a.type].dur[0], IMG_PATTERNS[a.type].dur[1]);
+        // Contrast boost: more detail = wider zoom range
+        const zBoost = 1 + a.contrast * 0.4;
+        const zs = Math.max(0.84, m.zs / zBoost);
+        const ze = Math.min(1.14, m.ze * zBoost);
+        // Bias pan toward focal point (40% focal, 60% motion)
+        let px = m.px, py = m.py;
+        if (Math.abs(a.fx) > 0.05 || Math.abs(a.fy) > 0.05) {
+          px = m.px * 0.6 + a.fx * 0.4;
+          py = m.py * 0.6 + a.fy * 0.4;
+        }
+        motions.push({
+          pattern, zs, ze,
+          px: px, py: py,
+          panAmount: m.pam * (0.7 + Math.random() * 0.6),
+          duration: dur,
+          rotation: m.rotation * (0.4 + Math.random() * 1.2),
+        });
+        lastMotion = pattern;
+        lastPx = m.px;
+      }
+      return motions;
+    }
+
+// ── PIXIJS + MEDIABUNNY RENDERING ENGINE ──
 
     const ALL_TRANSITIONS = ['whippan', 'snapzoom', 'spinpop', 'bounce', 'flash'];
 
@@ -650,9 +933,63 @@
       return { w: cw, h: cw / ia };
     }
 
+    // Smart center: find brightest region for focal point
+    function findFocalPoint(img) {
+      const c = document.createElement('canvas');
+      c.width = 100; c.height = 75;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0, 100, 75);
+      const data = ctx.getImageData(0, 0, 100, 75).data;
+      let bestX = 0.5, bestY = 0.5, bestVal = 0;
+      // Sample 5x5 grid looking for highest brightness+contrast region
+      for (let gy = 1; gy < 4; gy++) {
+        for (let gx = 1; gx < 4; gx++) {
+          let sum = 0, count = 0;
+          const sx = gx * 25, sy = gy * 19, ex = sx + 25, ey = sy + 19;
+          for (let y = sy; y < ey; y++) {
+            for (let x = sx; x < ex; x++) {
+              const i = (y * 100 + x) * 4;
+              sum += data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+              count++;
+            }
+          }
+          const avg = sum / count;
+          if (avg > bestVal) { bestVal = avg; bestX = (sx + 25) / 100; bestY = (sy + 19) / 75; }
+        }
+      }
+      return { x: bestX - 0.5, y: bestY - 0.5 }; // offset from center
+    }
+
+    // Gradient bars overlay for gradient framing
+    function makeGradientOverlay(w, h) {
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      const barH = Math.round(h * 0.15);
+      // Top gradient bar
+      const topGrad = ctx.createLinearGradient(0, 0, 0, barH);
+      topGrad.addColorStop(0, 'rgba(0,0,0,0.85)');
+      topGrad.addColorStop(0.5, 'rgba(0,0,0,0.3)');
+      topGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = topGrad;
+      ctx.fillRect(0, 0, w, barH);
+      // Bottom gradient bar
+      const botGrad = ctx.createLinearGradient(0, h - barH, 0, h);
+      botGrad.addColorStop(0, 'rgba(0,0,0,0)');
+      botGrad.addColorStop(0.5, 'rgba(0,0,0,0.3)');
+      botGrad.addColorStop(1, 'rgba(0,0,0,0.85)');
+      ctx.fillStyle = botGrad;
+      ctx.fillRect(0, h - barH, w, barH);
+      return PIXI.Sprite.from(c);
+    }
+
     // Set a PixiJS sprite to full Ken Burns state for one frame
     function setSpriteKB(sprite, img, cw, ch, zoom, panX, panY, rot, brightness) {
       const fit = coverFit(img, cw, ch);
+      // Clamp pan to prevent black edges (images can't pan beyond their visible margin)
+      const halfW = fit.w * zoom / 2, halfH = fit.h * zoom / 2;
+      const maxPanX = Math.max(0, halfW - cw/2), maxPanY = Math.max(0, halfH - ch/2);
+      panX = Math.max(-maxPanX, Math.min(maxPanX, panX));
+      panY = Math.max(-maxPanY, Math.min(maxPanY, panY));
       sprite.texture = PIXI.Texture.from(img);
       sprite.anchor.set(0.5);
       sprite.scale.set((fit.w * zoom) / img.width, (fit.h * zoom) / img.height);
@@ -765,6 +1102,11 @@
       toS.filters = (toS.filters || []).filter(f => f === toS._bm || f === toS._sf);
 
       switch (transType) {
+        case 'crossfade': {
+          fromS.alpha = 1 - t;
+          toS.alpha = t;
+          break;
+        }
         case 'whippan': {
           const blur = Math.max(0, 10 * (1 - Math.abs(t - 0.5) * 2));
           if (blur > 0.5) {
@@ -821,15 +1163,15 @@
           break;
         }
         case 'flash': {
-          if (progress < 0.3) {
+          if (progress < 0.2) {
             fromS.alpha = 1; toS.alpha = 0;
-          } else if (progress < 0.5) {
-            fromS.alpha = 0.3 * (1 - (progress-0.3)/0.2);
+          } else if (progress < 0.35) {
+            fromS.alpha = 0.5 * (1 - (progress-0.2)/0.15);
             toS.alpha = 0;
           } else {
-            const p = ease((progress - 0.5) / 0.5, 'ease-out');
+            const p = ease((progress - 0.35) / 0.65, 'ease-out');
             toS.scale.set(toS.scale.x * (1.08 - p * 0.08), toS.scale.y * (1.08 - p * 0.08));
-            toS.alpha = p;
+            toS.alpha = Math.min(1, p * 2);
             fromS.alpha = 0;
           }
           break;
@@ -1095,6 +1437,13 @@
       return PIXI.Sprite.from(c);
     }
 
+    // Helper: get the right background cache for the current framing mode
+    function getBgCache(framing, idx) {
+      if (framing === 'reflect') return reflectBgCache[idx];
+      if (framing === 'motionblur') return motionBgCache[idx];
+      return blurredBgCache[idx];
+    }
+
     // Helper: load image from URL
     function loadImage(url) {
       return new Promise((resolve, reject) => {
@@ -1135,9 +1484,10 @@
       sA.visible = false; sB.visible = false;
       app.stage.addChild(sA, sB);
 
-      // Blur fill sprites (behind main sprites)
+      // Background fill sprites (behind main sprites)
       let bgA = null, bgB = null;
-      if (selectedFraming === 'blurfill') {
+      const needsBg = selectedFraming === 'blurfill' || selectedFraming === 'reflect' || selectedFraming === 'motionblur';
+      if (needsBg) {
         bgA = new PIXI.Sprite(); bgB = new PIXI.Sprite();
         bgA.anchor.set(0.5); bgB.anchor.set(0.5);
         bgA.x = bgB.x = cw/2; bgA.y = bgB.y = ch/2;
@@ -1146,8 +1496,16 @@
         app.stage.addChildAt(bgB, 1);
       }
 
+      // Gradient bars overlay (for gradient framing)
+      let gradientOverlay = null;
+      if (selectedFraming === 'gradient') {
+        gradientOverlay = makeGradientOverlay(cw, ch);
+        app.stage.addChild(gradientOverlay);
+      }
+
       // Vignette + grain overlays
-      const vignette = makeVignette(cw, ch, style.vignette);
+      const vignetteStr = selectedFraming === 'vignette' ? Math.max(style.vignette, 0.4) : style.vignette;
+      const vignette = makeVignette(cw, ch, vignetteStr);
       if (vignette) app.stage.addChild(vignette);
       const grain = makeGrain(cw, ch, style.grain);
       if (grain) { grain.alpha = style.grain; app.stage.addChild(grain); }
@@ -1176,7 +1534,8 @@
       }
       const introTotal = Math.max(addrIntroEnd, riIntroEnd);
       // First clip must be at least as long as the combined intro
-      if (introTotal > 0) firstClipDur = Math.max(clipDuration, introTotal + 0.5);
+      const firstDur = (dynamicMotions && dynamicMotions[0]) ? dynamicMotions[0].duration : clipDuration;
+      if (introTotal > 0) firstClipDur = Math.max(firstDur, introTotal + 0.5);
 
       // Create overlay sprites
       let priceIntro = null, realtorIntro = null, bottomBar = null;
@@ -1189,7 +1548,7 @@
       let endCard = null;
       if (info && info.agent && info.agent.name) {
         // Proxy agent photo through img-proxy to avoid CORS issues with canvas
-        const proxyBase = 'https://agentrocketman.com/agentado/api/img-proxy.php?u=';
+        const proxyBase = location.origin + '/api/img-proxy.php?u=';
         const infoProxy = {...info, agent: {...info.agent,
           photo: info.agent && info.agent.photo ? proxyBase + encodeURIComponent(info.agent.photo) : null
         }};
@@ -1203,11 +1562,12 @@
       const totalClips = imgs.length + (endCard ? 1 : 0);
       const photoCount = imgs.length;
 
-      // Build clip lengths array (first clip may be extended for intro)
+      // Build clip lengths array (variable durations for dynamic mode)
       const clipLen = [];
       for (let c = 0; c < photoCount; c++) {
-        const base = c === photoCount - 1 ? framesPerClip : framesPerClip - tf;
-        clipLen.push(c === 0 && firstClipDur > 0 ? Math.round(firstClipDur * fps) - tf : base);
+        const dur = (dynamicMotions && dynamicMotions[c]) ? dynamicMotions[c].duration : clipDuration;
+        const base = c === photoCount - 1 ? Math.round(dur * fps) : Math.round(dur * fps) - tf;
+        clipLen.push(c === 0 && firstClipDur > 0 ? Math.round(firstClipDur * fps) - tf : Math.max(base, 1));
       }
       // Add end card clip
       if (endCard) {
@@ -1224,7 +1584,8 @@
       // Video output setup
 
       // Pre-render first frame so canvas isn't black when capture starts
-      setSpriteKB(sA, imgs[0], cw, ch, style.zoomRange[0], 0, 0, 0, style.brightness);
+      const initZs = (dynamicMotions && dynamicMotions[0]) ? dynamicMotions[0].zs : style.zoomRange[0];
+      setSpriteKB(sA, imgs[0], cw, ch, initZs, 0, 0, 0, style.brightness);
       sA.visible = true;
       app.renderer.render(app.stage);
       let videoOut;
@@ -1244,6 +1605,10 @@
         rec.start();
         videoOut = { type: 'webm', recorder: rec, chunks, mime };
       }
+
+      // End card fade — auto style's last scene uses fade-to-black (2s)
+      const isFadeBlack = selectedStyle === 'auto' && dynamicMotions &&
+        dynamicMotions[photoCount-1] && dynamicMotions[photoCount-1].transition === 'fadeblack';
 
       for (let f = 0; f < totalFrames; f++) {
         // Locate clip + frame-in-clip using precomputed lengths
@@ -1284,12 +1649,35 @@
           // Compute Ken Burns state
         const t = ease(Math.min(clipProgress, 1), style.motionCurve);
         let zs = style.zoomRange[0], ze = style.zoomRange[1];
-        if (selectedFraming === 'fill') { const off = 1.0 - zs; zs += off; ze += off; }
+        // Dynamic mode: per-clip zoom range
+        if (dynamicMotions && dynamicMotions[clipIdx]) {
+          zs = dynamicMotions[clipIdx].zs; ze = dynamicMotions[clipIdx].ze;
+        }
+        if (selectedFraming === 'fill' || selectedFraming === 'vignette') { const off = 1.0 - zs; zs += off; ze += off; }
+        if (selectedFraming === 'pano') { zs = 0.78; ze = 0.85; }
         const zoom = zs + (ze - zs) * t;
         const pan = panFor(clipIdx, totalClips);
-        const panX = pan.x * style.panAmount * cw * t;
-        const panY = pan.y * style.panAmount * ch * t;
-        const rot = (style.rotation || 0) * Math.sin(t * Math.PI);
+        let panX = pan.x * style.panAmount * cw * t;
+        let panY = pan.y * style.panAmount * ch * t;
+        // Dynamic mode: per-clip pan direction and amount
+        if (dynamicMotions && dynamicMotions[clipIdx]) {
+          const dm = dynamicMotions[clipIdx];
+          panX = dm.px * dm.panAmount * cw * t;
+          panY = dm.py * dm.panAmount * ch * t;
+        }
+        // Pano pan: horizontal-only pan with wider crop
+        if (selectedFraming === 'pano') { panX = pan.x * 0.15 * cw * t; panY = 0; }
+        // Smart center: pan toward focal point
+        if (selectedFraming === 'smart' && imgFocalPoints && imgFocalPoints[clipIdx]) {
+          const fp = imgFocalPoints[clipIdx];
+          panX += fp.x * 0.12 * cw * t;
+          panY += fp.y * 0.12 * ch * t;
+        }
+        let rot = (style.rotation || 0) * Math.sin(t * Math.PI);
+        // Dynamic mode: per-clip rotation
+        if (dynamicMotions && dynamicMotions[clipIdx]) {
+          rot = dynamicMotions[clipIdx].rotation * Math.sin(t * Math.PI);
+        }
 
         // Reset flash
         flashRect.alpha = 0;
@@ -1300,14 +1688,24 @@
           setSpriteKB(currentS, imgs[clipIdx], cw, ch, zoom, panX, panY, rot, style.brightness);
           if (style.tint === 'sepia') addSepia(currentS);
           currentS.visible = true;
-          currentS.alpha = 1 - transProgress;
+          if (isFadeBlack) {
+            // Fade to black first (60% of transition), then end card emerges
+            currentS.alpha = 1 - Math.min(1, transProgress * 1.8);
+            endCard.alpha = Math.max(0, (transProgress - 0.35) / 0.65);
+          } else {
+            currentS.alpha = 1 - transProgress;
+            endCard.alpha = transProgress;
+          }
           nextS.visible = false;
           if (bgA) { bgA.visible = false; bgB.visible = false; }
-          endCard.alpha = transProgress;
           endCard.visible = true;
         } else if (isTransition) {
           const transProgress = (frameInClip - (clen - tf)) / tf;
-          const transType = selectedTransition === 'random' ? pairTransitions[clipIdx] : selectedTransition;
+          // Per-clip transition type (auto/dynamic mode may override)
+          let transType = selectedTransition === 'random' ? pairTransitions[clipIdx] : selectedTransition;
+          if (dynamicMotions && dynamicMotions[clipIdx] && dynamicMotions[clipIdx].transition) {
+            transType = dynamicMotions[clipIdx].transition;
+          }
 
           // Set from sprite at end-of-clip Ken Burns state
           setSpriteKB(currentS, imgs[clipIdx], cw, ch, zoom, panX, panY, rot, style.brightness);
@@ -1315,43 +1713,84 @@
           currentS.visible = true;
 
           // Set to sprite at start-of-next-clip Ken Burns state
+          const nextZs = (dynamicMotions && dynamicMotions[clipIdx+1]) ? dynamicMotions[clipIdx+1].zs : style.zoomRange[0];
           const nextPan = panFor(clipIdx+1, totalClips);
-          setSpriteKB(nextS, imgs[clipIdx+1], cw, ch, style.zoomRange[0], 0, 0, 0, style.brightness);
+          setSpriteKB(nextS, imgs[clipIdx+1], cw, ch, nextZs, 0, 0, 0, style.brightness);
           if (style.tint === 'sepia') addSepia(nextS);
           nextS.visible = true;
 
-          // Blur fill backgrounds
-          if (bgA && blurredBgCache[clipIdx]) {
+          // Background fill
+          if (bgA && getBgCache(selectedFraming, clipIdx)) {
             const bgCur = (clipIdx % 2 === 0) ? bgA : bgB;
-            bgCur.texture = PIXI.Texture.from(blurredBgCache[clipIdx]);
+            bgCur.texture = PIXI.Texture.from(getBgCache(selectedFraming, clipIdx));
             bgCur.width = cw; bgCur.height = ch;
             bgCur.visible = true;
             if ((clipIdx % 2 === 0) ? bgB : bgA) (clipIdx % 2 === 0 ? bgB : bgA).visible = false;
           }
 
-          applyTransition(currentS, nextS, transProgress, transType, cw, ch);
-
-          // Flash overlay
-          if (transType === 'snapzoom' && transProgress >= 0.4 && transProgress < 0.55) {
-            const p = (transProgress - 0.4) / 0.15;
-            flashRect.alpha = Math.sin(p * Math.PI) * 0.9;
+          if (selectedFraming === 'slide') {
+            // Slide reveal: current slides left, next slides in from right
+            const offsetX = transProgress * cw;
+            currentS.x = cw/2 - offsetX;
+            currentS.alpha = 1 - transProgress * 0.3;
+            nextS.x = cw/2 + cw - offsetX;
+            nextS.alpha = 1;
+          } else if (transType === 'instant') {
+            // Match cut: instant swap, no transition effect
+            currentS.visible = false; nextS.visible = true;
+            currentS.alpha = 0; nextS.alpha = 1;
+            if (bgA) { bgA.visible = false; bgB.visible = false; }
+          } else if (transType === 'blurcrossfade') {
+            // Blur dissolve: gaussian blur peaks at midpoint
+            const blurAmt = Math.sin(transProgress * Math.PI) * 5;
+            if (blurAmt > 0.5) {
+              // Replace filters — don't accumulate from previous frames
+              currentS.filters = [new PIXI.BlurFilter({ strength:blurAmt, quality:2 })];
+              nextS.filters = [new PIXI.BlurFilter({ strength:blurAmt, quality:2 })];
+            } else {
+              // Clear residual blur at start and end of transition
+              currentS.filters = null;
+              nextS.filters = null;
+            }
+            currentS.alpha = 1 - transProgress;
+            nextS.alpha = transProgress;
+          } else if (transType === 'fadeblack') {
+            // Fade to black for final scene → end card
+            if (transProgress < 0.7) {
+              currentS.alpha = 1 - transProgress * 0.3;
+              nextS.visible = false;
+            } else {
+              currentS.alpha = 0;
+              nextS.visible = false;
+              if (bgA) { bgA.visible = false; bgB.visible = false; }
+            }
+          } else {
+            applyTransition(currentS, nextS, transProgress, transType, cw, ch);
           }
-          if (transType === 'flash' && transProgress >= 0.3 && transProgress < 0.5) {
-            const p = (transProgress - 0.3) / 0.2;
-            flashRect.alpha = Math.sin(p * Math.PI) * 0.85;
+
+          // Flash overlay (for scripted 'flash' or standard 'snapzoom'/'flash' transitions)
+          const flashTypes = ['snapzoom','flash'];
+          if (flashTypes.includes(transType)) {
+            if (transProgress >= 0.2 && transProgress < 0.45) {
+              const fp = (transProgress - 0.2) / 0.25;
+              flashRect.alpha = Math.sin(fp * Math.PI) * 0.95;
+            }
           }
         } else {
           // Normal playback
           setSpriteKB(currentS, imgs[clipIdx], cw, ch, zoom, panX, panY, rot, style.brightness);
+          // Reset any leaked transition filters on both sprites
+          currentS.filters = null;
+          nextS.filters = null;
           if (style.tint === 'sepia') addSepia(currentS);
           currentS.visible = true;
           currentS.alpha = 1;
           nextS.visible = false;
 
-          // Blur fill background
-          if (bgA && blurredBgCache[clipIdx]) {
+          // Background fill
+          if (bgA && getBgCache(selectedFraming, clipIdx)) {
             const bgCur = (clipIdx % 2 === 0) ? bgA : bgB;
-            bgCur.texture = PIXI.Texture.from(blurredBgCache[clipIdx]);
+            bgCur.texture = PIXI.Texture.from(getBgCache(selectedFraming, clipIdx));
             bgCur.width = cw; bgCur.height = ch;
             bgCur.visible = true;
             (clipIdx % 2 === 0 ? bgB : bgA).visible = false;
@@ -1444,17 +1883,94 @@
 
       const style = STYLES[selectedStyle];
 
+      // Auto style forces letterbox framing (script defines all effects)
+      let savedFraming = null;
+      if (selectedStyle === 'auto') { savedFraming = selectedFraming; selectedFraming = 'letterbox'; }
+
       try {
         updateProgress('Loading images...', 5);
         const imgs = await Promise.all(photos.map(p => loadImage(p.url)));
 
-        if (selectedFraming === 'blurfill') {
-          updateProgress('Preparing blur fills...', 7);
+        // Dynamic motion choreography (analyzes each image, assigns best-fit animation)
+        dynamicMotions = null;
+        if (selectedStyle === 'dynamic') {
+          updateProgress('Choreographing...', 6);
+          dynamicMotions = generateDynamicMotions(imgs);
+        } else if (selectedStyle === 'auto') {
+          // Auto: scripted 10-scene cinematic sequence (cycles for >10 photos)
+          dynamicMotions = [];
+          for (let i = 0; i < imgs.length; i++) {
+            const scene = AUTO_SCENES[i % AUTO_SCENES.length];
+            const s = {...scene};
+            // Ensure zoom accommodates pan amount (prevents black edges on portrait canvas)
+            // Formula: at zoom z, visible margin per side = (z-1)/2 of canvas dim
+            // Max pan in any direction must fit within that margin
+            const minZoom = 1 + 1.2 * s.panAmount;
+            const curMin = Math.min(s.zs, s.ze);
+            if (curMin < minZoom) {
+              const boost = minZoom - curMin;
+              s.zs += boost;
+              s.ze += boost;
+            }
+            dynamicMotions.push(s);
+          }
+        }
+
+        if (selectedFraming === 'blurfill' || selectedFraming === 'reflect' || selectedFraming === 'motionblur') {
+          updateProgress('Preparing backgrounds...', 7);
           preRenderBlurred(imgs);
         }
 
         updateProgress('Checking encoder...', 8);
         const useMP4 = await supportsMP4();
+
+        // Compute focal points for smart center framing
+        let imgFocalPoints = null;
+        if (selectedFraming === 'smart') {
+          updateProgress('Analyzing focal points...', 9);
+          imgFocalPoints = imgs.map(img => findFocalPoint(img));
+        }
+
+        // Pre-composite split frames (two photos side by side)
+        let splitImgs = null;
+        let splitFocalPoints = null;
+        if (selectedFraming === 'split') {
+          updateProgress('Compositing split frames...', 9);
+          splitImgs = [];
+          splitFocalPoints = [];
+          for (let i = 0; i < imgs.length - 1; i += 2) {
+            const c = document.createElement('canvas');
+            c.width = 1920; c.height = 1080;
+            const ctx = c.getContext('2d');
+            const hw = 960;
+            // Left image
+            const lFit = coverFit(imgs[i], hw, 1080);
+            ctx.save(); ctx.beginPath(); ctx.rect(0, 0, hw, 1080); ctx.clip();
+            ctx.drawImage(imgs[i], hw/2 - lFit.w/2, 540 - lFit.h/2, lFit.w, lFit.h);
+            ctx.restore();
+            // Thin divider line
+            ctx.strokeStyle = 'rgba(124,92,231,0.3)'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(hw, 0); ctx.lineTo(hw, 1080); ctx.stroke();
+            // Right image
+            const rFit = coverFit(imgs[i+1], hw, 1080);
+            ctx.save(); ctx.beginPath(); ctx.rect(hw, 0, hw, 1080); ctx.clip();
+            ctx.drawImage(imgs[i+1], hw + hw/2 - rFit.w/2, 540 - rFit.h/2, rFit.w, rFit.h);
+            ctx.restore();
+            // Convert to image
+            const composite = new Image();
+            composite.src = c.toDataURL();
+            await new Promise(r => { composite.onload = r; });
+            splitImgs.push(composite);
+            splitFocalPoints.push({ x: 0, y: 0 });
+          }
+          // If odd number of photos, last one solo
+          if (imgs.length % 2 === 1) {
+            splitImgs.push(imgs[imgs.length - 1]);
+            splitFocalPoints.push({ x: 0, y: 0 });
+          }
+          imgs = splitImgs;
+          imgFocalPoints = splitFocalPoints;
+        }
 
         const c16x9 = document.createElement('canvas');
         c16x9.width = 1920; c16x9.height = 1080;
@@ -1494,6 +2010,8 @@
       } catch (err) {
         console.error(err);
         showError(err.message || 'Rendering failed. Try fewer or smaller images.');
+      } finally {
+        if (savedFraming !== null) selectedFraming = savedFraming;
       }
     }
 
@@ -1521,7 +2039,7 @@
       realtorStatus.style.color = 'var(--muted)';
 
       try {
-        const res = await fetch('/agentado/api/realtor-scrape.php', {
+        const res = await fetch('api/realtor-scrape.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url }),
@@ -1551,16 +2069,15 @@
         };
         showListingInfo();
 
-        // Limit to MAX_PHOTOS
-        const toLoad = data.photos.slice(0, MAX_PHOTOS);
+        const toLoad = data.photos;
         let loaded = 0;
         for (const imgUrl of toLoad) {
-          if (photos.length >= MAX_PHOTOS) break;
+
           try {
             const img = await loadImage(imgUrl);
             const id = 'realtor-' + Date.now() + '-' + loaded;
             photos.push({ id, file: null, url: imgUrl });
-            const div = document.createElement('div'); div.className = 'thumb'; div.dataset.id = id;
+            const div = document.createElement('div'); div.className = 'thumb'; div.dataset.id = id; div.draggable = true;
             div.innerHTML = `<img src="${imgUrl}" alt=""><button class="remove" onclick="removePhoto('${id}')">✕</button>`;
             previewGrid.appendChild(div);
             loaded++;
@@ -1590,14 +2107,34 @@
 
     function showListingInfo() {
       if (!listingInfo || !listingInfo.address) return;
-      $('liPrice').textContent = listingInfo.price || '';
-      $('liAddr').textContent = listingInfo.address;
+      $('editPrice').value = listingInfo.price || '';
+      $('editAddr').value = listingInfo.address;
       const meta = [];
       if (listingInfo.beds) meta.push(listingInfo.beds + ' bed');
       if (listingInfo.baths) meta.push(listingInfo.baths + ' bath');
       if (listingInfo.agent && listingInfo.agent.name) meta.push('Agent: ' + listingInfo.agent.name);
       $('liMeta').textContent = meta.join(' · ');
-      $('liDesc').textContent = listingInfo.description || '';
+      $('editDesc').value = listingInfo.description || '';
+      // Populate contact fields
+      if (listingInfo.agent) {
+        $('editAgentName').value = listingInfo.agent.name || '';
+        $('editAgentRole').value = listingInfo.agent.role || '';
+        $('editAgentPhone').value = listingInfo.agent.phone || '';
+        $('editAgentWebsite').value = listingInfo.agent.website || '';
+        // Agent photo (handle relative URLs by prepending realtor.ca base)
+        if (listingInfo.agent.photo) {
+          let photoUrl = listingInfo.agent.photo;
+          if (photoUrl.startsWith('/')) photoUrl = 'https://realtor.ca' + photoUrl;
+          $('agentPhoto').src = photoUrl;
+          $('agentPhoto').style.display = '';
+        } else {
+          $('agentPhoto').style.display = 'none';
+        }
+      }
+      if (listingInfo.brokerage) {
+        $('editBrokerageName').value = listingInfo.brokerage.name || '';
+        $('editBrokerageAddr').value = listingInfo.brokerage.address || '';
+      }
       $('listingInfo').classList.add('active');
       // Show overlay options since we have listing data
       $('addressOverlayGroup').style.display = 'block';
@@ -1607,6 +2144,22 @@
       }
     }
 
+    // Sync editable listing fields back to listingInfo on change
+    ['editPrice','editAddr','editDesc','editAgentName','editAgentRole','editAgentPhone','editAgentWebsite','editBrokerageName','editBrokerageAddr'].forEach(id => {
+      $(id).addEventListener('input', () => {
+        if (!listingInfo) return;
+        if (id === 'editPrice') listingInfo.price = $(id).value;
+        else if (id === 'editAddr') { listingInfo.address = $(id).value; listingInfo.title = $(id).value; }
+        else if (id === 'editDesc') listingInfo.description = $(id).value;
+        else if (id === 'editAgentName') { if (!listingInfo.agent) listingInfo.agent = {}; listingInfo.agent.name = $(id).value; }
+        else if (id === 'editAgentRole') { if (!listingInfo.agent) listingInfo.agent = {}; listingInfo.agent.role = $(id).value; }
+        else if (id === 'editAgentPhone') { if (!listingInfo.agent) listingInfo.agent = {}; listingInfo.agent.phone = $(id).value; }
+        else if (id === 'editAgentWebsite') { if (!listingInfo.agent) listingInfo.agent = {}; listingInfo.agent.website = $(id).value; }
+        else if (id === 'editBrokerageName') { if (!listingInfo.brokerage) listingInfo.brokerage = {}; listingInfo.brokerage.name = $(id).value; }
+        else if (id === 'editBrokerageAddr') { if (!listingInfo.brokerage) listingInfo.brokerage = {}; listingInfo.brokerage.address = $(id).value; }
+      });
+    });
+
     function resetAll() {
       resultCard.classList.remove('active'); progressCard.classList.remove('active');
       errorBanner.classList.remove('active'); clearAll(); generateBtn.disabled = true;
@@ -1614,6 +2167,9 @@
       $('listingInfo').classList.remove('active');
       $('addressOverlayGroup').style.display = 'none';
       $('realtorOverlayGroup').style.display = 'none';
+      // Clear editable inputs
+      ['editPrice','editAddr','editDesc','editAgentName','editAgentRole','editAgentPhone','editAgentWebsite','editBrokerageName','editBrokerageAddr'].forEach(id => { $(id).value = ''; });
+      $('agentPhoto').src = ''; $('agentPhoto').style.display = 'none';
     }
 
     // Show realtor section on load

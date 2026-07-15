@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-14T21:38:30.282Z",
+  "updatedAt": "2026-07-15T01:18:37.836Z",
   "entries": {
     "memory:memory/2026-06-27.md:247:268": {
       "key": "memory:memory/2026-06-27.md:247:268",
@@ -2408,21 +2408,23 @@
       "endLine": 59,
       "source": "memory",
       "snippet": "- They're broader than Agentado — full marketing suite, not just video - \"Done for you\" positioning — AI creates everything automatically - All JS ecosystem (React + Supabase + Render) — same language family as Agentado --- ## 🔍 Trolto Video Generation Technology — Follow-up (continued 00:47 UTC) ### What Trolto Claims - HousingWire article: \"unlike competitors that simply zoom in and out of still images, Trolto's AI adds ultra-smooth pans and flyby effects… It can even animate details in your listing photos\" (e.g., fountain water flowing, curtains moving) - They call it \"proprietary AI\" — never disclose the specific model/engine ### Technical Assessment Trolto's \"animate details\" capabi",
-      "recallCount": 4,
+      "recallCount": 5,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 4,
+      "totalScore": 5,
       "maxScore": 1,
       "firstRecalledAt": "2026-07-14T04:14:37.436Z",
-      "lastRecalledAt": "2026-07-14T19:06:32.575Z",
+      "lastRecalledAt": "2026-07-15T01:18:37.836Z",
       "queryHashes": [
         "464d89657696",
         "e1ebf754085d",
         "f454f993c505",
-        "8021ec61f399"
+        "8021ec61f399",
+        "4f54938ffddd"
       ],
       "recallDays": [
-        "2026-07-14"
+        "2026-07-14",
+        "2026-07-15"
       ],
       "conceptTags": [
         "follow-up",
