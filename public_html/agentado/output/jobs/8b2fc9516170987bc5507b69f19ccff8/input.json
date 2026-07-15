@@ -1,0 +1,10 @@
+{
+    "photos": [
+        "https:\/\/agentrocketman.com\/bin-pics\/bins\/A2.jpg",
+        "https:\/\/agentrocketman.com\/bin-pics\/bins\/B1.jpg"
+    ],
+    "description": "A test property for end-to-end test",
+    "showVoiceOver": false,
+    "showMusic": false,
+    "showSubtitles": false
+}

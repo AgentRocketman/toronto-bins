@@ -496,39 +496,28 @@
       klingProgressCard.classList.add('active');
       klingStatusText.innerHTML = '<span class="spinner"></span>Preparing 3D cinematic video…';
       klingProgressBar.style.width = '0%';
-      klingStatusSub.textContent = 'Uploading photos…';
+      klingStatusSub.textContent = 'Fetching container URL…';
       errorBanner.classList.remove('active');
       resultCard.classList.remove('active');
 
       try {
-        // Prepare photo URLs (use img-proxy for external URLs)
-        const photoUrls = photos.map(p => {
-          if (p.url && p.url.startsWith('blob:')) return p.url;
-          return p.url || '';
-        });
-
-        // Upload blob photos
-        const finalUrls = [];
-        for (const p of photos) {
-          if (p.url && p.url.startsWith('blob:')) {
-            const blob = await fetch(p.url).then(r => r.blob());
-            const formData = new FormData();
-            formData.append('file', blob, 'photo.jpg');
-            finalUrls.push(p.url); // Keep blob URL — server will proxy
-          } else {
-            finalUrls.push(p.url || '');
-          }
-        }
+        // Get tunnel URL for container endpoint
+        const tunResp = await fetch('/agentado/api/tunnel-url.php');
+        const tunData = await tunResp.json();
+        const BASE = tunData.url + '/agentado/api';
 
         // Build listing description for narration
         const addr = listingInfo?.address || listingInfo?.addr || 'this beautiful property';
         const desc = listingInfo?.title || listingInfo?.description ||
           `Welcome to ${addr}. A stunning property with exceptional design and features.`;
 
+        // Collect photo URLs (use img-proxy if they're local)
+        const finalUrls = photos.map(p => p.url || '');
+
         klingStatusSub.textContent = 'Starting server-side generation…';
         klingProgressBar.style.width = '2%';
 
-        const resp = await fetch('/agentado/api/start-3d-video.php', {
+        const resp = await fetch(BASE + '/start-3d-video.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -554,9 +543,7 @@
         // Save to localStorage for resume
         try {
           localStorage.setItem('klingJob', JSON.stringify({
-            jobId: job.job_id,
-            started: Date.now(),
-            photoCount: photos.length,
+            jobId: job.job_id, started: Date.now(), photoCount: photos.length,
           }));
         } catch(e) {}
 
@@ -574,30 +561,24 @@
 
     function pollKlingJob() {
       if (!currentKlingJob) return;
+      // Fetch tunnel URL once and cache
+      let BASE = null;
+      fetch('/agentado/api/tunnel-url.php').then(r => r.json()).then(d => { BASE = d.url + '/agentado/api'; });
 
       klingPollTimer = setInterval(async () => {
+        if (!BASE) return; // wait for tunnel URL
         try {
-          const resp = await fetch('/agentado/api/check-3d-video.php?job=' + currentKlingJob);
+          const resp = await fetch(BASE + '/check-3d-video.php?job=' + currentKlingJob);
           const data = await resp.json();
 
-          // Update progress
           const pct = data.status === 'completed' ? 100
             : data.progress && data.total_clips
               ? Math.round((data.completed_clips / data.total_clips) * 90)
               : 0;
           klingProgressBar.style.width = pct + '%';
 
-          const stageEmoji = {
-            'preparing': '⚙️',
-            'generating_clips': '🎬',
-            'scaling_clips': '📐',
-            'compositing': '🎞️',
-            'finalizing': '🔊',
-            'completed': '✅',
-            'failed': '❌',
-          };
-          const emoji = stageEmoji[data.status] || '🔄';
-          klingStatusText.innerHTML = `${emoji} ${data.stage || 'Processing…'}`;
+          const emojis = {preparing:'⚙️',generating_clips:'🎬',scaling_clips:'📐',compositing:'🎞️',finalizing:'🔊',completed:'✅',failed:'❌'};
+          klingStatusText.innerHTML = `${emojis[data.status]||'🔄'} ${data.stage || 'Processing…'}`;
           klingStatusSub.textContent = data.status === 'generating_clips'
             ? `AI clips: ${data.completed_clips}/${data.total_clips}`
             : data.stage || '';
@@ -607,40 +588,15 @@
             klingStatusText.innerHTML = '✅ 3D Cinematic Video Ready!';
             klingStatusSub.textContent = 'Download below ↓';
             klingProgressBar.style.width = '100%';
-
-            // Show download
+            const videoUrl = data.result_url || (BASE.replace('/api','') + '/output/jobs/' + currentKlingJob + '/final_output.mp4');
             resultCard.classList.add('active');
-            resultVideo.src = data.result_url || ('/agentado/output/jobs/' + currentKlingJob + '/final_output.mp4');
-            downloadBtn.href = resultVideo.src;
+            resultVideo.src = videoUrl;
+            downloadBtn.href = videoUrl;
             window.scrollTo({ top: resultCard.offsetTop - 40, behavior: 'smooth' });
-
-            // Clear job from storage
             try { localStorage.removeItem('klingJob'); } catch(e) {}
-
-            // Try to email if address provided
-            const email = $('emailInput').value.trim();
-            if (email && email.includes('@')) {
-              klingStatusSub.textContent = 'Sending email notification…';
-              try {
-                await fetch('/agentado/api/email-video.php', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    job_id: currentKlingJob,
-                    email: email,
-                  }),
-                });
-                klingStatusSub.textContent = `Email sent to ${email} ✓`;
-              } catch(e) {
-                // Email is optional — don't break the flow
-              }
-            }
-
-            // Re-enable buttons
             generateBtn.disabled = false;
             klingBtn.disabled = false;
             emailOpt.style.display = 'none';
-
           } else if (data.status === 'failed') {
             clearInterval(klingPollTimer);
             klingStatusText.textContent = '❌ Generation Failed';
@@ -650,10 +606,8 @@
             klingBtn.disabled = false;
             try { localStorage.removeItem('klingJob'); } catch(e) {}
           }
-        } catch(e) {
-          // Polling error — ignore, will retry
-        }
-      }, 5000); // poll every 5 seconds
+        } catch(e) { /* polling retry */ }
+      }, 5000);
     }
 
     // Resume job from localStorage on page load
