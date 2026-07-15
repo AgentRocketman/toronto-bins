@@ -93,8 +93,6 @@
     .grid .thumb.dragging { opacity: 0.4; transform: scale(0.95); }
     .grid .thumb.drag-over { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
 
-    .options { margin-top: 24px; display: none; }
-    .options.active { display: block; }
 
     .option-group {
       background: var(--surface); border: 1px solid var(--border);
@@ -327,7 +325,7 @@
     const $ = id => document.getElementById(id);
     const uploadZone = $('uploadZone'), fileInput = $('fileInput');
     const previewSection = $('previewSection'), previewGrid = $('previewGrid'), photoCount = $('photoCount');
-    const options = $('options'), generateBtn = $('generateBtn');
+    const generateBtn = $('generateBtn');
     const progressCard = $('progressCard'), statusText = $('statusText'), statusSub = $('statusSub'), progressBar = $('progressBar');
     const errorBanner = $('errorBanner'), resultCard = $('resultCard'), resultVideo = $('resultVideo'), downloadBtn = $('downloadBtn');
     const tiktokResult = $('tiktokResult'), tiktokVideo = $('tiktokVideo'), tiktokDownloadBtn = $('tiktokDownloadBtn');
@@ -360,7 +358,6 @@
     function updateUI() {
       photoCount.textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''}`;
       previewSection.classList.toggle('active', photos.length > 0);
-      options.classList.toggle('active', photos.length > 0);
       generateBtn.disabled = photos.length < MIN_PHOTOS;
       toggleRealtorSection();
       generateBtn.textContent = photos.length >= MIN_PHOTOS ? '✨ Generate Walkthrough'
