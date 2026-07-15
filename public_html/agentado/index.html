@@ -159,6 +159,37 @@
     .generate-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 24px rgba(124,92,231,0.3); }
     .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
+    .gen-buttons { display: flex; gap: 10px; margin-top: 8px; }
+    .gen-buttons .generate-btn { flex: 1; margin-top: 0; }
+    .kling-btn {
+      background: linear-gradient(135deg, #1a1a2e, #16213e) !important;
+      border: 1px solid #60a5fa !important;
+      position: relative; overflow: hidden;
+    }
+    .kling-btn::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: conic-gradient(from 0deg, transparent, rgba(96,165,250,0.1), transparent, rgba(139,92,246,0.1), transparent);
+      animation: klingShine 3s linear infinite;
+    }
+    @keyframes klingShine { to { transform: rotate(360deg); } }
+    .kling-btn:disabled { opacity: 0.4; border-color: #4b5563 !important; }
+    .kling-btn:disabled::before { display: none; }
+
+    .email-opt {
+      margin-top: 14px; padding: 14px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius);
+    }
+    .email-opt label { display: block; font-weight: 600; margin-bottom: 6px; }
+    .email-opt input[type=email] {
+      width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--text); font-size: 0.95rem;
+    }
+    .email-opt .hint { display: block; margin-top: 6px; color: var(--muted); font-size: 0.8rem; }
+
+    .kling-progress .progress-bar-fill {
+      background: linear-gradient(90deg, #60a5fa, #8b5cf6);
+    }
+
     .progress-card {
       display: none; margin-top: 16px; background: var(--surface);
       border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center;
@@ -363,15 +394,33 @@
         <div class="toggle" id="togSatellite" onclick="toggleSatellite()"></div>
       </div>
 
-      <button class="generate-btn" id="generateBtn" disabled onclick="generate()">
-        ✨ Generate Walkthrough
-      </button>
+      <div class="gen-buttons">
+        <button class="generate-btn" id="generateBtn" disabled onclick="generate()">
+          ✨ Generate Walkthrough
+        </button>
+        <button class="generate-btn kling-btn" id="klingBtn" disabled onclick="generate3D()">
+          🎬 3D AI Cinematic
+        </button>
+      </div>
+      <div class="email-opt" id="emailOpt" style="display:none">
+        <label>📧 Get notified when ready (optional):</label>
+        <input type="email" id="emailInput" placeholder="your@email.com" />
+        <span class="hint">Leave the page — we'll email you the video</span>
+      </div>
     </div>
 
+    <!-- Ken Burns progress -->
     <div class="progress-card" id="progressCard">
       <div class="status-text" id="statusText"><span class="spinner"></span>Rendering...</div>
       <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
       <div class="status-sub" id="statusSub">Preparing...</div>
+    </div>
+
+    <!-- 3D Cinematic progress -->
+    <div class="progress-card kling-progress" id="klingProgressCard">
+      <div class="status-text" id="klingStatusText"><span class="spinner"></span>3D Cinematic Rendering...</div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="klingProgressBar"></div></div>
+      <div class="status-sub" id="klingStatusSub">Preparing...</div>
     </div>
 
     <div class="error-banner" id="errorBanner"></div>
@@ -428,6 +477,204 @@
       // voice change is captured when generating — stored in selectedVoice variable
     }
     function toggleSatellite() { showSatellite = !showSatellite; $('togSatellite').classList.toggle('on', showSatellite); }
+
+    // --- 3D AI CINEMATIC ---
+    let klingPollTimer = null;
+    let currentKlingJob = null;
+    const voiceSelect3D = $('voiceSelect');
+    const musicSelect3D = $('musicSelect');
+
+    async function generate3D() {
+      if (photos.length < MIN_PHOTOS) return;
+
+      // Disable both buttons
+      generateBtn.disabled = true;
+      klingBtn.disabled = true;
+
+      // Show email opt + kling progress
+      emailOpt.style.display = 'block';
+      klingProgressCard.classList.add('active');
+      klingStatusText.innerHTML = '<span class="spinner"></span>Preparing 3D cinematic video…';
+      klingProgressBar.style.width = '0%';
+      klingStatusSub.textContent = 'Uploading photos…';
+      errorBanner.classList.remove('active');
+      resultCard.classList.remove('active');
+
+      try {
+        // Prepare photo URLs (use img-proxy for external URLs)
+        const photoUrls = photos.map(p => {
+          if (p.url && p.url.startsWith('blob:')) return p.url;
+          return p.url || '';
+        });
+
+        // Upload blob photos
+        const finalUrls = [];
+        for (const p of photos) {
+          if (p.url && p.url.startsWith('blob:')) {
+            const blob = await fetch(p.url).then(r => r.blob());
+            const formData = new FormData();
+            formData.append('file', blob, 'photo.jpg');
+            finalUrls.push(p.url); // Keep blob URL — server will proxy
+          } else {
+            finalUrls.push(p.url || '');
+          }
+        }
+
+        // Build listing description for narration
+        const addr = listingInfo?.address || listingInfo?.addr || 'this beautiful property';
+        const desc = listingInfo?.title || listingInfo?.description ||
+          `Welcome to ${addr}. A stunning property with exceptional design and features.`;
+
+        klingStatusSub.textContent = 'Starting server-side generation…';
+        klingProgressBar.style.width = '2%';
+
+        const resp = await fetch('/agentado/api/start-3d-video.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            photos: finalUrls,
+            listing: listingInfo || {},
+            description: desc,
+            showVoiceOver,
+            voiceId: voiceSelect3D.value,
+            showMusic,
+            musicVibe: musicSelect3D.value,
+            showSubtitles,
+            showPriceIntro,
+            showPriceBar,
+            showContactSlide,
+          }),
+        });
+
+        if (!resp.ok) throw new Error('Failed to start job: ' + resp.status);
+
+        const job = await resp.json();
+        currentKlingJob = job.job_id;
+
+        // Save to localStorage for resume
+        try {
+          localStorage.setItem('klingJob', JSON.stringify({
+            jobId: job.job_id,
+            started: Date.now(),
+            photoCount: photos.length,
+          }));
+        } catch(e) {}
+
+        // Start polling
+        pollKlingJob();
+
+      } catch (e) {
+        klingStatusText.textContent = '❌ Failed';
+        klingStatusSub.textContent = e.message;
+        klingProgressBar.style.width = '0%';
+        generateBtn.disabled = false;
+        klingBtn.disabled = false;
+      }
+    }
+
+    function pollKlingJob() {
+      if (!currentKlingJob) return;
+
+      klingPollTimer = setInterval(async () => {
+        try {
+          const resp = await fetch('/agentado/api/check-3d-video.php?job=' + currentKlingJob);
+          const data = await resp.json();
+
+          // Update progress
+          const pct = data.status === 'completed' ? 100
+            : data.progress && data.total_clips
+              ? Math.round((data.completed_clips / data.total_clips) * 90)
+              : 0;
+          klingProgressBar.style.width = pct + '%';
+
+          const stageEmoji = {
+            'preparing': '⚙️',
+            'generating_clips': '🎬',
+            'scaling_clips': '📐',
+            'compositing': '🎞️',
+            'finalizing': '🔊',
+            'completed': '✅',
+            'failed': '❌',
+          };
+          const emoji = stageEmoji[data.status] || '🔄';
+          klingStatusText.innerHTML = `${emoji} ${data.stage || 'Processing…'}`;
+          klingStatusSub.textContent = data.status === 'generating_clips'
+            ? `AI clips: ${data.completed_clips}/${data.total_clips}`
+            : data.stage || '';
+
+          if (data.status === 'completed') {
+            clearInterval(klingPollTimer);
+            klingStatusText.innerHTML = '✅ 3D Cinematic Video Ready!';
+            klingStatusSub.textContent = 'Download below ↓';
+            klingProgressBar.style.width = '100%';
+
+            // Show download
+            resultCard.classList.add('active');
+            resultVideo.src = data.result_url || ('/agentado/output/jobs/' + currentKlingJob + '/final_output.mp4');
+            downloadBtn.href = resultVideo.src;
+            window.scrollTo({ top: resultCard.offsetTop - 40, behavior: 'smooth' });
+
+            // Clear job from storage
+            try { localStorage.removeItem('klingJob'); } catch(e) {}
+
+            // Try to email if address provided
+            const email = $('emailInput').value.trim();
+            if (email && email.includes('@')) {
+              klingStatusSub.textContent = 'Sending email notification…';
+              try {
+                await fetch('/agentado/api/email-video.php', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    job_id: currentKlingJob,
+                    email: email,
+                  }),
+                });
+                klingStatusSub.textContent = `Email sent to ${email} ✓`;
+              } catch(e) {
+                // Email is optional — don't break the flow
+              }
+            }
+
+            // Re-enable buttons
+            generateBtn.disabled = false;
+            klingBtn.disabled = false;
+            emailOpt.style.display = 'none';
+
+          } else if (data.status === 'failed') {
+            clearInterval(klingPollTimer);
+            klingStatusText.textContent = '❌ Generation Failed';
+            klingStatusSub.textContent = data.error || 'Unknown error';
+            klingProgressBar.style.width = '0%';
+            generateBtn.disabled = false;
+            klingBtn.disabled = false;
+            try { localStorage.removeItem('klingJob'); } catch(e) {}
+          }
+        } catch(e) {
+          // Polling error — ignore, will retry
+        }
+      }, 5000); // poll every 5 seconds
+    }
+
+    // Resume job from localStorage on page load
+    function resumeKlingJob() {
+      try {
+        const saved = localStorage.getItem('klingJob');
+        if (!saved) return;
+        const job = JSON.parse(saved);
+        // Only resume if less than 30 minutes old
+        if (Date.now() - job.started > 30 * 60 * 1000) {
+          localStorage.removeItem('klingJob');
+          return;
+        }
+        currentKlingJob = job.jobId;
+        klingProgressCard.classList.add('active');
+        klingStatusText.innerHTML = '<span class="spinner"></span>Resuming 3D cinematic…';
+        klingStatusSub.textContent = 'Checking job status…';
+        emailOpt.style.display = 'block';
+        pollKlingJob();
+      } catch(e) {}
+    }
     // Generate button — the real one lives in videoOptions section now
     // Keep both IDs referenced, alway sync disabled state below in updateUI()
 
@@ -440,8 +687,9 @@
     const $ = id => document.getElementById(id);
     const uploadZone = $('uploadZone'), fileInput = $('fileInput');
     const previewSection = $('previewSection'), previewGrid = $('previewGrid'), photoCount = $('photoCount');
-    const generateBtn = $('generateBtn');
+    const generateBtn = $('generateBtn'), klingBtn = $('klingBtn'), emailOpt = $('emailOpt');
     const progressCard = $('progressCard'), statusText = $('statusText'), statusSub = $('statusSub'), progressBar = $('progressBar');
+    const klingProgressCard = $('klingProgressCard'), klingStatusText = $('klingStatusText'), klingStatusSub = $('klingStatusSub'), klingProgressBar = $('klingProgressBar');
     const errorBanner = $('errorBanner'), resultCard = $('resultCard'), resultVideo = $('resultVideo'), downloadBtn = $('downloadBtn');
     const tiktokResult = $('tiktokResult'), tiktokVideo = $('tiktokVideo'), tiktokDownloadBtn = $('tiktokDownloadBtn');
 
@@ -473,10 +721,14 @@
     function updateUI() {
       photoCount.textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''}`;
       previewSection.classList.toggle('active', photos.length > 0);
-      generateBtn.disabled = photos.length < MIN_PHOTOS;
+      const canGen = photos.length >= MIN_PHOTOS;
+      generateBtn.disabled = !canGen;
+      klingBtn.disabled = !canGen;
       toggleRealtorSection();
-      generateBtn.textContent = photos.length >= MIN_PHOTOS ? '✨ Generate Walkthrough'
+      generateBtn.textContent = canGen ? '✨ Generate Walkthrough'
         : photos.length > 0 ? `✨ Add ${MIN_PHOTOS - photos.length} more` : '✨ Generate Walkthrough';
+      klingBtn.textContent = canGen ? '🎬 3D AI Cinematic'
+        : photos.length > 0 ? `🎬 Add ${MIN_PHOTOS - photos.length} more` : '🎬 3D AI Cinematic';
     }
 
     // --- DRAG-AND-DROP REORDER ---
@@ -607,7 +859,7 @@
     }
 
 
-    function showError(msg) { errorBanner.textContent = msg; errorBanner.classList.add('active'); progressCard.classList.remove('active'); generateBtn.disabled = false; }
+    function showError(msg) { errorBanner.textContent = msg; errorBanner.classList.add('active'); progressCard.classList.remove('active'); klingProgressCard.classList.remove('active'); generateBtn.disabled = false; klingBtn.disabled = false; if (klingPollTimer) { clearInterval(klingPollTimer); klingPollTimer = null; } }
     function updateProgress(text, pct) {
       progressCard.classList.add('active');
       const spinner = text === 'Done!' ? '✅' : '<span class="spinner"></span>';
@@ -2029,7 +2281,7 @@
       if (photos.length < MIN_PHOTOS) return;
 
       progressCard.classList.remove('active'); resultCard.classList.remove('active');
-      errorBanner.classList.remove('active'); generateBtn.disabled = true;
+      errorBanner.classList.remove('active'); generateBtn.disabled = true; klingBtn.disabled = true;
       progressBar.style.width = '0%';
 
       const style = STYLES[selectedStyle];
@@ -2348,7 +2600,7 @@
 
     function resetAll() {
       resultCard.classList.remove('active'); progressCard.classList.remove('active');
-      errorBanner.classList.remove('active'); clearAll(); generateBtn.disabled = true;
+      errorBanner.classList.remove('active'); clearAll(); generateBtn.disabled = true; klingBtn.disabled = true;
       listingInfo = null;
       $('listingInfo').classList.remove('active');
       // Clear editable inputs
@@ -2358,6 +2610,7 @@
 
     // Show realtor section on load
     toggleRealtorSection();
+    resumeKlingJob();
   </script>
 </body>
 </html>
