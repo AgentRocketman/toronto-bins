@@ -220,8 +220,7 @@
     }
 
     /* Realtor URL input */
-    .realtor-section { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: none; }
-    .realtor-section.active { display: block; }
+    .realtor-section { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
     .realtor-section h3 { font-size: 0.95rem; margin-bottom: 4px; }
     .realtor-section .sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 12px; }
     .realtor-row { display: flex; gap: 10px; }
@@ -444,6 +443,7 @@
   <footer>Powered by Agentado</footer>
 
   <script>
+    const $ = id => document.getElementById(id);
     const MIN_PHOTOS = 5;
     let photos = [], selectedStyle = 'auto', clipDuration = 3, includeTikTok = false;
     let selectedFraming = 'letterbox', selectedAddressOverlay = 'both', selectedRealtorOverlay = 'bar';
@@ -636,9 +636,8 @@
     let reflectBgCache = {}; // for Reflect mode
     let motionBgCache = {};  // for Motion Blur mode
     let imgFocalPoints = null; // focal points for Smart Center mode
-    let listingInfo = null; // { address, price, beds, baths, description, title, agent: {name, role, phone, website}, brokerage: {name, address} } from realtor.ca
+    let listingInfo = null;
 
-    const $ = id => document.getElementById(id);
     const uploadZone = $('uploadZone'), fileInput = $('fileInput');
     const previewSection = $('previewSection'), previewGrid = $('previewGrid'), photoCount = $('photoCount');
     const generateBtn = $('generateBtn'), klingBtn = $('klingBtn'), emailOpt = $('emailOpt');
@@ -646,6 +645,7 @@
     const klingProgressCard = $('klingProgressCard'), klingStatusText = $('klingStatusText'), klingStatusSub = $('klingStatusSub'), klingProgressBar = $('klingProgressBar');
     const errorBanner = $('errorBanner'), resultCard = $('resultCard'), resultVideo = $('resultVideo'), downloadBtn = $('downloadBtn');
     const tiktokResult = $('tiktokResult'), tiktokVideo = $('tiktokVideo'), tiktokDownloadBtn = $('tiktokDownloadBtn');
+    const realtorSection = $('realtorSection'), realtorUrlInput = $('realtorUrl'), realtorFetchBtn = $('realtorFetchBtn'), realtorStatus = $('realtorStatus');
 
     // --- UPLOAD ---
     uploadZone.addEventListener('click', () => fileInput.click());
@@ -2414,10 +2414,7 @@
     }
 
     // --- REALTOR.CA URL IMPORT ---
-    const realtorSection = document.getElementById('realtorSection');
-    const realtorUrlInput = document.getElementById('realtorUrl');
-    const realtorFetchBtn = document.getElementById('realtorFetchBtn');
-    const realtorStatus = document.getElementById('realtorStatus');
+
 
     // Show realtor section on page load (always visible when upload zone is shown)
     function toggleRealtorSection() {
