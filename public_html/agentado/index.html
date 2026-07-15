@@ -325,6 +325,11 @@
         <div class="toggle" id="togVoice" onclick="toggleVoice()"></div>
       </div>
 
+      <div class="toggle-row">
+        <span>🛰️ Satellite view <span class="soon-tag">soon</span></span>
+        <div class="toggle" id="togSatellite" onclick="toggleSatellite()"></div>
+      </div>
+
       <button class="generate-btn" id="generateBtn" disabled onclick="generate()">
         ✨ Generate Walkthrough
       </button>
@@ -363,7 +368,7 @@
 
     // Video option toggles (all ON by default for price/address/contact)
     let showPriceIntro = true, showPriceBar = true, showContactSlide = true;
-    let showSubtitles = false, showMusic = false, showVoiceOver = false;
+    let showSubtitles = false, showMusic = false, showVoiceOver = false, showSatellite = false;
 
     function syncOverlayModes() {
       if (showPriceIntro && showPriceBar) selectedAddressOverlay = 'both';
@@ -381,6 +386,7 @@
     function toggleSubtitles() { showSubtitles = !showSubtitles; $('togSubtitles').classList.toggle('on', showSubtitles); }
     function toggleMusic() { showMusic = !showMusic; $('togMusic').classList.toggle('on', showMusic); }
     function toggleVoice() { showVoiceOver = !showVoiceOver; $('togVoice').classList.toggle('on', showVoiceOver); }
+    function toggleSatellite() { showSatellite = !showSatellite; $('togSatellite').classList.toggle('on', showSatellite); }
     // Generate button — the real one lives in videoOptions section now
     // Keep both IDs referenced, alway sync disabled state below in updateUI()
 
