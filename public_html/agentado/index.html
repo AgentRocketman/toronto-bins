@@ -1362,8 +1362,8 @@
     }
 
 // --- SUBTITLE GENERATION ---
-    // Calls AI rewrite endpoint to transform raw description → engaging subtitle phrases,
-    // then distributes them across photos. Falls back to raw text chunking on error.
+    // Calls AI rewrite endpoint to transform raw description → engaging narrative phrases.
+    // Returns flat array of strings (no per-photo grouping). Falls back to raw text chunking.
     async function generateSubtitles(description, numPhotos) {
       if (!description || !description.trim()) return null;
 
@@ -1383,7 +1383,6 @@
           }
         }
       } catch (e) {
-        // Silently fall back to raw text
         console.warn('Subtitle AI rewrite failed, using raw description:', e.message);
       }
 
@@ -1398,34 +1397,51 @@
           let i = 0;
           while (i < words.length) {
             const remaining = words.length - i;
-            const chunkSize = (remaining >= 3 && remaining <= 4) ? remaining : Math.min(3, remaining);
+            const chunkSize = (remaining >= 5 && remaining <= 8) ? remaining : Math.min(5, remaining);
             phrases.push(words.slice(i, i + chunkSize).join(' '));
             i += chunkSize;
           }
         }
       }
 
-      if (!phrases || phrases.length === 0) return null;
+      return (phrases && phrases.length > 0) ? phrases : null;
+    }
 
-      // Distribute phrases across photos as evenly as possible
-      const chunksPerPhoto = Math.max(1, Math.ceil(phrases.length / numPhotos));
-      const subtitles = [];
-      for (let p = 0; p < numPhotos; p++) {
-        const start = p * chunksPerPhoto;
-        const end = Math.min(start + chunksPerPhoto, phrases.length);
-        if (start < phrases.length) {
-          subtitles.push(phrases.slice(start, end));
-        } else {
-          subtitles.push([]);
+// --- SUBTITLE TIMING COMPUTATION ---
+    // Given flat phrases + either audioDuration OR totalFrames, produce timed subtitle objects
+    function computeSubtitleTiming(phrases, totalFrames, audioDuration, fps) {
+      if (!phrases || phrases.length === 0) return null;
+      const n = phrases.length;
+      const timed = [];
+
+      if (audioDuration && audioDuration > 0 && fps > 0) {
+        // Voice-over present: time each phrase from audio duration
+        const secPerPhrase = audioDuration / n;
+        for (let i = 0; i < n; i++) {
+          timed.push({
+            text: phrases[i],
+            startFrame: Math.round(i * secPerPhrase * fps),
+            endFrame: Math.round((i + 1) * secPerPhrase * fps),
+          });
+        }
+      } else {
+        // No voice-over: distribute evenly across video frames
+        const framesPerPhrase = totalFrames / n;
+        for (let i = 0; i < n; i++) {
+          timed.push({
+            text: phrases[i],
+            startFrame: Math.round(i * framesPerPhrase),
+            endFrame: Math.round((i + 1) * framesPerPhrase),
+          });
         }
       }
-      return subtitles;
+      return timed;
     }
 
 
     // --- MAIN PIXIJS RENDER PIPELINE ---
     // useMP4=false → MediaRecorder WebM fallback (Firefox/Safari)
-    async function renderVideoPixi(imgs, style, canvas, onProgress, useMP4, info, addrMode, infoMode, subtitles, audioBuffer) {
+    async function renderVideoPixi(imgs, style, canvas, onProgress, useMP4, info, addrMode, infoMode, phrases, audioBuffer) {
       const cw = canvas.width, ch = canvas.height;
 
       // Init PixiJS
@@ -1499,30 +1515,6 @@
       if (riIntro) { realtorIntro = makeRealtorIntro(info, cw, ch); if (realtorIntro) { realtorIntro.alpha = 0; app.stage.addChild(realtorIntro); } }
       if (addrBar || riBar) { bottomBar = makeBottomBar(info, cw, ch); if (bottomBar) { bottomBar.alpha = 0; app.stage.addChild(bottomBar); } }
 
-      // Subtitle text sprite — social-media style: bold, large, white with thick stroke
-      let subtitleText = null;
-      if (subtitles) {
-        const subFontSize = Math.round(ch * 0.075); // 7.5% of frame height (social media sweet spot)
-        subtitleText = new PIXI.Text('', {
-          fontFamily: 'Poppins, -apple-system, SF Pro Rounded, system-ui, sans-serif',
-          fontSize: subFontSize,
-          fontWeight: '800',
-          fill: '#ffffff',
-          stroke: '#000000',
-          strokeThickness: Math.round(subFontSize * 0.14),
-          lineJoin: 'round',
-          align: 'center',
-          wordWrap: true,
-          wordWrapWidth: cw * 0.85,
-          letterSpacing: 1.5,
-        });
-        subtitleText.anchor.set(0.5, 0.5);
-        subtitleText.x = cw / 2;
-        subtitleText.y = ch * 0.82;
-        subtitleText.alpha = 0;
-        app.stage.addChild(subtitleText);
-      }
-
       // End card (agent photo + full contact info, shown after all photo clips)
       const END_CARD_DUR = 4.0;
       let endCard = null;
@@ -1555,6 +1547,53 @@
       }
       let totalFrames = 0;
       for (let c = 0; c < totalClips; c++) totalFrames += clipLen[c];
+
+      // If voice-over audio is present, stretch/shrink video to match audio duration
+      let subtitles = null;
+      if (phrases && phrases.length > 0) {
+        subtitles = computeSubtitleTiming(phrases, totalFrames, audioBuffer ? audioBuffer.duration : 0, fps);
+      }
+
+      // Scale all clip lengths so total video time ≈ audio duration (when voice-over is active)
+      if (audioBuffer && audioBuffer.duration > 0) {
+        const audioFrames = Math.round(audioBuffer.duration * fps);
+        if (audioFrames > 0 && audioFrames !== totalFrames) {
+          const scale = audioFrames / totalFrames;
+          let scaledTotal = 0;
+          for (let c = 0; c < totalClips; c++) {
+            clipLen[c] = Math.max(1, Math.round(clipLen[c] * scale));
+            scaledTotal += clipLen[c];
+          }
+          // Absorb rounding error into last clip
+          const drift = audioFrames - scaledTotal;
+          if (drift !== 0 && totalClips > 0) clipLen[totalClips - 1] += drift;
+          totalFrames = audioFrames;
+        }
+      }
+
+      // Subtitle text sprite — created now that we know if subtitles exist
+      let subtitleText = null;
+      if (subtitles) {
+        const subFontSize = Math.round(ch * 0.075);
+        subtitleText = new PIXI.Text('', {
+          fontFamily: 'Poppins, -apple-system, SF Pro Rounded, system-ui, sans-serif',
+          fontSize: subFontSize,
+          fontWeight: '800',
+          fill: '#ffffff',
+          stroke: '#000000',
+          strokeThickness: Math.round(subFontSize * 0.14),
+          lineJoin: 'round',
+          align: 'center',
+          wordWrap: true,
+          wordWrapWidth: cw * 0.85,
+          letterSpacing: 1.5,
+        });
+        subtitleText.anchor.set(0.5, 0.5);
+        subtitleText.x = cw / 2;
+        subtitleText.y = ch * 0.82;
+        subtitleText.alpha = 0;
+        app.stage.addChild(subtitleText);
+      }
 
       // Video output setup
 
@@ -1849,29 +1888,32 @@
         }
 
         // --- Subtitle rendering ---
-        if (subtitleText && subtitles && clipIdx < photoCount) {
-          const clipChunks = subtitles[clipIdx];
-          if (clipChunks && clipChunks.length > 0) {
-            const nChunks = clipChunks.length;
-            const chunkDuration = clen / nChunks;
-            const chunkIdx = Math.min(Math.floor(frameInClip / chunkDuration), nChunks - 1);
-            const chunkLocal = (frameInClip - chunkIdx * chunkDuration) / chunkDuration; // 0..1
-            const FADE_IN = 0.18, FADE_OUT = 0.22;
-            let chunkAlpha = 1;
-            if (chunkLocal < FADE_IN) chunkAlpha = chunkLocal / FADE_IN;
-            else if (chunkLocal > 1 - FADE_OUT) chunkAlpha = (1 - chunkLocal) / FADE_OUT;
+        // subtitles is now [{text, startFrame, endFrame}] — flat, frame-timed
+        if (subtitleText && subtitles) {
+          let shown = false;
+          for (let si = 0; si < subtitles.length; si++) {
+            const sub = subtitles[si];
+            if (f >= sub.startFrame && f < sub.endFrame) {
+              const localDur = sub.endFrame - sub.startFrame;
+              const localFrame = f - sub.startFrame;
+              const localFrac = localDur > 0 ? localFrame / localDur : 0;
+              const FADE_IN = 0.12, FADE_OUT = 0.12;
+              let alpha = 1;
+              if (localFrac < FADE_IN) alpha = localFrac / FADE_IN;
+              else if (localFrac > 1 - FADE_OUT) alpha = (1 - localFrac) / FADE_OUT;
 
-            // Update text only on first frame of each chunk to avoid repeated setText
-            let prevChunk = subtitleText._lastChunk || -1;
-            if (chunkIdx !== prevChunk || frameInClip === 0) {
-              subtitleText.text = clipChunks[chunkIdx];
-              subtitleText._lastChunk = chunkIdx;
+              const prevChunk = subtitleText._lastChunk;
+              if (si !== prevChunk) {
+                subtitleText.text = sub.text;
+                subtitleText._lastChunk = si;
+              }
+              subtitleText.alpha = alpha;
+              subtitleText.visible = true;
+              shown = true;
+              break;
             }
-            subtitleText.alpha = chunkAlpha;
-            subtitleText.visible = true;
-          } else {
-            subtitleText.visible = false;
           }
+          if (!shown) subtitleText.visible = false;
         } else if (subtitleText) {
           subtitleText.visible = false;
         }
@@ -2009,20 +2051,16 @@
         c16x9.width = 1920; c16x9.height = 1080;
 
         updateProgress('Generating subtitles...', 10);
-        const subtitles = showSubtitles ? await generateSubtitles(listingInfo?.description || '', imgs.length) : null;
+        const phrases = showSubtitles ? await generateSubtitles(listingInfo?.description || '', imgs.length) : null;
 
         // Generate voice-over audio if enabled and we have subtitles
         let audioBuffer = null;
-        if (showVoiceOver && subtitles && subtitles.length > 0) {
+        if (showVoiceOver && phrases && phrases.length > 0) {
           updateProgress('Generating voice-over...', 11);
           try {
-            const allPhrases = subtitles.flat().filter(p => p && p.trim());
-            if (allPhrases.length > 0) {
-              const voiceText = allPhrases.join('. ') + '.';
-              const voiceId = $('voiceSelect').value;
-              audioBuffer = await fetchTTS(voiceText, voiceId);
-              console.log('Voice-over ready:', audioBuffer.duration.toFixed(1) + 's,', allPhrases.length, 'phrases');
-            }
+            const voiceText = phrases.join('. ') + '.';
+            audioBuffer = await fetchTTS(voiceText, $('voiceSelect').value);
+            console.log('Voice-over ready:', audioBuffer.duration.toFixed(1) + 's,', phrases.length, 'phrases');
           } catch (e) {
             console.warn('Voice-over generation failed, continuing without audio:', e.message);
             audioBuffer = null;
@@ -2032,7 +2070,7 @@
         updateProgress(useMP4 ? 'Rendering MP4...' : 'Rendering WebM...', 10);
         const blob16x9 = await renderVideoPixi(imgs, style, c16x9,
           pct => updateProgress(useMP4 ? 'Rendering MP4...' : 'Rendering WebM...', pct), useMP4,
-          listingInfo, selectedAddressOverlay, selectedRealtorOverlay, subtitles, audioBuffer);
+          listingInfo, selectedAddressOverlay, selectedRealtorOverlay, phrases, audioBuffer);
 
         updateProgress('Finalizing...', 93);
         const ext = useMP4 ? 'mp4' : 'webm';
@@ -2049,7 +2087,7 @@
           c9x16.width = 1080; c9x16.height = 1920;
           const blob9x16 = await renderVideoPixi(imgs, style, c9x16,
             pct => updateProgress('Rendering Reel...', 15 + pct*0.8), useMP4,
-            listingInfo, selectedAddressOverlay, selectedRealtorOverlay, subtitles, audioBuffer);
+            listingInfo, selectedAddressOverlay, selectedRealtorOverlay, phrases, audioBuffer);
           const url9x16 = URL.createObjectURL(blob9x16);
           tiktokResult.style.display = 'block';
           tiktokVideo.src = url9x16;

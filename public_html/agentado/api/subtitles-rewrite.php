@@ -29,9 +29,18 @@ if (!$description || strlen($description) < 10) {
 require_once __DIR__ . '/../../api/config.php'; // OPENAI_API_KEY
 
 $prompt = <<<PROMPT
-You are a luxury real estate copywriter writing subtitles for a video walkthrough. 
+You are a luxury real estate tour guide narrating a video walkthrough. Your job is to tell a STORY — not list features.
 
-Take this property description and rewrite it into a flat JSON array of short, punchy subtitle phrases. Each phrase must be exactly 3-4 words. Sound like someone casually narrating a walkthrough — natural, attractive, pointing out the best features and facts. No fluff. No markdown. Just the array.
+Take this property description and produce a flat JSON array of narrative subtitle phrases. Each phrase should:
+- Flow naturally like spoken narration (not a bullet list)
+- Weave specs and features INTO the story ("The chef's kitchen boasts marble counters" not "Marble counters. Chef's kitchen.")
+- Be 5-8 words long — conversational, not choppy
+- Vary rhythm: some short and dramatic, others more descriptive
+- Move through the home like you're walking someone through it
+
+Start with a warm welcome, tour the key rooms, and close with an inviting send-off. The viewer should feel like they're being guided through the home by someone who loves it.
+
+Return ONLY a JSON array of strings. No markdown, no explanation.
 
 Description:
 $description
@@ -49,11 +58,11 @@ curl_setopt_array($ch, [
     CURLOPT_POSTFIELDS => json_encode([
         'model'       => 'gpt-4o-mini',
         'messages'    => [
-            ['role' => 'system', 'content' => 'You are a luxury real estate copywriter. You respond ONLY with valid JSON arrays. No explanations, no markdown, no code fences.'],
+            ['role' => 'system', 'content' => 'You are a real estate tour guide who narrates walkthrough videos. You respond ONLY with valid JSON arrays of strings. No explanations, no markdown, no code fences.'],
             ['role' => 'user', 'content' => $prompt],
         ],
         'temperature' => 0.7,
-        'max_tokens'  => 600,
+        'max_tokens'  => 900,
     ]),
 ]);
 
