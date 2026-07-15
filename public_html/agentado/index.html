@@ -334,10 +334,11 @@
       </div>
       <div class="voice-selector" id="musicSelector" style="display:none">
         <select id="musicSelect" onchange="onMusicChange()">
-          <option value="elegant-piano">🎹 Elegant Piano — warm, sophisticated</option>
-          <option value="upbeat-modern">🎸 Upbeat Modern — bright &amp; fresh</option>
-          <option value="chill-ambient">🌿 Chill Ambient — relaxed atmosphere</option>
+          <option value="elegant-piano">🎹 Elegant Piano — warm &amp; refined</option>
+          <option value="upbeat-modern">🎸 Bright &amp; Fresh — modern &amp; inviting</option>
+          <option value="chill-ambient">🌿 Serene Ambient — calm &amp; peaceful</option>
           <option value="cinematic">🎬 Cinematic — sweeping &amp; grand</option>
+          <option value="smooth-jazz">🎷 Smooth Jazz — sophisticated lounge</option>
           <option value="none">🔇 No Music</option>
         </select>
       </div>
@@ -1372,20 +1373,34 @@
     }
 
 // --- BACKGROUND MUSIC ---
-    // Music track manifest — MP3 files hosted statically on the server
-    const MUSIC_TRACKS = {
-      'elegant-piano': { file: '/agentado/music/elegant-piano.mp3', label: 'Elegant Piano' },
-      'upbeat-modern': { file: '/agentado/music/upbeat-modern.mp3', label: 'Upbeat Modern' },
-      'chill-ambient': { file: '/agentado/music/chill-ambient.mp3', label: 'Chill Ambient' },
-      'cinematic':   { file: '/agentado/music/cinematic.mp3',   label: 'Cinematic' },
+    // Music prompt templates — each vibe maps to an ElevenLabs Music generation prompt
+    const MUSIC_PROMPTS = {
+      'elegant-piano': 'Elegant, warm solo piano piece with gentle arpeggios and soft chords. Sophisticated ambiance for a luxury home tour. Flowing and calm, no percussion. Timeless and refined.',
+      'upbeat-modern': 'Bright, uplifting acoustic guitar with light percussion and warm bass. Fresh, modern, positive energy. Clean production for a contemporary property walkthrough. Breezy and inviting.',
+      'chill-ambient': 'Serene, atmospheric ambient piece with soft pads, gentle textures, and subtle melodic fragments. Calming spa-like feel. Floating and peaceful background music with no sharp transients.',
+      'cinematic':   'Cinematic orchestral swell with warm strings and soft brass. Slow, sweeping, emotional. Grand and inspiring without being overpowering. Perfect for showcasing magnificent spaces.',
+      'smooth-jazz': 'Smooth lounge jazz with soft piano chords, walking bass, and light brush drums. Relaxed and sophisticated. Perfect for upscale evening ambiance. Warm and inviting.',
     };
 
-    // Fetch a music track, decode to AudioBuffer
-    async function fetchMusic(musicId) {
-      const track = MUSIC_TRACKS[musicId];
-      if (!track) return null;
-      const resp = await fetch(track.file);
-      if (!resp.ok) throw new Error(`Music fetch failed: ${resp.status}`);
+    // Rough estimate of video duration in seconds (used for music length when no voice-over)
+    function estimatedVideoDuration() {
+      // AUTO_SCENES avg ~5s per scene, 10 scenes = ~50s, plus end card
+      return imgs.length * 5 + 4;
+    }
+
+    // Fetch music from ElevenLabs Music API — generates instrumental background music from a vibe prompt
+    async function fetchMusic(musicId, durationMs = 60000) {
+      const prompt = MUSIC_PROMPTS[musicId];
+      if (!prompt) return null;
+      const resp = await fetch('/agentado/api/elevenlabs-music.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, duration_ms: durationMs }),
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.detail || `Music API failed: ${resp.status}`);
+      }
       const arrayBuffer = await resp.arrayBuffer();
       const audioCtx = new AudioContext();
       const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
@@ -2131,20 +2146,21 @@
         // Fetch and mix background music if enabled
         const selectedMusic = $('musicSelect').value;
         if (showMusic && selectedMusic !== 'none') {
-          updateProgress('Mixing background music...', 12);
+          updateProgress('Generating background music...', 12);
           try {
-            const musicBuffer = await fetchMusic(selectedMusic);
+            // Generate music matched to voice-over duration (plus 5s padding for fades)
+            const musicDurationMs = audioBuffer
+              ? Math.round((audioBuffer.duration + 5) * 1000)
+              : Math.round(estimatedVideoDuration() * 1000) || 60000;
+            const musicBuffer = await fetchMusic(selectedMusic, musicDurationMs);
             if (musicBuffer && audioBuffer) {
               // Voice + music: mix together with music ducked
               audioBuffer = await mixAudio(audioBuffer, musicBuffer);
               console.log('Music mixed:', selectedMusic, '→', audioBuffer.duration.toFixed(1) + 's');
-            } else if (musicBuffer && phrases) {
+            } else if (musicBuffer) {
               // Music only (no voice-over): just use the music track
-              // Trim to estimated video duration
               audioBuffer = musicBuffer;
               console.log('Music only (no voice-over):', selectedMusic, '→', audioBuffer.duration.toFixed(1) + 's');
-            } else if (musicBuffer) {
-              audioBuffer = musicBuffer;
             }
           } catch (e) {
             console.warn('Background music failed, continuing without:', e.message);
