@@ -117,6 +117,15 @@
       border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px;
     }
     .toggle-row span { font-weight: 600; font-size: 0.9rem; }
+    .toggle-row span.hint { font-weight: 400; font-size: 0.78rem; color: var(--muted); margin-left: 4px; }
+    .video-options {
+      margin-top: 16px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 20px;
+    }
+    .video-options h3 { font-size: 0.95rem; margin-bottom: 14px; }
+    .video-options .toggle-row { margin-bottom: 8px; }
+    .video-options .toggle-row:last-of-type { margin-bottom: 0; }
+    .video-options .soon-tag { font-size: 0.7rem; background: var(--border); color: var(--muted); padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
     .toggle {
       width: 48px; height: 28px; background: var(--border);
       border-radius: 14px; position: relative; cursor: pointer; transition: background 0.2s;
@@ -282,9 +291,44 @@
       </div>
     </div>
 
-    <button class="generate-btn" id="generateBtn" disabled onclick="generate()">
-      ✨ Generate Walkthrough
-    </button>
+    <!-- Video Generation Options -->
+    <div class="video-options" id="videoOptions">
+      <h3>🎬 Video Options</h3>
+
+      <div class="toggle-row">
+        <span>📍 Price &amp; address on intro</span>
+        <div class="toggle on" id="togPriceIntro" onclick="togglePriceIntro()"></div>
+      </div>
+
+      <div class="toggle-row">
+        <span>📌 Price &amp; address throughout</span>
+        <div class="toggle on" id="togPriceBar" onclick="togglePriceBar()"></div>
+      </div>
+
+      <div class="toggle-row">
+        <span>🪪 Agent contact on last slide</span>
+        <div class="toggle on" id="togContactSlide" onclick="toggleContactSlide()"></div>
+      </div>
+
+      <div class="toggle-row">
+        <span>💬 AI video-optimized subtitles <span class="soon-tag">soon</span></span>
+        <div class="toggle" id="togSubtitles" onclick="toggleSubtitles()"></div>
+      </div>
+
+      <div class="toggle-row">
+        <span>🎵 Background music <span class="soon-tag">soon</span></span>
+        <div class="toggle" id="togMusic" onclick="toggleMusic()"></div>
+      </div>
+
+      <div class="toggle-row">
+        <span>🎙️ Natural speech voice-over <span class="soon-tag">soon</span></span>
+        <div class="toggle" id="togVoice" onclick="toggleVoice()"></div>
+      </div>
+
+      <button class="generate-btn" id="generateBtn" disabled onclick="generate()">
+        ✨ Generate Walkthrough
+      </button>
+    </div>
 
     <div class="progress-card" id="progressCard">
       <div class="status-text" id="statusText"><span class="spinner"></span>Rendering...</div>
@@ -315,7 +359,31 @@
   <script>
     const MIN_PHOTOS = 5;
     let photos = [], selectedStyle = 'auto', clipDuration = 3, includeTikTok = false;
-    let selectedFraming = 'letterbox', selectedAddressOverlay = 'both', selectedRealtorOverlay = 'both';
+    let selectedFraming = 'letterbox', selectedAddressOverlay = 'both', selectedRealtorOverlay = 'bar';
+
+    // Video option toggles (all ON by default for price/address/contact)
+    let showPriceIntro = true, showPriceBar = true, showContactSlide = true;
+    let showSubtitles = false, showMusic = false, showVoiceOver = false;
+
+    function syncOverlayModes() {
+      if (showPriceIntro && showPriceBar) selectedAddressOverlay = 'both';
+      else if (showPriceIntro) selectedAddressOverlay = 'intro';
+      else if (showPriceBar) selectedAddressOverlay = 'bar';
+      else selectedAddressOverlay = 'none';
+      selectedRealtorOverlay = showContactSlide ? 'bar' : 'none';
+    }
+    syncOverlayModes();
+
+    // Toggle handlers
+    function togglePriceIntro() { showPriceIntro = !showPriceIntro; $('togPriceIntro').classList.toggle('on', showPriceIntro); syncOverlayModes(); }
+    function togglePriceBar() { showPriceBar = !showPriceBar; $('togPriceBar').classList.toggle('on', showPriceBar); syncOverlayModes(); }
+    function toggleContactSlide() { showContactSlide = !showContactSlide; $('togContactSlide').classList.toggle('on', showContactSlide); syncOverlayModes(); }
+    function toggleSubtitles() { showSubtitles = !showSubtitles; $('togSubtitles').classList.toggle('on', showSubtitles); }
+    function toggleMusic() { showMusic = !showMusic; $('togMusic').classList.toggle('on', showMusic); }
+    function toggleVoice() { showVoiceOver = !showVoiceOver; $('togVoice').classList.toggle('on', showVoiceOver); }
+    // Generate button — the real one lives in videoOptions section now
+    // Keep both IDs referenced, alway sync disabled state below in updateUI()
+
     let blurredBgCache = {}; // keyed by image index for Blur Fill mode
     let reflectBgCache = {}; // for Reflect mode
     let motionBgCache = {};  // for Motion Blur mode
