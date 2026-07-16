@@ -379,7 +379,7 @@ function createAssFile($phrases, $duration, $jobDir) {
 
     $ass = "[Script Info]\nTitle: Agentado Subtitles\nScriptType: v4.00+\nWrapStyle: 0\nScaledBorderAndShadow: yes\nPlayResX: 1280\nPlayResY: 720\n\n";
     $ass .= "[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n";
-    $ass .= "Style: Default,Poppins,54,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,1.5,0,1,7.5,0,2,40,40,140,1\n\n";
+    $ass .= "Style: Default,Poppins,27,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,1.5,0,1,7.5,0,2,40,40,140,1\n\n";
     $ass .= "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n";
 
     $start = 0;

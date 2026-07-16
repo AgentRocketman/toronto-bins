@@ -36,12 +36,12 @@ ctx = ImageDraw.Draw(intro)
 
 # Gradient overlay at bottom
 for y in range(H):
-    if y < H * 0.50:
+    if y < H * 0.70:
         alpha = 0
-    elif y < H * 0.62:
-        alpha = int(255 * 0.55 * (y - H*0.50) / (H*0.12))
+    elif y < H * 0.75:
+        alpha = int(255 * 0.55 * (y - H*0.70) / (H*0.05))
     else:
-        t = (y - H*0.62) / (H*0.38)
+        t = (y - H*0.75) / (H*0.25)
         alpha = int(255 * (0.55 + 0.25 * min(t, 1.0)))
     if alpha > 0:
         ctx.line([(0, y), (W, y)], fill=(0, 0, 0, min(alpha, 255)))
@@ -49,8 +49,8 @@ for y in range(H):
 # Price — green
 fs_price = 72
 pf = ImageFont.truetype(B, fs_price)
-ctx.text((W//2+3, int(H*0.54)+3), PRICE, fill=(0,0,0,120), font=pf, anchor='mm')
-ctx.text((W//2, int(H*0.54)), PRICE, fill=(34,197,94,255), font=pf, anchor='mm')
+ctx.text((W//2+3, int(H*0.80)+3), PRICE, fill=(0,0,0,120), font=pf, anchor='mm')
+ctx.text((W//2, int(H*0.80)), PRICE, fill=(34,197,94,255), font=pf, anchor='mm')
 
 # Address
 addr_fs = 30
@@ -69,7 +69,7 @@ for w in words:
         line = test
 lines.append(line)
 
-addr_y = int(H*0.54 + fs_price * 1.1)
+addr_y = int(H*0.80 + fs_price * 1.1)
 for i, ln in enumerate(lines):
     ctx.text((W//2, addr_y + i*33), ln, fill=(255,255,255,255), font=af, anchor='mm')
 
