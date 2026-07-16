@@ -41,13 +41,17 @@ while true; do
             HTTP_CODE=$(curl -s -o /dev/null -w '%{http_code}' \
                 -X POST "$UPDATE_URL" \
                 -H 'Content-Type: application/json' \
-                -d "{\"url\":\"$NEW_URL\",\"token\":\"$TOKEN\"}" 2>/dev/null || echo '000')
+                -d "{\"url\":\"$NEW_URL\",\"token\":\"$TOKEN\",\"type\":\"preview\"}" 2>/dev/null || echo '000')
 
             if [ "$HTTP_CODE" = "200" ]; then
                 echo "$(date) Hostinger config auto-updated: $NEW_URL"
             else
                 echo "$(date) WARNING: Hostinger update returned HTTP $HTTP_CODE"
             fi
+            
+            # Also update local tunnel-preview-url.txt for tunnel-config.php to read
+            LOCAL_PREVIEW_FILE="/data/.openclaw/workspace/public_html/agentado/api/video/tunnel-preview-url.txt"
+            echo "$NEW_URL" > "$LOCAL_PREVIEW_FILE"
         fi
     fi
 

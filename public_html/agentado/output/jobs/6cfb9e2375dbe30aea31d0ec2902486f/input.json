@@ -1,0 +1,38 @@
+{
+    "photos": [
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986626700000%2Freb82%2Fhighres%2F2%2Fw13571242_1.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986626700000%2Freb82%2Fhighres%2F2%2Fw13571242_4.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986626700000%2Freb82%2Fhighres%2F2%2Fw13571242_5.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986626700000%2Freb82%2Fhighres%2F2%2Fw13571242_8.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986626700000%2Freb82%2Fhighres%2F2%2Fw13571242_9.jpg"
+    ],
+    "listing": {
+        "title": "3503 - 3525 KARIYA DRIVE Mississauga (Fairview), Ontario L5B0C2",
+        "address": "3503 - 3525 KARIYA DRIVE Mississauga (Fairview), Ontario L5B0C2",
+        "price": "$599,000",
+        "beds": "2 + 1",
+        "baths": "2",
+        "sqft": "900 - 999 sqft",
+        "description": "Luxurious 2 Bedroom + Den, 2 Full Bath Suite In The Heart Of Mississauga Featuring Spectacular Unobstructed Views. Freshly Painted Throughout. Bright Open-Concept Layout With Floor-To-Ceiling Windows Providing Abundant Natural Light. Modern Kitchen With Stainless Steel Appliances And Granite Countertops. Spacious Living Area And Generous-Sized Bedrooms. Rare 2 Side-By-Side Parking Spaces Plus Locker. Enjoy Premium Building Amenities Including 24-Hour Concierge, Indoor Pool, Sauna, Fitness Centre, Guest Suites, Media Room, Games Room, Rooftop Garden And More. Prime Location Within Walking Distance To Square One, GO Transit, Central Library, Celebration Square, Civic Centre, YMCA, Parks, Schools, Restaurants And Entertainment. Convenient Access To Major Highways And The Upcoming Hurontario LRT Connecting Mississauga And Brampton. Exceptional Opportunity For End Users And Investors Alike. (43613029)",
+        "agent": {
+            "name": "Greg Evans",
+            "role": "Broker of Record",
+            "phone": "416-636-8898",
+            "photo": "https:\/\/cdn.realtor.ca\/individuals\/TS637865795400000000\/highres\/1201144.jpg",
+            "website": "http:\/\/www.thebehargroup.com\/"
+        },
+        "brokerage": {
+            "name": "THE BEHAR GROUP REALTY INC.",
+            "address": "1170 SHEPPARD AVENUE W #25, TORONTO, Ontario M3K2A3"
+        }
+    },
+    "description": "3503 - 3525 KARIYA DRIVE Mississauga (Fairview), Ontario L5B0C2",
+    "showVoiceOver": true,
+    "voiceId": "21m00Tcm4TlvDq8ikWAM",
+    "showMusic": false,
+    "musicVibe": "elegant-piano",
+    "showSubtitles": true,
+    "showPriceIntro": true,
+    "showPriceBar": true,
+    "showContactSlide": true
+}

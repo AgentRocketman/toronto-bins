@@ -1,0 +1,38 @@
+{
+    "photos": [
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639142877057870000%2Freb82%2Fhighres%2F4%2Fw13124324_1.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639142877057870000%2Freb82%2Fhighres%2F4%2Fw13124324_2.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639142877057870000%2Freb82%2Fhighres%2F4%2Fw13124324_3.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639142877057870000%2Freb82%2Fhighres%2F4%2Fw13124324_4.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639142877057870000%2Freb82%2Fhighres%2F4%2Fw13124324_33.jpg"
+    ],
+    "listing": {
+        "title": "8070 HORNBY ROAD Halton Hills (Rural Halton Hills), Ontario L0P1E0",
+        "address": "8070 HORNBY ROAD Halton Hills (Rural Halton Hills), Ontario L0P1E0",
+        "price": "$3,970,000",
+        "beds": "2 + 4",
+        "baths": "4",
+        "sqft": "2000 - 2500 sqft",
+        "description": "A rare and highly coveted live\/work residence offering exceptional scale and flexibility. This stunning, sprawling 3,500 sq. ft. bungalow features 5 spacious bedrooms and 4 well-appointed bathrooms, designed for elevated living and effortless functionality. The property boasts two separate legal driveways with direct access to the rear yard and a heated, ",
+        "agent": {
+            "name": "Daniel Tombolillo",
+            "role": "Salesperson",
+            "phone": "905-856-8111",
+            "photo": null,
+            "website": ""
+        },
+        "brokerage": {
+            "name": "VANGUARD REALTY BROKERAGE CORP.",
+            "address": "668 MILLWAY AVE #6, VAUGHAN, Ontario L4K3V2"
+        }
+    },
+    "description": "8070 HORNBY ROAD Halton Hills (Rural Halton Hills), Ontario L0P1E0",
+    "showVoiceOver": false,
+    "voiceId": "21m00Tcm4TlvDq8ikWAM",
+    "showMusic": false,
+    "musicVibe": "elegant-piano",
+    "showSubtitles": true,
+    "showPriceIntro": true,
+    "showPriceBar": true,
+    "showContactSlide": true
+}

@@ -1,0 +1,45 @@
+{
+    "photos": [
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/kling_imgs\/photo_0.jpg",
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/kling_imgs\/photo_1.jpg",
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/kling_imgs\/photo_2.jpg",
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/kling_imgs\/photo_3.jpg",
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/kling_imgs\/photo_4.jpg"
+    ],
+    "original_photos": [
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/photo_0.php",
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/photo_1.php",
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/photo_2.php",
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/photo_3.php",
+        "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/photo_4.php"
+    ],
+    "kling_img_base": "agentado\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/kling_imgs",
+    "listing": {
+        "title": "360B MELROSE STREET Toronto (Mimico), Ontario M8Z1G8",
+        "address": "360B MELROSE STREET Toronto (Mimico), Ontario M8Z1G8",
+        "price": "$998,000",
+        "beds": "",
+        "baths": "0",
+        "sqft": "",
+        "description": "Rare Permit-Issued Individual Building Lot Opportunity - 360 Melrose lot B. Listing Price Is For One Proposed 25 Ft X 125 Ft Lot Only; Full Two-Lot Package Also Available. Attention Builders, Investors, And End Users. Severance Approved With City-Assigned Address And Building Permit Issued For An Architecturally Distinct Modern\/Contemporary Detached Home ",
+        "agent": {
+            "name": "Jp Vankwani",
+            "role": "Salesperson",
+            "phone": "647-715-1111",
+            "photo": null,
+            "website": ""
+        },
+        "brokerage": {
+            "name": "REALTY ONE GROUP FLAGSHIP",
+            "address": "1377 THE QUEENSWAY #101, TORONTO, Ontario M8Z1T1"
+        }
+    },
+    "audio_path": null,
+    "subs_path": "\/data\/.openclaw\/workspace\/public_html\/agentado\/api\/..\/output\/jobs\/6df95a7e1ca42ea23f38891e6dc62075\/subtitles.ass",
+    "show_price_intro": true,
+    "show_price_bar": true,
+    "show_contact_slide": true,
+    "clip_duration": 5,
+    "crossfade": 0.8,
+    "tunnel_url": "https:\/\/assessed-coaches-tournaments-rapidly.trycloudflare.com"
+}

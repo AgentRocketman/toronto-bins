@@ -1,0 +1,21 @@
+[Script Info]
+Title: Agentado Subtitles
+ScriptType: v4.00+
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+PlayResX: 1280
+PlayResY: 720
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Poppins,54,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,1.5,0,1,7.5,0,2,40,40,140,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:05.36,Default,,0,0,0,,{{\fad(300,300)}}Welcome to this stunning estate in Rattray Marsh, where luxury awaits.
+Dialogue: 0,0:00:05.36,0:00:11.70,Default,,0,0,0,,{{\fad(300,300)}}As you step inside, a grand foyer greets you with its sweeping staircase.
+Dialogue: 0,0:00:11.70,0:00:16.58,Default,,0,0,0,,{{\fad(300,300)}}Notice the exquisite wainscotting and custom millwork throughout the home.
+Dialogue: 0,0:00:16.58,0:00:21.95,Default,,0,0,0,,{{\fad(300,300)}}The chef&apos;s kitchen is a culinary dream, complete with high-end appliances.
+Dialogue: 0,0:00:21.95,0:00:27.81,Default,,0,0,0,,{{\fad(300,300)}}Flowing into the family room, the soaring ceilings and fireplace create warmth.
+Dialogue: 0,0:00:27.81,0:00:33.17,Default,,0,0,0,,{{\fad(300,300)}}Step into the indoor pool area, designed for endless year-round entertainment.
+Dialogue: 0,0:00:33.17,0:00:38.54,Default,,0,0,0,,{{\fad(300,300)}}Finally, imagine unwinding in the Owners Suite, your private retreat awaits.

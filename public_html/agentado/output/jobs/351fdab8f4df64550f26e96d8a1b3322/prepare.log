@@ -1,0 +1,12 @@
+PHP Deprecated:  Implicit conversion from float 55.4 to int loses precision in /data/.openclaw/workspace/public_html/agentado/api/prepare-3d-job.php on line 330
+
+Deprecated: Implicit conversion from float 55.4 to int loses precision in /data/.openclaw/workspace/public_html/agentado/api/prepare-3d-job.php on line 330
+PHP Deprecated:  Implicit conversion from float 55.4 to int loses precision in /data/.openclaw/workspace/public_html/agentado/api/prepare-3d-job.php on line 330
+
+Deprecated: Implicit conversion from float 55.4 to int loses precision in /data/.openclaw/workspace/public_html/agentado/api/prepare-3d-job.php on line 330
+PHP Warning:  Undefined array key 0 in /data/.openclaw/workspace/public_html/agentado/api/prepare-3d-job.php on line 331
+
+Warning: Undefined array key 0 in /data/.openclaw/workspace/public_html/agentado/api/prepare-3d-job.php on line 331
+PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /data/.openclaw/workspace/public_html/agentado/api/prepare-3d-job.php on line 331
+
+Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /data/.openclaw/workspace/public_html/agentado/api/prepare-3d-job.php on line 331

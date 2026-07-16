@@ -63,7 +63,7 @@ function oxylabsScrape(string $url): string {
     $res = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $err = curl_error($ch);
-    curl_close($ch);
+    // curl_close is deprecated in PHP 8.5
     if ($err) throw new Exception("Oxylabs create: $err");
     $data = json_decode($res, true);
     if ($code >= 400 || isset($data['error'])) {
@@ -84,7 +84,7 @@ function oxylabsScrape(string $url): string {
         ]);
         $pollRes = curl_exec($ch);
         $pollCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        // curl_close is deprecated in PHP 8.5
 
         if ($pollCode >= 400) continue; // transient
 

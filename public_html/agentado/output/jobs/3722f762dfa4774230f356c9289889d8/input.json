@@ -1,0 +1,38 @@
+{
+    "photos": [
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986629530000%2Freb82%2Fhighres%2F4%2Fw13571244_1.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986629530000%2Freb82%2Fhighres%2F4%2Fw13571244_2.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986629530000%2Freb82%2Fhighres%2F4%2Fw13571244_3.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986629530000%2Freb82%2Fhighres%2F4%2Fw13571244_4.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197986629530000%2Freb82%2Fhighres%2F4%2Fw13571244_6.jpg"
+    ],
+    "listing": {
+        "title": "2 BEACHVILLE CIRCLE Brampton (Credit Valley), Ontario L6X0V4",
+        "address": "2 BEACHVILLE CIRCLE Brampton (Credit Valley), Ontario L6X0V4",
+        "price": "$1,379,000",
+        "beds": "4 + 2",
+        "baths": "5",
+        "sqft": "3000 - 3500 sqft",
+        "description": "Welcome to this magnificent detached 4-bedroom, 5-bathroom residence situated on a premium 55-ft corner lot in the prestigious Credit Valley community of Brampton. Offering approximately 4,500 sq. ft. of beautifully designed living space, this exceptional home showcases elegance, space, and modern upgrades throughout. The grand double-door entry opens to a bright and sophisticated layout featuring separate living and dining areas, hardwood floors on the main level, and impressive 9-ft ceilings. The inviting family room with a gas fireplace creates the perfect space for relaxing and entertaining",
+        "agent": {
+            "name": "Ramneek Sidhu",
+            "role": "Salesperson",
+            "phone": "416-704-4161",
+            "photo": "https:\/\/cdn.realtor.ca\/individuals\/TS638851822800000000\/highres\/1189598.jpg",
+            "website": "https:\/\/www.ramneeksidhu.ca\/"
+        },
+        "brokerage": {
+            "name": "UPSTATE REALTY INC.",
+            "address": "9280 GOREWAY DR #211, BRAMPTON, Ontario L6P4N1"
+        }
+    },
+    "description": "2 BEACHVILLE CIRCLE Brampton (Credit Valley), Ontario L6X0V4",
+    "showVoiceOver": true,
+    "voiceId": "EXAVITQu4vr4xnSDxMaL",
+    "showMusic": false,
+    "musicVibe": "elegant-piano",
+    "showSubtitles": true,
+    "showPriceIntro": true,
+    "showPriceBar": true,
+    "showContactSlide": true
+}

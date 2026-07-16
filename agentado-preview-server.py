@@ -189,16 +189,32 @@ class Handler(http.server.BaseHTTPRequestHandler):
         end_png = os.path.join(work_dir, 'end_card.png')
 
         # Step 2: Generate video
+        # For AI walkthrough, write a config JSON file (the script expects a file path, not inline JSON)
         if is_ai:
+            config_path = os.path.join(work_dir, 'config.json')
+            config = {
+                'photos': photo_paths,
+                'listing': listing_data,
+                'audio_path': None,
+                'subs_path': None,
+                'show_price_intro': os.path.exists(intro_png),
+                'show_price_bar': os.path.exists(bottom_png),
+                'show_contact_slide': os.path.exists(end_png),
+                'clip_duration': 5.0,
+                'crossfade': 0.8,
+            }
+            with open(config_path, 'w') as f:
+                json.dump(config, f)
+
             video_rc = subprocess.run(
-                ['python3', AI_WALKTHROUGH_SCRIPT, work_dir, out_file,
-                 json.dumps(photo_paths), json.dumps(listing_data), tier],
+                ['python3', AI_WALKTHROUGH_SCRIPT, work_dir, out_file, config_path],
                 capture_output=True, text=True, timeout=3600
             )
         else:
+            # Ken Burns script accepts inline JSON strings
             video_rc = subprocess.run(
                 ['python3', KENBURNS_SCRIPT, work_dir, out_file,
-                 json.dumps(photo_paths), json.dumps(listing_data), tier],
+                 json.dumps(photo_paths), json.dumps(listing_data)],
                 capture_output=True, text=True, timeout=600
             )
 

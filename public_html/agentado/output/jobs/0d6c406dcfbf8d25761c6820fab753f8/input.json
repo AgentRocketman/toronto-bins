@@ -1,0 +1,38 @@
+{
+    "photos": [
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639169527994600000%2Freb82%2Fhighres%2F2%2Fw13085252_1.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639169528029830000%2Freb82%2Fhighres%2F2%2Fw13085252_2.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639169528007670000%2Freb82%2Fhighres%2F2%2Fw13085252_3.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639169528100530000%2Freb82%2Fhighres%2F2%2Fw13085252_4.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639169528068470000%2Freb82%2Fhighres%2F2%2Fw13085252_5.jpg"
+    ],
+    "listing": {
+        "title": "7548 SIXTH LINE Milton (DG Derry Green), Ontario L9E0Y6",
+        "address": "7548 SIXTH LINE Milton (DG Derry Green), Ontario L9E0Y6",
+        "price": "$5,990,000",
+        "beds": "6 + 2",
+        "baths": "9",
+        "sqft": "5000 - 100000 sqft",
+        "description": "Welcome to this beautiful custom-built home sitting on a 132 ft x 250 ft lot in peaceful countryside, Milton. As you walk in, you're greeted by a stunning 37-ft high domed ceiling, giving a grand and open feeling right from the start. The home features 11-ft ceilings on the main floor, 10-ft on the second, and 9-ft in the basement. Enjoy elegant crown molding, paneled walls, and hardwood flooring throughout. The modern kitchen comes with JennAir appliances, a unique Titanium Leather-finish countertop, a spice kitchen, and a walk-in pantry perfect for cooking and entertaining. Relax in the cozy family room with a gas fireplace, or host in the formal living and dining rooms. ",
+        "agent": {
+            "name": "Parveen Arora",
+            "role": "Broker of Record",
+            "phone": "905-488-1260",
+            "photo": "https:\/\/cdn.realtor.ca\/individuals\/TS638852289000000000\/highres\/1145331.jpg",
+            "website": "http:\/\/www.teamarora.com\/"
+        },
+        "brokerage": {
+            "name": "RE\/MAX OPTIMUM REALTY",
+            "address": "268 DERRY RD #101, MISSISSAUGA, Ontario L5W0H6"
+        }
+    },
+    "description": "7548 SIXTH LINE Milton (DG Derry Green), Ontario L9E0Y6",
+    "showVoiceOver": false,
+    "voiceId": "21m00Tcm4TlvDq8ikWAM",
+    "showMusic": false,
+    "musicVibe": "elegant-piano",
+    "showSubtitles": true,
+    "showPriceIntro": true,
+    "showPriceBar": true,
+    "showContactSlide": true
+}

@@ -1,0 +1,38 @@
+{
+    "photos": [
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197949947570000%2Freb82%2Fhighres%2F2%2Fw13570932_1.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197949947570000%2Freb82%2Fhighres%2F2%2Fw13570932_2.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197949947570000%2Freb82%2Fhighres%2F2%2Fw13570932_3.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197949947570000%2Freb82%2Fhighres%2F2%2Fw13570932_4.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639197949947570000%2Freb82%2Fhighres%2F2%2Fw13570932_5.jpg"
+    ],
+    "listing": {
+        "title": "56 - 2651 AQUITAINE AVENUE Mississauga (Meadowvale), Ontario L5N1V5",
+        "address": "56 - 2651 AQUITAINE AVENUE Mississauga (Meadowvale), Ontario L5N1V5",
+        "price": "$599,000",
+        "beds": "3",
+        "baths": "2",
+        "sqft": "1400 - 1599 sqft",
+        "description": "This spacious townhome offers 3 generously sized bedrooms, 1.5 bathrooms, and a versatile flex room that can be used as a home office, recreation room, guest area, or additional sleeping space. The flex room provides direct access to a fully fenced private backyard, creating the perfect space for children, pets and outdoor entertaining. The home also features a private garage and driveway parking for added convenience. Enjoy your morning coffee or unwind in the evening from your private balcony, easily accessed from the bright, sun-filled kitchen and breakfast nook.",
+        "agent": {
+            "name": "HANSEL O'NIEL PATRICK",
+            "role": "Broker",
+            "phone": "416-743-2000",
+            "photo": null,
+            "website": "http:\/\/www.remaxman.ca\/"
+        },
+        "brokerage": {
+            "name": "RE\/MAX PREMIER INC.",
+            "address": "1885 WILSON AVE STE 200A, TORONTO, Ontario M9M1A2"
+        }
+    },
+    "description": "56 - 2651 AQUITAINE AVENUE Mississauga (Meadowvale), Ontario L5N1V5",
+    "showVoiceOver": false,
+    "voiceId": "21m00Tcm4TlvDq8ikWAM",
+    "showMusic": false,
+    "musicVibe": "elegant-piano",
+    "showSubtitles": true,
+    "showPriceIntro": true,
+    "showPriceBar": true,
+    "showContactSlide": true
+}

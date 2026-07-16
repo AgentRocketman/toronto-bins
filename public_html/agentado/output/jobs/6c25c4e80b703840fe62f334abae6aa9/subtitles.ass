@@ -1,0 +1,29 @@
+[Script Info]
+Title: Agentado Subtitles
+ScriptType: v4.00+
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+PlayResX: 1280
+PlayResY: 720
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Poppins,54,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,1.5,0,1,7.5,0,2,40,40,140,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:01.45,Default,,0,0,0,,{{\fad(300,300)}}Welcome to this incredible opportunity!
+Dialogue: 0,0:00:01.45,0:00:02.90,Default,,0,0,0,,{{\fad(300,300)}}Imagine the possibilities on this prime lot.
+Dialogue: 0,0:00:02.90,0:00:04.36,Default,,0,0,0,,{{\fad(300,300)}}A rare permit-issued individual building lot awaits you.
+Dialogue: 0,0:00:04.36,0:00:05.81,Default,,0,0,0,,{{\fad(300,300)}}Picture a stunning home on this 25 by 125 space.
+Dialogue: 0,0:00:05.81,0:00:07.26,Default,,0,0,0,,{{\fad(300,300)}}The city has already approved severance.
+Dialogue: 0,0:00:07.26,0:00:08.72,Default,,0,0,0,,{{\fad(300,300)}}With a city-assigned address, your dreams can begin.
+Dialogue: 0,0:00:08.72,0:00:10.17,Default,,0,0,0,,{{\fad(300,300)}}Think of all the designs you can create here.
+Dialogue: 0,0:00:10.17,0:00:11.62,Default,,0,0,0,,{{\fad(300,300)}}Whether you&apos;re a builder or an investor, this is gold.
+Dialogue: 0,0:00:11.62,0:00:13.08,Default,,0,0,0,,{{\fad(300,300)}}Envision a vibrant community blossoming around you.
+Dialogue: 0,0:00:13.08,0:00:14.53,Default,,0,0,0,,{{\fad(300,300)}}Just steps away from local amenities and parks.
+Dialogue: 0,0:00:14.53,0:00:15.98,Default,,0,0,0,,{{\fad(300,300)}}The potential here is truly limitless.
+Dialogue: 0,0:00:15.98,0:00:17.44,Default,,0,0,0,,{{\fad(300,300)}}Don&apos;t miss your chance to seize this opportunity.
+Dialogue: 0,0:00:17.44,0:00:18.89,Default,,0,0,0,,{{\fad(300,300)}}Imagine your vision coming to life in this lot.
+Dialogue: 0,0:00:18.89,0:00:20.34,Default,,0,0,0,,{{\fad(300,300)}}Thank you for exploring this unique chance with us!
+Dialogue: 0,0:00:20.34,0:00:21.80,Default,,0,0,0,,{{\fad(300,300)}}We can&apos;t wait to see what you create here.

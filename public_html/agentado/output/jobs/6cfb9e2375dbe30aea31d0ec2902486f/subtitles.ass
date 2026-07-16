@@ -1,0 +1,47 @@
+[Script Info]
+Title: Agentado Subtitles
+ScriptType: v4.00+
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+PlayResX: 1280
+PlayResY: 720
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Poppins,54,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,1.5,0,1,7.5,0,2,40,40,140,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:00.66,Default,,0,0,0,,{{\fad(300,300)}}Welcome to your new luxurious home.
+Dialogue: 0,0:00:00.66,0:00:01.32,Default,,0,0,0,,{{\fad(300,300)}}Nestled in the heart of Mississauga.
+Dialogue: 0,0:00:01.32,0:00:01.98,Default,,0,0,0,,{{\fad(300,300)}}Let’s step inside and explore together.
+Dialogue: 0,0:00:01.98,0:00:02.64,Default,,0,0,0,,{{\fad(300,300)}}Notice the fresh paint throughout.
+Dialogue: 0,0:00:02.64,0:00:03.30,Default,,0,0,0,,{{\fad(300,300)}}The open-concept layout is truly inviting.
+Dialogue: 0,0:00:03.30,0:00:03.96,Default,,0,0,0,,{{\fad(300,300)}}Floor-to-ceiling windows bathe the space in light.
+Dialogue: 0,0:00:03.96,0:00:04.62,Default,,0,0,0,,{{\fad(300,300)}}Imagine the stunning views from here.
+Dialogue: 0,0:00:04.62,0:00:05.28,Default,,0,0,0,,{{\fad(300,300)}}Now, let’s visit the modern kitchen.
+Dialogue: 0,0:00:05.28,0:00:05.94,Default,,0,0,0,,{{\fad(300,300)}}It features sleek stainless steel appliances.
+Dialogue: 0,0:00:05.94,0:00:06.60,Default,,0,0,0,,{{\fad(300,300)}}Granite countertops provide both beauty and functionality.
+Dialogue: 0,0:00:06.60,0:00:07.26,Default,,0,0,0,,{{\fad(300,300)}}The spacious living area is perfect for entertaining.
+Dialogue: 0,0:00:07.26,0:00:07.92,Default,,0,0,0,,{{\fad(300,300)}}Picture cozy evenings with friends and family.
+Dialogue: 0,0:00:07.92,0:00:08.58,Default,,0,0,0,,{{\fad(300,300)}}As we move to the bedrooms, feel the tranquility.
+Dialogue: 0,0:00:08.58,0:00:09.24,Default,,0,0,0,,{{\fad(300,300)}}Generous-sized rooms offer comfort and peace.
+Dialogue: 0,0:00:09.24,0:00:09.90,Default,,0,0,0,,{{\fad(300,300)}}Now, let’s check out the two parking spaces.
+Dialogue: 0,0:00:09.90,0:00:10.56,Default,,0,0,0,,{{\fad(300,300)}}Side-by-side parking is a rare find.
+Dialogue: 0,0:00:10.56,0:00:11.23,Default,,0,0,0,,{{\fad(300,300)}}And don’t forget the valuable storage locker.
+Dialogue: 0,0:00:11.23,0:00:11.89,Default,,0,0,0,,{{\fad(300,300)}}The building amenities are simply outstanding.
+Dialogue: 0,0:00:11.89,0:00:12.55,Default,,0,0,0,,{{\fad(300,300)}}Enjoy 24-hour concierge service at your fingertips.
+Dialogue: 0,0:00:12.55,0:00:13.21,Default,,0,0,0,,{{\fad(300,300)}}Take a dip in the indoor pool anytime.
+Dialogue: 0,0:00:13.21,0:00:13.87,Default,,0,0,0,,{{\fad(300,300)}}Relax in the sauna after a long day.
+Dialogue: 0,0:00:13.87,0:00:14.53,Default,,0,0,0,,{{\fad(300,300)}}The fitness centre is perfect for staying active.
+Dialogue: 0,0:00:14.53,0:00:15.19,Default,,0,0,0,,{{\fad(300,300)}}Guest suites and a media room await your visitors.
+Dialogue: 0,0:00:15.19,0:00:15.85,Default,,0,0,0,,{{\fad(300,300)}}Let’s step outside to the rooftop garden.
+Dialogue: 0,0:00:15.85,0:00:16.51,Default,,0,0,0,,{{\fad(300,300)}}Imagine sunset views and fresh air up here.
+Dialogue: 0,0:00:16.51,0:00:17.17,Default,,0,0,0,,{{\fad(300,300)}}Location is everything, and this home has it all.
+Dialogue: 0,0:00:17.17,0:00:17.83,Default,,0,0,0,,{{\fad(300,300)}}Walk to Square One or the YMCA easily.
+Dialogue: 0,0:00:17.83,0:00:18.49,Default,,0,0,0,,{{\fad(300,300)}}Public transit is just moments away.
+Dialogue: 0,0:00:18.49,0:00:19.15,Default,,0,0,0,,{{\fad(300,300)}}Major highways connect you to everything nearby.
+Dialogue: 0,0:00:19.15,0:00:19.81,Default,,0,0,0,,{{\fad(300,300)}}This is an exceptional opportunity for anyone.
+Dialogue: 0,0:00:19.81,0:00:20.47,Default,,0,0,0,,{{\fad(300,300)}}Whether you’re an end user or investor,
+Dialogue: 0,0:00:20.47,0:00:21.13,Default,,0,0,0,,{{\fad(300,300)}}Thank you for touring this stunning suite.
+Dialogue: 0,0:00:21.13,0:00:21.80,Default,,0,0,0,,{{\fad(300,300)}}We can’t wait to welcome you home.

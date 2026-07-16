@@ -1,0 +1,43 @@
+{
+    "photos": [
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198023315600000%2Freb82%2Fhighres%2F2%2Fw13569322_1.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198023275670000%2Freb82%2Fhighres%2F2%2Fw13569322_2.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198023283300000%2Freb82%2Fhighres%2F2%2Fw13569322_3.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198023342430000%2Freb82%2Fhighres%2F2%2Fw13569322_4.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198027798930000%2Freb82%2Fhighres%2F2%2Fw13569322_5.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198027764400000%2Freb82%2Fhighres%2F2%2Fw13569322_6.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198027778270000%2Freb82%2Fhighres%2F2%2Fw13569322_7.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198027797870000%2Freb82%2Fhighres%2F2%2Fw13569322_8.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198023291400000%2Freb82%2Fhighres%2F2%2Fw13569322_9.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639198023269100000%2Freb82%2Fhighres%2F2%2Fw13569322_10.jpg"
+    ],
+    "listing": {
+        "title": "432 BOB-O-LINK ROAD Mississauga (Clarkson), Ontario L5J2P2",
+        "address": "432 BOB-O-LINK ROAD Mississauga (Clarkson), Ontario L5J2P2",
+        "price": "$10,988,000",
+        "beds": "4 + 1",
+        "baths": "9",
+        "sqft": "5000 - 100000 sqft",
+        "description": "Set in South Mississauga's exclusive Rattray Marsh enclave, this mesmerizing custom built estate offers nearly 10,000 SF of luxurious living space & resort-like amenities rarely found in the GTA. Gated, grande & architecturally refined, this residence showcases timeless interior & exterior finishes including exceptional curb appeal of well-manicured lands. Upon entering, a dramatic open to above front foyer with sweeping staircase & coffered ceilings welcomes you in. Prodigious elite living spaces feature statement finishes including intricate wainscotting, built-in surround sound, expansive windows & custom millwork throughout. Designed for the ultimate chef's culinary experience, the kitchen integrates high-end appliances, custom countertops & an oversized island with ample space to gather around. The family room with floor to ceiling gas fireplace & 20ft ceilings can be seen from the kitchen & provides an overview of the indoor swimming pool. Designed for year-round entertainment, the indoor pool area boasts a wet bar, a sauna, a 3pc bathroom & a lounge area with direct access to the meticulously kept grounds. Ascend above into the Owners Suite elevated with a 6pc ensuite, a boutique inspired walk-in closet & a private balcony. Each additional bedroom on this level showcases its own design details with ensuites & walk-in closets. The lower level completes this home & tailors to a wide range of entertainment options including a large recreational area, a wet bar, an exercise room, a guest bedroom, a theatre & more. An abundance of sought-after amenities can be found throughout including a smart home automation system, multiple gas fireplaces, a secondary kitchen, radiant floors, custom lighting & a back-up generator. Situated moments from superb private & public schools, lakefront parks, Clarkson Village and Port Credits renowned restaurants, this home is tailored for the most discerning of Buyers looking for the absolute best in location, size, and amenities. (43608917)",
+        "agent": {
+            "name": "Sam Allan Mcdadi",
+            "role": "Salesperson",
+            "phone": "905-502-1500",
+            "photo": "https:\/\/cdn.realtor.ca\/individuals\/TS638851638000000000\/highres\/1035732.jpg",
+            "website": "http:\/\/www.mcdadi.com\/"
+        },
+        "brokerage": {
+            "name": "SAM MCDADI REAL ESTATE INC.",
+            "address": "110 - 5805 WHITTLE RD, MISSISSAUGA, Ontario L4Z2J1"
+        }
+    },
+    "description": "432 BOB-O-LINK ROAD Mississauga (Clarkson), Ontario L5J2P2",
+    "showVoiceOver": true,
+    "voiceId": "ErXwobaYiN019PkySvjV",
+    "showMusic": false,
+    "musicVibe": "elegant-piano",
+    "showSubtitles": true,
+    "showPriceIntro": true,
+    "showPriceBar": true,
+    "showContactSlide": true
+}

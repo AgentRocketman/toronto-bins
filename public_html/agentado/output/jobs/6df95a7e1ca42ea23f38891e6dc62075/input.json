@@ -1,0 +1,38 @@
+{
+    "photos": [
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639192838469270000%2Freb82%2Fhighres%2F2%2Fw13549242_1.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639192838469270000%2Freb82%2Fhighres%2F2%2Fw13549242_2.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639192838469270000%2Freb82%2Fhighres%2F2%2Fw13549242_4.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639192838469270000%2Freb82%2Fhighres%2F2%2Fw13549242_6.jpg",
+        "https:\/\/agentrocketman.com\/api\/img-proxy.php?u=https%3A%2F%2Fcdn.realtor.ca%2Flistings%2FTS639192838469270000%2Freb82%2Fhighres%2F2%2Fw13549242_11.jpg"
+    ],
+    "listing": {
+        "title": "360B MELROSE STREET Toronto (Mimico), Ontario M8Z1G8",
+        "address": "360B MELROSE STREET Toronto (Mimico), Ontario M8Z1G8",
+        "price": "$998,000",
+        "beds": "",
+        "baths": "0",
+        "sqft": "",
+        "description": "Rare Permit-Issued Individual Building Lot Opportunity - 360 Melrose lot B. Listing Price Is For One Proposed 25 Ft X 125 Ft Lot Only; Full Two-Lot Package Also Available. Attention Builders, Investors, And End Users. Severance Approved With City-Assigned Address And Building Permit Issued For An Architecturally Distinct Modern\/Contemporary Detached Home ",
+        "agent": {
+            "name": "Jp Vankwani",
+            "role": "Salesperson",
+            "phone": "647-715-1111",
+            "photo": null,
+            "website": ""
+        },
+        "brokerage": {
+            "name": "REALTY ONE GROUP FLAGSHIP",
+            "address": "1377 THE QUEENSWAY #101, TORONTO, Ontario M8Z1T1"
+        }
+    },
+    "description": "360B MELROSE STREET Toronto (Mimico), Ontario M8Z1G8",
+    "showVoiceOver": false,
+    "voiceId": "21m00Tcm4TlvDq8ikWAM",
+    "showMusic": false,
+    "musicVibe": "elegant-piano",
+    "showSubtitles": true,
+    "showPriceIntro": true,
+    "showPriceBar": true,
+    "showContactSlide": true
+}

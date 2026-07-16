@@ -1,0 +1,38 @@
+[Script Info]
+Title: Agentado Subtitles
+ScriptType: v4.00+
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+PlayResX: 1280
+PlayResY: 720
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Poppins,54,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,1.5,0,1,7.5,0,2,40,40,140,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:00.90,Default,,0,0,0,,{{\fad(300,300)}}Welcome to your dream home experience.
+Dialogue: 0,0:00:00.90,0:00:01.81,Default,,0,0,0,,{{\fad(300,300)}}Step through the grand double doors.
+Dialogue: 0,0:00:01.81,0:00:02.72,Default,,0,0,0,,{{\fad(300,300)}}Feel the elegance in the bright foyer.
+Dialogue: 0,0:00:02.72,0:00:03.63,Default,,0,0,0,,{{\fad(300,300)}}Hardwood floors guide us through the space.
+Dialogue: 0,0:00:03.63,0:00:04.54,Default,,0,0,0,,{{\fad(300,300)}}Notice the impressive 9-ft ceilings above.
+Dialogue: 0,0:00:04.54,0:00:05.45,Default,,0,0,0,,{{\fad(300,300)}}Let&apos;s explore the cozy family room.
+Dialogue: 0,0:00:05.45,0:00:06.35,Default,,0,0,0,,{{\fad(300,300)}}A gas fireplace warms this inviting area.
+Dialogue: 0,0:00:06.35,0:00:07.26,Default,,0,0,0,,{{\fad(300,300)}}Perfect for relaxing or entertaining guests.
+Dialogue: 0,0:00:07.26,0:00:08.17,Default,,0,0,0,,{{\fad(300,300)}}The separate dining room beckons for gatherings.
+Dialogue: 0,0:00:08.17,0:00:09.08,Default,,0,0,0,,{{\fad(300,300)}}Imagine family dinners under soft lighting.
+Dialogue: 0,0:00:09.08,0:00:09.99,Default,,0,0,0,,{{\fad(300,300)}}The chef&apos;s kitchen boasts stunning marble counters.
+Dialogue: 0,0:00:09.99,0:00:10.90,Default,,0,0,0,,{{\fad(300,300)}}Picture culinary creations in this modern space.
+Dialogue: 0,0:00:10.90,0:00:11.80,Default,,0,0,0,,{{\fad(300,300)}}Adjacent is a charming breakfast nook.
+Dialogue: 0,0:00:11.80,0:00:12.71,Default,,0,0,0,,{{\fad(300,300)}}Enjoy morning coffee with a view.
+Dialogue: 0,0:00:12.71,0:00:13.62,Default,,0,0,0,,{{\fad(300,300)}}Let&apos;s head upstairs to the bedrooms.
+Dialogue: 0,0:00:13.62,0:00:14.53,Default,,0,0,0,,{{\fad(300,300)}}Each one offers comfort and tranquility.
+Dialogue: 0,0:00:14.53,0:00:15.44,Default,,0,0,0,,{{\fad(300,300)}}The master suite is a true retreat.
+Dialogue: 0,0:00:15.44,0:00:16.35,Default,,0,0,0,,{{\fad(300,300)}}Indulge in the luxurious ensuite bathroom.
+Dialogue: 0,0:00:16.35,0:00:17.25,Default,,0,0,0,,{{\fad(300,300)}}Four bedrooms provide plenty of space.
+Dialogue: 0,0:00:17.25,0:00:18.16,Default,,0,0,0,,{{\fad(300,300)}}Five bathrooms ensure convenience for all.
+Dialogue: 0,0:00:18.16,0:00:19.07,Default,,0,0,0,,{{\fad(300,300)}}Step outside to your premium corner lot.
+Dialogue: 0,0:00:19.07,0:00:19.98,Default,,0,0,0,,{{\fad(300,300)}}Imagine summer barbecues in this yard.
+Dialogue: 0,0:00:19.98,0:00:20.89,Default,,0,0,0,,{{\fad(300,300)}}Thank you for joining this tour today.
+Dialogue: 0,0:00:20.89,0:00:21.80,Default,,0,0,0,,{{\fad(300,300)}}This home awaits your personal touch.

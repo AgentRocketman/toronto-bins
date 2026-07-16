@@ -1,0 +1,36 @@
+[Script Info]
+Title: Agentado Subtitles
+ScriptType: v4.00+
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+PlayResX: 1280
+PlayResY: 720
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Poppins,54,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,1.5,0,1,7.5,0,2,40,40,140,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:00.99,Default,,0,0,0,,{{\fad(300,300)}}Welcome to this stunning bungalow retreat.
+Dialogue: 0,0:00:00.99,0:00:01.98,Default,,0,0,0,,{{\fad(300,300)}}Step inside and feel the expansive space.
+Dialogue: 0,0:00:01.98,0:00:02.97,Default,,0,0,0,,{{\fad(300,300)}}This home offers 3,500 square feet of luxury.
+Dialogue: 0,0:00:02.97,0:00:03.96,Default,,0,0,0,,{{\fad(300,300)}}Let&apos;s explore the heart of the home together.
+Dialogue: 0,0:00:03.96,0:00:04.95,Default,,0,0,0,,{{\fad(300,300)}}The living area invites light and warmth.
+Dialogue: 0,0:00:04.95,0:00:05.94,Default,,0,0,0,,{{\fad(300,300)}}Imagine gatherings filled with laughter here.
+Dialogue: 0,0:00:05.94,0:00:06.93,Default,,0,0,0,,{{\fad(300,300)}}Now, let’s move to the chef&apos;s kitchen.
+Dialogue: 0,0:00:06.93,0:00:07.92,Default,,0,0,0,,{{\fad(300,300)}}With marble counters, cooking becomes an art.
+Dialogue: 0,0:00:07.92,0:00:08.91,Default,,0,0,0,,{{\fad(300,300)}}Picture yourself preparing meals for loved ones.
+Dialogue: 0,0:00:08.91,0:00:09.90,Default,,0,0,0,,{{\fad(300,300)}}Each bedroom offers comfort and tranquility.
+Dialogue: 0,0:00:09.90,0:00:10.90,Default,,0,0,0,,{{\fad(300,300)}}Four beautifully appointed bathrooms enhance convenience.
+Dialogue: 0,0:00:10.90,0:00:11.89,Default,,0,0,0,,{{\fad(300,300)}}Your personal oasis awaits in the master suite.
+Dialogue: 0,0:00:11.89,0:00:12.88,Default,,0,0,0,,{{\fad(300,300)}}Feel the serenity as you enter this space.
+Dialogue: 0,0:00:12.88,0:00:13.87,Default,,0,0,0,,{{\fad(300,300)}}And don’t forget the flexible work areas.
+Dialogue: 0,0:00:13.87,0:00:14.86,Default,,0,0,0,,{{\fad(300,300)}}Perfect for your creative pursuits or home office.
+Dialogue: 0,0:00:14.86,0:00:15.85,Default,,0,0,0,,{{\fad(300,300)}}Now, let&apos;s step outside to the rear yard.
+Dialogue: 0,0:00:15.85,0:00:16.84,Default,,0,0,0,,{{\fad(300,300)}}Two legal driveways provide effortless access.
+Dialogue: 0,0:00:16.84,0:00:17.83,Default,,0,0,0,,{{\fad(300,300)}}Imagine summer barbecues in this lovely space.
+Dialogue: 0,0:00:17.83,0:00:18.82,Default,,0,0,0,,{{\fad(300,300)}}This home truly blends work and leisure.
+Dialogue: 0,0:00:18.82,0:00:19.81,Default,,0,0,0,,{{\fad(300,300)}}As we conclude our tour, envision your life here.
+Dialogue: 0,0:00:19.81,0:00:20.80,Default,,0,0,0,,{{\fad(300,300)}}Thank you for joining me on this journey.
+Dialogue: 0,0:00:20.80,0:00:21.80,Default,,0,0,0,,{{\fad(300,300)}}I hope you can imagine calling this home.

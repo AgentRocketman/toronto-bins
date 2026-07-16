@@ -58,7 +58,7 @@ foreach (array_slice($previewPhotos, 0, 3) as $p) {
     ]);
     $imgData = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    // curl_close is deprecated in PHP 8.5
     if ($code === 200 && $imgData) {
         file_put_contents($dest, $imgData);
         $photoPaths[] = $dest;
@@ -73,28 +73,20 @@ if (empty($photoPaths)) {
     exit;
 }
 
-// Forward to container preview server (exec() disabled on Hostinger)
-$tunnelUrl = $AGENTADO_TUNNEL;
-$ch = curl_init($tunnelUrl);
-curl_setopt_array($ch, [
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => $_POST,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_CONNECTTIMEOUT => 5,    // fast fail if tunnel is down
-    CURLOPT_TIMEOUT => 90,           // generation takes ~30s
-]);
-$genResult = curl_exec($ch);
-$genCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$genError = curl_error($ch);
-curl_close($ch);
+// Forward to container preview server with failover
+$tunnelResult = tunnelRequest('/agentado/api/preview.php', $_POST, 90, 5);
 
-if ($genCode !== 200 || !$genResult) {
+if (!$tunnelResult['response']) {
     rmdirRecursive($workDir);
     http_response_code(502);
-    echo json_encode(['error' => 'Preview generation service unavailable. Please try again.']);
+    echo json_encode([
+        'error' => 'Preview service is temporarily unavailable. Please try again in a few seconds.',
+        'retry' => true,
+    ]);
     exit;
 }
 
+$genResult = $tunnelResult['response'];
 $genData = json_decode($genResult, true);
 if (!$genData || isset($genData['error'])) {
     rmdirRecursive($workDir);

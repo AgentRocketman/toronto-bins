@@ -21,6 +21,13 @@ $progressFile = $jobDir . '/progress.json';
 $outputFile = $jobDir . '/final_output.mp4';
 $logFile = $jobDir . '/python.log';
 
+// Read PHP tunnel URL for serving videos from Docker
+$tunnelFile = __DIR__ . '/video/tunnel-url.txt';
+$tunnelUrl = '';
+if (file_exists($tunnelFile)) {
+    $tunnelUrl = rtrim(trim(file_get_contents($tunnelFile)), '/');
+}
+
 // Check if job exists
 if (!is_dir($jobDir)) {
     http_response_code(404);
@@ -60,7 +67,7 @@ if (file_exists($pidFile)) {
 if ($hasOutput && ($progress['status'] ?? '') !== 'completed') {
     $progress['status'] = 'completed';
     $progress['stage'] = 'Done!';
-    $progress['result_url'] = '/agentado/output/jobs/' . $jobId . '/final_output.mp4';
+    $progress['result_url'] = $tunnelUrl . '/agentado/api/video/serve-job-video.php?job=' . $jobId;
 }
 
 // Determine actual status
@@ -76,6 +83,17 @@ if (!$pidAlive && !$hasOutput && !in_array($status, ['completed', 'failed'])) {
     $progress['error'] = $progress['error'] ?? "Process terminated unexpectedly.\n$logTail";
 }
 
+// Detect hung jobs: running > 45 minutes with no progress update
+$startedFile = $jobDir . '/input.json';
+if ($status === 'generating_clips' && file_exists($startedFile)) {
+    $jobAge = time() - filemtime($startedFile);
+    $progressAge = file_exists($progressFile) ? time() - filemtime($progressFile) : $jobAge;
+    if ($jobAge > 2700 || $progressAge > 600) {  // 45min total or 10min no progress
+        $status = 'failed';
+        $progress['error'] = ($progress['error'] ?? '') . "\nJob hung — no progress for " . round($progressAge/60) . " minutes.";
+    }
+}
+
 header('Content-Type: application/json');
 echo json_encode([
     'status'      => $status,
@@ -84,7 +102,8 @@ echo json_encode([
     'total_clips' => $progress['total_clips'] ?? 0,
     'completed_clips' => $progress['completed_clips'] ?? 0,
     'error'       => $progress['error'] ?? null,
-    'result_url'  => $progress['result_url'] ?? ($hasOutput ? ('/agentado/output/jobs/' . $jobId . '/final_output.mp4') : null),
+    // Use tunnel URL so frontend loads video from Docker (where files actually live)
+    'result_url'  => $hasOutput ? ($tunnelUrl . '/agentado/api/video/serve-job-video.php?job=' . $jobId) : null,
     'has_output'  => $hasOutput,
     'pid_alive'   => $pidAlive,
 ]);

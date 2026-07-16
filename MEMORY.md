@@ -1,9 +1,17 @@
 # MEMORY.md - Long-Term Memory
 
-## Claude Code — PERMISSION REQUIRED (2026-07-14)
-**Do NOT use Claude Code (`claude-or`, `deepclaude`, etc.) unless Chris explicitly gives permission.**
-- I can do most coding tasks directly for ~$0.03 vs deepclaude's $1.14 (38x cheaper)
-- Only use Claude Code for large multi-file autonomous builds if Chris approves
+## Cloudflare Persistent Tunnel — TODO
+- [ ] Chris to create Cloudflare account, add agentrocketman.com, generate API token
+- [ ] Set up persistent named tunnel → permanent URL at agentado.agentrocketman.com
+- [ ] Retire quick tunnels (keep one as backup)
+
+---
+
+## Claude Code — ACTIVE FOR CODING (2026-07-16)
+**Chris directed me to delegate coding tasks to Claude Code.**
+- Use `claude -p "<task>" --model openrouter/deepseek/deepseek-v4-pro` for all coding
+- Run in project directory so Claude Code has file context
+- I handle conversation, planning, deploy; Claude Code handles code edits & builds
 
 ## Deployment Rule (CRITICAL) — 2026-06-28
 **ONLY deploy to dev (agentrocketman.com) unless Chris explicitly says "deploy to prod".**

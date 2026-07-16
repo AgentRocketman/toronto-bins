@@ -56,37 +56,25 @@ if (!is_dir($outDir)) { mkdir($outDir, 0755, true); }
 $outFile = "$outDir/$jobId.mp4";
 $outUrl = "/agentado/output/videos/$jobId.mp4";
 
-// ── Forward to tunnel ──
-// PHP already downloaded photos for reorder — pass URLs to tunnel for fresh download
-$ch = curl_init($tunnelUrl);
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_TIMEOUT => 3600,        // AI walkthrough can take a while
-    CURLOPT_CONNECTTIMEOUT => 10,
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => [
-        'mode' => 'generate',
-        'tier' => $tier,
-        'listingData' => $listingData,
-        'photoOrder' => $photoOrder,
-        'photoCount' => $photoCount,
-    ],
-]);
+// ── Forward to tunnel with failover ──
+$tunnelResult = tunnelRequest('/agentado/api/generate.php', [
+    'mode' => 'generate',
+    'tier' => $tier,
+    'listingData' => $listingData,
+    'photoOrder' => $photoOrder,
+    'photoCount' => $photoCount,
+], 3600, 10);
 
-$genResult = curl_exec($ch);
-$genCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$genError = curl_error($ch);
-curl_close($ch);
-
-if ($genCode !== 200 || !$genResult) {
-    $msg = 'Generation service unavailable';
-    if ($genError) { $msg .= ': ' . $genError; }
+if (!$tunnelResult['response']) {
     http_response_code(502);
-    echo json_encode(['error' => $msg]);
+    echo json_encode([
+        'error' => 'Generation service is temporarily unavailable. Please try again in a few seconds.',
+        'retry' => true,
+    ]);
     exit;
 }
 
+$genResult = $tunnelResult['response'];
 $genData = json_decode($genResult, true);
 if (!$genData || isset($genData['error'])) {
     http_response_code(500);

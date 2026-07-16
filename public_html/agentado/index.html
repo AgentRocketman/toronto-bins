@@ -420,6 +420,7 @@
       <div class="status-text" id="klingStatusText"><span class="spinner"></span>3D Cinematic Rendering...</div>
       <div class="progress-bar-wrap"><div class="progress-bar-fill" id="klingProgressBar"></div></div>
       <div class="status-sub" id="klingStatusSub">Preparing...</div>
+      <button class="btn-outline" id="klingRetryBtn" style="display:none; margin-top:12px;" onclick="retryKlingPoll()">🔄 Check Status</button>
     </div>
 
     <div class="error-banner" id="errorBanner"></div>
@@ -427,7 +428,11 @@
     <div class="result-card" id="resultCard">
       <div class="check">✅</div>
       <h3>Your walkthrough is ready!</h3>
-      <video id="resultVideo" controls playsinline></video>
+      <video id="resultVideo" controls playsinline onerror="videoLoadError()"></video>
+      <div id="videoError" style="display:none; background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.3); border-radius:8px; padding:12px; margin-top:8px; font-size:0.85rem;">
+        <p>⚠️ <b>This video couldn't load</b> — the tunnel connection may have dropped.</p>
+        <p style="margin-top:6px; color:var(--muted);">Try the download button below, or refresh the page and click <b>Check Status</b>.</p>
+      </div>
       <div class="result-actions">
         <a class="btn-primary" id="downloadBtn" href="#" download>⬇ Download Walkthrough</a>
         <button class="btn-outline" onclick="resetAll()">🔄 Make another</button>
@@ -508,7 +513,7 @@
 
         // Build listing description for narration
         const addr = listingInfo?.address || listingInfo?.addr || 'this beautiful property';
-        const desc = listingInfo?.title || listingInfo?.description ||
+        const desc = listingInfo?.description || listingInfo?.title ||
           `Welcome to ${addr}. A stunning property with exceptional design and features.`;
 
         // Collect photo URLs (use img-proxy if they're local)
@@ -559,17 +564,48 @@
       }
     }
 
+    async function fetchTunnelUrl() {
+      for (let i = 0; i < 3; i++) {
+        try {
+          const r = await fetch('/agentado/api/tunnel-url.php');
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          const d = await r.json();
+          if (d.url) return d.url + '/agentado/api';
+        } catch(e) { /* retry */ }
+        if (i < 2) await new Promise(r => setTimeout(r, 2000));
+      }
+      return null;
+    }
+
     function pollKlingJob() {
       if (!currentKlingJob) return;
-      // Fetch tunnel URL once and cache
-      let BASE = null;
-      fetch('/agentado/api/tunnel-url.php').then(r => r.json()).then(d => { BASE = d.url + '/agentado/api'; });
+      let BASE = null, pollFailCount = 0;
+      const retryBtn = $('klingRetryBtn');
+      
+      fetchTunnelUrl().then(url => { BASE = url; });
 
-      klingPollTimer = setInterval(async () => {
-        if (!BASE) return; // wait for tunnel URL
+      async function doPoll() {
+        if (!BASE) {
+          pollFailCount++;
+          if (pollFailCount === 1) {
+            // try fetching tunnel URL again
+            fetchTunnelUrl().then(url => { if (url) { BASE = url; pollFailCount = 0; } });
+          }
+          if (pollFailCount >= 3) {
+            klingStatusSub.innerHTML = '⚠️ Connection lost — video is still generating.<br><small>Tap Check Status below or refresh the page.</small>';
+            retryBtn.style.display = 'inline-block';
+          }
+          if (pollFailCount >= 6) {
+            klingStatusSub.innerHTML = '⚠️ Connection lost for 30s.<br><small>Job: ' + currentKlingJob.substring(0,8) + '… Refresh page to resume.</small>';
+          }
+          return;
+        }
+        
         try {
           const resp = await fetch(BASE + '/check-3d-video.php?job=' + currentKlingJob);
           const data = await resp.json();
+          pollFailCount = 0;
+          retryBtn.style.display = 'none';
 
           const pct = data.status === 'completed' ? 100
             : data.progress && data.total_clips
@@ -588,11 +624,16 @@
             klingStatusText.innerHTML = '✅ 3D Cinematic Video Ready!';
             klingStatusSub.textContent = 'Download below ↓';
             klingProgressBar.style.width = '100%';
-            const videoUrl = data.result_url || (BASE.replace('/api','') + '/output/jobs/' + currentKlingJob + '/final_output.mp4');
+            const videoUrl = (data.result_url && data.result_url !== 'ready' && (data.result_url.startsWith('http') || data.result_url.startsWith('/')))
+              ? data.result_url
+              : (BASE.replace('/api','') + '/output/jobs/' + currentKlingJob + '/final_output.mp4');
+            klingProgressCard.classList.remove('active');
             resultCard.classList.add('active');
             resultVideo.src = videoUrl;
+            resultVideo.load();
             downloadBtn.href = videoUrl;
-            window.scrollTo({ top: resultCard.offsetTop - 40, behavior: 'smooth' });
+            downloadBtn.download = 'agentado-3d-walkthrough.mp4';
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
             try { localStorage.removeItem('klingJob'); } catch(e) {}
             generateBtn.disabled = false;
             klingBtn.disabled = false;
@@ -606,17 +647,45 @@
             klingBtn.disabled = false;
             try { localStorage.removeItem('klingJob'); } catch(e) {}
           }
-        } catch(e) { /* polling retry */ }
-      }, 5000);
+        } catch(e) {
+          pollFailCount++;
+          // Re-fetch tunnel URL on fail — it may have changed
+          if (pollFailCount === 2 && BASE) {
+            fetchTunnelUrl().then(url => { if (url && url !== BASE) { BASE = url; pollFailCount = 0; } });
+          }
+          if (pollFailCount >= 3) {
+            klingStatusSub.innerHTML = '⚠️ Connection lost — video is still generating.<br><small>Tap Check Status below or refresh the page.</small>';
+            retryBtn.style.display = 'inline-block';
+          }
+          if (pollFailCount >= 6) {
+            klingStatusSub.innerHTML = '⚠️ Connection lost for 30s.<br><small>Job: ' + currentKlingJob.substring(0,8) + '… Refresh page to resume.</small>';
+          }
+        }
+      }
+
+      klingPollTimer = setInterval(doPoll, 5000);
     }
 
-    // Resume job from localStorage on page load
-    function resumeKlingJob() {
+    async function retryKlingPoll() {
+      if (!currentKlingJob) return;
+      $('klingRetryBtn').style.display = 'none';
+      klingStatusSub.textContent = 'Reconnecting…';
+      const url = await fetchTunnelUrl();
+      if (!url) {
+        klingStatusSub.innerHTML = '❌ Still can\'t connect. Refresh the page or try again later.';
+        $('klingRetryBtn').style.display = 'inline-block';
+        return;
+      }
+      // Re-run polling with fresh tunnel URL
+      if (klingPollTimer) clearInterval(klingPollTimer);
+      pollKlingJob();
+    }
+
+    async function resumeKlingJob() {
       try {
         const saved = localStorage.getItem('klingJob');
         if (!saved) return;
         const job = JSON.parse(saved);
-        // Only resume if less than 30 minutes old
         if (Date.now() - job.started > 30 * 60 * 1000) {
           localStorage.removeItem('klingJob');
           return;
@@ -626,6 +695,32 @@
         klingStatusText.innerHTML = '<span class="spinner"></span>Resuming 3D cinematic…';
         klingStatusSub.textContent = 'Checking job status…';
         emailOpt.style.display = 'block';
+        // Try an immediate check before starting the poll loop
+        const url = await fetchTunnelUrl();
+        if (url) {
+          try {
+            const resp = await fetch(url + '/check-3d-video.php?job=' + currentKlingJob);
+            const data = await resp.json();
+            if (data.status === 'completed') {
+              const videoUrl = data.result_url || url.replace('/api','') + '/output/jobs/' + currentKlingJob + '/final_output.mp4';
+              klingStatusText.innerHTML = '✅ 3D Cinematic Video Ready!';
+              klingStatusSub.textContent = 'Download below ↓';
+              klingProgressBar.style.width = '100%';
+              klingProgressCard.classList.remove('active');
+              resultCard.classList.add('active');
+              resultVideo.src = videoUrl;
+              resultVideo.load();
+              downloadBtn.href = videoUrl;
+              downloadBtn.download = 'agentado-3d-walkthrough.mp4';
+              resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              localStorage.removeItem('klingJob');
+              generateBtn.disabled = false;
+              klingBtn.disabled = false;
+              emailOpt.style.display = 'none';
+              return; // Done — no need to start polling
+            }
+          } catch(e) { /* fall through to polling */ }
+        }
         pollKlingJob();
       } catch(e) {}
     }
@@ -2558,6 +2653,12 @@
       // Clear editable inputs
       ['editPrice','editAddr','editDesc','editAgentName','editAgentRole','editAgentPhone','editAgentWebsite','editBrokerageName','editBrokerageAddr'].forEach(id => { $(id).value = ''; });
       $('agentPhoto').src = ''; $('agentPhoto').style.display = 'none';
+    }
+
+    // Video load error handler
+    function videoLoadError() {
+      var errEl = document.getElementById('videoError');
+      if (errEl) errEl.style.display = 'block';
     }
 
     // Show realtor section on load

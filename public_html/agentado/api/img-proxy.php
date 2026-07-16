@@ -22,7 +22,7 @@ curl_setopt_array($ch, [
 $data = curl_exec($ch);
 $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+// curl_close is deprecated in PHP 8.5
 
 if ($httpCode !== 200 || !$data) {
     http_response_code(502);

@@ -1,8 +1,9 @@
 <?php
 /**
  * Agentado Tunnel URL Update Endpoint
- * POST: { url: "new-tunnel-url", token: "..." }
- * Updates the tunnel URL so preview generation survives tunnel restarts.
+ * POST: { url: "new-tunnel-url", token: "...", type: "preview"|"php" }
+ * type=preview → writes tunnel-preview-url.txt (port 18900, preview/generate server)
+ * type=php (default) → writes tunnel-url.txt (port 9000, PHP static server)
  */
 
 // Simple shared secret
@@ -25,8 +26,12 @@ if (!$url || !preg_match('#^https://.+\.trycloudflare\.com$#', $url)) {
     exit('Invalid URL');
 }
 
-$configFile = __DIR__ . '/tunnel-url.txt';
+$type = $body['type'] ?? 'php';
+$configFile = $type === 'preview'
+    ? __DIR__ . '/tunnel-preview-url.txt'
+    : __DIR__ . '/tunnel-url.txt';
+
 file_put_contents($configFile, $url);
 chmod($configFile, 0644);
 
-echo "OK: tunnel URL updated to $url";
+echo "OK: $type tunnel URL updated to $url";

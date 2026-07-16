@@ -1,0 +1,28 @@
+[Script Info]
+Title: Agentado Subtitles
+ScriptType: v4.00+
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+PlayResX: 1280
+PlayResY: 720
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Poppins,54,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,1.5,0,1,7.5,0,2,40,40,140,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:03.95,Default,,0,0,0,,{{\fad(300,300)}}Welcome to this stunning estate in the exclusive Rattray Marsh enclave.
+Dialogue: 0,0:00:03.95,0:00:07.91,Default,,0,0,0,,{{\fad(300,300)}}As you step inside, the grand foyer greets you with coffered ceilings.
+Dialogue: 0,0:00:07.91,0:00:11.87,Default,,0,0,0,,{{\fad(300,300)}}Notice the sweeping staircase that invites you further into luxury.
+Dialogue: 0,0:00:11.87,0:00:15.82,Default,,0,0,0,,{{\fad(300,300)}}Every corner showcases intricate wainscotting and custom millwork throughout.
+Dialogue: 0,0:00:15.82,0:00:19.78,Default,,0,0,0,,{{\fad(300,300)}}The chef&apos;s kitchen is truly a culinary dream with high-end appliances.
+Dialogue: 0,0:00:19.78,0:00:23.74,Default,,0,0,0,,{{\fad(300,300)}}Gather around the oversized island, perfect for family and friends.
+Dialogue: 0,0:00:23.74,0:00:27.69,Default,,0,0,0,,{{\fad(300,300)}}Flowing into the family room, feel the warmth from the gas fireplace.
+Dialogue: 0,0:00:27.69,0:00:31.65,Default,,0,0,0,,{{\fad(300,300)}}With 20-foot ceilings, this space feels both expansive and inviting.
+Dialogue: 0,0:00:31.65,0:00:35.61,Default,,0,0,0,,{{\fad(300,300)}}Gaze through the windows to the indoor swimming pool that&apos;s a showstopper.
+Dialogue: 0,0:00:35.61,0:00:39.57,Default,,0,0,0,,{{\fad(300,300)}}The pool area is an entertainer&apos;s paradise, complete with a wet bar.
+Dialogue: 0,0:00:39.57,0:00:43.52,Default,,0,0,0,,{{\fad(300,300)}}Ascend to the Owners Suite, your private retreat with a lovely balcony.
+Dialogue: 0,0:00:43.52,0:00:47.48,Default,,0,0,0,,{{\fad(300,300)}}Each additional bedroom boasts its own stylish ensuite and walk-in closet.
+Dialogue: 0,0:00:47.48,0:00:51.44,Default,,0,0,0,,{{\fad(300,300)}}The lower level offers endless entertainment options for you and your guests.
+Dialogue: 0,0:00:51.44,0:00:55.39,Default,,0,0,0,,{{\fad(300,300)}}Thank you for touring this exquisite home, where luxury meets lifestyle.
