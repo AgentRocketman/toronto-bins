@@ -213,35 +213,59 @@ write_progress('compositing', f'Stitching {len(valid_clips)} clips with crossfad
 stitched = os.path.join(work_dir, 'stitched.mp4')
 m = len(valid_clips)
 
-if m == 1:
-    os.rename(valid_clips[0], stitched)
-else:
-    filter_parts = []
-    for i in range(m):
-        filter_parts.append(f"[{i}:v]fps={FPS},setpts=PTS-STARTPTS[v{i}];")
+MAX_BATCH = 6  # ffmpeg can't handle 25 decoders at once — batch to avoid EMFILE/OOM
 
+def stitch_group(clips, prefix):
+    """Stitch a small group of clips with crossfades into one mp4."""
+    g = len(clips)
+    if g == 1:
+        return clips[0]
+    filter_parts = []
+    for i in range(g):
+        filter_parts.append(f"[{i}:v]fps={FPS},setpts=PTS-STARTPTS[v{i}];")
     prev = "[v0]"
-    for i in range(1, m):
+    for i in range(1, g):
         offset = i * (clip_dur - fade_s)
-        out_v = f"[vf{i}]"
+        out_v = f"[vg{i}]"
         filter_parts.append(f"{prev}[v{i}]xfade=transition=fade:duration={fade_s}:offset={offset}{out_v};")
         prev = out_v
-
     ff_inputs = []
-    for c in valid_clips:
+    for c in clips:
         ff_inputs.extend(['-i', c])
-
+    out_path = os.path.join(work_dir, f'{prefix}_stitched.mp4')
     r = subprocess.run([
         'ffmpeg', '-y', *ff_inputs,
         '-filter_complex', ''.join(filter_parts),
-        '-map', f'[vf{m-1}]',
+        '-map', f'[vg{g-1}]',
         '-c:v', 'libx264', '-preset', 'fast', '-crf', '23',
-        '-pix_fmt', 'yuv420p', '-r', str(FPS), '-an', stitched
+        '-pix_fmt', 'yuv420p', '-r', str(FPS), '-an', out_path
     ], capture_output=True)
-
     if r.returncode != 0:
-        write_progress('failed', 'Stitching failed', n, error=r.stderr.decode()[-500:])
-        sys.exit(1)
+        raise RuntimeError(r.stderr.decode()[-300:])
+    return out_path
+
+def stitch_recursive(clips, prefix):
+    """Recursively batch-stitch clips to avoid opening too many decoders."""
+    if len(clips) <= MAX_BATCH:
+        return stitch_group(clips, prefix)
+    batches = []
+    for i in range(0, len(clips), MAX_BATCH):
+        batch = clips[i:i+MAX_BATCH]
+        if len(batch) >= 2:
+            out = stitch_group(batch, f'{prefix}_b{i//MAX_BATCH}')
+            batches.append(out)
+        else:
+            # Single clip left over from batch (e.g. 7 mod 6 = 1), pass through directly
+            batches.append(batch[0])
+    return stitch_recursive(batches, f'{prefix}_r')
+
+try:
+    stitched = stitch_recursive(valid_clips, 'l0')
+except RuntimeError as e:
+    write_progress('failed', 'Stitching failed', n, error=str(e))
+    sys.exit(1)
+
+write_progress('compositing', f'Stitching complete, {m} clips merged.', n)
 
 # Get total duration
 probe = subprocess.run(
