@@ -14,6 +14,7 @@ define('APIFY_API_KEY', 'apify_api_bokZYqNg2F2uW2b9YzQj3Rn08Dk6A90ewlVH');  // r
 
 // Oxylabs AI Studio API key — bypasses anti-bot (Cloudflare, Incapsula) for realtor.ca
 define('OXYLABS_API_KEY', 'VjWaPcAkrqGXqgYV6ru6SenKGl6gQivFnfbt1xYN');
+define('OPENROUTER_API_KEY', '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');
 
 // Shotstack endpoints
 define('SHOTSTACK_RENDER_URL', 'https://api.shotstack.io/serve/v1/render');

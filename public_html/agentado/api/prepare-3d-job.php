@@ -1,6 +1,6 @@
 <?php
 /**
- * Background job preparer — does all heavy work ASYNCHRONOUSLY.
+ * Background job preparer — V2 with photo-room analysis & smart ordering
  * Invoked by start-3d-video.php: php prepare-3d-job.php <jobId>
  * Updates progress.json at each stage.
  */
@@ -56,35 +56,125 @@ foreach ($photos as $i => $url) {
     }
 }
 
+// ── Step 1b: Copy photos to kling_imgs/ ──
+$klingImgDir = $jobDir . '/kling_imgs';
+if (!is_dir($klingImgDir)) mkdir($klingImgDir, 0777, true);
+$klingPhotos = [];
+foreach ($localPhotos as $i => $lp) {
+    $jpgPath = $klingImgDir . '/photo_' . $i . '.jpg';
+    if (!file_exists($jpgPath)) {
+        copy($lp, $jpgPath);
+    }
+    $klingPhotos[] = $jpgPath;
+}
+
+// ── Step 1c: AI Photo Analysis — identify room types ──
+updateProgress($jobDir, [
+    'status' => 'preparing', 'stage' => 'Analyzing photos with AI…', 'progress' => 3,
+    'total_clips' => count($photos), 'completed_clips' => 0, 'error' => null, 'result_url' => null,
+]);
+
+$photoTags = [];
+$photoCacheFile = $jobDir . '/photo_tags.json';
+if (file_exists($photoCacheFile)) {
+    $photoTags = json_decode(file_get_contents($photoCacheFile), true) ?: [];
+} else {
+    // Try running photo-analyze.php for this job
+    $analyzerCmd = sprintf('php %s %s %d 2>&1',
+        escapeshellarg(__DIR__ . '/photo-analyze.php'),
+        escapeshellarg($jobDir),
+        count($photos)
+    );
+    $analyzerOut = shell_exec($analyzerCmd);
+    $maybeTags = json_decode($analyzerOut, true);
+    if (is_array($maybeTags) && !empty($maybeTags)) {
+        $photoTags = $maybeTags;
+    } else {
+        fwrite(STDERR, "Photo analyzer output:\n$analyzerOut\n");
+    }
+}
+
+// Build simplified tag list for subtitles
+$simpleTags = [];
+if (!empty($photoTags)) {
+    foreach ($photoTags as $k => $v) {
+        $idx = str_replace('photo_', '', $k);
+        $simpleTags[$idx] = $v;
+    }
+}
+
 // ── Step 2: Build narration text ──
-$narration = $description;
+$narration = $listing['description'] ?? $description;
 if (empty($narration)) {
     $addr = $listing['address'] ?? $listing['addr'] ?? 'this beautiful property';
     $narration = "Welcome to $addr. A stunning property with exceptional design and features.";
 }
 
-// ── Step 3: Generate subtitles via GPT ──
+// Calculate target video duration
+$targetVideoDur = count($photos) * 5.0 - 0.8 * max(0, count($photos) - 1);
+
+// ── Step 3: Generate subtitles via LLM (with photo tags for ordering) ──
 $phrases = [];
+$photoOrder = null;
 if ($showSubtitles && !empty($narration)) {
     updateProgress($jobDir, [
         'status' => 'preparing', 'stage' => 'Generating AI subtitles…', 'progress' => 5,
         'total_clips' => count($photos), 'completed_clips' => 0, 'error' => null, 'result_url' => null,
     ]);
 
-    // Call our own subtitles-rewrite endpoint via localhost PHP server
-    $ch = curl_init('http://127.0.0.1:9000/agentado/api/subtitles-rewrite.php');
+    // Call subtitles-rewrite via local CLI for reliability (no HTTP server dependency)
+    $subPayload = json_encode([
+        'description' => $narration,
+        'photoCount' => count($photos),
+        'photoTags' => !empty($simpleTags) ? $simpleTags : null,
+    ]);
+
+    // Try HTTP first (fastest when nginx/PHP-FPM is up), fall back to CLI
+    $ch = curl_init('http://127.0.0.1/agentado/api/subtitles-rewrite.php');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true,
-        CURLOPT_TIMEOUT => 30,
+        CURLOPT_TIMEOUT => 35,
         CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-        CURLOPT_POSTFIELDS => json_encode(['description' => $narration]),
+        CURLOPT_POSTFIELDS => $subPayload,
     ]);
     $resp = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    if ($code === 200) {
-        $phrases = json_decode($resp, true) ?: [];
+
+    if ($code !== 200) {
+        // CLI fallback — pass payload via stdin
+        $cmd = sprintf('echo %s | php %s 2>&1',
+            escapeshellarg($subPayload),
+            escapeshellarg(__DIR__ . '/subtitles-rewrite.php')
+        );
+        $resp = shell_exec($cmd);
     }
+
+    $decoded = json_decode($resp, true);
+    if ($decoded) {
+        $phrases = $decoded['phrases'] ?? [];
+        $photoOrder = $decoded['photo_order'] ?? null;
+    }
+}
+
+// Save the photo order for use in video generation
+if ($photoOrder && count($photoOrder) === count($photos)) {
+    file_put_contents($jobDir . '/photo_order.json', json_encode($photoOrder));
+    // Reorder both photo arrays to match narrative
+    $orderedKling = [];
+    $orderedLocal = [];
+    foreach ($photoOrder as $idx) {
+        if (isset($klingPhotos[$idx])) $orderedKling[] = $klingPhotos[$idx];
+        if (isset($localPhotos[$idx])) $orderedLocal[] = $localPhotos[$idx];
+    }
+    // Fill any gaps (shouldn't happen but safety)
+    foreach ($klingPhotos as $i => $p) {
+        if (!in_array($p, $orderedKling, true)) $orderedKling[] = $p;
+    }
+    foreach ($localPhotos as $i => $p) {
+        if (!in_array($p, $orderedLocal, true)) $orderedLocal[] = $p;
+    }
+    $klingPhotos = $orderedKling;
+    $localPhotos = $orderedLocal;
 }
 
 // ── Step 4: Generate voice-over ──
@@ -101,7 +191,6 @@ if ($showVoiceOver) {
     if (!is_dir($voiceDir)) mkdir($voiceDir, 0777, true);
     $voiceFile = $voiceDir . '/voice.mp3';
 
-    // Check global cache
     $cacheKey = md5($voiceText . $voiceId);
     $globalCache = __DIR__ . '/../output/tts-cache/' . $cacheKey . '.mp3';
     if (file_exists($globalCache) && filesize($globalCache) > 0) {
@@ -118,13 +207,12 @@ if ($showVoiceOver) {
         ]);
         $audio = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
         if ($httpCode === 200 && !empty($audio)) {
             file_put_contents($voiceFile, $audio);
-            if (is_dir(__DIR__ . '/../output/tts-cache/')) {
-                @mkdir(__DIR__ . '/../output/tts-cache/', 0777, true);
-                copy($voiceFile, $globalCache);
+            if (!is_dir(__DIR__ . '/../output/tts-cache/')) {
+                mkdir(__DIR__ . '/../output/tts-cache/', 0777, true);
             }
+            copy($voiceFile, $globalCache);
         }
     }
 
@@ -151,7 +239,7 @@ if ($showMusic && !empty($musicVibe) && $musicVibe !== 'none') {
         'smooth-jazz' => 'Smooth lounge jazz with soft piano, walking bass, light brush drums. Sophisticated. Instrumental.',
     ];
     $prompt = $prompts[$musicVibe] ?? $prompts['elegant-piano'];
-    $musicDur = $audioDuration > 0 ? intval(($audioDuration + 5) * 1000) : count($photos) * 5000;
+    $musicDur = intval(($targetVideoDur + 5) * 1000);
 
     $musicDir = $jobDir . '/audio';
     if (!is_dir($musicDir)) mkdir($musicDir, 0777, true);
@@ -173,13 +261,12 @@ if ($showMusic && !empty($musicVibe) && $musicVibe !== 'none') {
         ]);
         $audio = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
         if ($httpCode === 200 && !empty($audio)) {
             file_put_contents($musicFile, $audio);
-            if (is_dir(__DIR__ . '/../output/music-cache/')) {
-                @mkdir(__DIR__ . '/../output/music-cache/', 0777, true);
-                copy($musicFile, $globalCache);
+            if (!is_dir(__DIR__ . '/../output/music-cache/')) {
+                mkdir(__DIR__ . '/../output/music-cache/', 0777, true);
             }
+            copy($musicFile, $globalCache);
         }
     }
 
@@ -212,6 +299,15 @@ if ($voicePath && $musicPath) {
     $audioDuration = floatval($dur);
 } elseif ($voicePath) {
     $mixedAudioPath = $voicePath;
+    $dur = trim(shell_exec('ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 ' . escapeshellarg($voicePath) . ' 2>&1'));
+    $audioDuration = floatval($dur);
+}
+
+// ── Step 6.5: Extend video to match voice-over ──
+$extendVideo = false;
+if ($mixedAudioPath && $audioDuration > $targetVideoDur + 0.5) {
+    $targetVideoDur = $audioDuration + 0.5;
+    $extendVideo = true;
 }
 
 // ── Step 7: Create ASS subtitle file ──
@@ -222,16 +318,20 @@ if (!empty($phrases)) {
 }
 
 // ── Step 8: Write Python config ──
+$tunnelUrl = "http://2.25.85.211";
 $pyConfig = [
-    'photos' => $localPhotos,
+    'photos' => $klingPhotos,
+    'original_photos' => $localPhotos,
+    'kling_img_base' => 'agentado/output/jobs/' . $jobId . '/kling_imgs',
     'listing' => $listing,
     'audio_path' => $mixedAudioPath,
     'subs_path' => $subsPath,
     'show_price_intro' => $showPriceIntro,
     'show_price_bar' => $showPriceBar,
     'show_contact_slide' => $showContactSlide,
-    'clip_duration' => 5.0,
+    'clip_duration' => $extendVideo ? round(($targetVideoDur + 0.8 * max(0, count($photos) - 1)) / count($photos), 2) : 5.0,
     'crossfade' => 0.8,
+    'tunnel_url' => $tunnelUrl,
 ];
 file_put_contents($jobDir . '/config.json', json_encode($pyConfig, JSON_PRETTY_PRINT));
 
@@ -240,7 +340,14 @@ updateProgress($jobDir, [
     'total_clips' => count($photos), 'completed_clips' => 0, 'error' => null, 'result_url' => null,
 ]);
 
-// ── Step 9: Spawn Python ──
+// ── Step 9: Pre-flight health check ──
+$healthScript = __DIR__ . '/../../../healthcheck.sh';
+if (file_exists($healthScript)) {
+    $healthOut = shell_exec('bash ' . escapeshellarg($healthScript) . ' --fix 2>&1');
+    file_put_contents($jobDir . '/healthcheck.log', $healthOut);
+}
+
+// ── Step 10: Spawn Python ──
 $outputMp4 = $jobDir . '/final_output.mp4';
 $pyScript = __DIR__ . '/video/generate_ai_walkthrough.py';
 $logFile = $jobDir . '/python.log';
@@ -260,22 +367,32 @@ function createAssFile($phrases, $duration, $jobDir) {
     if ($n === 0) return null;
     $assPath = $jobDir . '/subtitles.ass';
     $fadeMs = 300;
-    $phraseTime = $duration / $n;
+
+    $wordCounts = [];
+    $totalWords = 0;
+    foreach ($phrases as $p) {
+        $wc = str_word_count($p);
+        $wordCounts[] = max($wc, 2);
+        $totalWords += $wordCounts[count($wordCounts) - 1];
+    }
+    $totalWords = max($totalWords, 1);
 
     $ass = "[Script Info]\nTitle: Agentado Subtitles\nScriptType: v4.00+\nWrapStyle: 0\nScaledBorderAndShadow: yes\nPlayResX: 1280\nPlayResY: 720\n\n";
     $ass .= "[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n";
     $ass .= "Style: Default,Poppins,54,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,1.5,0,1,7.5,0,2,40,40,140,1\n\n";
     $ass .= "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n";
 
+    $start = 0;
     for ($i = 0; $i < $n; $i++) {
-        $start = $i * $phraseTime;
-        $end = $start + $phraseTime;
-        $fi = min($fadeMs, intval($phraseTime * 500));
-        $fo = min($fadeMs, intval($phraseTime * 500));
+        $phraseDur = $duration * ($wordCounts[$i] / $totalWords);
+        $end = $start + $phraseDur;
+        $fi = min($fadeMs, intval($phraseDur * 500));
+        $fo = min($fadeMs, intval($phraseDur * 500));
         $s = sprintf('%d:%02d:%02d.%02d', floor($start/3600), floor(($start%3600)/60), floor($start%60), floor(($start-floor($start))*100));
         $e = sprintf('%d:%02d:%02d.%02d', floor($end/3600), floor(($end%3600)/60), floor($end%60), floor(($end-floor($end))*100));
         $text = htmlspecialchars($phrases[$i], ENT_XML1 | ENT_QUOTES, 'UTF-8');
         $ass .= "Dialogue: 0,{$s},{$e},Default,,0,0,0,,{{\\fad($fi,$fo)}}{$text}\n";
+        $start = $end;
     }
 
     file_put_contents($assPath, $ass);
