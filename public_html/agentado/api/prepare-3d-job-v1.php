@@ -79,9 +79,9 @@ $photoCacheFile = $jobDir . '/photo_tags.json';
 if (file_exists($photoCacheFile)) {
     $photoTags = json_decode(file_get_contents($photoCacheFile), true) ?: [];
 } else {
-    // Storyline V2: Try running photo-analyze-v2.php for deeper analysis
+    // Try running photo-analyze.php for this job
     $analyzerCmd = sprintf('php %s %s %d 2>&1',
-        escapeshellarg(__DIR__ . '/photo-analyze-v2.php'),
+        escapeshellarg(__DIR__ . '/photo-analyze.php'),
         escapeshellarg($jobDir),
         count($photos)
     );
@@ -94,21 +94,12 @@ if (file_exists($photoCacheFile)) {
     }
 }
 
-// V2: Build both simple tags (room-only, backwards compat) and rich details
+// Build simplified tag list for subtitles
 $simpleTags = [];
-$richDetails = [];
 if (!empty($photoTags)) {
     foreach ($photoTags as $k => $v) {
         $idx = str_replace('photo_', '', $k);
-        if (is_array($v)) {
-            // V2 format: structured object
-            $simpleTags[$idx] = $v['room'] ?? 'interior';
-            $richDetails[$idx] = $v;
-        } else {
-            // V1 fallback: simple string
-            $simpleTags[$idx] = $v;
-            $richDetails[$idx] = ['room' => $v, 'details' => $v, 'quality' => 3, 'is_hero' => false];
-        }
+        $simpleTags[$idx] = $v;
     }
 }
 
@@ -131,19 +122,18 @@ if ($showSubtitles && !empty($narration)) {
         'total_clips' => count($photos), 'completed_clips' => 0, 'error' => null, 'result_url' => null,
     ]);
 
-    // Storyline V2: Call subtitles-rewrite-v2 with rich photo details
+    // Call subtitles-rewrite via local CLI for reliability (no HTTP server dependency)
     $subPayload = json_encode([
         'description' => $narration,
         'photoCount' => count($photos),
         'photoTags' => !empty($simpleTags) ? $simpleTags : null,
-        'photoDetails' => !empty($richDetails) ? $richDetails : null,
     ]);
 
     // Try HTTP first (fastest when nginx/PHP-FPM is up), fall back to CLI
-    $ch = curl_init('http://127.0.0.1/agentado/api/subtitles-rewrite-v2.php');
+    $ch = curl_init('http://127.0.0.1/agentado/api/subtitles-rewrite.php');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true,
-        CURLOPT_TIMEOUT => 60, // V2: GPT-4o + A/B generation takes longer
+        CURLOPT_TIMEOUT => 35,
         CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
         CURLOPT_POSTFIELDS => $subPayload,
     ]);
@@ -154,7 +144,7 @@ if ($showSubtitles && !empty($narration)) {
         // CLI fallback — pass payload via stdin
         $cmd = sprintf('echo %s | php %s 2>&1',
             escapeshellarg($subPayload),
-            escapeshellarg(__DIR__ . '/subtitles-rewrite-v2.php')
+            escapeshellarg(__DIR__ . '/subtitles-rewrite.php')
         );
         $resp = shell_exec($cmd);
     }
@@ -163,10 +153,6 @@ if ($showSubtitles && !empty($narration)) {
     if ($decoded) {
         $phrases = $decoded['phrases'] ?? [];
         $photoOrder = $decoded['photo_order'] ?? null;
-        // Log V2 info (candidates, model, picked temp)
-        if (!empty($decoded['v2_info'])) {
-            fwrite(STDERR, "Storyline V2: " . json_encode($decoded['v2_info']) . "\n");
-        }
     }
 }
 
