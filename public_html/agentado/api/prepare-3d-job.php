@@ -41,6 +41,8 @@ updateProgress($jobDir, [
 $localPhotos = [];
 foreach ($photos as $i => $url) {
     $ext = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
+    // Fix: img-proxy.php URLs return 'php' extension — force jpg
+    if (!in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'webp', 'gif'])) $ext = 'jpg';
     $path = $jobDir . '/photo_' . $i . '.' . $ext;
     $ctx = stream_context_create([
         'http' => ['timeout' => 30, 'user_agent' => 'Agentado/1.0'],

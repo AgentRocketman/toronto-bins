@@ -9,31 +9,52 @@
  * - A/B/C generation with evaluation pass
  */
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// CLI mode: read from stdin
+$isCli = (php_sapi_name() === 'cli');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['error' => 'POST only']);
-    exit;
+if (!$isCli) {
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        echo json_encode(['error' => 'POST only']);
+        exit;
+    }
+    $rawInput = file_get_contents('php://input');
+} else {
+    $rawInput = stream_get_contents(STDIN);
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = json_decode($rawInput, true);
 $description = trim($input['description'] ?? '');
 $photoCount = intval($input['photoCount'] ?? 0);
 $photoTags = $input['photoTags'] ?? null;      // Legacy: simple room strings
 $photoDetails = $input['photoDetails'] ?? null; // V2: rich objects with room, details, quality, is_hero
 
 if (!$description || strlen($description) < 10) {
+    $err = json_encode(['error' => 'Description too short (min 10 chars)']);
+    if ($isCli) { v2log("V2: $err\n"); echo $err; exit(1); }
     http_response_code(400);
-    echo json_encode(['error' => 'Description too short (min 10 chars)']);
+    echo $err;
     exit;
 }
 
 require_once __DIR__ . '/config.php'; // OPENROUTER_API_KEY
+
+// Log to stderr (CLI) or error_log (FPM)
+function v2log($msg) {
+    if (php_sapi_name() === 'cli') {
+        fwrite(STDERR, $msg);
+    } else {
+        error_log($msg);
+    }
+}
+
+v2log("Storyline V2: Starting A/B/C generation with model=openai/gpt-4o…\n");
 
 // ── Build rich photo inventory for the AI ──
 $photoInventory = '';
@@ -195,12 +216,17 @@ foreach ($handles as $i => $ch) {
         $content = $data['choices'][0]['message']['content'] ?? '';
         $parsed = parseStoryResponse($content);
         if ($parsed) {
+            v2log("V2: Candidate " . chr(65+$i) . " (temp={$temps[$i]}) — " . count($parsed['phrases']) . " phrases, photo_order=" . (isset($parsed['photo_order']) ? count($parsed['photo_order']) : 'NONE') . "\n");
             $candidates[] = [
                 'result' => $parsed,
                 'temp' => $temps[$i],
                 'raw' => $content,
             ];
+        } else {
+            v2log("V2: Candidate " . chr(65+$i) . " (temp={$temps[$i]}) — failed to parse JSON\n");
         }
+    } else {
+        v2log("V2: Candidate " . chr(65+$i) . " HTTP $code\n");
     }
 }
 curl_multi_close($mh);
@@ -252,6 +278,19 @@ if (is_array($photoOrder) && count($photoOrder) === $photoCount) {
     $photoOrder = null;
 }
 
+// If AI didn't return photo_order, fire a cheap mapping call
+$usedMapper = false;
+if ($photoOrder === null && $photoCount > 0 && !empty($phrases) && !empty($photoDetails)) {
+    v2log("Storyline V2: No photo_order from AI — running GPT-4o-mini phrase→photo mapper…\n");
+    $photoOrder = mapPhrasesToPhotos($phrases, $photoDetails, $photoCount);
+    $usedMapper = !empty($photoOrder);
+    if ($usedMapper) {
+        v2log("Storyline V2: Mapper produced photo_order: [" . implode(',', $photoOrder) . "]\n");
+    }
+}
+
+v2log("Storyline V2: Done — picked candidate with temp={$best['temp']}, " . count($phrases) . " phrases, photo_order=" . ($photoOrder ? 'YES' : 'NONE') . "\n");
+
 echo json_encode([
     'phrases' => $phrases,
     'photo_order' => $photoOrder,
@@ -259,8 +298,52 @@ echo json_encode([
         'candidates' => count($candidates),
         'picked_temp' => $best['temp'],
         'model' => $modelV2,
+        'used_mapper' => $usedMapper,
     ],
 ]);
+
+// ── Phrase→photo mapper (GPT-4o-mini, runs only when main AI drops photo_order) ──
+function mapPhrasesToPhotos($phrases, $photoDetails, $photoCount) {
+    $inventory = '';
+    foreach ($photoDetails as $idx => $info) {
+        $room = is_array($info) ? ($info['room'] ?? 'interior') : $info;
+        $details = is_array($info) ? ($info['details'] ?? '') : '';
+        $quality = is_array($info) ? ($info['quality'] ?? 3) : 3;
+        $hero = (is_array($info) && !empty($info['is_hero'])) ? ' ⭐' : '';
+        $inventory .= "Photo {$idx}: {$room}{$hero} — {$details}\n";
+    }
+
+    $phrasesText = '';
+    foreach ($phrases as $i => $p) {
+        $phrasesText .= "Phrase {$i}: \"{$p}\"\n";
+    }
+
+    $mapPrompt = "You are mapping narration phrases to photos for a real estate video walkthrough.\n\n"
+        . "PHOTOS:\n{$inventory}\n"
+        . "PHRASES (in order they'll be spoken):\n{$phrasesText}\n"
+        . "Map each phrase to the photo that best matches what it describes.\n"
+        . "Use EVERY photo exactly once. No repeats, no omissions.\n"
+        . "Return ONLY a JSON array of photo indices in phrase order.\n"
+        . "Example: [0, 3, 7, 2, 5, 1, 4, 6]";
+
+    $result = callStoryAI(
+        'You map real estate narration phrases to photos. Return ONLY a JSON array of integers like [0,3,7,2]. No explanation.',
+        $mapPrompt,
+        'openai/gpt-4o-mini',
+        0.2,
+        200
+    );
+
+    if (isset($result['error'])) return null;
+
+    $content = trim($result['content']);
+    if (preg_match('/\[[\d,\s]+\]/', $content, $m)) {
+        $order = json_decode($m[0], true);
+        if (is_array($order) && count($order) === $photoCount) return $order;
+    }
+
+    return null;
+}
 
 // ── Evaluation function: pick the best story ──
 function evaluateAndPick($candidates, $description, $photoCount) {
@@ -298,11 +381,11 @@ function evaluateAndPick($candidates, $description, $photoCount) {
         $picked = $m[1];
         $idx = ord($picked) - 65;
         if (isset($candidates[$idx])) {
-            fwrite(STDERR, "Evaluator picked option {$picked}: " . substr($content, 0, 200) . "\n");
+            v2log("Evaluator picked option {$picked}: " . substr($content, 0, 200) . "\n");
             return $candidates[$idx];
         }
     }
 
-    fwrite(STDERR, "Evaluator returned ambiguous: {$content} — defaulting to A\n");
+    v2log("Evaluator returned ambiguous: {$content} — defaulting to A\n");
     return $default;
 }
