@@ -36,15 +36,26 @@ define('ELEVENLABS_API_KEY', 'sk_1b300ca925e3778885f4a8595960423130fe660c3e2d508
 // Cache: store in a temp dir keyed by md5(text + voice_id)
 $cacheDir = __DIR__ . '/../output/tts-cache';
 if (!is_dir($cacheDir)) { mkdir($cacheDir, 0755, true); }
-$cacheKey = md5($text . '|' . $voiceId);
-$cachePath = $cacheDir . '/' . $cacheKey . '.mp3';
 
+
+// Pronunciation fixes — units ElevenLabs stumbles on
+// Replace "153 ft" / "2,500 sq ft" with spoken forms
+$phText = preg_replace('/(\d[\d,.]*)\s*sq\s*ft\b/i', '$1 square feet', $text);
+$phText = preg_replace('/(\d[\d,.]*)\s*ft\b/i', '$1 feet', $phText);
+
+// Pronunciation fixes — phonetic respelling for tricky words
+// ElevenLabs mispronounces these; swap for TTS only (subtitles use originals)
+$phText = str_replace('Etobicoke', 'Etobico', $phText);
+$phText = str_replace('etobicoke', 'etobico', $phText);
+$cacheKey = md5($phText . '|' . $voiceId);
+$cachePath = $cacheDir . '/' . $cacheKey . '.mp3';
 if (file_exists($cachePath) && filesize($cachePath) > 0) {
     header('Content-Type: audio/mpeg');
     header('Content-Length: ' . filesize($cachePath));
     header('X-Cache: HIT');
     readfile($cachePath);
     exit;
+
 }
 
 // Call ElevenLabs TTS API
@@ -59,7 +70,7 @@ curl_setopt_array($ch, [
         'Accept: audio/mpeg',
     ],
     CURLOPT_POSTFIELDS => json_encode([
-        'text'               => $text,
+        'text'               => $phText,
         'model_id'           => 'eleven_multilingual_v2',
         'voice_settings'     => [
             'stability'          => 0.50,
